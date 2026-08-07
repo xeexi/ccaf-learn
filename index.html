@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="ja" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>トップ ─ CCAR-F 学習ノート</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+
+</head>
+<body>
+<script>(function(){var t=localStorage.getItem('ccarf-theme');if(t)document.documentElement.dataset.theme=t;})();</script>
+<nav class="domnav">
+  <a class="brand" href="index.html"><span class="brand-mark">CCAR-F</span><span class="brand-sub">学習ノート</span></a>
+  <div class="nav-list"><a class="nav-item" data-domain="basics" href="00-basics.html">
+       <span class="nav-num">前提</span><span class="nav-title">会話の実体</span></a>
+<a class="nav-item" data-domain="agentic" href="01-agentic.html">
+       <span class="nav-num">Domain 1</span><span class="nav-title">エージェント設計とオーケストレーション</span></a>
+<a class="nav-item" data-domain="tools" href="02-tools.html">
+       <span class="nav-num">Domain 2</span><span class="nav-title">ツール設計と MCP 連携</span></a>
+<a class="nav-item" data-domain="code" href="03-claude-code.html">
+       <span class="nav-num">Domain 3</span><span class="nav-title">Claude Code の設定とワークフロー</span></a>
+<a class="nav-item" data-domain="prompt" href="04-prompt.html">
+       <span class="nav-num">Domain 4</span><span class="nav-title">プロンプト設計と構造化出力</span></a>
+<a class="nav-item" data-domain="context" href="05-context.html">
+       <span class="nav-num">Domain 5</span><span class="nav-title">コンテキスト管理と信頼性</span></a>
+<a class="nav-item" data-domain="summary" href="06-summary.html">
+       <span class="nav-num">まとめ</span><span class="nav-title">全体をもう一度</span></a></div>
+</nav>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-muted)"/></marker>
+  <marker id="ara" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-amber)"/></marker>
+  <marker id="arb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-blue)"/></marker>
+  <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-red)"/></marker>
+  <marker id="arg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-green)"/></marker>
+</defs></svg>
+<div class="hero">
+  <span class="tag">CLAUDE CERTIFIED ARCHITECT ─ FOUNDATIONS</span>
+  <h1>Claudeは、中で何をしているのか</h1>
+  <p>CCAR-F の出題ブループリントをそのまま目次にした学習ノートです。5つのドメインと、その土台になる「前提」で構成しています。図で仕組みを追い、各節の終わりに理解度チェックを置いています。</p>
+  <p class="c-meta" style="margin-top:22px">全 41 セクション ・ 理解度チェック 15 本 ・ 図 52 点</p>
+</div>
+<div class="cards"><a class="card" href="00-basics.html" data-domain="basics">
+  <span class="c-num">前提</span>
+  <h2>会話の実体</h2>
+  <p class="c-sub">全ドメイン共通の土台</p>
+  <ul class="c-list"><li>まず、全体の流れ</li><li>会話は毎回、まるごと送り直している</li><li>トークンとコンテキストウィンドウ</li><li>プロンプトキャッシュ</li><li>確率で次の1トークンを選ぶ</li></ul>
+  <div class="c-meta">5 セクション ・ 理解度チェック 1</div>
+</a>
+<a class="card" href="01-agentic.html" data-domain="agentic">
+  <span class="c-num">Domain 1</span>
+  <h2>エージェント設計とオーケストレーション</h2>
+  <p class="c-sub">出題比率 27%</p>
+  <ul class="c-list"><li>ツールを渡すとは、説明書を渡すこと</li><li>エージェントループの1周</li><li>stop_reason で分岐する</li><li>誰が、何を送っているのか</li><li>実物を見る ─ 往復のJSON</li><li>ほか 4 項目</li></ul>
+  <div class="c-meta">9 セクション ・ 理解度チェック 2</div>
+</a>
+<a class="card" href="02-tools.html" data-domain="tools">
+  <span class="c-num">Domain 2</span>
+  <h2>ツール設計と MCP 連携</h2>
+  <p class="c-sub">出題比率 18%</p>
+  <ul class="c-list"><li>ツール定義は3つの部品でできている</li><li>ツールの粒度</li><li>失敗は読める形で返す</li><li>MCP という差込口</li><li>権限と副作用</li></ul>
+  <div class="c-meta">5 セクション ・ 理解度チェック 1</div>
+</a>
+<a class="card" href="03-claude-code.html" data-domain="code">
+  <span class="c-num">Domain 3</span>
+  <h2>Claude Code の設定とワークフロー</h2>
+  <p class="c-sub">出題比率 20%</p>
+  <ul class="c-list"><li>このドメインについて</li><li>CLAUDE.md の階層と読み込まれ方</li><li>@import で分割する</li><li>スラッシュコマンドとスキル</li><li>パス固有ルール</li><li>ほか 4 項目</li></ul>
+  <div class="c-meta">9 セクション ・ 理解度チェック 5</div>
+</a>
+<a class="card" href="04-prompt.html" data-domain="prompt">
+  <span class="c-num">Domain 4</span>
+  <h2>プロンプト設計と構造化出力</h2>
+  <p class="c-sub">出題比率 20%</p>
+  <ul class="c-list"><li>system / user / assistant</li><li>並べる順番</li><li>考えさせる ─ thinking</li><li>基準を明示する / ゼロ件を許す</li><li>few-shot ─ 例を見せる</li><li>ほか 4 項目</li></ul>
+  <div class="c-meta">9 セクション ・ 理解度チェック 4</div>
+</a>
+<a class="card" href="05-context.html" data-domain="context">
+  <span class="c-num">Domain 5</span>
+  <h2>コンテキスト管理と信頼性</h2>
+  <p class="c-sub">出題比率 15%</p>
+  <ul class="c-list"><li>窓が埋まったら</li><li>サブエージェント</li><li>確実にしたいことは仕組み側へ</li></ul>
+  <div class="c-meta">3 セクション ・ 理解度チェック 1</div>
+</a>
+<a class="card" href="06-summary.html" data-domain="summary">
+  <span class="c-num">まとめ</span>
+  <h2>全体をもう一度</h2>
+  <p class="c-sub">総合チェック</p>
+  <ul class="c-list"><li>1枚で全体を見る</li></ul>
+  <div class="c-meta">1 セクション ・ 理解度チェック 1</div>
+</a></div>
+<div class="hero" style="padding-top:0">
+  <h2 style="font-size:22px;margin:0 0 6px">まず、全体像</h2>
+  <p style="margin-bottom:22px">どのドメインから読んでも構いませんが、「前提」だけは先に読んでください。ここで <code>messages</code> / <code>tool_result</code> / コンテキストウィンドウという、全ドメイン共通の語彙が入ります。</p>
+  <div class="figbox"><div class="diagram run">
+  <svg viewBox="0 0 760 306">
+    <text class="ttl s1" x="380" y="24" text-anchor="middle">この教材の構成と、いまの仕上がり</text>
+    <g class="s2"><rect x="16" y="40" width="728" height="50" rx="10" fill="var(--fig-fill-blue)" stroke="var(--fig-blue)" stroke-width="2"/>
+      <text class="ttl" x="40" y="62" style="fill:var(--fig-blue)">前提</text>
+      <text class="lbl" x="110" y="62">会話の実体 ─ 送り直し・トークンと窓・キャッシュ・確率的な生成</text>
+      <text class="sm" x="110" y="80">どのドメインにも属さないが、以降すべての土台になる</text>
+      <text class="lbl" x="722" y="70" text-anchor="end" style="fill:var(--fig-blue)">完成</text></g>
+    <g class="s3"><rect x="16" y="100" width="356" height="44" rx="10" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
+      <text class="ttl" x="36" y="128">D1</text><text class="lbl" x="74" y="128">エージェント構成と統率</text>
+      <text class="sm" x="252" y="128" text-anchor="end">27%</text>
+      <text class="lbl" x="350" y="128" text-anchor="end" style="fill:var(--fig-red)">1 / 7</text></g>
+    <g class="s4"><rect x="388" y="100" width="356" height="44" rx="10" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
+      <text class="ttl" x="408" y="128">D2</text><text class="lbl" x="446" y="128">ツール設計と MCP</text>
+      <text class="sm" x="624" y="128" text-anchor="end">18%</text>
+      <text class="lbl" x="722" y="128" text-anchor="end" style="fill:var(--fig-red)">2 / 5</text></g>
+    <g class="s5"><rect x="16" y="152" width="356" height="44" rx="10" fill="var(--fig-fill-blue)" stroke="var(--fig-blue)" stroke-width="2"/>
+      <text class="ttl" x="36" y="180" style="fill:var(--fig-blue)">D3</text><text class="lbl" x="74" y="180" style="fill:var(--fig-blue)">Claude Code の設定</text>
+      <text class="sm" x="252" y="180" text-anchor="end" style="fill:var(--fig-blue)">20%</text>
+      <text class="lbl" x="350" y="180" text-anchor="end" style="fill:var(--fig-blue)">6 / 6</text></g>
+    <g class="s6"><rect x="388" y="152" width="356" height="44" rx="10" fill="var(--fig-fill-blue)" stroke="var(--fig-blue)" stroke-width="2"/>
+      <text class="ttl" x="408" y="180" style="fill:var(--fig-blue)">D4</text><text class="lbl" x="446" y="180" style="fill:var(--fig-blue)">プロンプトと構造化出力</text>
+      <text class="sm" x="624" y="180" text-anchor="end" style="fill:var(--fig-blue)">20%</text>
+      <text class="lbl" x="722" y="180" text-anchor="end" style="fill:var(--fig-blue)">6 / 6</text></g>
+    <g class="s7"><rect x="16" y="204" width="356" height="44" rx="10" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
+      <text class="ttl" x="36" y="232">D5</text><text class="lbl" x="74" y="232">文脈管理と信頼性</text>
+      <text class="sm" x="252" y="232" text-anchor="end">15%</text>
+      <text class="lbl" x="350" y="232" text-anchor="end" style="fill:var(--fig-red)">1 / 6</text></g>
+    <g class="s8"><rect x="388" y="204" width="356" height="44" rx="10" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)"/>
+      <text class="lbl" x="408" y="232" style="fill:var(--fig-green)">まとめ・総合チェック</text>
+      <rect x="16" y="258" width="728" height="42" rx="10" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
+      <text class="sm" x="36" y="278">右の数字は「公式ブループリントのタスクのうち、十分に扱えているものの数」。</text>
+      <text class="sm" x="36" y="294">青枠が仕上がり済み。数字が埋まっていないドメインにも中核の内容は入っているが、固有名詞や設定の具体が不足している。</text></g>
+  </svg>
+  </div></div>
+</div>
+<div class="search-wrap">
+  <button class="search-btn" id="openSearch" aria-label="検索"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span>検索</span><kbd>/</kbd></button>
+</div>
+<div class="modal" id="searchModal" hidden>
+  <div class="modal-box">
+    <input id="searchInput" type="search" placeholder="用語・見出し・本文を検索（例: input_schema、キャッシュ）" autocomplete="off">
+    <div id="searchResults" class="results"></div>
+    <div class="modal-foot"><kbd>Esc</kbd> で閉じる</div>
+  </div>
+</div>
+<script src="assets/quiz-data.js"></script>
+<script src="assets/search-index.js"></script>
+<script src="assets/app.js"></script>
+</body></html>

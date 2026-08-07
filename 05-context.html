@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="ja" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Domain 5 コンテキスト管理と信頼性 ─ CCAR-F 学習ノート</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+
+</head>
+<body>
+<script>(function(){var t=localStorage.getItem('ccarf-theme');if(t)document.documentElement.dataset.theme=t;})();</script>
+<nav class="domnav">
+  <a class="brand" href="index.html"><span class="brand-mark">CCAR-F</span><span class="brand-sub">学習ノート</span></a>
+  <div class="nav-list"><a class="nav-item" data-domain="basics" href="00-basics.html">
+       <span class="nav-num">前提</span><span class="nav-title">会話の実体</span></a>
+<a class="nav-item" data-domain="agentic" href="01-agentic.html">
+       <span class="nav-num">Domain 1</span><span class="nav-title">エージェント設計とオーケストレーション</span></a>
+<a class="nav-item" data-domain="tools" href="02-tools.html">
+       <span class="nav-num">Domain 2</span><span class="nav-title">ツール設計と MCP 連携</span></a>
+<a class="nav-item" data-domain="code" href="03-claude-code.html">
+       <span class="nav-num">Domain 3</span><span class="nav-title">Claude Code の設定とワークフロー</span></a>
+<a class="nav-item" data-domain="prompt" href="04-prompt.html">
+       <span class="nav-num">Domain 4</span><span class="nav-title">プロンプト設計と構造化出力</span></a>
+<a class="nav-item on" data-domain="context" href="05-context.html">
+       <span class="nav-num">Domain 5</span><span class="nav-title">コンテキスト管理と信頼性</span></a>
+<a class="nav-item" data-domain="summary" href="06-summary.html">
+       <span class="nav-num">まとめ</span><span class="nav-title">全体をもう一度</span></a></div>
+</nav>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-muted)"/></marker>
+  <marker id="ara" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-amber)"/></marker>
+  <marker id="arb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-blue)"/></marker>
+  <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-red)"/></marker>
+  <marker id="arg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-green)"/></marker>
+</defs></svg>
+<div class="shell">
+<aside class="toc">
+  <div class="toc-head">Domain 5</div>
+  <nav class="toc-list"><a class="toc-link" href="#compact">窓が埋まったら</a>
+<a class="toc-link" href="#sub">サブエージェント</a>
+<a class="toc-link" href="#hooks">確実にしたいことは仕組み側へ</a>
+<a class="toc-link is-quiz" href="#q">理解度チェック</a></nav>
+</aside>
+<main class="doc">
+  <header class="doc-head" data-domain="context">
+    <span class="doc-num">Domain 5</span>
+    <h1>コンテキスト管理と信頼性</h1>
+    <p class="doc-sub">出題比率 15%</p>
+  </header>
+<section class="sec" id="compact">
+<header class="sec-head">
+  <span class="sec-kicker">セクション</span>
+  <h2>窓が埋まったら</h2>
+</header>
+
+<h3 class="sub">窓が埋まってきたら、削るか要約する</h3>
+<p class="lead">長い作業では履歴が必ず膨らみます。何を残すかを決めるのが「コンテキスト管理」です。</p>
+  <div class="figbox"><div class="diagram run">
+  <svg viewBox="0 0 760 260">
+    <g class="s1"><text class="lbl" x="30" y="40">作業が進むほど…</text>
+      <rect x="30" y="52" width="700" height="26" rx="6" fill="var(--fig-surface)" stroke="var(--fig-line)"/>
+      <rect x="30" y="52" width="180" height="26" rx="6" fill="var(--fig-line-green)"/>
+      <text class="sm" x="740" y="70" text-anchor="end"> </text></g>
+    <g class="s2"><rect x="30" y="88" width="700" height="26" rx="6" fill="var(--fig-surface)" stroke="var(--fig-line)"/>
+      <rect x="30" y="88" width="430" height="26" rx="6" fill="var(--fig-line-amber)"/></g>
+    <g class="s3"><rect x="30" y="124" width="700" height="26" rx="6" fill="var(--fig-surface)" stroke="var(--fig-line)"/>
+      <rect x="30" y="124" width="690" height="26" rx="6" fill="var(--fig-line-red)"/>
+      <text class="sm" x="380" y="142" text-anchor="middle" style="fill:var(--fig-surface)">ほぼ満杯</text></g>
+    <g class="s4"><line x1="380" y1="158" x2="380" y2="182" stroke="var(--fig-muted)" stroke-width="2" marker-end="url(#ar)"/>
+      <rect x="30" y="188" width="340" height="62" rx="10" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
+      <text class="ttl" x="54" y="214">要約して圧縮する</text>
+      <text class="sm" x="54" y="236">決定事項・未解決点・次の手順だけ残す</text></g>
+    <g class="s5"><rect x="390" y="188" width="340" height="62" rx="10" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
+      <text class="ttl" x="414" y="214">そもそも入れない</text>
+      <text class="sm" x="414" y="236">巨大なログは必要な行だけ返す・別に逃がす</text></g>
+  </svg>
+  </div></div>
+  <div class="detail"><h3>図の読み方</h3>
+    <ol class="ann">
+      <li><span class="n">1</span><span>上の3本の帯が、<b>作業が進むにつれて窓が埋まっていく様子</b>です。1本目は余裕がありますが、3本目でほぼ満杯になっています。</span></li>
+      <li><span class="n">2</span><span>そこから下に2つの道があります。左が<b>要約して圧縮する</b>。決定事項・未解決点・次の手順だけを残します。</span></li>
+      <li><span class="n">3</span><span>右が<b>そもそも入れない</b>。巨大なログは必要な行だけ返す、あるいは別に逃がす（後述のサブエージェント）。</span></li>
+      <li><span class="n">4</span><span>効くのは<b>右のほう</b>です。載せてから減らすより、<b>載せる前に減らす</b>ほうが確実だからです。</span></li>
+    </ol>
+    </div>
+  <p class="point"><b>ポイント</b>要約は「短くする」ことではなく「次の判断に必要なものを選ぶ」こと。決定・制約・残タスクが残っていればよい。</p>
+
+<h3 class="sub">机の片付けにたとえると</h3>
+<div class="detail"><h3>たとえるなら</h3>
+    <p><b>机が一杯になったときの片付け</b>です。全部捨てるのでも全部取っておくのでもなく、<b>この先の作業に必要な紙だけ残す</b>。要約とは短くすることではなく、選ぶことです。</p>
+    <div class="ex"><span class="exl">残すもの／捨ててよいもの</span>
+    残す：<b>決まったこと</b>（採用した方針）、<b>制約</b>（やってはいけないこと）、<b>未解決の点</b>、<b>次の手順</b><br>
+    捨ててよい：試行錯誤の途中経過、読み終わったログの本文、失敗して破棄した案の詳細</div>
+    <p>もうひとつ、<b>そもそも机に載せない</b>という手があります。ツールが返す量を絞る、調べ物は子に任せて要約だけ受け取る（後述のサブエージェント）。載せてから減らすより、載せる前に減らすほうが確実です。</p>
+    <div class="myth">
+      <span class="t">誤解</span><span>「圧縮すればいいのだから、履歴は膨らんでも問題ない」</span>
+      <span class="t o">実際は</span><span>圧縮は履歴を書き換えるので、<b>その地点から先のプロンプトキャッシュが無効になります</b>（前提編）。ただではありません。</span>
+    </div>
+  </div>
+  <p class="point"><b>ポイント</b>要約は「短くする」ことではなく「次の判断に必要なものを選ぶ」こと。決定・制約・残タスクが残っていればよい。</p>
+</section>
+
+<section class="sec" id="sub">
+<header class="sec-head">
+  <span class="sec-kicker">セクション</span>
+  <h2>サブエージェント</h2>
+</header>
+<p class="lead">別のコンテキストで作業させ、結果の要約だけを持ち帰る。本体の窓を汚さずに済みます。</p>
+  <div class="figbox"><div class="diagram run">
+  <svg viewBox="0 0 760 270">
+    <g class="s1"><rect x="16" y="30" width="230" height="210" rx="12" fill="var(--fig-fill-amber)" stroke="var(--fig-line-amber)"/>
+      <text class="ttl" x="131" y="58" text-anchor="middle" style="fill:var(--fig-amber)">親（本体）</text>
+      <rect x="40" y="76" width="182" height="22" rx="4" fill="var(--fig-surface)" stroke="var(--fig-line)"/>
+      <rect x="40" y="104" width="182" height="22" rx="4" fill="var(--fig-surface)" stroke="var(--fig-line)"/>
+      <text class="sm" x="131" y="152" text-anchor="middle">窓はきれいなまま</text>
+      <text class="sm" x="131" y="174" text-anchor="middle">全体の段取りに集中</text></g>
+    <g class="s2"><line x1="252" y1="110" x2="316" y2="110" stroke="var(--fig-amber)" stroke-width="2" marker-end="url(#ara)"/>
+      <text class="sm" x="284" y="100" text-anchor="middle" style="fill:var(--fig-amber)">指示</text>
+      <text class="sm" x="284" y="132" text-anchor="middle">前提も渡す</text></g>
+    <g class="s3"><rect x="324" y="30" width="230" height="210" rx="12" fill="var(--fig-fill-blue)" stroke="var(--fig-line-blue)"/>
+      <text class="ttl" x="439" y="58" text-anchor="middle" style="fill:var(--fig-blue)">子（サブエージェント）</text>
+      <g fill="var(--fig-surface)" stroke="var(--fig-line-blue)">
+        <rect x="346" y="76" width="186" height="16" rx="3"/><rect x="346" y="98" width="186" height="16" rx="3"/>
+        <rect x="346" y="120" width="186" height="16" rx="3"/><rect x="346" y="142" width="186" height="16" rx="3"/>
+        <rect x="346" y="164" width="186" height="16" rx="3"/><rect x="346" y="186" width="186" height="16" rx="3"/></g>
+      <text class="sm" x="439" y="224" text-anchor="middle">大量の検索・読み込みで窓を使い切る</text></g>
+    <g class="s4"><line x1="560" y1="150" x2="622" y2="150" stroke="var(--fig-green)" stroke-width="2" marker-end="url(#ar)"/>
+      <rect x="630" y="106" width="114" height="88" rx="12" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)"/>
+      <text class="lbl" x="687" y="140" text-anchor="middle" style="fill:var(--fig-green)">要約だけ</text>
+      <text class="lbl" x="687" y="160" text-anchor="middle" style="fill:var(--fig-green)">持ち帰る</text></g>
+    <g class="s5"><path d="M687 100 C 687 60, 400 12, 131 24" fill="none" stroke="var(--fig-green)" stroke-width="2"
+        stroke-dasharray="5 4" marker-end="url(#ar)"/></g>
+    <text class="sm s6" x="380" y="264" text-anchor="middle">独立した調査を複数走らせるときは、並列に子を立てられる（親は結果を統合するだけ）</text>
+  </svg>
+  </div></div>
+  <div class="detail">
+    <h3>図の読み方</h3>
+    <ol class="ann">
+      <li><span class="n">1</span><span>左が<b>親</b>。中の行が2本しかないのは、<b>窓がきれいなまま</b>だという意味です。</span></li>
+      <li><span class="n">2</span><span>中央が<b>子</b>。行がびっしり詰まっています。大量の検索・読み込みで<b>自分の窓を使い切っています</b>が、これは子の窓です。</span></li>
+      <li><span class="n">3</span><span>親から子への矢印が<b>指示</b>。ここで必要な前提を渡します。</span></li>
+      <li><span class="n">4</span><span>子から右への矢印が<b>要約だけを返す</b>ところ。5万行を読んでも、返るのは数行です。</span></li>
+      <li><span class="n">5</span><span>上の点線が、その要約が<b>親に戻る</b>経路。親の履歴に入るのはこれだけです。</span></li>
+    </ol>
+    <h3>たとえるなら</h3>
+    <p><b>部下に調べさせて、要点だけ報告してもらう</b>のと同じです。部下の机がどれだけ埋まろうと、こちらの机には報告書1枚しか残りません。</p>
+    <div class="ex"><span class="exl">親の指示に必ず含めるもの</span>
+    ・何を調べてほしいのか（目的）<br>
+    ・<b>すでに分かっていること・決まっていること</b>（親だけが知っている前提）<br>
+    ・どんな形で返してほしいのか（成果物の形式）<br>
+    3つ目を書かないと、長文の報告が返ってきて<b>結局こちらの机が埋まります</b>。</div>
+    <div class="myth">
+      <span class="t">誤解</span><span>「子は親のやり取りを見ているので、説明は省ける」</span>
+      <span class="t o">実際は</span><span>見ていません。<b>渡し忘れた前提は、そのまま誤った成果物として返ってきます。</b></span>
+    </div>
+  </div>
+  <p class="point"><b>ポイント</b>子は親の履歴を自動では引き継がない。必要な前提は、指示の中に明示して渡す必要がある。</p>
+</section>
+
+<section class="sec" id="hooks">
+<header class="sec-head">
+  <span class="sec-kicker">セクション</span>
+  <h2>確実にしたいことは仕組み側へ</h2>
+</header>
+
+<h3 class="sub">「必ず起きてほしいこと」はモデルに頼まない</h3>
+<p class="lead">お願いは守られないことがあります。必ず実行したい処理は、仕組み側（フック等）で自動的に走らせます。</p>
+  <div class="figbox"><div class="diagram run">
+  <svg viewBox="0 0 760 250">
+    <g class="s1"><rect x="16" y="26" width="350" height="196" rx="12" fill="var(--fig-fill-red)" stroke="var(--fig-line-red)"/>
+      <text class="ttl" x="191" y="56" text-anchor="middle" style="fill:var(--fig-red)">確率的：お願いする</text>
+      <rect x="40" y="76" width="302" height="40" rx="8" fill="var(--fig-surface)" stroke="var(--fig-line)"/>
+      <text class="mono" x="56" y="101">「編集したら必ず整形して」</text>
+      <text class="lbl" x="56" y="146">・だいたい守る</text>
+      <text class="lbl" x="56" y="170">・忘れることがある</text>
+      <text class="lbl" x="56" y="194">・回数が増えるほど取りこぼす</text></g>
+    <g class="s2"><rect x="394" y="26" width="350" height="196" rx="12" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)"/>
+      <text class="ttl" x="569" y="56" text-anchor="middle" style="fill:var(--fig-green)">決定的：仕組みで走らせる</text>
+      <rect x="418" y="76" width="302" height="40" rx="8" fill="var(--fig-surface)" stroke="var(--fig-line-green)"/>
+      <text class="mono" x="434" y="101">編集ツールの実行後 → 整形を起動</text>
+      <text class="lbl" x="434" y="146">・100%走る</text>
+      <text class="lbl" x="434" y="170">・モデルの気分に左右されない</text>
+      <text class="lbl" x="434" y="194">・ログにも残る</text></g>
+  </svg>
+  </div></div>
+  <div class="detail"><h3>図の読み方</h3>
+    <ol class="ann">
+      <li><span class="n">1</span><span>左（赤）が<b>お願いする</b>やり方。「編集したら必ず整形して」とプロンプトに書きます。</span></li>
+      <li><span class="n">2</span><span>結果は下の3行のとおり。<b>だいたい守るが、忘れることがあり、回数が増えるほど取りこぼす</b>。100回編集すれば数回は抜けます。</span></li>
+      <li><span class="n">3</span><span>右（緑）が<b>仕組みで走らせる</b>やり方。「編集ツールの実行後に整形を起動」という形で、モデルの判断を通しません。Claude Code ではこれを <b>hooks（フック）</b> と呼びます（Domain 3）。</span></li>
+      <li><span class="n">4</span><span>結果は<b>100%走る・気分に左右されない・ログにも残る</b>。判断が要らない処理を、判断できる相手に頼む必要はありません。</span></li>
+    </ol>
+    </div>
+  <p class="point"><b>ポイント</b>判断が要ることはモデルに、要らないことはコードに。この線引きが、そのまま信頼性の設計になる。</p>
+
+<h3 class="sub">仕組み側に移すもの</h3>
+<div class="detail"><h3>たとえるなら</h3>
+    <p><b>「退室時は施錠してください」の貼り紙</b>と<b>オートロック</b>の違いです。貼り紙はほとんどの人が守りますが、急いでいる日に忘れる人が出ます。オートロックは忘れることができません。</p>
+    <div class="ex"><span class="exl">仕組み側に移すもの</span>
+    ・編集したら整形する／リンタをかける<br>
+    ・コミット前にテストを走らせる<br>
+    ・危険なコマンドの実行を止める<br>
+    ・実行内容をログに残す<br>
+    どれも<b>判断が要りません</b>。判断が要らないものを、判断できる相手に頼む必要はありません。</div>
+    <p>この線引きは、そのままこの教材全体の背骨です。<b>判断が要ることはモデルへ、要らないことはコードへ。</b></p>
+  </div>
+  <p class="point"><b>ポイント</b>判断が要ることはモデルに、要らないことはコードに。この線引きが、そのまま信頼性の設計になる。</p>
+</section>
+
+<section class="sec sec-quiz" id="q" data-quiz="q5">
+<header class="sec-head">
+  <span class="sec-kicker">理解度チェック</span>
+  <h2>理解度チェック</h2>
+</header>
+<p class="lead">3問。</p>
+  <div class="qwrap"></div>
+</section>
+<div class="pager">
+  <a class="pg prev" href="04-prompt.html"><span>前のドメイン</span><b>Domain 4　プロンプト設計と構造化出力</b></a>
+  <a class="pg next" href="06-summary.html"><span>次のドメイン</span><b>まとめ　全体をもう一度</b></a>
+</div>
+</main>
+</div>
+<div class="search-wrap">
+  <button class="search-btn" id="openSearch" aria-label="検索"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span>検索</span><kbd>/</kbd></button>
+</div>
+<div class="modal" id="searchModal" hidden>
+  <div class="modal-box">
+    <input id="searchInput" type="search" placeholder="用語・見出し・本文を検索（例: input_schema、キャッシュ）" autocomplete="off">
+    <div id="searchResults" class="results"></div>
+    <div class="modal-foot"><kbd>Esc</kbd> で閉じる</div>
+  </div>
+</div>
+<script src="assets/quiz-data.js"></script>
+<script src="assets/search-index.js"></script>
+<script src="assets/app.js"></script>
+</body></html>

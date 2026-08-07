@@ -1,0 +1,752 @@
+<!doctype html>
+<html lang="ja" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Domain 3 Claude Code の設定とワークフロー ─ CCAR-F 学習ノート</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+
+</head>
+<body>
+<script>(function(){var t=localStorage.getItem('ccarf-theme');if(t)document.documentElement.dataset.theme=t;})();</script>
+<nav class="domnav">
+  <a class="brand" href="index.html"><span class="brand-mark">CCAR-F</span><span class="brand-sub">学習ノート</span></a>
+  <div class="nav-list"><a class="nav-item" data-domain="basics" href="00-basics.html">
+       <span class="nav-num">前提</span><span class="nav-title">会話の実体</span></a>
+<a class="nav-item" data-domain="agentic" href="01-agentic.html">
+       <span class="nav-num">Domain 1</span><span class="nav-title">エージェント設計とオーケストレーション</span></a>
+<a class="nav-item" data-domain="tools" href="02-tools.html">
+       <span class="nav-num">Domain 2</span><span class="nav-title">ツール設計と MCP 連携</span></a>
+<a class="nav-item on" data-domain="code" href="03-claude-code.html">
+       <span class="nav-num">Domain 3</span><span class="nav-title">Claude Code の設定とワークフロー</span></a>
+<a class="nav-item" data-domain="prompt" href="04-prompt.html">
+       <span class="nav-num">Domain 4</span><span class="nav-title">プロンプト設計と構造化出力</span></a>
+<a class="nav-item" data-domain="context" href="05-context.html">
+       <span class="nav-num">Domain 5</span><span class="nav-title">コンテキスト管理と信頼性</span></a>
+<a class="nav-item" data-domain="summary" href="06-summary.html">
+       <span class="nav-num">まとめ</span><span class="nav-title">全体をもう一度</span></a></div>
+</nav>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-muted)"/></marker>
+  <marker id="ara" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-amber)"/></marker>
+  <marker id="arb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-blue)"/></marker>
+  <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-red)"/></marker>
+  <marker id="arg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-green)"/></marker>
+</defs></svg>
+<div class="shell">
+<aside class="toc">
+  <div class="toc-head">Domain 3</div>
+  <nav class="toc-list"><a class="toc-link" href="#about">このドメインについて</a>
+<a class="toc-link" href="#claudemd">CLAUDE.md の階層と読み込まれ方</a>
+<a class="toc-link" href="#import">@import で分割する</a>
+<a class="toc-link is-quiz" href="#q31">理解度チェック ─ 3.1</a>
+<a class="toc-link" href="#cmdskill">スラッシュコマンドとスキル</a>
+<a class="toc-link is-quiz" href="#q32">理解度チェック ─ 3.2</a>
+<a class="toc-link" href="#rules">パス固有ルール</a>
+<a class="toc-link" href="#plan">plan mode と直接実行</a>
+<a class="toc-link" href="#iterate">反復的な改善</a>
+<a class="toc-link is-quiz" href="#q345">理解度チェック ─ 3.3〜3.5</a>
+<a class="toc-link" href="#ci">非対話実行と CI/CD</a>
+<a class="toc-link" href="#settings">settings.json と permissions</a>
+<a class="toc-link is-quiz" href="#q36">理解度チェック ─ 3.6・付録</a>
+<a class="toc-link is-quiz" href="#qall">Domain 3 総合チェック</a></nav>
+</aside>
+<main class="doc">
+  <header class="doc-head" data-domain="code">
+    <span class="doc-num">Domain 3</span>
+    <h1>Claude Code の設定とワークフロー</h1>
+    <p class="doc-sub">出題比率 20%</p>
+  </header>
+<section class="sec" id="about">
+<header class="sec-head">
+  <span class="sec-kicker">セクション</span>
+  <h2>このドメインについて</h2>
+</header>
+<p class="lead">CCAR-F の出題ブループリントをそのまま目次にしています。1ページ＝1論点、タスク単位で潰していく構成です。</p>
+  <div class="figbox"><div class="diagram run">
+  <svg viewBox="0 0 760 300">
+    <text class="ttl s1" x="380" y="26" text-anchor="middle">Domain 3（配点 20%）の6タスク</text>
+    <g class="s2"><rect x="16" y="46" width="358" height="52" rx="10" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
+      <text class="ttl" x="36" y="70">3.1</text><text class="lbl" x="76" y="70">CLAUDE.md の階層・スコープ・モジュール化</text>
+      <text class="sm" x="76" y="88">どこに置くと、いつ効くのか</text></g>
+    <g class="s3"><rect x="386" y="46" width="358" height="52" rx="10" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
+      <text class="ttl" x="406" y="70">3.2</text><text class="lbl" x="446" y="70">スラッシュコマンドとスキル</text>
+      <text class="sm" x="446" y="88">繰り返す作業を置く場所</text></g>
+    <g class="s4"><rect x="16" y="108" width="358" height="52" rx="10" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
+      <text class="ttl" x="36" y="132">3.3</text><text class="lbl" x="76" y="132">パス固有ルール</text>
+      <text class="sm" x="76" y="150">対象ファイルを開いたときだけ効く規約</text></g>
+    <g class="s5"><rect x="386" y="108" width="358" height="52" rx="10" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
+      <text class="ttl" x="406" y="132">3.4</text><text class="lbl" x="446" y="132">plan mode と直接実行</text>
+      <text class="sm" x="446" y="150">先に計画を承認させるかどうか</text></g>
+    <g class="s6"><rect x="16" y="170" width="358" height="52" rx="10" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
+      <text class="ttl" x="36" y="194">3.5</text><text class="lbl" x="76" y="194">反復的な改善</text>
+      <text class="sm" x="76" y="212">1回で当てず、回して寄せる</text></g>
+    <g class="s7"><rect x="386" y="170" width="358" height="52" rx="10" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
+      <text class="ttl" x="406" y="194">3.6</text><text class="lbl" x="446" y="194">CI/CD への組み込み</text>
+      <text class="sm" x="446" y="212">人がいない場所で走らせる</text></g>
+    <g class="s8"><rect x="16" y="234" width="728" height="52" rx="10" fill="var(--fig-fill-blue)" stroke="var(--fig-line-blue)"/>
+      <text class="lbl" x="36" y="258" style="fill:var(--fig-blue)">付録：settings.json と権限 ─ 上の6つすべての土台になる設定ファイル</text>
+      <text class="sm" x="36" y="276">どこに置くと優先されるか、allow / deny / ask の書式</text></g>
+  </svg>
+  </div></div>
+  <p class="point"><b>使い方</b>ページ送りは「次へ」または キーボードの ← →。左下の「☰ 目次」でタスク単位に飛べます。各タスクの最後にチェック問題があります。</p>
+</section>
+
+<section class="sec" id="claudemd">
+<header class="sec-head">
+  <span class="sec-kicker">セクション</span>
+  <h2>CLAUDE.md の階層と読み込まれ方</h2>
+</header>
+
+<h3 class="sub">CLAUDE.md は4つの場所に置ける</h3>
+<p class="lead">置く場所によって「誰に効くか」が変わります。まずこの4段を覚えます。</p>
+  <div class="figbox"><div class="diagram run">
+  <svg viewBox="0 0 760 300">
+    <g class="s1"><rect x="20" y="20" width="720" height="56" rx="10" fill="var(--fig-fill-red)" stroke="var(--fig-line-red)"/>
+      <text class="ttl" x="40" y="44" style="fill:var(--fig-red)">管理ポリシー（Managed policy）</text>
+      <text class="mono" x="40" y="64">/etc/claude-code/CLAUDE.md ほか OS ごとの固定パス</text>
+      <text class="sm" x="560" y="44">組織全員に強制</text>
+      <text class="sm" x="560" y="64">個人では外せない</text></g>
+    <g class="s2"><rect x="20" y="84" width="720" height="56" rx="10" fill="var(--fig-fill-amber)" stroke="var(--fig-line-amber)"/>
+      <text class="ttl" x="40" y="108" style="fill:var(--fig-amber)">ユーザー</text>
+      <text class="mono" x="40" y="128">~/.claude/CLAUDE.md</text>
+      <text class="sm" x="560" y="108">自分の全プロジェクト</text>
+      <text class="sm" x="560" y="128">個人の好み</text></g>
+    <g class="s3"><rect x="20" y="148" width="720" height="56" rx="10" fill="var(--fig-fill-blue)" stroke="var(--fig-line-blue)"/>
+      <text class="ttl" x="40" y="172" style="fill:var(--fig-blue)">プロジェクト</text>
+      <text class="mono" x="40" y="192">./CLAUDE.md　または　./.claude/CLAUDE.md</text>
+      <text class="sm" x="560" y="172">リポジトリのチーム共有</text>
+      <text class="sm" x="560" y="192">git にコミットする</text></g>
+    <g class="s4"><rect x="20" y="212" width="350" height="56" rx="10" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)"/>
+      <text class="ttl" x="40" y="236" style="fill:var(--fig-green)">サブディレクトリ</text>
+      <text class="mono" x="40" y="256">packages/api/CLAUDE.md</text>
+      <rect x="390" y="212" width="350" height="56" rx="10" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
+      <text class="ttl" x="410" y="236">個人のローカル</text>
+      <text class="mono" x="410" y="256">./CLAUDE.local.md</text></g>
+    <text class="sm s5" x="380" y="288" text-anchor="middle">サブディレクトリのものは、そのディレクトリを読むときにだけ読み込まれる（オンデマンド）</text>
+  </svg>
+  </div></div>
+  <div class="detail">
+    <h3>図の読み方</h3>
+    <ol class="ann">
+      <li><span class="n">1</span><span><b>管理ポリシー</b>は組織のIT部門が置くもので、<b>利用者側で無効化できません</b>。企業導入の設問で出ます。</span></li>
+      <li><span class="n">2</span><span><b>ユーザー</b>（<code>~/.claude/CLAUDE.md</code>）は自分の全プロジェクトに効きます。個人の好みはここ。</span></li>
+      <li><span class="n">3</span><span><b>プロジェクト</b>（<code>./CLAUDE.md</code>）はチーム共有。<b>git にコミットする</b>のがここです。</span></li>
+      <li><span class="n">4</span><span><b>サブディレクトリ</b>に置くと、そのディレクトリを扱うときだけ読み込まれます。モノレポで効きます。</span></li>
+      <li><span class="n">5</span><span><b><code>CLAUDE.local.md</code></b> は同じ場所に置く個人用。<b>自動で .gitignore に入る</b>ので、共有されません。</span></li>
+    </ol>
+    <div class="myth">
+      <span class="t">誤解</span><span>「上位の CLAUDE.md があると、下位は無視される」</span>
+      <span class="t o">実際は</span><span><b>上書きではなく、すべて連結されます</b>（このすぐ下）。競合したときの扱いは、書いた内容しだいです。</span>
+    </div>
+  </div>
+  <p class="point"><b>ポイント</b>「誰に効かせたいか」で置き場所が決まる。組織全員＝管理ポリシー、自分だけ＝ユーザー、チーム＝プロジェクト、自分＋このリポジトリだけ＝CLAUDE.local.md。</p>
+
+<h3 class="sub">上書きではなく、順に足していく</h3>
+<p class="lead">ルートから作業ディレクトリへ向かって走査され、見つかったものが全部つながります。</p>
+  <div class="figbox"><div class="diagram run">
+  <svg viewBox="0 0 760 290">
+    <g class="s1"><text class="ttl" x="20" y="28">走査の向き</text>
+      <line x1="150" y1="22" x2="700" y2="22" stroke="var(--fig-amber)" stroke-width="2" marker-end="url(#ara)"/>
+      <text class="sm" x="160" y="14">ファイルシステムのルート側</text>
+      <text class="sm" x="700" y="14" text-anchor="end">いま作業しているディレクトリ</text></g>
+    <g class="s2"><rect x="20" y="44" width="150" height="46" rx="8" fill="var(--fig-fill-amber)" stroke="var(--fig-line-amber)"/>
+      <text class="mono" x="95" y="72" text-anchor="middle">~/.claude/</text></g>
+    <g class="s3"><rect x="190" y="44" width="170" height="46" rx="8" fill="var(--fig-fill-blue)" stroke="var(--fig-line-blue)"/>
+      <text class="mono" x="275" y="72" text-anchor="middle">./CLAUDE.md</text></g>
+    <g class="s4"><rect x="380" y="44" width="180" height="46" rx="8" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
+      <text class="mono" x="470" y="72" text-anchor="middle">./CLAUDE.local.md</text></g>
+    <g class="s5"><rect x="580" y="44" width="160" height="46" rx="8" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)"/>
+      <text class="mono" x="660" y="66" text-anchor="middle">packages/api/</text>
+      <text class="sm" x="660" y="82" text-anchor="middle">オンデマンド</text></g>
+    <g class="s6"><path d="M95 96 L95 120 L660 120 L660 136" fill="none" stroke="var(--fig-muted)" stroke-width="2" marker-end="url(#ar)"/>
+      <rect x="180" y="140" width="400" height="60" rx="10" fill="var(--fig-surface)" stroke="var(--fig-amber)" stroke-width="2"/>
+      <text class="ttl" x="380" y="166" text-anchor="middle" style="fill:var(--fig-amber)">全部が連結されて、まとめてコンテキストへ</text>
+      <text class="sm" x="380" y="188" text-anchor="middle">近いものほど後ろに置かれる</text></g>
+    <g class="s7"><rect x="20" y="216" width="720" height="60" rx="10" fill="var(--fig-fill-red)" stroke="var(--fig-line-red)"/>
+      <text class="lbl" x="40" y="240" style="fill:var(--fig-red)">連結されるということは、量がそのままコンテキストを食うということ。</text>
+      <text class="sm" x="40" y="262">階層ごとに長大な CLAUDE.md を置くと、会話が始まる前に窓を消費する。</text></g>
+  </svg>
+  </div></div>
+  <div class="detail">
+    <h3>図の読み方</h3>
+    <ol class="ann">
+      <li><span class="n">1</span><span>走査は<b>ルート側から作業ディレクトリへ向かって</b>行われます。</span></li>
+      <li><span class="n">2</span><span>各階層で <code>CLAUDE.md</code> → <code>CLAUDE.local.md</code> の順に読まれます。</span></li>
+      <li><span class="n">3</span><span>結果は<b>連結</b>。上位が下位に置き換わるのではなく、全部が並んでコンテキストに載ります。</span></li>
+      <li><span class="n">4</span><span>サブディレクトリのものだけは例外で、<b>そのディレクトリを実際に読むときに</b>追加されます。</span></li>
+    </ol>
+    <div class="ex"><span class="exl">設問での問われ方</span>
+    「モノレポで、パッケージごとに違う規約を適用したい」→ <b>各パッケージに CLAUDE.md を置く</b>（全部をルートの1枚に詰め込まない）。<br>
+    理由は2つ：関係ないパッケージの規約を読ませずに済む／ルートの1枚が肥大化しない。</div>
+  </div>
+  <p class="point"><b>ポイント</b>合成であって上書きではない。だから「置けば置くほど効く」のではなく「置いた分だけ窓を食う」。</p>
+</section>
+
+<section class="sec" id="import">
+<header class="sec-head">
+  <span class="sec-kicker">セクション</span>
+  <h2>@import で分割する</h2>
+</header>
+<p class="lead">CLAUDE.md が長くなったら、テーマごとに分けて読み込みます。</p>
+  <div class="figbox"><div class="diagram run">
+  <svg viewBox="0 0 760 270">
+    <g class="s1"><rect x="20" y="30" width="250" height="150" rx="10" fill="var(--fig-fill-amber)" stroke="var(--fig-line-amber)"/>
+      <text class="ttl" x="145" y="56" text-anchor="middle" style="fill:var(--fig-amber)">CLAUDE.md</text>
+      <text class="mono" x="40" y="84"># プロジェクトの規約</text>
+      <text class="mono" x="40" y="108">@docs/style.md</text>
+      <text class="mono" x="40" y="128">@docs/testing.md</text>
+      <text class="mono" x="40" y="148">@~/.claude/my-rules.md</text>
+      <text class="sm" x="40" y="170">本体は目次だけにできる</text></g>
+    <g class="s2"><line x1="280" y1="105" x2="330" y2="105" stroke="var(--fig-muted)" stroke-width="2" marker-end="url(#ar)"/>
+      <rect x="340" y="34" width="180" height="40" rx="8" fill="var(--fig-surface)" stroke="var(--fig-line)"/>
+      <text class="mono" x="430" y="59" text-anchor="middle">docs/style.md</text>
+      <rect x="340" y="84" width="180" height="40" rx="8" fill="var(--fig-surface)" stroke="var(--fig-line)"/>
+      <text class="mono" x="430" y="109" text-anchor="middle">docs/testing.md</text>
+      <rect x="340" y="134" width="180" height="40" rx="8" fill="var(--fig-surface)" stroke="var(--fig-line)"/>
+      <text class="mono" x="430" y="159" text-anchor="middle">~/.claude/my-rules.md</text></g>
+    <g class="s3"><rect x="550" y="34" width="190" height="140" rx="10" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
+      <text class="ttl" x="645" y="58" text-anchor="middle">書き方</text>
+      <text class="mono" x="566" y="84">@相対パス</text>
+      <text class="mono" x="566" y="106">@/絶対パス</text>
+      <text class="mono" x="566" y="128">@~/ホームから</text>
+      <text class="sm" x="566" y="156">入れ子は4段まで</text></g>
+    <g class="s4"><rect x="20" y="196" width="720" height="58" rx="10" fill="var(--fig-fill-blue)" stroke="var(--fig-line-blue)"/>
+      <text class="lbl" x="40" y="220" style="fill:var(--fig-blue)">コードブロックやバッククォートの中では展開されない</text>
+      <text class="sm" x="40" y="242">`@README` と書けばリテラル。手順書の中でファイル名に触れるときに効いてくる</text></g>
+  </svg>
+  </div></div>
+  <div class="detail">
+    <h3>図の読み方</h3>
+    <ol class="ann">
+      <li><span class="n">1</span><span>左が本体。<b>行頭に <code>@パス</code> と書くだけ</b>で、その中身がそこに展開されます。</span></li>
+      <li><span class="n">2</span><span>相対パス・絶対パス・<code>~/</code> の3通りが使えます。<b>相対パスは、その行を書いたファイルから見た位置</b>です。</span></li>
+      <li><span class="n">3</span><span><b>入れ子は4段まで</b>。import した先がさらに import しても、4ホップで止まります。</span></li>
+      <li><span class="n">4</span><span>コードスパン（バッククォート）やコードブロックの中の <code>@</code> は<b>展開されません</b>。</span></li>
+    </ol>
+    <div class="ex"><span class="exl">設問での問われ方</span>
+    「CLAUDE.md が肥大化して読みにくい。どう整理するか」→ <b>テーマごとにファイルを分け、@import で束ねる</b>。<br>
+    「個人の好みをチームに押し付けずに読み込みたい」→ <code>@~/.claude/my-rules.md</code> のようにホーム側を import する、または <code>CLAUDE.local.md</code> を使う。</div>
+  </div>
+  <p class="point"><b>ポイント</b>@import は「分割して見通しを良くする」ための道具。展開後は結局1つにつながるので、合計の量は減らない。</p>
+</section>
+
+<section class="sec sec-quiz" id="q31" data-quiz="q31">
+<header class="sec-head">
+  <span class="sec-kicker">理解度チェック</span>
+  <h2>理解度チェック ─ 3.1</h2>
+</header>
+<p class="lead"></p>
+  <div class="qwrap"></div>
+</section>
+
+<section class="sec" id="cmdskill">
+<header class="sec-head">
+  <span class="sec-kicker">セクション</span>
+  <h2>スラッシュコマンドとスキル</h2>
+</header>
+
+<h3 class="sub">スラッシュコマンド ─ 1ファイル＝1コマンド</h3>
+<p class="lead">よく使う手順を <code>.claude/commands/</code> に置くと、<code>/名前</code> で呼び出せます。</p>
+  <div class="figbox"><div class="diagram run">
+  <svg viewBox="0 0 760 280">
+    <g class="s1"><rect x="20" y="26" width="330" height="120" rx="10" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
+      <text class="sm" x="40" y="48">.claude/commands/deploy.md</text>
+      <rect x="40" y="58" width="290" height="76" rx="6" fill="var(--fig-surface)" stroke="var(--fig-line)"/>
+      <text class="mono" x="54" y="78">---</text>
+      <text class="mono" x="54" y="96">description: リリース前の確認</text>
+      <text class="mono" x="54" y="114">argument-hint: &lt;環境名&gt;</text>
+      <text class="mono" x="54" y="132">allowed-tools: Read,Bash</text></g>
+    <g class="s2"><line x1="360" y1="86" x2="410" y2="86" stroke="var(--fig-amber)" stroke-width="2" marker-end="url(#ara)"/>
+      <rect x="420" y="60" width="200" height="52" rx="10" fill="var(--fig-fill-amber)" stroke="var(--fig-line-amber)"/>
+      <text class="mono" x="520" y="92" text-anchor="middle" style="fill:var(--fig-amber)">/deploy staging</text>
+      <text class="sm" x="640" y="92">ファイル名がそのまま</text></g>
+    <g class="s3"><rect x="20" y="160" width="330" height="100" rx="10" fill="var(--fig-fill-blue)" stroke="var(--fig-line-blue)"/>
+      <text class="ttl" x="40" y="184" style="fill:var(--fig-blue)">引数の受け取り</text>
+      <text class="mono" x="40" y="210">$ARGUMENTS　… 全部（staging）</text>
+      <text class="mono" x="40" y="234">$1 $2 …　　 … 位置ごと</text>
+      <text class="sm" x="40" y="252">本文の中にそのまま書ける</text></g>
+    <g class="s4"><rect x="370" y="160" width="370" height="100" rx="10" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)"/>
+      <text class="ttl" x="390" y="184" style="fill:var(--fig-green)">frontmatter の3つ</text>
+      <text class="lbl" x="390" y="208">description ─ 何をするコマンドか</text>
+      <text class="lbl" x="390" y="230">argument-hint ─ 補完に出る引数の形</text>
+      <text class="lbl" x="390" y="252">allowed-tools ─ 実行中に使えるツールを限定</text></g>
+  </svg>
+  </div></div>
+  <div class="detail">
+    <h3>図の読み方</h3>
+    <ol class="ann">
+      <li><span class="n">1</span><span><b>ファイル名がコマンド名</b>になります。<code>deploy.md</code> なら <code>/deploy</code>。</span></li>
+      <li><span class="n">2</span><span>先頭の YAML frontmatter で3つ指定できます。<b><code>allowed-tools</code> はそのコマンド実行中だけツールを絞る</b>もので、権限設計としても使えます。</span></li>
+      <li><span class="n">3</span><span>本文の中に <code>$ARGUMENTS</code> や <code>$1</code> と書いておくと、呼び出し時の引数が入ります。</span></li>
+      <li><span class="n">4</span><span>置き場所は<b>プロジェクト（<code>.claude/commands/</code>）と個人（<code>~/.claude/commands/</code>）</b>の2通り。前者はチームで共有されます。</span></li>
+    </ol>
+    <div class="ex"><span class="exl">サブディレクトリで名前空間を作れる</span>
+    <code>.claude/commands/db/migrate.md</code> のように掘ると、コマンドが整理されます。数が増えたときに効きます。</div>
+  </div>
+  <p class="point"><b>ポイント</b>「毎回同じ順番でやってほしい手順」の置き場所。CLAUDE.md（常に効く）と違い、<b>呼んだときだけ</b>効く。</p>
+
+<h3 class="sub">スキル ─ ディレクトリごと束ねる</h3>
+<p class="lead">補助ファイルを伴う手順や、別コンテキストで走らせたい作業はスキルにします。</p>
+  <div class="figbox"><div class="diagram run">
+  <svg viewBox="0 0 760 290">
+    <g class="s1"><rect x="20" y="26" width="300" height="130" rx="10" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
+      <text class="sm" x="40" y="48">.claude/skills/review/</text>
+      <text class="mono" x="52" y="74">SKILL.md　　← 本体</text>
+      <text class="mono" x="52" y="96">checklist.md　← 補助</text>
+      <text class="mono" x="52" y="118">examples/　　← 補助</text>
+      <text class="sm" x="40" y="144">1ファイルではなくディレクトリ</text></g>
+    <g class="s2"><rect x="340" y="26" width="400" height="130" rx="10" fill="var(--fig-fill-blue)" stroke="var(--fig-line-blue)"/>
+      <text class="ttl" x="360" y="50" style="fill:var(--fig-blue)">SKILL.md の frontmatter（主なもの）</text>
+      <text class="mono" x="360" y="76">description　　いつ使うか（自動起動の判断材料）</text>
+      <text class="mono" x="360" y="98">allowed-tools　実行中に使えるツール</text>
+      <text class="mono" x="360" y="120">argument-hint　引数の形</text>
+      <text class="mono" x="360" y="142">context: fork　別コンテキストで走らせる</text></g>
+    <g class="s3"><rect x="20" y="176" width="350" height="100" rx="10" fill="var(--fig-fill-amber)" stroke="var(--fig-line-amber)"/>
+      <text class="ttl" x="195" y="200" text-anchor="middle" style="fill:var(--fig-amber)">通常のスキル</text>
+      <text class="lbl" x="40" y="226">いまの会話の中で実行される</text>
+      <text class="sm" x="40" y="250">読んだ資料も、やり取りも、</text>
+      <text class="sm" x="40" y="268">そのまま履歴に残る</text></g>
+    <g class="s4"><rect x="390" y="176" width="350" height="100" rx="10" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)"/>
+      <text class="ttl" x="565" y="200" text-anchor="middle" style="fill:var(--fig-green)">context: fork</text>
+      <text class="lbl" x="410" y="226">別のコンテキストで実行される</text>
+      <text class="sm" x="410" y="250">親の会話履歴は見えない。</text>
+      <text class="sm" x="410" y="268">CLAUDE.md も引き継がれない</text></g>
+  </svg>
+  </div></div>
+  <div class="detail">
+    <h3>図の読み方</h3>
+    <ol class="ann">
+      <li><span class="n">1</span><span>スキルは<b>ディレクトリ</b>です。<code>SKILL.md</code> が本体で、チェックリストや例などの<b>補助ファイルを同梱できます</b>。ここがコマンドとの一番の違い。</span></li>
+      <li><span class="n">2</span><span><code>description</code> は<b>Claudeが自動で使うかどうかの判断材料</b>。ツールの description と同じ役割です。</span></li>
+      <li><span class="n">3</span><span><b><code>context: fork</code></b> を付けると、<b>別コンテキストのサブエージェント</b>として走ります。大量に読む作業を、親の窓を汚さずに任せられます。</span></li>
+      <li><span class="n">4</span><span>ただし fork した先は<b>親の会話も CLAUDE.md も引き継ぎません</b>。必要な前提は指示に書いて渡す必要があります。</span></li>
+    </ol>
+    <div class="myth">
+      <span class="t">誤解</span><span>「fork すれば速くなる・賢くなる」</span>
+      <span class="t o">実際は</span><span>目的は<b>コンテキストの隔離</b>です。引き継がれないことが利点であり、同時に渡し忘れの原因にもなります。</span>
+    </div>
+  </div>
+  <p class="point"><b>ポイント</b>補助ファイルが要る、または別コンテキストで走らせたい → スキル。単発の手順書 → スラッシュコマンド。</p>
+
+<h3 class="sub">CLAUDE.md / コマンド / スキル の使い分け</h3>
+<p class="lead">「何を繰り返したいか」で置き場所が決まります。設問はここを突いてきます。</p>
+  <div class="figbox"><div class="diagram run">
+  <svg viewBox="0 0 760 250">
+    <g class="s1"><rect x="16" y="26" width="230" height="200" rx="12" fill="var(--fig-fill-amber)" stroke="var(--fig-line-amber)"/>
+      <text class="sm" x="131" y="52" text-anchor="middle">繰り返すのが…</text>
+      <text class="ttl" x="131" y="80" text-anchor="middle" style="fill:var(--fig-amber)">決まりごと</text>
+      <text class="lbl" x="131" y="112" text-anchor="middle">「pnpm を使う」</text>
+      <text class="lbl" x="131" y="134" text-anchor="middle">「生成物は触らない」</text>
+      <rect x="40" y="154" width="182" height="34" rx="8" fill="var(--fig-surface)" stroke="var(--fig-line-amber)"/>
+      <text class="mono" x="131" y="176" text-anchor="middle">CLAUDE.md</text>
+      <text class="sm" x="131" y="208" text-anchor="middle">常に効く</text></g>
+    <g class="s2"><rect x="264" y="26" width="230" height="200" rx="12" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
+      <text class="sm" x="379" y="52" text-anchor="middle">繰り返すのが…</text>
+      <text class="ttl" x="379" y="80" text-anchor="middle">手順</text>
+      <text class="lbl" x="379" y="112" text-anchor="middle">「リリース前に</text>
+      <text class="lbl" x="379" y="134" text-anchor="middle">この順でやる」</text>
+      <rect x="288" y="154" width="182" height="34" rx="8" fill="var(--fig-surface)" stroke="var(--fig-line)"/>
+      <text class="mono" x="379" y="176" text-anchor="middle">スラッシュコマンド</text>
+      <text class="sm" x="379" y="208" text-anchor="middle">呼んだときだけ効く</text></g>
+    <g class="s3"><rect x="512" y="26" width="232" height="200" rx="12" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)"/>
+      <text class="sm" x="628" y="52" text-anchor="middle">繰り返すのが…</text>
+      <text class="ttl" x="628" y="80" text-anchor="middle" style="fill:var(--fig-green)">役割</text>
+      <text class="lbl" x="628" y="112" text-anchor="middle">「レビュー担当として</text>
+      <text class="lbl" x="628" y="134" text-anchor="middle">この観点で見る」</text>
+      <rect x="536" y="154" width="184" height="34" rx="8" fill="var(--fig-surface)" stroke="var(--fig-line-green)"/>
+      <text class="mono" x="628" y="176" text-anchor="middle">スキル</text>
+      <text class="sm" x="628" y="208" text-anchor="middle">資料を束ねられる</text></g>
+  </svg>
+  </div></div>
+  <div class="detail">
+    <h3>判断の順序</h3>
+    <ol class="ann">
+      <li><span class="n">1</span><span><b>いつも効いていてほしいか？</b> → はい なら CLAUDE.md。会話のたびに載るので、短く保つ。</span></li>
+      <li><span class="n">2</span><span><b>呼んだときだけでよいか？</b> → 単発の手順なら<b>スラッシュコマンド</b>。</span></li>
+      <li><span class="n">3</span><span><b>補助ファイルが要る／別コンテキストで走らせたいか？</b> → <b>スキル</b>。</span></li>
+      <li><span class="n">4</span><span><b>そもそもモデルの判断が要らないか？</b> → それは hooks の領域です（Domain 1）。「編集したら必ず整形」のような処理は、ここに書くべきではありません。</span></li>
+    </ol>
+    <div class="ex"><span class="exl">設問での問われ方</span>
+    「毎回同じ注意を書いている」→ <b>CLAUDE.md</b>／「リリース手順を毎回説明している」→ <b>スラッシュコマンド</b>／「レビュー観点と参考資料をセットで使い回したい」→ <b>スキル</b>／「編集後に必ずリンタを走らせたい」→ <b>hooks</b>。</div>
+  </div>
+  <p class="point"><b>ポイント</b>4つの選択肢を「常に効く／呼んだとき／束ねたい／判断不要」で切り分ける。この分類がそのまま設問の選択肢になる。</p>
+</section>
+
+<section class="sec sec-quiz" id="q32" data-quiz="q32">
+<header class="sec-head">
+  <span class="sec-kicker">理解度チェック</span>
+  <h2>理解度チェック ─ 3.2</h2>
+</header>
+<p class="lead"></p>
+  <div class="qwrap"></div>
+</section>
+
+<section class="sec" id="rules">
+<header class="sec-head">
+  <span class="sec-kicker">セクション</span>
+  <h2>パス固有ルール</h2>
+</header>
+<p class="lead"><code>.claude/rules/</code> に置き、frontmatter で対象パスを指定します。</p>
+  <div class="figbox"><div class="diagram run">
+  <svg viewBox="0 0 760 280">
+    <g class="s1"><rect x="20" y="24" width="290" height="130" rx="10" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
+      <text class="sm" x="40" y="46">.claude/rules/frontend.md</text>
+      <rect x="40" y="56" width="250" height="84" rx="6" fill="var(--fig-surface)" stroke="var(--fig-line)"/>
+      <text class="mono" x="54" y="76">---</text>
+      <text class="mono" x="54" y="94">paths:</text>
+      <text class="mono" x="54" y="112">  - "src/**/*.tsx"</text>
+      <text class="mono" x="54" y="130">---</text></g>
+    <g class="s2"><line x1="320" y1="88" x2="370" y2="88" stroke="var(--fig-muted)" stroke-width="2" marker-end="url(#ar)"/>
+      <rect x="380" y="24" width="360" height="130" rx="10" fill="var(--fig-fill-blue)" stroke="var(--fig-line-blue)"/>
+      <text class="ttl" x="400" y="48" style="fill:var(--fig-blue)">いつ読まれるか</text>
+      <text class="lbl" x="400" y="78">paths あり → <tspan font-weight="700">対象ファイルを開いたときだけ</tspan></text>
+      <text class="lbl" x="400" y="104">paths なし → セッション開始時に読み込み</text>
+      <text class="sm" x="400" y="132">つまり paths は「オンデマンドにするスイッチ」</text></g>
+    <g class="s3"><rect x="20" y="172" width="350" height="94" rx="10" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)"/>
+      <text class="ttl" x="40" y="196" style="fill:var(--fig-green)">こう書ける</text>
+      <text class="mono" x="40" y="220">- "src/**/*.{ts,tsx}"</text>
+      <text class="mono" x="40" y="242">- "**/*.test.ts"</text>
+      <text class="sm" x="40" y="260">複数指定・ブレース展開が使える</text></g>
+    <g class="s4"><rect x="390" y="172" width="350" height="94" rx="10" fill="var(--fig-fill-amber)" stroke="var(--fig-line-amber)"/>
+      <text class="ttl" x="410" y="196" style="fill:var(--fig-amber)">サブディレクトリも掘れる</text>
+      <text class="mono" x="410" y="220">.claude/rules/frontend/react.md</text>
+      <text class="mono" x="410" y="242">.claude/rules/backend/api.md</text>
+      <text class="sm" x="410" y="260">自動で見つけてくれる</text></g>
+  </svg>
+  </div></div>
+  <div class="detail">
+    <h3>図の読み方</h3>
+    <ol class="ann">
+      <li><span class="n">1</span><span>左上が<b>ルールファイルの中身</b>。frontmatter の <code>paths:</code> にグロブを並べるだけです。</span></li>
+      <li><span class="n">2</span><span><b>「いつ読まれるか」</b> ── ここが CLAUDE.md との違いです。<code>paths</code> を書けば<b>そのファイルを扱うときだけ</b>、書かなければ<b>常に</b>窓に載ります。<b>関係ない規約でウィンドウを埋めない</b>ための仕掛けです。</span></li>
+      <li><span class="n">3</span><span><b>「こう書ける」</b> ── 複数パターンと <code>{ts,tsx}</code> のブレース展開。1ファイルで複数の拡張子をまとめられます。</span></li>
+      <li><span class="n">4</span><span><b>「サブディレクトリも掘れる」</b> ── 分けて置いても自動で拾われるので、<b>規約の種類が増えても1ファイルが肥大しません</b>。</span></li>
+    </ol>
+    <div class="ex"><span class="exl">CLAUDE.md との使い分け</span>
+    <b>常に効かせたい規約</b>（言語共通の方針）→ CLAUDE.md<br>
+    <b>特定の種類のファイルにだけ効かせたい規約</b>（Reactコンポーネントの書き方、テストの命名）→ <code>.claude/rules/</code> ＋ <code>paths</code><br>
+    後者を CLAUDE.md に全部書くと、<b>関係ない作業のときも窓を食い続けます。</b></div>
+  </div>
+  <p class="point"><b>ポイント</b><code>paths</code> は「いつ読ませるか」のスイッチ。規約が増えたときに、窓を守りながら増やせる仕組み。</p>
+</section>
+
+<section class="sec" id="plan">
+<header class="sec-head">
+  <span class="sec-kicker">セクション</span>
+  <h2>plan mode と直接実行</h2>
+</header>
+<p class="lead">plan mode では、調べることはできますが<b>変更はできません</b>。まず計画を出させて、承認してから実行に移します。</p>
+  <div class="figbox"><div class="diagram run">
+  <svg viewBox="0 0 760 280">
+    <g class="s1"><rect x="16" y="24" width="350" height="230" rx="12" fill="var(--fig-fill-blue)" stroke="var(--fig-line-blue)"/>
+      <text class="ttl" x="191" y="50" text-anchor="middle" style="fill:var(--fig-blue)">plan mode</text>
+      <text class="lbl" x="40" y="82">できる</text>
+      <text class="sm" x="40" y="106">・ファイルを読む</text>
+      <text class="sm" x="40" y="126">・調査のためのコマンド実行</text>
+      <text class="sm" x="40" y="146">・変更計画を提案する</text>
+      <text class="lbl" x="40" y="178" style="fill:var(--fig-red)">できない</text>
+      <text class="sm" x="40" y="202">・ファイルの編集・削除</text>
+      <rect x="40" y="216" width="300" height="26" rx="6" fill="var(--fig-surface)" stroke="var(--fig-line-blue)"/>
+      <text class="sm" x="190" y="234" text-anchor="middle">承認は「計画」に対して1回</text></g>
+    <g class="s2"><rect x="394" y="24" width="350" height="230" rx="12" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
+      <text class="ttl" x="569" y="50" text-anchor="middle">直接実行</text>
+      <text class="lbl" x="418" y="82">できる</text>
+      <text class="sm" x="418" y="106">・すぐに編集する</text>
+      <text class="sm" x="418" y="126">・そのまま次の手へ進む</text>
+      <text class="lbl" x="418" y="178">代わりに</text>
+      <text class="sm" x="418" y="202">・操作のたびに承認を求められる</text>
+      <rect x="418" y="216" width="300" height="26" rx="6" fill="var(--fig-surface)" stroke="var(--fig-line)"/>
+      <text class="sm" x="568" y="234" text-anchor="middle">承認は「操作ごと」に何度も</text></g>
+  </svg>
+  </div></div>
+  <div class="detail">
+    <h3>図の読み方</h3>
+    <ol class="ann">
+      <li><span class="n">1</span><span>左が plan mode。<b>読む・調べるはできて、変えるはできません。</b>この制約が本質です。</span></li>
+      <li><span class="n">2</span><span>成果物は<b>変更計画</b>。人はそれを見て、方針の段階で了承／却下できます。</span></li>
+      <li><span class="n">3</span><span>右が直接実行。速い代わりに、<b>方針の誤りに気づくのが「実行後」</b>になります。</span></li>
+      <li><span class="n">4</span><span><b>承認の位置が違う</b>のがこの2つの差です。計画に対して1回か、操作ごとに何度もか。</span></li>
+    </ol>
+    <div class="ex"><span class="exl">どちらを選ぶか</span>
+    <b>plan mode 向き</b>：影響範囲が読めない変更、未知のコードベース、後戻りが高くつく作業、方針を人と合意したい場面<br>
+    <b>直接実行 向き</b>：やることが決まっている小さな修正、間違えてもすぐ戻せる作業<br>
+    起動は <code>--permission-mode plan</code>、対話中は Shift+Tab でも切り替えられます。</div>
+    <div class="myth">
+      <span class="t">誤解</span><span>「plan mode は安全だから常に使えばよい」</span>
+      <span class="t o">実際は</span><span>小さな確実な修正にまで計画の往復を挟むと、単に遅くなります。<b>後戻りのコストが高いときの道具</b>です。</span>
+    </div>
+  </div>
+  <p class="point"><b>ポイント</b>plan mode の本質は「編集ができない」こと。だから、方針を間違えたまま手が動く事故を構造的に防げる。</p>
+</section>
+
+<section class="sec" id="iterate">
+<header class="sec-head">
+  <span class="sec-kicker">セクション</span>
+  <h2>反復的な改善</h2>
+</header>
+<p class="lead">出力が確率的である以上、一発勝負は分が悪い。小さく回して、そのつど基準を書き足していきます。</p>
+  <div class="figbox"><div class="diagram run">
+  <svg viewBox="0 0 760 270">
+    <g class="s1"><rect x="20" y="30" width="330" height="200" rx="12" fill="var(--fig-fill-red)" stroke="var(--fig-line-red)"/>
+      <text class="ttl" x="185" y="56" text-anchor="middle" style="fill:var(--fig-red)">一発で仕上げようとする</text>
+      <rect x="44" y="76" width="282" height="34" rx="6" fill="var(--fig-surface)" stroke="var(--fig-line)"/>
+      <text class="sm" x="185" y="98" text-anchor="middle">長い指示を1回で書く</text>
+      <line x1="185" y1="114" x2="185" y2="130" stroke="var(--fig-red)" stroke-width="2" marker-end="url(#arr)"/>
+      <rect x="44" y="134" width="282" height="34" rx="6" fill="var(--fig-surface)" stroke="var(--fig-line-red)"/>
+      <text class="sm" x="185" y="156" text-anchor="middle">大きな成果物が返る</text>
+      <text class="sm" x="185" y="192" text-anchor="middle">どこが違うのか特定しにくい</text>
+      <text class="sm" x="185" y="212" text-anchor="middle">直すと別の場所が崩れる</text></g>
+    <g class="s2"><rect x="410" y="30" width="330" height="200" rx="12" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)"/>
+      <text class="ttl" x="575" y="56" text-anchor="middle" style="fill:var(--fig-green)">小さく回す</text>
+      <rect x="434" y="76" width="130" height="30" rx="6" fill="var(--fig-surface)" stroke="var(--fig-line-green)"/>
+      <text class="sm" x="499" y="96" text-anchor="middle">小さく頼む</text>
+      <line x1="570" y1="91" x2="596" y2="91" stroke="var(--fig-green)" stroke-width="2" marker-end="url(#ar)"/>
+      <rect x="600" y="76" width="120" height="30" rx="6" fill="var(--fig-surface)" stroke="var(--fig-line-green)"/>
+      <text class="sm" x="660" y="96" text-anchor="middle">結果を見る</text>
+      <line x1="660" y1="110" x2="660" y2="130" stroke="var(--fig-green)" stroke-width="2" marker-end="url(#ar)"/>
+      <rect x="510" y="134" width="210" height="30" rx="6" fill="var(--fig-surface)" stroke="var(--fig-line-green)"/>
+      <text class="sm" x="615" y="154" text-anchor="middle">ずれた点を基準として書き足す</text>
+      <path d="M510 149 L470 149 L470 91 L430 91" fill="none" stroke="var(--fig-green)" stroke-width="2" marker-end="url(#ar)"/>
+      <text class="sm" x="575" y="192" text-anchor="middle">書き足した基準は CLAUDE.md や</text>
+      <text class="sm" x="575" y="212" text-anchor="middle">コマンドに残す ＝ 次回から効く</text></g>
+  </svg>
+  </div></div>
+  <div class="detail">
+    <h3>図の読み方</h3>
+    <ol class="ann">
+      <li><span class="n">1</span><span>左は<b>長い指示を1回で書く</b>やり方。成果物が大きいので、<b>どこがずれたのか切り分けられません</b>。</span></li>
+      <li><span class="n">2</span><span>右は<b>小さく頼んで、結果を見て、ずれた点を基準として書き足す</b>ループです。</span></li>
+      <li><span class="n">3</span><span>肝は最後の矢印です。<b>気づいた基準をその場の会話で言うだけにせず、CLAUDE.md やコマンドに残す。</b>そうすると次回から自動で効きます。</span></li>
+      <li><span class="n">4</span><span>これは第4章（プロンプト）の「例を1つ見せる」とも繋がります。ずれた出力そのものが、次の基準の材料になります。</span></li>
+    </ol>
+    <div class="ex"><span class="exl">設問での問われ方</span>
+    「生成されるコードが毎回チームの規約から外れる。どうするか」<br>
+    → <b>その場で指摘し直す</b>のではなく、<b>規約を CLAUDE.md に書いて次回以降に効かせる</b>。<br>
+    「大きな機能を一度に作らせたらうまくいかない」→ <b>plan mode で方針を合意 → 小さい単位に分けて実行 → 都度確認</b>。</div>
+  </div>
+  <p class="point"><b>ポイント</b>改善を会話の中で終わらせない。<b>設定ファイルに書き戻して初めて、次回から効く。</b></p>
+</section>
+
+<section class="sec sec-quiz" id="q345" data-quiz="q345">
+<header class="sec-head">
+  <span class="sec-kicker">理解度チェック</span>
+  <h2>理解度チェック ─ 3.3〜3.5</h2>
+</header>
+<p class="lead"></p>
+  <div class="qwrap"></div>
+</section>
+
+<section class="sec" id="ci">
+<header class="sec-head">
+  <span class="sec-kicker">セクション</span>
+  <h2>非対話実行と CI/CD</h2>
+</header>
+
+<h3 class="sub">人がいない場所で走らせる ─ claude -p</h3>
+<p class="lead">対話せずに1発で実行し、結果を標準出力へ、合否を終了コードで返します。</p>
+  <div class="figbox"><div class="diagram run">
+  <svg viewBox="0 0 760 280">
+    <g class="s1"><rect x="20" y="24" width="720" height="44" rx="8" fill="var(--fig-code-bg)" stroke="var(--fig-line)"/>
+      <text class="mono" x="40" y="52">claude -p "差分をレビューして" --output-format json --allowedTools "Read,Grep"</text></g>
+    <g class="s2"><line x1="380" y1="72" x2="380" y2="94" stroke="var(--fig-muted)" stroke-width="2" marker-end="url(#ar)"/>
+      <rect x="20" y="100" width="230" height="70" rx="10" fill="var(--fig-fill-blue)" stroke="var(--fig-line-blue)"/>
+      <text class="ttl" x="135" y="126" text-anchor="middle" style="fill:var(--fig-blue)">標準出力</text>
+      <text class="sm" x="135" y="150" text-anchor="middle">結果の本文 / JSON</text></g>
+    <g class="s3"><rect x="265" y="100" width="230" height="70" rx="10" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)"/>
+      <text class="ttl" x="380" y="126" text-anchor="middle" style="fill:var(--fig-green)">終了コード</text>
+      <text class="sm" x="380" y="150" text-anchor="middle">0 = 成功 / 0以外 = 失敗</text></g>
+    <g class="s4"><rect x="510" y="100" width="230" height="70" rx="10" fill="var(--fig-fill-amber)" stroke="var(--fig-line-amber)"/>
+      <text class="ttl" x="625" y="126" text-anchor="middle" style="fill:var(--fig-amber)">標準入力も使える</text>
+      <text class="sm" x="625" y="150" text-anchor="middle">パイプで渡せる</text></g>
+    <g class="s5"><rect x="20" y="190" width="720" height="76" rx="10" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
+      <text class="ttl" x="40" y="214">--output-format の3つ</text>
+      <text class="mono" x="40" y="240">text（既定）… そのままの文章</text>
+      <text class="mono" x="330" y="240">json … 結果＋セッションID＋使用量</text>
+      <text class="mono" x="40" y="260">stream-json … 逐次、改行区切りで流れてくる</text>
+      <text class="sm" x="330" y="260">さらに --json-schema で形を指定できる</text></g>
+  </svg>
+  </div></div>
+  <div class="detail">
+    <h3>図の読み方</h3>
+    <ol class="ann">
+      <li><span class="n">1</span><span><code>-p</code>（<code>--print</code>）を付けると<b>非対話モード</b>。承認ダイアログが出ないので、そのままスクリプトに乗せられます。</span></li>
+      <li><span class="n">2</span><span>結果は<b>標準出力</b>へ。<b>合否は終了コード</b>で返るので、CI のステップの成否として扱えます。</span></li>
+      <li><span class="n">3</span><span><code>--output-format json</code> にすると、結果本文のほかに<b>セッションIDや使用量</b>が構造化されて返ります。後続処理で扱いやすくなります。</span></li>
+      <li><span class="n">4</span><span>さらに <code>--json-schema</code> で<b>出力の形そのものを指定</b>できます。Domain 4の「スキーマで受け取る」を、CLI の外側でやる形です。</span></li>
+    </ol>
+    <div class="myth">
+      <span class="t">つまずきやすい</span><span>非対話では<b>確認のダイアログを出せません</b>。「危なければ人が止める」という設計が成立しないので、<b>何を許すかを事前に決めておく</b>のが前提になります（後述の settings.json と permissions）。</span>
+    </div>
+  </div>
+  <p class="point"><b>ポイント</b>-p は「対話をやめる」だけでなく「人の承認をやめる」こと。権限設計とセットでなければ使えない。</p>
+
+<h3 class="sub">承認できない場所では、事前に許可を決める</h3>
+<p class="lead">非対話実行では、許可の与え方が2通りあります。どちらを選ぶかが設問になります。</p>
+  <div class="figbox"><div class="diagram run">
+  <svg viewBox="0 0 760 290">
+    <g class="s1"><rect x="20" y="24" width="350" height="120" rx="10" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)"/>
+      <text class="ttl" x="195" y="50" text-anchor="middle" style="fill:var(--fig-green)">使うツールを列挙する</text>
+      <rect x="44" y="62" width="302" height="30" rx="6" fill="var(--fig-surface)" stroke="var(--fig-line-green)"/>
+      <text class="mono" x="58" y="82">--allowedTools "Read,Grep,Bash"</text>
+      <text class="sm" x="44" y="112">必要なものだけを明示的に開ける</text>
+      <text class="sm" x="44" y="132">＝ 想定外の操作は起きない</text></g>
+    <g class="s2"><rect x="390" y="24" width="350" height="120" rx="10" fill="var(--fig-fill-red)" stroke="var(--fig-line-red)"/>
+      <text class="ttl" x="565" y="50" text-anchor="middle" style="fill:var(--fig-red)">全部許可する</text>
+      <rect x="414" y="62" width="302" height="30" rx="6" fill="var(--fig-surface)" stroke="var(--fig-line-red)"/>
+      <text class="mono" x="428" y="82">--permission-mode bypassPermissions</text>
+      <text class="sm" x="414" y="112">確認を一切しない</text>
+      <text class="sm" x="414" y="132">＝ 事故が起きたときに止まらない</text></g>
+    <g class="s3"><rect x="20" y="160" width="720" height="46" rx="10" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
+      <text class="lbl" x="40" y="182">ほかに --permission-mode plan（計画のみ）／acceptEdits（編集は自動承認）</text>
+      <text class="sm" x="40" y="200">「どこまで自動でやらせるか」を段階で選べる</text></g>
+    <g class="s4"><rect x="20" y="220" width="720" height="60" rx="10" fill="var(--fig-fill-blue)" stroke="var(--fig-line-blue)"/>
+      <text class="ttl" x="40" y="244" style="fill:var(--fig-blue)">GitHub Actions</text>
+      <text class="mono" x="180" y="244">anthropics/claude-code-action@v1</text>
+      <text class="sm" x="40" y="268">認証は ANTHROPIC_API_KEY または CLAUDE_CODE_OAUTH_TOKEN をシークレットで渡す</text></g>
+  </svg>
+  </div></div>
+  <div class="detail">
+    <h3>図の読み方</h3>
+    <ol class="ann">
+      <li><span class="n">1</span><span><b>「使うツールを列挙する」</b>（左）── レビュー用途なら <code>Read,Grep</code> だけで足ります。<b>書き込み系を渡さなければ、壊しようがありません。</b></span></li>
+      <li><span class="n">2</span><span><b>「全部許可する」</b>（右）── 楽ですが、<b>CI は人が見ていない場所</b>なので、事故が起きても止まりません。<b>設問では基本的に誤答側</b>です。</span></li>
+      <li><span class="n">3</span><span>この2つの<b>中間</b>が <code>plan</code>（提案のみ）と <code>acceptEdits</code>（編集は自動、それ以外は確認）。<b>「全部か、なしか」ではなく段階で選べる</b>のが要点です。</span></li>
+      <li><span class="n">4</span><span><b>「GitHub Actions」</b>（下）── 公式アクションを使い、APIキーは<b>シークレット</b>として渡します。ワークフローのファイルに直接書いてはいけません。</span></li>
+    </ol>
+    <div class="ex"><span class="exl">設問での問われ方</span>
+    「CI で自動コードレビューを走らせたい。権限はどう設定するか」<br>
+    → <b>読み取り系のツールだけを allowedTools で開ける</b>。<code>bypassPermissions</code> は選ばない。<br>
+    考え方は Domain 2 と同じです。<b>やり直せる操作は自動、やり直せない操作は通さない。</b></div>
+  </div>
+  <p class="point"><b>ポイント</b>CI は「承認する人がいない」場所。だから権限は実行前にすべて決まっていなければならない。</p>
+</section>
+
+<section class="sec" id="settings">
+<header class="sec-head">
+  <span class="sec-kicker">セクション</span>
+  <h2>settings.json と permissions</h2>
+</header>
+
+<h3 class="sub">設定ファイルはどこが優先されるか</h3>
+<p class="lead">同じ項目が複数の場所にあるとき、上にあるものが勝ちます。</p>
+  <div class="figbox"><div class="diagram run">
+  <svg viewBox="0 0 760 280">
+    <g class="s1"><rect x="120" y="20" width="520" height="44" rx="8" fill="var(--fig-fill-red)" stroke="var(--fig-line-red)"/>
+      <text class="ttl" x="380" y="40" text-anchor="middle" style="fill:var(--fig-red)">組織の管理設定（Managed settings）</text>
+      <text class="sm" x="380" y="58" text-anchor="middle">上書き不可</text></g>
+    <g class="s2"><rect x="120" y="72" width="520" height="40" rx="8" fill="var(--fig-fill-amber)" stroke="var(--fig-line-amber)"/>
+      <text class="lbl" x="380" y="97" text-anchor="middle" style="fill:var(--fig-amber)">起動時の CLI フラグ（--model など）</text></g>
+    <g class="s3"><rect x="120" y="120" width="520" height="40" rx="8" fill="var(--fig-fill-blue)" stroke="var(--fig-line-blue)"/>
+      <text class="mono" x="380" y="145" text-anchor="middle" style="fill:var(--fig-blue)">.claude/settings.local.json（自分だけ・共有しない）</text></g>
+    <g class="s4"><rect x="120" y="168" width="520" height="40" rx="8" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)"/>
+      <text class="mono" x="380" y="193" text-anchor="middle" style="fill:var(--fig-green)">.claude/settings.json（プロジェクト・git で共有）</text></g>
+    <g class="s5"><rect x="120" y="216" width="520" height="40" rx="8" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
+      <text class="mono" x="380" y="241" text-anchor="middle">~/.claude/settings.json（自分の全プロジェクト）</text></g>
+    <g class="s6"><line x1="90" y1="30" x2="90" y2="250" stroke="var(--fig-amber)" stroke-width="2" marker-end="url(#ara)"/>
+      <text class="sm" x="76" y="40" text-anchor="end">強い</text>
+      <text class="sm" x="76" y="250" text-anchor="end">弱い</text></g>
+  </svg>
+  </div></div>
+  <div class="detail">
+    <h3>図の読み方</h3>
+    <ol class="ann">
+      <li><span class="n">1</span><span>一番上が<b>組織の管理設定</b>。利用者側で上書きできません。CLAUDE.md の管理ポリシーと同じ考え方です。</span></li>
+      <li><span class="n">2</span><span>次が<b>起動時のCLIフラグ</b>。その場限りの指定が、ファイルより強く効きます。</span></li>
+      <li><span class="n">3</span><span><code>settings.local.json</code> は<b>自分専用</b>。共有しない設定はここ。<code>settings.json</code> は<b>チーム共有</b>で git に入れます。</span></li>
+      <li><span class="n">4</span><span>一番弱いのが<b>ホームディレクトリの設定</b>。自分の全プロジェクトに効く既定値です。ここで注意 ── <b>「個人に近いほど弱い」わけではありません</b>。<code>settings.local.json</code>（自分だけ）は <code>settings.json</code>（チーム共有）より<b>強い</b>です。</span></li>
+    </ol>
+    <div class="ex"><span class="exl">CLAUDE.md との違い</span>
+    <b>CLAUDE.md は連結</b>（全部が足し合わされる）。<b>settings.json は優先順位で決着</b>（強いほうが勝つ）。<br>
+    同じ「階層がある」でも扱いが違うので、設問で入れ替えられると間違えます。</div>
+  </div>
+  <p class="point"><b>ポイント</b>CLAUDE.md＝足し算、settings.json＝勝ち負け。ここを混同しない。</p>
+
+<h3 class="sub">allow / deny で通れる道を決める</h3>
+<p class="lead">ツール名とパターンの組で、許可と禁止を書きます。</p>
+  <div class="figbox"><div class="diagram run">
+  <svg viewBox="0 0 760 270">
+    <g class="s1"><rect x="20" y="20" width="430" height="230" rx="10" fill="var(--fig-code-bg)" stroke="var(--fig-line)"/>
+      <text class="mono" x="40" y="46">{</text>
+      <text class="mono" x="56" y="68">"permissions": {</text>
+      <text class="mono" x="72" y="90">"allow": [</text>
+      <text class="mono" x="96" y="112">"Bash(npm test *)",</text>
+      <text class="mono" x="96" y="134">"Read(~/.zshrc)"</text>
+      <text class="mono" x="72" y="156">],</text>
+      <text class="mono" x="72" y="178">"deny": [</text>
+      <text class="mono" x="96" y="200">"Bash(rm -rf *)",</text>
+      <text class="mono" x="96" y="222">"Read(./.env)"</text>
+      <text class="mono" x="72" y="244">] } }</text></g>
+    <g class="s2"><rect x="470" y="20" width="270" height="106" rx="10" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)"/>
+      <text class="ttl" x="490" y="46" style="fill:var(--fig-green)">allow</text>
+      <text class="sm" x="490" y="72">確認なしで通す</text>
+      <text class="sm" x="490" y="94">「やり直せる操作」を並べる</text>
+      <text class="sm" x="490" y="116">例：テスト実行、読み取り</text></g>
+    <g class="s3"><rect x="470" y="136" width="270" height="114" rx="10" fill="var(--fig-fill-red)" stroke="var(--fig-line-red)"/>
+      <text class="ttl" x="490" y="162" style="fill:var(--fig-red)">deny</text>
+      <text class="sm" x="490" y="188">そもそも通さない</text>
+      <text class="sm" x="490" y="210">「やり直せない操作」</text>
+      <text class="sm" x="490" y="232">「見せたくないファイル」</text></g>
+  </svg>
+  </div></div>
+  <div class="detail">
+    <h3>図の読み方</h3>
+    <ol class="ann">
+      <li><span class="n">1</span><span>書式は <b><code>ツール名(パターン)</code></b>。<code>Bash(npm test *)</code> のように、コマンドの形まで絞れます。</span></li>
+      <li><span class="n">2</span><span><code>*</code> でワイルドカード。<code>Bash(npm run *)</code> なら npm run で始まるものだけ通ります。</span></li>
+      <li><span class="n">3</span><span><b><code>allow</code> は「確認なしで通す」</b>。毎回聞かれると邪魔になる、やり直せる操作を並べます。</span></li>
+      <li><span class="n">4</span><span><b><code>deny</code> は「通さない」</b>。<code>.env</code> の読み取りや <code>rm -rf</code> のように、事故が致命的なものを塞ぎます。</span></li>
+      <li><span class="n">5</span><span>どちらにも該当しないものは<b>その場で確認</b>されます。だから deny を書くことに意味があります。</span></li>
+    </ol>
+    <div class="ex"><span class="exl">設問での問われ方</span>
+    「秘密情報のファイルを絶対に読ませたくない」→ <b><code>deny</code> に <code>Read(./.env)</code></b>。CLAUDE.md に「読まないで」と書くのは弱い対策。<br>
+    「テストは毎回自動で走らせたいが、いちいち確認されて煩わしい」→ <b><code>allow</code> に <code>Bash(npm test *)</code></b>。</div>
+  </div>
+  <p class="point"><b>ポイント</b>プロンプトでのお願いは確率的、permissions は決定的。取り返しのつかない操作は必ず後者で塞ぐ。</p>
+</section>
+
+<section class="sec sec-quiz" id="q36" data-quiz="q36">
+<header class="sec-head">
+  <span class="sec-kicker">理解度チェック</span>
+  <h2>理解度チェック ─ 3.6・付録</h2>
+</header>
+<p class="lead"></p>
+  <div class="qwrap"></div>
+</section>
+
+<section class="sec sec-quiz" id="qall" data-quiz="q3all">
+<header class="sec-head">
+  <span class="sec-kicker">理解度チェック</span>
+  <h2>Domain 3 総合チェック</h2>
+</header>
+<p class="lead"></p>
+  <div class="qwrap"></div>
+</section>
+<div class="pager">
+  <a class="pg prev" href="02-tools.html"><span>前のドメイン</span><b>Domain 2　ツール設計と MCP 連携</b></a>
+  <a class="pg next" href="04-prompt.html"><span>次のドメイン</span><b>Domain 4　プロンプト設計と構造化出力</b></a>
+</div>
+</main>
+</div>
+<div class="search-wrap">
+  <button class="search-btn" id="openSearch" aria-label="検索"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span>検索</span><kbd>/</kbd></button>
+</div>
+<div class="modal" id="searchModal" hidden>
+  <div class="modal-box">
+    <input id="searchInput" type="search" placeholder="用語・見出し・本文を検索（例: input_schema、キャッシュ）" autocomplete="off">
+    <div id="searchResults" class="results"></div>
+    <div class="modal-foot"><kbd>Esc</kbd> で閉じる</div>
+  </div>
+</div>
+<script src="assets/quiz-data.js"></script>
+<script src="assets/search-index.js"></script>
+<script src="assets/app.js"></script>
+</body></html>
