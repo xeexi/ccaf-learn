@@ -52,11 +52,13 @@
 <a class="itm toc-link" href="../05-context/04-hooks.html"><span class="itm-n">5-4</span><span class="itm-t">確実にしたいことは仕組み側へ</span></a>
 <a class="itm toc-link" href="../05-context/05-shape.html"><span class="itm-n">5-5</span><span class="itm-t">返す量を設計する</span></a>
 <a class="itm toc-link on" href="../05-context/06-confidence.html"><span class="itm-n">5-6</span><span class="itm-t">確信が持てないときに止める</span></a>
+<a class="toc-link toc-sub" href="#conf-1">逃げ道がないと、迷いは誤答になる</a>
+<a class="toc-link toc-sub" href="#conf-2">いつ人に渡すか ─ 引き金になるもの、ならないもの</a>
 <a class="itm toc-link" href="../05-context/07-observe.html"><span class="itm-n">5-7</span><span class="itm-t">壊れたことに気づける</span></a>
 <a class="itm toc-link" href="../05-context/08-propagate.html"><span class="itm-n">5-8</span><span class="itm-t">失敗を親まで届ける</span></a>
 <a class="itm toc-link itm-quiz" href="../05-context/09-q.html"><span class="itm-n">5-9</span><span class="itm-t">理解度チェック ─ 窓とサブエージェント</span></a>
 <a class="itm toc-link itm-quiz" href="../05-context/10-q2.html"><span class="itm-n">5-10</span><span class="itm-t">理解度チェック ─ 信頼性</span></a></nav>
-  <a class="toc-all" href="../index.html#all">全項目一覧（88項）</a>
+  <a class="toc-all" href="../index.html#all">全項目一覧（90項）</a>
 </aside>
 <main class="doc">
 <p class="crumb" data-domain="context"><b>Domain 5</b><span>コンテキスト管理と信頼性</span><span class="w">出題比率 15%（約9問）</span></p>
@@ -65,52 +67,80 @@
 <header class="sec-head">
   <h2>5-6　確信が持てないときに止める</h2>
 </header>
+
+<h3 class="sub" id="conf-1">逃げ道がないと、迷いは誤答になる</h3>
 <p class="lead">確率で答えを作る仕組みは、根拠が薄いときも<b>同じ調子で答えます</b>。止まる道を用意していないと、迷いは黙って誤答になります。</p>
 <p class="task"><span class="tn">BLUEPRINT 5.2</span><b>エスカレーションと曖昧さの解消</b>　／　<span class="tn">BLUEPRINT 5.5</span><b>人のレビュー導線と確信度の校正</b></p>
 <p class="goal"><b>ゴール</b>止まる道を用意する設計と、その置き場所を言える。</p>
-  <div class="figbox"><div class="diagram run">
-  <svg viewBox="0 0 760 320">
-    <g class="s1"><rect x="16" y="120" width="150" height="66" rx="10" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
-      <text class="lbl" x="91" y="148" text-anchor="middle">判断させる</text>
-      <text class="sm" x="91" y="170" text-anchor="middle">根拠が薄い入力</text>
-      <path d="M172 152 L194 152 L194 74 L212 74" fill="none" stroke="var(--fig-muted)" stroke-width="2" marker-end="url(#ar)"/>
-      <path d="M172 152 L194 152 L194 240 L212 240" fill="none" stroke="var(--fig-muted)" stroke-width="2" marker-end="url(#ar)"/></g>
 
-    <g class="s2"><rect x="218" y="30" width="286" height="88" rx="10" fill="var(--fig-fill-red)" stroke="var(--fig-line-red)"/>
-      <text class="lbl" x="238" y="56" style="fill:var(--fig-red)">逃げ道がない</text>
-      <text class="sm" x="238" y="80">答えの形が1種類しかない</text>
-      <text class="sm" x="238" y="102">＝ 迷っても、どれかに決めてしまう</text>
-      <path d="M510 74 L556 74" fill="none" stroke="var(--fig-red)" stroke-width="2" marker-end="url(#arr)"/>
-      <rect x="562" y="46" width="182" height="56" rx="10" fill="var(--fig-fill-red)" stroke="var(--fig-line-red)"/>
-      <text class="sm" x="653" y="70" text-anchor="middle" style="fill:var(--fig-red)">もっともらしい誤答</text>
-      <text class="sm" x="653" y="90" text-anchor="middle">見分けがつかない</text></g>
-
-    <g class="s3"><rect x="218" y="188" width="286" height="106" rx="10" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)" stroke-width="2"/>
-      <text class="lbl" x="238" y="214" style="fill:var(--fig-green)">逃げ道を用意する</text>
-      <text class="sm" x="238" y="238">・「該当なし」「判断できない」を返せる形</text>
-      <text class="sm" x="238" y="260">・根拠が示せないなら、示せないと書かせる</text>
-      <text class="sm" x="238" y="282">・止める条件は外側のコードで判定する</text>
-      <path d="M510 240 L556 240" fill="none" stroke="var(--fig-green)" stroke-width="2" marker-end="url(#arg)"/></g>
-    <g class="s4"><rect x="562" y="196" width="182" height="90" rx="10" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)"/>
-      <text class="sm" x="653" y="224" text-anchor="middle" style="fill:var(--fig-green)">人に渡す</text>
-      <text class="sm" x="653" y="248" text-anchor="middle">何が足りないかを添えて</text>
-      <text class="sm" x="653" y="270" text-anchor="middle">＝ 件数が可視化される</text></g>
-    <text class="sm s5" x="380" y="312" text-anchor="middle">止まった件数が見えると、教材やツールのどこが弱いかも分かる</text>
-  </svg>
-  </div></div>
-  <div class="detail"><h3>図の読み方</h3>
-    <ol class="ann">
-      <li><span class="n">1</span><span>上（赤）が<b>逃げ道がない</b>形です。答えの形を1種類に絞ると親切なようで、実は<b>迷いを隠す</b>ことになります。</span></li>
-      <li><span class="n">2</span><span><b>もっともらしい誤答</b>が最悪なのは、後から見分けられないことです。自信のない答えと自信のある答えが同じ見た目で出てきます。</span></li>
-      <li><span class="n">3</span><span>下（緑）の3行目が要点です。<b>止める判定はコード側に置きます</b> ── 「自信がないときは止まって」と頼む形にすると、止まるかどうかがまた確率になります。</span></li>
-      <li><span class="n">4</span><span><b>人に渡す</b>を出口として設計しておくと、止まった件数がそのまま数字になります。全部を自動で通そうとするより、運用が長持ちします。</span></li>
-    </ol>
-    <div class="myth">
-      <span class="t">誤解</span><span>「自信の度合いを数値で答えさせれば、それで判定できる」</span>
-      <span class="t o">実際は</span><span>その数値も同じ仕組みで生成された<b>確率的な出力</b>です。参考にはなりますが、判定の根拠を数値だけに置くと、外側で検算しているつもりで何もしていないことになります。</span>
+<div class="figbox"><figure class="fig run">
+  <p class="fig-t">根拠が薄い入力が来たとき、答えの形で結果が変わる</p>
+  <div class="fig-row flow s1" style="--cols:2">
+    <div class="fig-card red">
+      <b class="fig-h">逃げ道がない</b>
+      <span class="fig-note">答えの形が1種類しかない<br>＝ 迷っても、どれかに決めてしまう</span>
+    </div>
+    <div class="fig-card red">
+      <b class="fig-h">もっともらしい誤答</b>
+      <span class="fig-note">自信のある答えと<b>同じ見た目</b>で出る。後から見分けられない</span>
     </div>
   </div>
+  <div class="fig-row flow s2" style="--cols:2">
+    <div class="fig-card green">
+      <b class="fig-h">逃げ道を用意する</b>
+      <span class="fig-note">・「該当なし」「判断できない」を返せる形<br>・根拠が示せないなら、示せないと書かせる<br>・<b>止める条件は外側のコードで判定する</b></span>
+    </div>
+    <div class="fig-card green">
+      <b class="fig-h">人に渡す</b>
+      <span class="fig-note">何が足りないかを添えて<br>＝ <b>止まった件数が数字になる</b></span>
+    </div>
+  </div>
+  <p class="fig-f">止まった件数が見えると、教材やツールのどこが弱いかも分かる</p>
+</figure></div>
+
+<div class="detail">
+  <div class="myth">
+    <span class="t">誤解</span><span>「自信の度合いを数値で答えさせれば、それで判定できる」</span>
+    <span class="t o">実際は</span><span>その数値も同じ仕組みで生成された<b>確率的な出力</b>です。参考にはなりますが、判定の根拠を数値だけに置くと、外側で検算しているつもりで何もしていないことになります。</span>
+  </div>
+</div>
 <p class="point"><b>ポイント</b>迷いを表現できる受け皿と、止める判定を外に置く。止まった件数は運用の指標になる。</p>
+
+<h3 class="sub" id="conf-2">いつ人に渡すか ─ 引き金になるもの、ならないもの</h3>
+<p class="lead">「なんとなく怪しいとき」では設計になりません。<b>外側のコードで判定できるものだけ</b>が引き金になります。</p>
+<p class="goal"><b>ゴール</b>エスカレーションの引き金を選び分けられる。</p>
+
+<table class="tbl">
+  <thead><tr><th>起きたこと</th><th>人に渡すか</th><th>理由</th></tr></thead>
+  <tbody>
+    <tr><td data-l="起きたこと">利用者が<b>「人と話したい」と言った</b></td>
+        <td data-l="人に渡すか"><span class="ok">渡す</span></td>
+        <td data-l="理由">判定が要らない。要求として文面に出ている</td></tr>
+    <tr><td data-l="起きたこと"><b>規約や手順に定めがない</b>ことを求められた</td>
+        <td data-l="人に渡すか"><span class="ok">渡す</span></td>
+        <td data-l="理由">決める権限がそもそも仕組みの側にない。作文で埋めてはいけない</td></tr>
+    <tr><td data-l="起きたこと"><b>同じところで進まなくなった</b>（再試行が上限に達した）</td>
+        <td data-l="人に渡すか"><span class="ok">渡す</span></td>
+        <td data-l="理由">回数はコードで数えられる</td></tr>
+    <tr><td data-l="起きたこと">利用者が<b>怒っている・語気が強い</b></td>
+        <td data-l="人に渡すか"><span class="ng">引き金にしない</span></td>
+        <td data-l="理由">感情と、答えが正しいかどうかは無関係。丁寧に答えれば済む場面まで人に回る</td></tr>
+    <tr><td data-l="起きたこと">モデルが返した<b>自信の数値が低い</b></td>
+        <td data-l="人に渡すか"><span class="ng">引き金にしない</span></td>
+        <td data-l="理由">その数値も確率的な出力。判定の根拠を数値だけに置くと、検算したことにならない</td></tr>
+  </tbody>
+</table>
+
+<div class="detail">
+  <div class="ex"><span class="exl">3つに共通しているもの</span>
+  上の3つは、いずれも<b>モデルの判断を経ずに外側で分かること</b>です ── 文面にその要求があるか、規約に条項があるか、試行回数が上限を超えたか。
+  下の2つはどちらも<b>モデルの出力を読んで決める</b>形になっていて、止まるかどうかがまた確率になります。</div>
+  <div class="myth">
+    <span class="t">誤解</span><span>「渡すときは、迷ったという事実を伝えれば十分」</span>
+    <span class="t o">実際は</span><span>受け取った人は最初から調べ直すことになります。<b>何が分かっていて、何が足りなくて止まったか</b>を添えます（〈前提は関門で、引き継ぎは欄で〉と同じ形）。</span>
+  </div>
+</div>
+<p class="point"><b>ポイント</b>引き金は<b>明示的な要求・規約の穴・進まないこと</b>の3つ。感情や自信の数値を引き金にしない ── どちらもモデルの出力を信じ直しているだけ。</p>
 </section>
 <!-- ▲ 本文 -->
 <nav class="secpager">
@@ -127,7 +157,7 @@
     <div class="modal-foot"><kbd>Esc</kbd> で閉じる</div>
   </div>
 </div>
-<script src="../assets/quiz-data.js?v=4385afea"></script>
-<script src="../assets/search-index.js?v=e73243a3"></script>
-<script src="../assets/app.js?v=0564f87d"></script>
+<script src="../assets/quiz-data.js?v=305bd836"></script>
+<script src="../assets/search-index.js?v=672b94c4"></script>
+<script src="../assets/app.js?v=5bf1e1db"></script>
 </body></html>

@@ -58,7 +58,7 @@
 <a class="itm toc-link" href="../02-tools/07-distribute.html"><span class="itm-n">2-7</span><span class="itm-t">誰にどのツールを配るか</span></a>
 <a class="itm toc-link" href="../02-tools/08-builtin.html"><span class="itm-n">2-8</span><span class="itm-t">組み込みのツールを選ぶ</span></a>
 <a class="itm toc-link itm-quiz" href="../02-tools/09-q.html"><span class="itm-n">2-9</span><span class="itm-t">理解度チェック</span></a></nav>
-  <a class="toc-all" href="../index.html#all">全項目一覧（88項）</a>
+  <a class="toc-all" href="../index.html#all">全項目一覧（90項）</a>
 </aside>
 <main class="doc">
 <p class="crumb" data-domain="tools"><b>Domain 2</b><span>ツール設計と MCP 連携</span><span class="w">出題比率 18%（約11問）</span></p>
@@ -153,8 +153,8 @@
 }</pre>
     <ol class="ann">
       <li><span class="n">1</span><span><code>mcpServers</code> の下に、<b>サーバ名をキーにして</b>並べます。</span></li>
-      <li><span class="n">2</span><span>リモートに繋ぐなら <code>type</code> と <code>url</code>。</span></li>
-      <li><span class="n">3</span><span>手元でプロセスを起動するなら <code>command</code> と <code>args</code>。</span></li>
+      <li><span class="n">2</span><span><b>リモートに繋ぐ</b>なら <code>type</code> と <code>url</code>。<code>type</code> は <code>http</code>（現行）か <code>sse</code>（旧方式）です。</span></li>
+      <li><span class="n">3</span><span><b>手元でプロセスを起動する</b>なら <code>command</code> と <code>args</code>。この方式を <code>stdio</code> と呼び、標準入出力でやり取りします。<code>type</code> を省略するとこれになります。</span></li>
       <li><span class="n">4</span><span><code>${DB_URL}</code> のように<b>環境変数を展開できます</b>。鍵そのものを書かずに済むので、このファイルを<b>リポジトリに入れられる</b>のがポイントです。</span></li>
     </ol>
   </div>
@@ -185,7 +185,7 @@
     <div class="modal-foot"><kbd>Esc</kbd> で閉じる</div>
   </div>
 </div>
-<script src="../assets/quiz-data.js?v=4385afea"></script>
-<script src="../assets/search-index.js?v=e73243a3"></script>
-<script src="../assets/app.js?v=0564f87d"></script>
+<script src="../assets/quiz-data.js?v=305bd836"></script>
+<script src="../assets/search-index.js?v=672b94c4"></script>
+<script src="../assets/app.js?v=5bf1e1db"></script>
 </body></html>

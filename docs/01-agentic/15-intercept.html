@@ -61,10 +61,11 @@
 <a class="itm toc-link" href="../01-agentic/13-spawn.html"><span class="itm-n">1-13</span><span class="itm-t">子はどう起こすのか</span></a>
 <a class="itm toc-link" href="../01-agentic/14-gate.html"><span class="itm-n">1-14</span><span class="itm-t">前提は関門で、引き継ぎは欄で</span></a>
 <a class="itm toc-link on" href="../01-agentic/15-intercept.html"><span class="itm-n">1-15</span><span class="itm-t">ツール呼び出しに割り込む</span></a>
+<a class="toc-link toc-sub" href="#int-ev">いつ走らせるか ─ 主なイベントと、止め方</a>
 <a class="itm toc-link itm-quiz" href="../01-agentic/16-q3.html"><span class="itm-n">1-16</span><span class="itm-t">理解度チェック ─ 起動と強制</span></a>
 <a class="itm toc-link" href="../01-agentic/17-session.html"><span class="itm-n">1-17</span><span class="itm-t">セッションをまたぐ</span></a>
 <a class="itm toc-link itm-quiz" href="../01-agentic/18-q4.html"><span class="itm-n">1-18</span><span class="itm-t">理解度チェック ─ セッション</span></a></nav>
-  <a class="toc-all" href="../index.html#all">全項目一覧（88項）</a>
+  <a class="toc-all" href="../index.html#all">全項目一覧（90項）</a>
 </aside>
 <main class="doc">
 <p class="crumb" data-domain="agentic"><b>Domain 1</b><span>エージェント設計とオーケストレーション</span><span class="w">出題比率 27%（約16問）</span></p>
@@ -195,7 +196,44 @@
 <p class="point"><b>ポイント</b><code>matcher</code> は「どのツール呼び出しに効かせるか」を決める唯一の場所。<b>書かなければ全ツールに掛かる</b>ので、重い検査を全部に走らせてしまう事故が起きる。</p>
 
 <p class="note">※ MCP のツールは <code>mcp__&lt;サーバ名&gt;__&lt;ツール名&gt;</code> という名前になるので（Domain 2）、<code>mcp__github__.*</code> のように<b>サーバ単位でまとめて</b>掛けられます。<br>
-※ <code>matcher</code> が<b>何を</b>絞るかはイベントによって違います。<code>PreToolUse</code> / <code>PostToolUse</code> はツール名ですが、たとえばセッション開始のイベントでは「どうやって開始したか」を絞ります。<code>UserPromptSubmit</code> や <code>Stop</code> のように <b>matcher を持たないイベント</b>もあります。</p>
+※ <code>matcher</code> が<b>何を</b>絞るかはイベントによって違います。<code>PreToolUse</code> / <code>PostToolUse</code> はツール名ですが、<code>SessionStart</code> では「どうやって開始したか」（<code>startup</code> / <code>resume</code> / <code>clear</code> / <code>compact</code>）を絞ります。<code>UserPromptSubmit</code> や <code>Stop</code> のように <b>matcher を持たないイベント</b>もあります。</p>
+
+<h3 class="sub" id="int-ev">いつ走らせるか ─ 主なイベントと、止め方</h3>
+<p class="lead">割り込める場所はツールの前後だけではありません。<b>どこで止められるかは、イベントごとに決まっています。</b></p>
+<p class="goal"><b>ゴール</b>主なイベントと、フックが処理を止める仕組みを言える。</p>
+
+<table class="tbl">
+  <thead><tr><th>イベント</th><th>いつ走るか</th><th>止められるか</th></tr></thead>
+  <tbody>
+    <tr><td data-l="イベント"><code>PreToolUse</code></td><td data-l="いつ走るか">ツールを実行する直前</td>
+        <td data-l="止められるか"><span class="ok">止まる</span>　実行させない</td></tr>
+    <tr><td data-l="イベント"><code>PostToolUse</code></td><td data-l="いつ走るか">ツールが成功した直後</td>
+        <td data-l="止められるか"><span class="ng">止まらない</span>　整形と記録の場所</td></tr>
+    <tr><td data-l="イベント"><code>UserPromptSubmit</code></td><td data-l="いつ走るか">利用者の入力が Claude に渡る前</td>
+        <td data-l="止められるか"><span class="ok">止まる</span>　送らせない</td></tr>
+    <tr><td data-l="イベント"><code>SessionStart</code> / <code>SessionEnd</code></td><td data-l="いつ走るか">セッションの開始・再開／終了</td>
+        <td data-l="止められるか"><span class="ng">止まらない</span>　前提の注入や後片付けに使う</td></tr>
+    <tr><td data-l="イベント"><code>Stop</code> / <code>SubagentStop</code></td><td data-l="いつ走るか">応答が終わったとき／子が終わったとき</td>
+        <td data-l="止められるか"><span class="ok">止まる</span>　「まだ終わらせない」ができる</td></tr>
+    <tr><td data-l="イベント"><code>PreCompact</code></td><td data-l="いつ走るか">履歴の圧縮が走る前</td>
+        <td data-l="止められるか"><span class="ok">止まる</span>　消えては困るものを退避できる</td></tr>
+    <tr><td data-l="イベント"><code>Notification</code></td><td data-l="いつ走るか">Claude Code が通知を出すとき</td>
+        <td data-l="止められるか"><span class="ng">止まらない</span>　外部への通知に使う</td></tr>
+  </tbody>
+</table>
+<p class="note">※ ほかにも権限判定・ファイル変更・ワークツリーなどのイベントがあります。設問で問われるのは、上の<b>ツールの前後</b>と<b>セッションの前後</b>です。</p>
+
+<div class="detail">
+  <div class="ex"><span class="exl">止めるかどうかは、フックの<b>終了コード</b>で決まる</span>
+  <b><code>0</code></b>　… 正常。標準出力の JSON（上の <code>hookSpecificOutput</code>）が読まれる<br>
+  <b><code>exit 2</code></b>　… <b>ブロック。</b>標準出力の JSON は無視され、<b>標準エラーの文字がモデルに返る</b><br>
+  <b>それ以外</b>　… 非ブロックの失敗。処理はそのまま進み、記録に残るだけ</div>
+  <div class="myth">
+    <span class="t">誤解</span><span>「異常終了させれば止まる。<code>exit 1</code> でよい」</span>
+    <span class="t o">実際は</span><span><b><code>1</code> では止まりません。</b>「エラーは出たが処理は続行」の扱いになります。止めたいなら <code>exit 2</code> と、モデルに読ませたい理由を<b>標準エラー</b>へ。しかも <code>PostToolUse</code> のように<b>そもそも止まらないイベント</b>では、<code>exit 2</code> でも実行済みの操作は戻りません。</span>
+  </div>
+</div>
+<p class="point"><b>ポイント</b>止めるのは <code>exit 2</code>（<code>1</code> ではない）。<b>取り消せない操作は「後」ではなく「前」で止める</b> ── <code>PostToolUse</code> で気づいても手遅れ。</p>
 
 <h3 class="sub">実物を見る ─ 入力の書き換え</h3>
 <div class="figbox" style="padding:16px 18px">
@@ -241,7 +279,7 @@
     <div class="modal-foot"><kbd>Esc</kbd> で閉じる</div>
   </div>
 </div>
-<script src="../assets/quiz-data.js?v=4385afea"></script>
-<script src="../assets/search-index.js?v=e73243a3"></script>
-<script src="../assets/app.js?v=0564f87d"></script>
+<script src="../assets/quiz-data.js?v=305bd836"></script>
+<script src="../assets/search-index.js?v=672b94c4"></script>
+<script src="../assets/app.js?v=5bf1e1db"></script>
 </body></html>

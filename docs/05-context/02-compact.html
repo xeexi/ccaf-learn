@@ -49,7 +49,8 @@
   <nav class="toc-list"><a class="itm toc-link" href="../05-context/01-d5about.html"><span class="itm-n">5-1</span><span class="itm-t">このドメインについて</span></a>
 <a class="itm toc-link on" href="../05-context/02-compact.html"><span class="itm-n">5-2</span><span class="itm-t">窓が埋まったら</span></a>
 <a class="toc-link toc-sub" href="#compact-1">窓が埋まってきたら、削るか要約する</a>
-<a class="toc-link toc-sub" href="#compact-2">机の片付けにたとえると</a>
+<a class="toc-link toc-sub" href="#compact-2">要約してはいけないものがある ─ 事実ブロック</a>
+<a class="toc-link toc-sub" href="#compact-3">どこに置くか ─ 真ん中は読み落とされやすい</a>
 <a class="itm toc-link" href="../05-context/03-sub.html"><span class="itm-n">5-3</span><span class="itm-t">サブエージェント</span></a>
 <a class="itm toc-link" href="../05-context/04-hooks.html"><span class="itm-n">5-4</span><span class="itm-t">確実にしたいことは仕組み側へ</span></a>
 <a class="itm toc-link" href="../05-context/05-shape.html"><span class="itm-n">5-5</span><span class="itm-t">返す量を設計する</span></a>
@@ -58,7 +59,7 @@
 <a class="itm toc-link" href="../05-context/08-propagate.html"><span class="itm-n">5-8</span><span class="itm-t">失敗を親まで届ける</span></a>
 <a class="itm toc-link itm-quiz" href="../05-context/09-q.html"><span class="itm-n">5-9</span><span class="itm-t">理解度チェック ─ 窓とサブエージェント</span></a>
 <a class="itm toc-link itm-quiz" href="../05-context/10-q2.html"><span class="itm-n">5-10</span><span class="itm-t">理解度チェック ─ 信頼性</span></a></nav>
-  <a class="toc-all" href="../index.html#all">全項目一覧（88項）</a>
+  <a class="toc-all" href="../index.html#all">全項目一覧（90項）</a>
 </aside>
 <main class="doc">
 <p class="crumb" data-domain="context"><b>Domain 5</b><span>コンテキスト管理と信頼性</span><span class="w">出題比率 15%（約9問）</span></p>
@@ -72,48 +73,104 @@
 <p class="lead">長い作業では履歴が必ず膨らみます。何を残すかを決めるのが「コンテキスト管理」です。</p>
 <p class="task"><span class="tn">BLUEPRINT 5.1</span><b>長い対話で重要情報を保つ文脈管理</b></p>
 <p class="goal"><b>ゴール</b>残すものと捨ててよいものを分けられる。</p>
-  <div class="figbox"><div class="diagram run">
-  <svg viewBox="0 0 760 260">
-    <g class="s1"><text class="lbl" x="30" y="40">作業が進むほど…</text>
-      <rect x="30" y="52" width="700" height="26" rx="6" fill="var(--fig-surface)" stroke="var(--fig-line)"/>
-      <rect x="30" y="52" width="180" height="26" rx="6" fill="var(--fig-line-green)"/>
-      <text class="sm" x="740" y="70" text-anchor="end"> </text></g>
-    <g class="s2"><rect x="30" y="88" width="700" height="26" rx="6" fill="var(--fig-surface)" stroke="var(--fig-line)"/>
-      <rect x="30" y="88" width="430" height="26" rx="6" fill="var(--fig-line-amber)"/></g>
-    <g class="s3"><rect x="30" y="124" width="700" height="26" rx="6" fill="var(--fig-surface)" stroke="var(--fig-line)"/>
-      <rect x="30" y="124" width="690" height="26" rx="6" fill="var(--fig-line-red)"/>
-      <text class="sm" x="380" y="142" text-anchor="middle" style="fill:var(--fig-surface)">ほぼ満杯</text></g>
-    <g class="s4"><line x1="380" y1="158" x2="380" y2="182" stroke="var(--fig-muted)" stroke-width="2" marker-end="url(#ar)"/>
-      <rect x="30" y="188" width="340" height="62" rx="10" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
-      <text class="ttl" x="54" y="214">要約して圧縮する</text>
-      <text class="sm" x="54" y="236">決定事項・未解決点・次の手順だけ残す</text></g>
-    <g class="s5"><rect x="390" y="188" width="340" height="62" rx="10" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
-      <text class="ttl" x="414" y="214">そもそも入れない</text>
-      <text class="sm" x="414" y="236">巨大なログは必要な行だけ返す・別に逃がす</text></g>
-  </svg>
-  </div></div>
-  <div class="detail"><h3>図の読み方</h3>
-    <ol class="ann">
-      <li><span class="n">1</span><span>上の3本の帯が、<b>作業が進むにつれて窓が埋まっていく様子</b>です。1本目は余裕がありますが、3本目でほぼ満杯になっています。</span></li>
-      <li><span class="n">2</span><span>そこから下に2つの道があります。左が<b>要約して圧縮する</b>。決定事項・未解決点・次の手順だけを残します。</span></li>
-      <li><span class="n">3</span><span>右が<b>そもそも入れない</b>。巨大なログは必要な行だけ返す、あるいは別に逃がす（後述のサブエージェント）。</span></li>
-      <li><span class="n">4</span><span>効くのは<b>右のほう</b>です。載せてから減らすより、<b>載せる前に減らす</b>ほうが確実だからです。</span></li>
-    </ol>
-    </div>
 
-<h3 class="sub" id="compact-2">机の片付けにたとえると</h3>
-<div class="detail"><h3>たとえるなら</h3>
-    <p><b>机が一杯になったときの片付け</b>です。全部捨てるのでも全部取っておくのでもなく、<b>この先の作業に必要な紙だけ残す</b>。要約とは短くすることではなく、選ぶことです。</p>
-    <div class="ex"><span class="exl">残すもの／捨ててよいもの</span>
-    残す：<b>決まったこと</b>（採用した方針）、<b>制約</b>（やってはいけないこと）、<b>未解決の点</b>、<b>次の手順</b><br>
-    捨ててよい：試行錯誤の途中経過、読み終わったログの本文、失敗して破棄した案の詳細</div>
-    <p>もうひとつ、<b>そもそも机に載せない</b>という手があります。ツールが返す量を絞る、調べ物は子に任せて要約だけ受け取る（後述のサブエージェント）。載せてから減らすより、載せる前に減らすほうが確実です。</p>
-    <div class="myth">
-      <span class="t">誤解</span><span>「圧縮すればいいのだから、履歴は膨らんでも問題ない」</span>
-      <span class="t o">実際は</span><span>圧縮は履歴を書き換えるので、<b>その地点から先のプロンプトキャッシュが無効になります</b>（前提編）。ただではありません。</span>
+<div class="figbox"><figure class="fig run">
+  <p class="fig-t">作業が進むほど、窓は埋まっていく</p>
+  <div class="fig-bars">
+    <div class="fig-bar s1"><span class="b-name">はじめ</span>
+      <span class="b-track"><span class="b-fill" style="width:26%;background:var(--fig-green)"></span></span>
+      <span class="b-val">余裕がある</span></div>
+    <div class="fig-bar s2"><span class="b-name">数十往復</span>
+      <span class="b-track"><span class="b-fill" style="width:61%;background:var(--fig-amber)"></span></span>
+      <span class="b-val">重くなる</span></div>
+    <div class="fig-bar s3"><span class="b-name">長い作業</span>
+      <span class="b-track"><span class="b-fill" style="width:97%;background:var(--fig-red)"></span></span>
+      <span class="b-val"><b>ほぼ満杯</b></span></div>
+  </div>
+  <p class="fig-lbl">埋まってからの道は2つ</p>
+  <div class="fig-row" style="--cols:2">
+    <div class="fig-card s4">
+      <b class="fig-h">要約して圧縮する</b>
+      <span class="fig-note">決定事項・未解決点・次の手順だけ残す</span>
+    </div>
+    <div class="fig-card key s5">
+      <b class="fig-h">そもそも入れない</b>
+      <span class="fig-note">巨大なログは必要な行だけ返す・子に逃がす</span>
     </div>
   </div>
-  <p class="point"><b>ポイント</b>要約は「短くする」ことではなく「次の判断に必要なものを選ぶ」こと。決定・制約・残タスクが残っていればよい。</p>
+  <p class="fig-f">効くのは<b>右</b>。載せてから減らすより、<b>載せる前に減らす</b>ほうが確実</p>
+</figure></div>
+
+<div class="detail">
+  <div class="ex"><span class="exl">残すもの／捨ててよいもの</span>
+  残す：<b>決まったこと</b>（採用した方針）、<b>制約</b>（やってはいけないこと）、<b>未解決の点</b>、<b>次の手順</b><br>
+  捨ててよい：試行錯誤の途中経過、読み終わったログの本文、失敗して破棄した案の詳細<br>
+  <b>机が一杯になったときの片付け</b>と同じです。全部捨てるのでも全部取っておくのでもなく、この先の作業に必要な紙だけ残す。</div>
+  <div class="myth">
+    <span class="t">誤解</span><span>「圧縮すればいいのだから、履歴は膨らんでも問題ない」</span>
+    <span class="t o">実際は</span><span>圧縮は履歴を書き換えるので、<b>その地点から先のプロンプトキャッシュが無効になります</b>（前提編）。ただではありません。</span>
+  </div>
+</div>
+<p class="point"><b>ポイント</b>要約は「短くする」ことではなく「次の判断に必要なものを選ぶ」こと。決定・制約・残タスクが残っていればよい。</p>
+
+<h3 class="sub" id="compact-2">要約してはいけないものがある ─ 事実ブロック</h3>
+<p class="lead">要約は言い換えです。<b>数字と識別子は、言い換えた瞬間に壊れます。</b>しかも壊れたことが分かりません。</p>
+<p class="goal"><b>ゴール</b>要約に通してよいものと、逐語で持ち続けるものを分けられる。</p>
+
+<div class="figbox"><figure class="fig run">
+  <p class="fig-t">同じ履歴を、要約に通したときと通さなかったとき</p>
+  <div class="fig-row" style="--cols:2">
+    <div class="fig-card red s1">
+      <b class="fig-h">全部まとめて要約する</b>
+      <span class="fig-note">注文番号 <code>A-4471</code> →「先ほどの注文」<br>返金額 12,800円 →「約1万円」<br>期限 3月31日 →「今月末」</span>
+      <span class="fig-note"><b>文章としては正しく読める。</b>だから誤りに気づく契機がない</span>
+    </div>
+    <div class="fig-card green s2">
+      <b class="fig-h">事実ブロックを別に持つ</b>
+      <span class="fig-note">要約するのは<b>経過だけ</b>。<br>取引の具体値は<b>逐語のまま</b>、毎回そっくり送る</span>
+      <span class="fig-note">要約が何回走っても、値は劣化しない</span>
+    </div>
+  </div>
+  <p class="fig-f">要約の巧拙の話ではない。<b>要約に通す対象から外す</b>のが唯一の手</p>
+</figure></div>
+
+<div class="detail">
+  <div class="ex"><span class="exl">事実ブロックに入れるもの</span>
+  ・<b>識別子</b>（注文番号・チケット番号・ユーザーID）<br>
+  ・<b>金額・数量</b><br>
+  ・<b>日付・期限</b><br>
+  ・<b>こちらが相手に約束したこと</b>（「返金します」と言ったかどうか）<br>
+  ・<b>適用した規約の条項</b><br>
+  いずれも<b>1文字違うと別の意味になるもの</b>です。逆に「利用者は不満そうだった」のような経過は、要約してかまいません。</div>
+  <div class="myth">
+    <span class="t">誤解</span><span>「要約の指示に『重要な数字は残して』と書けばよい」</span>
+    <span class="t o">実際は</span><span>それはお願いなので、確率で守られます。長い対話では<b>要約が何度も走る</b>ため、1回でも丸められたらそこから先はずっと誤った値です。<b>仕組みとして要約の外に置きます</b>（〈確実にしたいことは仕組み側へ〉）。</span>
+  </div>
+</div>
+<p class="point"><b>ポイント</b>要約を繰り返すと、取引の具体値は静かに壊れる。識別子・金額・日付・約束は<b>事実ブロックに逐語で持ち、毎回そのまま送る</b>。</p>
+
+<h3 class="sub" id="compact-3">どこに置くか ─ 真ん中は読み落とされやすい</h3>
+<p class="lead">残すと決めても、置き場所を間違えると効きません。長い入力では<b>端が強く、真ん中が弱い</b>という偏りがあります。</p>
+<p class="goal"><b>ゴール</b>要約と事実ブロックの置き場所を答えられる。</p>
+
+<div class="figbox"><figure class="fig run">
+  <p class="fig-t">長い入力のなかで、拾われやすさは一様ではない</p>
+  <div class="fig-row s1" style="--cols:3">
+    <div class="fig-card green"><b class="fig-h">先頭</b><span class="fig-note">拾われやすい</span></div>
+    <div class="fig-card red"><b class="fig-h">真ん中</b><span class="fig-note">読み落とされやすい<br><code>lost in the middle</code></span></div>
+    <div class="fig-card green"><b class="fig-h">末尾</b><span class="fig-note">拾われやすい</span></div>
+  </div>
+  <p class="fig-lbl">だから、こう置く</p>
+  <div class="fig-row s2" style="--cols:1">
+    <div class="fig-card key">
+      <b class="fig-h">要約と事実ブロックは、長い履歴の<b>前</b>に置く</b>
+      <span class="fig-note">履歴のあいだに挟むと、いちばん弱い場所に入る</span>
+    </div>
+  </div>
+  <p class="fig-f">〈並べる順番〉の「長い資料は前、指示は後ろ」と同じ形。<b>要点を真ん中に埋めない</b></p>
+</figure></div>
+
+<p class="point"><b>ポイント</b>要約は作って終わりではない。<b>長い履歴の前に置く</b>。真ん中に埋めると、残したつもりで効かない。</p>
 </section>
 <!-- ▲ 本文 -->
 <nav class="secpager">
@@ -130,7 +187,7 @@
     <div class="modal-foot"><kbd>Esc</kbd> で閉じる</div>
   </div>
 </div>
-<script src="../assets/quiz-data.js?v=4385afea"></script>
-<script src="../assets/search-index.js?v=e73243a3"></script>
-<script src="../assets/app.js?v=0564f87d"></script>
+<script src="../assets/quiz-data.js?v=305bd836"></script>
+<script src="../assets/search-index.js?v=672b94c4"></script>
+<script src="../assets/app.js?v=5bf1e1db"></script>
 </body></html>

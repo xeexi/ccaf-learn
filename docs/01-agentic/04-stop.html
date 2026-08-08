@@ -66,7 +66,7 @@
 <a class="itm toc-link itm-quiz" href="../01-agentic/16-q3.html"><span class="itm-n">1-16</span><span class="itm-t">理解度チェック ─ 起動と強制</span></a>
 <a class="itm toc-link" href="../01-agentic/17-session.html"><span class="itm-n">1-17</span><span class="itm-t">セッションをまたぐ</span></a>
 <a class="itm toc-link itm-quiz" href="../01-agentic/18-q4.html"><span class="itm-n">1-18</span><span class="itm-t">理解度チェック ─ セッション</span></a></nav>
-  <a class="toc-all" href="../index.html#all">全項目一覧（88項）</a>
+  <a class="toc-all" href="../index.html#all">全項目一覧（90項）</a>
 </aside>
 <main class="doc">
 <p class="crumb" data-domain="agentic"><b>Domain 1</b><span>エージェント設計とオーケストレーション</span><span class="w">出題比率 27%（約16問）</span></p>
@@ -82,26 +82,53 @@
 <p class="goal"><b>ゴール</b>分岐を <code>stop_reason</code> で書く理由を説明できる。</p>
 
 <div class="figbox"><figure class="fig run" id="sr-fig">
-  <p class="fig-t">応答には <code>stop_reason</code> が必ず1つ付く。アプリはその値だけを見て分岐する</p>
-  <div class="fig-row" style="--cols:1">
+  <p class="fig-t">値は7つ。アプリのすることは4通りにまとまる</p>
+
+  <p class="fig-lbl">① もう一度リクエストする ─ ループに戻る2本</p>
+  <div class="fig-row" style="--cols:2">
     <div class="fig-card key s1" id="b-tool">
-      <b class="fig-h"><code>tool_use</code>　── ループに戻る唯一の値</b>
-      <span class="fig-note">要求されたツールを実行し、<code>tool_result</code> を会話に足して<b>もう一度リクエストする</b>。</span>
+      <b class="fig-h"><code>tool_use</code></b>
+      <span class="fig-note">ツールを実行し、<code>tool_result</code> を足して投げ直す</span>
     </div>
-    <div class="fig-card s2" id="b-end">
-      <b class="fig-h"><code>end_turn</code>　── 言い切った</b>
-      <span class="fig-note">そのままユーザーに答えを見せて、ループを抜ける。</span>
-    </div>
-    <div class="fig-card red s3" id="b-max">
-      <b class="fig-h"><code>max_tokens</code>　── 完了ではなく、途中で切れた</b>
-      <span class="fig-note"><b>そのまま表示してはいけない。</b>続きを促すか、出力上限を見直す。<span class="key">ここを <code>end_turn</code> と同じ扱いにすると、尻切れの文章をそのまま見せてしまう</span></span>
-    </div>
-    <div class="fig-card s4" id="b-ref">
-      <b class="fig-h"><code>refusal</code>　── 別の経路へ</b>
-      <span class="fig-note">通常の完了として扱わず、案内やエスカレーションなど別の処理に回す。</span>
+    <div class="fig-card key s1" id="b-pause">
+      <b class="fig-h"><code>pause_turn</code></b>
+      <span class="fig-note">実行するものはない。<b>応答をそのまま足して</b>投げ直す</span>
     </div>
   </div>
-  <p class="fig-f">ループに戻るのは<b>1本だけ</b>（<code>tool_use</code>）。ほかの3つは抜ける。値は応答の決まった場所に入っているので、<b>本文を読んで判断する必要はない。</b></p>
+
+  <p class="fig-lbl">② そのまま見せて、抜ける</p>
+  <div class="fig-row" style="--cols:2">
+    <div class="fig-card s2" id="b-end">
+      <b class="fig-h"><code>end_turn</code></b>
+      <span class="fig-note">言い切った。ふつうの完了はこれ</span>
+    </div>
+    <div class="fig-card s2" id="b-seq">
+      <b class="fig-h"><code>stop_sequence</code></b>
+      <span class="fig-note">こちらが指定した文字列で止めた</span>
+    </div>
+  </div>
+
+  <p class="fig-lbl">③ 途中で切れた ─ そのまま見せてはいけない</p>
+  <div class="fig-row" style="--cols:2">
+    <div class="fig-card red s3" id="b-max">
+      <b class="fig-h"><code>max_tokens</code></b>
+      <span class="fig-note">こちらが決めた上限に達した</span>
+    </div>
+    <div class="fig-card red s3" id="b-ctx">
+      <b class="fig-h"><code>model_context_window_exceeded</code></b>
+      <span class="fig-note">窓のほうが先に尽きた</span>
+    </div>
+  </div>
+
+  <p class="fig-lbl">④ 別の経路へ</p>
+  <div class="fig-row" style="--cols:1">
+    <div class="fig-card s4" id="b-ref">
+      <b class="fig-h"><code>refusal</code></b>
+      <span class="fig-note">安全上の理由で応じなかった。完了として扱わず、案内やエスカレーションへ</span>
+    </div>
+  </div>
+
+  <p class="fig-f">値は応答の決まった場所に入っている。<b>本文を読んで判断する必要はない。</b></p>
 </figure></div>
 
 <div class="play" style="margin-top:12px">
@@ -109,10 +136,21 @@
   <div class="ctrl" id="sr-ctrl">
     <button data-sr="b-end">end_turn</button>
     <button data-sr="b-tool">tool_use</button>
+    <button data-sr="b-pause">pause_turn</button>
     <button data-sr="b-max">max_tokens</button>
+    <button data-sr="b-ctx">model_context_window_exceeded</button>
+    <button data-sr="b-seq">stop_sequence</button>
     <button data-sr="b-ref">refusal</button>
   </div>
   <div class="answer" id="sr-ans"></div>
+</div>
+
+<div class="detail">
+  <div class="ex"><span class="exl"><code>pause_turn</code> ── 「戻るのは <code>tool_use</code> だけ」と覚えると事故る</span>
+  web検索のように <b>Anthropic 側で実行されるツール</b>（Domain 2）を使うと、その実行はモデルの中で何周も回ります。
+  <b>既定10周</b>で一区切りが付き、<code>pause_turn</code> が返ります。まだ答えは出ていません。
+  こちらが実行するものは何もないので、<b>返ってきた応答をそのまま履歴に足して、もう一度投げるだけ</b>で続きが進みます。
+  ここを完了として扱うと、検索の途中で会話が終わります。</div>
 </div>
 
 <p class="point"><b>ポイント</b>「Claudeの返事を文字列で判定して分岐」はアンチパターン。分岐はこの構造化された値だけで決める ─ ここは確率ではなく、決定的に書ける部分。</p>
@@ -120,12 +158,17 @@
 <h3 class="sub" id="stop-2">値ごとの扱いと、よくある誤解</h3>
 <div class="detail">
   <div class="ex"><span class="exl">アプリ側の分岐は、これだけで書ける</span>
-  <code>if stop_reason == "tool_use": ツールを実行して結果を返す</code><br>
-  <code>elif stop_reason == "end_turn": 画面に表示して終わり</code><br>
-  <code>elif stop_reason == "max_tokens": 途中で切れている。続きを促す</code></div>
+  <code>if stop_reason in ("tool_use", "pause_turn"): 会話に足して、もう一度投げる</code><br>
+  <code>elif stop_reason in ("end_turn", "stop_sequence"): 画面に表示して終わり</code><br>
+  <code>elif stop_reason in ("max_tokens", "model_context_window_exceeded"): 途中で切れている</code><br>
+  <code>elif stop_reason == "refusal": 別の経路へ</code></div>
   <div class="myth">
     <span class="t">誤解</span><span>「返事に『検索します』と書いてあったら検索すればいい」</span>
     <span class="t o">実際は</span><span>言い回しは毎回揺れます（「調べますね」「確認いたします」「Let me search」…）。<b>揺れない値で分岐する</b>のが鉄則です。</span>
+  </div>
+  <div class="myth">
+    <span class="t">誤解</span><span>「知らない値が返ってきたら、とりあえず完了として扱えばよい」</span>
+    <span class="t o">実際は</span><span>③と④を完了として扱うと、<b>尻切れの文章や、断られた事実がそのまま利用者に出ます。</b>分岐に書いていない値は、完了ではなく<b>異常</b>として扱うのが安全です。</span>
   </div>
 </div>
 </section>
@@ -144,7 +187,7 @@
     <div class="modal-foot"><kbd>Esc</kbd> で閉じる</div>
   </div>
 </div>
-<script src="../assets/quiz-data.js?v=4385afea"></script>
-<script src="../assets/search-index.js?v=e73243a3"></script>
-<script src="../assets/app.js?v=0564f87d"></script>
+<script src="../assets/quiz-data.js?v=305bd836"></script>
+<script src="../assets/search-index.js?v=672b94c4"></script>
+<script src="../assets/app.js?v=5bf1e1db"></script>
 </body></html>

@@ -54,8 +54,11 @@
 <a class="itm toc-link" href="../02-tools/06-perm.html"><span class="itm-n">2-6</span><span class="itm-t">権限と副作用</span></a>
 <a class="itm toc-link" href="../02-tools/07-distribute.html"><span class="itm-n">2-7</span><span class="itm-t">誰にどのツールを配るか</span></a>
 <a class="itm toc-link on" href="../02-tools/08-builtin.html"><span class="itm-n">2-8</span><span class="itm-t">組み込みのツールを選ぶ</span></a>
+<a class="toc-link toc-sub" href="#builtin-1">誰が実行するかで、2つに分かれる</a>
+<a class="toc-link toc-sub" href="#builtin-2">どれを選ぶか ─ 書く量が少ない順に見る</a>
+<a class="toc-link toc-sub" href="#builtin-3">Claude Code の組み込みツール</a>
 <a class="itm toc-link itm-quiz" href="../02-tools/09-q.html"><span class="itm-n">2-9</span><span class="itm-t">理解度チェック</span></a></nav>
-  <a class="toc-all" href="../index.html#all">全項目一覧（88項）</a>
+  <a class="toc-all" href="../index.html#all">全項目一覧（90項）</a>
 </aside>
 <main class="doc">
 <p class="crumb" data-domain="tools"><b>Domain 2</b><span>ツール設計と MCP 連携</span><span class="w">出題比率 18%（約11問）</span></p>
@@ -64,63 +67,95 @@
 <header class="sec-head">
   <h2>2-8　組み込みのツールを選ぶ</h2>
 </header>
-<p class="lead">Claude Code には最初からツールが入っています。同じことが複数の道具でできてしまうので、選び方の基準が要ります。</p>
-<p class="task"><span class="tn">BLUEPRINT 2.5</span><b>組み込みツールの選択と活用</b></p>
-<p class="goal"><b>ゴール</b>組み込みツールの系統と、選び分けの基準を言える。</p>
-  <div class="figbox"><div class="diagram run">
-  <svg viewBox="0 0 760 330">
-    <text class="sm s1" x="16" y="26">系統は5つ</text>
-    <g class="s1"><rect x="16" y="38" width="140" height="76" rx="10" fill="var(--fig-fill-blue)" stroke="var(--fig-line-blue)"/>
-      <text class="lbl" x="86" y="64" text-anchor="middle" style="fill:var(--fig-blue)">読む</text>
-      <text class="mono" x="86" y="88" text-anchor="middle">Read</text>
-      <text class="sm" x="86" y="106" text-anchor="middle">中身を見る</text></g>
-    <g class="s2"><rect x="164" y="38" width="140" height="76" rx="10" fill="var(--fig-fill-blue)" stroke="var(--fig-line-blue)"/>
-      <text class="lbl" x="234" y="64" text-anchor="middle" style="fill:var(--fig-blue)">探す</text>
-      <text class="mono" x="234" y="88" text-anchor="middle">Grep / Glob</text>
-      <text class="sm" x="234" y="106" text-anchor="middle">中身／ファイル名</text></g>
-    <g class="s3"><rect x="312" y="38" width="140" height="76" rx="10" fill="var(--fig-fill-amber)" stroke="var(--fig-line-amber)"/>
-      <text class="lbl" x="382" y="64" text-anchor="middle" style="fill:var(--fig-amber)">変える</text>
-      <text class="mono" x="382" y="88" text-anchor="middle">Edit / Write</text>
-      <text class="sm" x="382" y="106" text-anchor="middle">部分／全体</text></g>
-    <g class="s4"><rect x="460" y="38" width="140" height="76" rx="10" fill="var(--fig-fill-red)" stroke="var(--fig-line-red)"/>
-      <text class="lbl" x="530" y="64" text-anchor="middle" style="fill:var(--fig-red)">実行する</text>
-      <text class="mono" x="530" y="88" text-anchor="middle">Bash</text>
-      <text class="sm" x="530" y="106" text-anchor="middle">何でもできる</text></g>
-    <g class="s5"><rect x="608" y="38" width="136" height="76" rx="10" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
-      <text class="lbl" x="676" y="64" text-anchor="middle">外に出る</text>
-      <text class="mono" x="676" y="88" text-anchor="middle">WebFetch</text>
-      <text class="sm" x="676" y="106" text-anchor="middle">WebSearch</text></g>
 
-    <text class="sm s6" x="16" y="152">選び分けの基準 ── 権限の面が違う</text>
-    <g class="s6"><rect x="16" y="164" width="364" height="118" rx="10" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)"/>
-      <text class="lbl" x="36" y="190" style="fill:var(--fig-green)">Read / Grep / Glob</text>
-      <text class="sm" x="36" y="216">作業ディレクトリの中なら、確認を挟まずに動く</text>
-      <text class="sm" x="36" y="240">外のパスを触るときだけ確認が出る</text>
-      <text class="sm" x="36" y="264">＝ 調査を任せても止まらない</text></g>
-    <g class="s7"><rect x="396" y="164" width="348" height="118" rx="10" fill="var(--fig-fill-red)" stroke="var(--fig-line-red)"/>
-      <text class="lbl" x="416" y="190" style="fill:var(--fig-red)">Bash</text>
-      <text class="sm" x="416" y="216">既定では確認が出る</text>
-      <text class="sm" x="416" y="240">読み取りだけの決まった命令は例外で出ない</text>
-      <text class="sm" x="416" y="264">＝ 同じ調査でも扱いが変わる</text></g>
-    <text class="sm s8" x="380" y="316" text-anchor="middle">ツール名は、権限の設定・子に渡す一覧・フックの一致条件で、まったく同じ文字列を使う</text>
-  </svg>
-  </div></div>
-  <div class="detail"><h3>図の読み方</h3>
-    <ol class="ann">
-      <li><span class="n">1</span><span>上の5系統は<b>できることの範囲が順に広がります</b>。右にいくほど、渡したときに起きうる範囲が大きくなります。</span></li>
-      <li><span class="n">2</span><span><b>変える</b>の2つは使い分けがあります。既存の一部を直すのが <code>Edit</code>、丸ごと置き換えるのが <code>Write</code>。全体を書き直すと、意図しない箇所まで消えます。</span></li>
-      <li><span class="n">3</span><span>下の2枠が判断の分かれ目です。同じ「探す」でも、専用のツールと <code>Bash</code> 経由では<b>確認が出るかどうかが変わります</b>。設問では権限とセットで問われます。</span></li>
-      <li><span class="n">4</span><span>いちばん下の一文が実務で効きます。ツール名を<b>3か所で同じ文字列として使う</b>ので、名前を覚えることがそのまま権限設計とフック設定につながります。</span></li>
-    </ol>
-    <div class="ex"><span class="exl">名前が効く3か所</span>
-    ・権限の設定（許可／拒否の対象）<br>
-    ・子に渡すツールの一覧<br>
-    ・フックをどのツールで発火させるかの一致条件</div>
-    <div class="myth">
-      <span class="t">誤解</span><span>「<code>Bash</code> があれば、読む・探すも全部それで済む」</span>
-      <span class="t o">実際は</span><span>できることは同じでも<b>権限の扱いが違います</b>。専用のツールなら作業ディレクトリの中で確認なしに動きますが、<code>Bash</code> は既定で確認が出ます。「なぜ調査が毎回止まるのか」の答えがここにあることが多い。</span>
+<h3 class="sub" id="builtin-1">誰が実行するかで、2つに分かれる</h3>
+<p class="lead">自分で作らなくても使えるツールがあります。選ぶ前に、<b>そのコードを誰が動かすのか</b>で分けます。</p>
+<p class="task"><span class="tn">BLUEPRINT 2.5</span><b>組み込みツールの選択と活用</b></p>
+<p class="goal"><b>ゴール</b>クライアントツールとサーバツールを、実行する場所で言い分けられる。</p>
+
+<div class="figbox"><figure class="fig run">
+  <p class="fig-t">分かれ目は「そのコードを誰が動かすか」</p>
+  <div class="fig-row" style="--cols:2">
+    <div class="fig-card blue s1">
+      <b class="fig-h">クライアントツール</b>
+      <span class="fig-note"><b>あなたのアプリが動かす。</b><code>tool_use</code> が返るので、実行して <code>tool_result</code> を返す ─ ループそのもの</span>
+      <span class="fig-note">自作のツール<br><code>bash</code>・<code>text_editor</code>・<code>computer</code>・<code>memory</code></span>
+    </div>
+    <div class="fig-card amber s2">
+      <b class="fig-h">サーバツール</b>
+      <span class="fig-note"><b>Anthropic 側で動く。</b>結果まで入って返るので、<b>実行するコードを書かない</b></span>
+      <span class="fig-note"><code>web_search</code>・<code>web_fetch</code>・<code>code_execution</code>・<code>tool_search</code></span>
     </div>
   </div>
+  <p class="fig-f">見分けかたは1つ ─ <b><code>tool_result</code> を返す必要があるか。</b>サーバツールには返さない</p>
+</figure></div>
+
+<p class="point"><b>ポイント</b>分かれ目は「実行するコードを自分で書くか」。サーバツールは往復が要らないぶん、いちばん安く済む。</p>
+
+<div class="detail">
+  <div class="ex"><span class="exl">サーバツールを使うと <code>pause_turn</code> が返ることがある</span>
+  Anthropic 側の実行は既定10周で一区切りが付きます。まだ答えは出ていないので、
+  <b>応答をそのまま足して投げ直します</b>（Domain 1〈<code>stop_reason</code> で分岐する〉）。完了として扱うと検索の途中で終わります。</div>
+</div>
+
+<h3 class="sub" id="builtin-2">どれを選ぶか ─ 書く量が少ない順に見る</h3>
+<p class="lead">要件から使うものが決まります。上ほど自分で書く量が少なく、設問でもそちらが正解になります。</p>
+<table class="tbl">
+  <thead><tr><th>やりたいこと</th><th>使うもの</th><th>自分で書くもの</th></tr></thead>
+  <tbody>
+    <tr><td data-l="やりたいこと">web を調べる／コードを走らせる</td>
+        <td data-l="使うもの"><b>サーバツール</b><br><code>web_search</code>・<code>code_execution</code></td>
+        <td data-l="自分で書くもの"><span class="ok">定義1行だけ</span>　実行するコードは不要</td></tr>
+    <tr><td data-l="やりたいこと">ファイルを直す／コマンドを打つ</td>
+        <td data-l="使うもの"><b>Anthropic が形を決めたクライアントツール</b><br><code>text_editor</code>・<code>bash</code></td>
+        <td data-l="自分で書くもの">実行するコード。<b>説明文（<code>description</code>）は要らない</b> ─ 形が学習済みのため</td></tr>
+    <tr><td data-l="やりたいこと">既にある社外サービスを繋ぐ</td>
+        <td data-l="使うもの"><b>既存の MCP サーバ</b>（〈MCP という差込口〉）</td>
+        <td data-l="自分で書くもの">設定だけ</td></tr>
+    <tr><td data-l="やりたいこと">自社だけの業務を扱う</td>
+        <td data-l="使うもの"><b>自作ツール</b>（〈ツール定義は3つの部品〉）</td>
+        <td data-l="自分で書くもの"><span class="ng">定義＋説明文＋実行するコード</span></td></tr>
+  </tbody>
+</table>
+
+<p class="point"><b>ポイント</b>「新しい機能が欲しい」と言われたら、まず<b>上の3段で足りないか</b>を確かめる。自作はいちばん下。</p>
+
+<h3 class="sub" id="builtin-3">Claude Code の組み込みツール</h3>
+<p class="lead">Claude Code が最初から持っている道具は、<b>すべてクライアントツール</b>です。同じことが複数の道具でできてしまうので、選び分けの基準が要ります。</p>
+
+<div class="detail">
+  <div class="ex"><span class="exl">系統は5つ</span>
+  読む <code>Read</code>　／　探す <code>Grep</code> <code>Glob</code>　／　変える <code>Edit</code> <code>Write</code>　／　実行する <code>Bash</code>　／　外に出る <code>WebFetch</code> <code>WebSearch</code><br>
+  <b>右にいくほど、渡したときに起きうる範囲が大きくなります。</b>「変える」の2つは、既存の一部を直すのが <code>Edit</code>、丸ごと置き換えるのが <code>Write</code>。</div>
+</div>
+
+<table class="tbl">
+  <thead><tr><th>同じ「探す」でも</th><th>専用のツール（<code>Grep</code> / <code>Glob</code>）</th><th><code>Bash</code> で同じことをする</th></tr></thead>
+  <tbody>
+    <tr><td data-l="同じ「探す」でも">作業ディレクトリの中</td>
+        <td data-l="専用のツール"><span class="ok">確認を挟まずに動く</span></td>
+        <td data-l="Bash で同じことをする"><span class="ng">既定で確認が出る</span><br>読み取りだけの決まった命令は例外</td></tr>
+    <tr><td data-l="同じ「探す」でも">外のパス</td>
+        <td data-l="専用のツール">確認が出る</td>
+        <td data-l="Bash で同じことをする">確認が出る</td></tr>
+    <tr><td data-l="同じ「探す」でも">結果</td>
+        <td data-l="専用のツール">調査を任せても止まらない</td>
+        <td data-l="Bash で同じことをする">同じ調査でも毎回止まる</td></tr>
+  </tbody>
+</table>
+
+<div class="detail">
+  <div class="ex"><span class="exl">名前が効く3か所</span>
+  ・権限の設定（許可／拒否の対象）<br>
+  ・子に渡すツールの一覧<br>
+  ・フックをどのツールで発火させるかの一致条件（<code>matcher</code>）<br>
+  <b>まったく同じ文字列を使う</b>ので、名前を覚えることがそのまま権限設計とフック設定になります。</div>
+  <div class="myth">
+    <span class="t">誤解</span><span>「<code>Bash</code> があれば、読む・探すも全部それで済む」</span>
+    <span class="t o">実際は</span><span>できることは同じでも<b>権限の扱いが違います</b>。「なぜ調査が毎回止まるのか」の答えがここにあることが多い。</span>
+  </div>
+</div>
+
 <p class="point"><b>ポイント</b>できることが同じでも権限の面が違う。ツール名は権限・子への配布・フックで共通の識別子。</p>
 </section>
 <!-- ▲ 本文 -->
@@ -138,7 +173,7 @@
     <div class="modal-foot"><kbd>Esc</kbd> で閉じる</div>
   </div>
 </div>
-<script src="../assets/quiz-data.js?v=4385afea"></script>
-<script src="../assets/search-index.js?v=e73243a3"></script>
-<script src="../assets/app.js?v=0564f87d"></script>
+<script src="../assets/quiz-data.js?v=305bd836"></script>
+<script src="../assets/search-index.js?v=672b94c4"></script>
+<script src="../assets/app.js?v=5bf1e1db"></script>
 </body></html>

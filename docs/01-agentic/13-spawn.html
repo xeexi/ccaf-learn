@@ -59,12 +59,13 @@
 <a class="itm toc-link" href="../01-agentic/11-chain.html"><span class="itm-n">1-11</span><span class="itm-t">固定チェーンか、動的分解か</span></a>
 <a class="itm toc-link itm-quiz" href="../01-agentic/12-q2.html"><span class="itm-n">1-12</span><span class="itm-t">理解度チェック ─ 複数エージェント</span></a>
 <a class="itm toc-link on" href="../01-agentic/13-spawn.html"><span class="itm-n">1-13</span><span class="itm-t">子はどう起こすのか</span></a>
+<a class="toc-link toc-sub" href="#spawn-2">3体まとめて起こす ─ 並列ツール使用</a>
 <a class="itm toc-link" href="../01-agentic/14-gate.html"><span class="itm-n">1-14</span><span class="itm-t">前提は関門で、引き継ぎは欄で</span></a>
 <a class="itm toc-link" href="../01-agentic/15-intercept.html"><span class="itm-n">1-15</span><span class="itm-t">ツール呼び出しに割り込む</span></a>
 <a class="itm toc-link itm-quiz" href="../01-agentic/16-q3.html"><span class="itm-n">1-16</span><span class="itm-t">理解度チェック ─ 起動と強制</span></a>
 <a class="itm toc-link" href="../01-agentic/17-session.html"><span class="itm-n">1-17</span><span class="itm-t">セッションをまたぐ</span></a>
 <a class="itm toc-link itm-quiz" href="../01-agentic/18-q4.html"><span class="itm-n">1-18</span><span class="itm-t">理解度チェック ─ セッション</span></a></nav>
-  <a class="toc-all" href="../index.html#all">全項目一覧（88項）</a>
+  <a class="toc-all" href="../index.html#all">全項目一覧（90項）</a>
 </aside>
 <main class="doc">
 <p class="crumb" data-domain="agentic"><b>Domain 1</b><span>エージェント設計とオーケストレーション</span><span class="w">出題比率 27%（約16問）</span></p>
@@ -111,7 +112,26 @@
 
 <p class="point"><b>ポイント</b>起動は簡単。難しいのは「子の最初の状態に何を載せるか」を親が決めきること。</p>
 
+<h3 class="sub" id="spawn-2">3体まとめて起こす ─ 並列ツール使用</h3>
+<p class="lead">同時に走らせるための特別な仕組みはありません。<b>1つの応答に <code>tool_use</code> を複数入れる</b>だけです。</p>
+<p class="goal"><b>ゴール</b>並列に起こしたとき、往復が何回になるか答えられる。</p>
+
+<div class="figbox"><figure class="fig run">
+  <p class="fig-t">独立した3件を調べさせる ─ 往復は<b>1回</b></p>
+  <ol class="fig-steps">
+    <li class="s1"><span class="fig-who amber">Claude</span><span class="fig-do">1つの応答に <code>tool_use</code> を<b>3つ</b>入れる。<code>stop_reason</code> は 1つだけで <code>tool_use</code></span></li>
+    <li class="s2"><span class="fig-who blue">アプリ</span><span class="fig-do">3つとも実行する。<b>同時に走らせるか、順に走らせるかはアプリが決める</b> ─ ここは API の外</span></li>
+    <li class="s3"><span class="fig-who blue">アプリ</span><span class="fig-do"><code>tool_result</code> を3つ、<b>1つのメッセージにまとめて</b>返す。<span class="key">1つでも欠けると会話が壊れる</span></span></li>
+  </ol>
+  <p class="fig-f">「3回リクエストする」のではない。<b>1往復のなかに3件入っている。</b>子を並列に起こすのも、同じ形</p>
+</figure></div>
+
+<p class="point"><b>ポイント</b>並列とは「1つの応答に複数の <code>tool_use</code> が入ること」。速くなるのは待ち時間だけで、往復の回数が減るぶん少し安くなる。</p>
+
 <div class="detail">
+  <div class="ex"><span class="exl">分けてよいのは、互いに結果を要らない仕事だけ</span>
+  「A を調べてから、その結果で B を調べる」は並列にできません。<b>先に結果が要る仕事は、別の往復になります。</b>
+  独立しているかどうかを決めるのは親です。</div>
   <div class="myth">
     <span class="t">誤解</span><span>「子を並列に立てれば、そのぶん速く安く終わる」</span>
     <span class="t o">実際は</span><span>短くなるのは<b>待ち時間だけ</b>で、トークンの総量は減りません。同時に走らせる数にも上限があり、超えた起動は失敗します。</span>
@@ -134,7 +154,7 @@
     <div class="modal-foot"><kbd>Esc</kbd> で閉じる</div>
   </div>
 </div>
-<script src="../assets/quiz-data.js?v=4385afea"></script>
-<script src="../assets/search-index.js?v=e73243a3"></script>
-<script src="../assets/app.js?v=0564f87d"></script>
+<script src="../assets/quiz-data.js?v=305bd836"></script>
+<script src="../assets/search-index.js?v=672b94c4"></script>
+<script src="../assets/app.js?v=5bf1e1db"></script>
 </body></html>

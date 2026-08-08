@@ -262,6 +262,95 @@ order.forEach(s => {
 });
 if (!covNg) console.log(`  ✓ ${Object.keys(TASKS).length} タスクすべてに対応する節あり（ラベルも欠落なし）`);
 
+/* --- 5h. 本文のタグが釣り合っているか --------------------------------
+   `</div>` が1つ多いと、ブラウザは**その節を早じまいして**
+   後ろの内容を .shell の外に出す。見た目には「なんとなく余白が変」
+   程度にしか出ないので目視では気づけない ── 実際 1-5 の後半が
+   ずっと容器の外にあり、ブラウザで測って初めて分かった（§7 #28）。
+   本文は生成物ではなく手書きなので、ここだけを見れば足りる。 */
+console.log('\n■ 本文のタグの釣り合い');
+let balNg = 0;
+FILES.forEach(f => {
+  const h = fs.readFileSync(path.join(ROOT, f), 'utf8');
+  const body = (h.match(/▼ 本文[^\n]*-->([\s\S]*?)<!-- ▲ 本文/) || [])[1];
+  if (!body) return;
+  // 入れ子になる要素だけを見る（<p> や <li> は終了タグの省略が許されている）
+  ['div', 'section', 'figure', 'table', 'ul', 'ol'].forEach(t => {
+    const open = (body.match(new RegExp(`<${t}[\\s>]`, 'g')) || []).length;
+    const close = (body.match(new RegExp(`</${t}>`, 'g')) || []).length;
+    if (open !== close) {
+      bad(`${f}: <${t}> が ${open} 個に対し </${t}> が ${close} 個（${close > open ? '閉じ過ぎ ─ 節が早じまいする' : '閉じ忘れ'}）`);
+      balNg++;
+    }
+  });
+});
+if (!balNg) console.log(`  ✓ 本文 ${FILES.length} ファイルで div / section / figure / table / ul / ol が釣り合い`);
+
+/* --- 5g. 必須語彙の網羅 ---------------------------------------------
+   5d は「タスクに対応する節があるか」しか見ない。節があっても、
+   そのタスクの中心にある語が本文に1度も出ていないことがある ──
+   実際 matcher は出現0回で、指摘されるまで気づけなかった（§7 #27）。
+   ここは「節の有無」ではなく「語が本文に存在するか」を数える。
+
+   入れてよいのは、公式ドキュメントで裏取りした語だけ。
+   一般的な日本語（「要約」「検証」など）は偶然一致するので入れない。
+   判定は本文（▼本文〜▲本文）のタグを外した文字列に対して行う ──
+   <code>pause_turn</code> のようにタグで割れていても拾えるようにするため。 */
+console.log('\n■ 必須語彙の網羅（ブループリントが名指ししている語）');
+const VOCAB = {
+  // Domain 1 — stop_reason は7値すべて。pause_turn を落とすと
+  // 「ループに戻るのは tool_use だけ」という誤った断言になる
+  '1.1 ループと stop_reason': ['stop_reason', 'tool_use', 'end_turn', 'max_tokens',
+    'pause_turn', 'stop_sequence', 'model_context_window_exceeded', 'tool_result'],
+  '1.2 コーディネータ':      ['コーディネータ'],
+  '1.3 子の起動と並列':      ['disable_parallel_tool_use', '並列ツール使用'],
+  '1.4 関門とハンドオフ':    ['PreToolUse', 'PostToolUse'],
+  '1.5 hooks':               ['matcher', 'permissionDecision', 'updatedInput',
+    'SessionStart', 'SubagentStop', 'PreCompact', 'exit 2'],
+  '1.6 タスク分解':          ['固定チェーン', '動的分解'],
+  '1.7 セッション':          ['--resume', '--continue', '--fork-session'],
+  // Domain 2 — 2.5 は「誰が実行するか」が骨格。client / server の別が要る
+  '2.1 ツール定義':          ['input_schema', 'description'],
+  '2.2 エラー応答':          ['is_error'],
+  '2.3 配分と tool_choice':  ['tool_choice'],
+  '2.4 MCP':                 ['.mcp.json', 'stdio', 'resources', 'prompts'],
+  '2.5 組み込みツール':      ['クライアントツール', 'サーバツール', 'web_search',
+    'web_fetch', 'code_execution', 'text_editor', 'memory'],
+  // Domain 3
+  '3.1 CLAUDE.md':           ['CLAUDE.md', 'CLAUDE.local.md'],
+  '3.2 コマンドとスキル':    ['SKILL.md', 'allowed-tools', '$ARGUMENTS', 'context: fork'],
+  '3.3 パス固有ルール':      ['.claude/rules', 'paths'],
+  '3.4 plan mode':           ['plan mode', '--permission-mode'],
+  '3.6 CI/CD':               ['--output-format', '--allowedTools', 'bypassPermissions',
+    'settings.json', 'permissions', 'GitHub Actions'],
+  // Domain 4
+  '4.2 few-shot':            ['few-shot'],
+  '4.3 構造化出力':          ['required', 'enum', 'strict'],
+  '4.5 バッチ':              ['custom_id'],
+  '4.6 多重レビュー':        ['multi-instance', 'multi-pass'],
+  // Domain 5 — 5.1 は「何を残すか」だけでなく「要約に通してはいけないもの」と
+  // 「どこに置くか」まで。どちらもブループリントが名指ししている
+  '5.1 文脈管理':            ['事実ブロック', 'lost in the middle'],
+  '5.2 エスカレーション':    ['エスカレーション'],
+  '5.4 大規模探索':          ['サブエージェント'],
+  '5.5 確信度':              ['確信度'],
+  '5.6 出典':                ['出典'],
+};
+// 本文だけを対象にする（設問の誤答の選択肢で埋め合わせられては意味がない）
+const plain = order.filter(s => !s.quiz)
+  .map(s => (s.body.match(/▼ 本文([\s\S]*)/) || [null, s.body])[1]
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&amp;/g, '&'))
+  .join('\n');
+let vocNg = 0, vocN = 0;
+Object.entries(VOCAB).forEach(([task, words]) => {
+  words.forEach(w => {
+    vocN++;
+    if (!plain.includes(w)) { bad(`${task}：「${w}」が本文に1度も出てこない`); vocNg++; }
+  });
+});
+if (!vocNg) console.log(`  ✓ ${Object.keys(VOCAB).length} タスクの必須語 ${vocN} 件すべて本文にあり`);
+
 /* --- 5f. 文字サイズが段階（--fs-*）で書かれているか -------------------
    px を直接書くと段階が増えていき、「ばらつきが大きい」状態に戻る。
    段階そのものが増えるのも同じことなので、名前の集合ごと固定する。

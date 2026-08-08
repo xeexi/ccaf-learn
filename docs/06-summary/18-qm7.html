@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>3-6　理解度チェック ─ コマンドとスキル ─ Domain 3 ─ CCAR-F 学習ノート</title>
+<title>6-18　理解度チェック ─ CI の自動レビュー ─ まとめ ─ CCAR-F 学習ノート</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/style.css?v=51e48cf8">
 </head>
-<body data-page="q32">
+<body data-page="qm7">
 <script>(function(){var t=localStorage.getItem('ccarf-theme');if(t)document.documentElement.dataset.theme=t;})();</script>
 <nav class="domnav">
   <a class="brand" href="../index.html"><span class="brand-mark">CCAR-F</span><span class="brand-sub">学習ノート</span></a>
@@ -19,13 +19,13 @@
        <span class="nav-num">Domain 1</span><span class="nav-title">エージェント設計</span></a>
 <a class="nav-item" data-domain="tools" href="../02-tools/01-d2about.html" title="ツール設計と MCP 連携">
        <span class="nav-num">Domain 2</span><span class="nav-title">ツールと MCP</span></a>
-<a class="nav-item on" data-domain="code" href="../03-claude-code/01-about.html" title="Claude Code の設定とワークフロー">
+<a class="nav-item" data-domain="code" href="../03-claude-code/01-about.html" title="Claude Code の設定とワークフロー">
        <span class="nav-num">Domain 3</span><span class="nav-title">Claude Code</span></a>
 <a class="nav-item" data-domain="prompt" href="../04-prompt/01-d4about.html" title="プロンプト設計と構造化出力">
        <span class="nav-num">Domain 4</span><span class="nav-title">プロンプト設計</span></a>
 <a class="nav-item" data-domain="context" href="../05-context/01-d5about.html" title="コンテキスト管理と信頼性">
        <span class="nav-num">Domain 5</span><span class="nav-title">コンテキスト管理</span></a>
-<a class="nav-item" data-domain="summary" href="../06-summary/01-all.html" title="全体をもう一度">
+<a class="nav-item on" data-domain="summary" href="../06-summary/01-all.html" title="全体をもう一度">
        <span class="nav-num">まとめ</span><span class="nav-title">全体をもう一度</span></a></div>
   <div class="search-wrap">
   <button class="search-btn" id="openSearch" aria-label="検索"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span>検索</span><kbd>/</kbd></button>
@@ -45,38 +45,42 @@
 </defs></svg>
 <div class="shell">
 <aside class="toc">
-  <div class="toc-head">Domain 3</div>
-  <nav class="toc-list"><a class="itm toc-link" href="../03-claude-code/01-about.html"><span class="itm-n">3-1</span><span class="itm-t">このドメインについて</span></a>
-<a class="itm toc-link" href="../03-claude-code/02-claudemd.html"><span class="itm-n">3-2</span><span class="itm-t">CLAUDE.md の階層と読み込まれ方</span></a>
-<a class="itm toc-link" href="../03-claude-code/03-import.html"><span class="itm-n">3-3</span><span class="itm-t">@import で分割する</span></a>
-<a class="itm toc-link itm-quiz" href="../03-claude-code/04-q31.html"><span class="itm-n">3-4</span><span class="itm-t">理解度チェック ─ CLAUDE.md の階層</span></a>
-<a class="itm toc-link" href="../03-claude-code/05-cmdskill.html"><span class="itm-n">3-5</span><span class="itm-t">スラッシュコマンドとスキル</span></a>
-<a class="itm toc-link on itm-quiz" href="../03-claude-code/06-q32.html"><span class="itm-n">3-6</span><span class="itm-t">理解度チェック ─ コマンドとスキル</span></a>
-<a class="itm toc-link" href="../03-claude-code/07-rules.html"><span class="itm-n">3-7</span><span class="itm-t">パス固有ルール</span></a>
-<a class="itm toc-link" href="../03-claude-code/08-plan.html"><span class="itm-n">3-8</span><span class="itm-t">plan mode と直接実行</span></a>
-<a class="itm toc-link" href="../03-claude-code/09-iterate.html"><span class="itm-n">3-9</span><span class="itm-t">反復的な改善</span></a>
-<a class="itm toc-link itm-quiz" href="../03-claude-code/10-q345.html"><span class="itm-n">3-10</span><span class="itm-t">理解度チェック ─ ルール・plan mode・改善</span></a>
-<a class="itm toc-link" href="../03-claude-code/11-ci.html"><span class="itm-n">3-11</span><span class="itm-t">非対話実行と CI/CD</span></a>
-<a class="itm toc-link" href="../03-claude-code/12-settings.html"><span class="itm-n">3-12</span><span class="itm-t">settings.json と permissions</span></a>
-<a class="itm toc-link itm-quiz" href="../03-claude-code/13-q36.html"><span class="itm-n">3-13</span><span class="itm-t">理解度チェック ─ CI と設定ファイル</span></a>
-<a class="itm toc-link itm-quiz" href="../03-claude-code/14-qall.html"><span class="itm-n">3-14</span><span class="itm-t">理解度チェック ─ Domain 3 総合</span></a></nav>
+  <div class="toc-head">まとめ</div>
+  <nav class="toc-list"><a class="itm toc-link" href="../06-summary/01-all.html"><span class="itm-n">6-1</span><span class="itm-t">1枚で全体を見る</span></a>
+<a class="itm toc-link" href="../06-summary/02-weight.html"><span class="itm-n">6-2</span><span class="itm-t">どこに時間を使うか</span></a>
+<a class="itm toc-link itm-quiz" href="../06-summary/03-q.html"><span class="itm-n">6-3</span><span class="itm-t">理解度チェック ─ 全ドメイン総合</span></a>
+<a class="itm toc-link" href="../06-summary/04-mockabout.html"><span class="itm-n">6-4</span><span class="itm-t">シナリオで解く</span></a>
+<a class="itm toc-link" href="../06-summary/05-mock1.html"><span class="itm-n">6-5</span><span class="itm-t">社内の問い合わせに答えるエージェント</span></a>
+<a class="itm toc-link itm-quiz" href="../06-summary/06-qm1.html"><span class="itm-n">6-6</span><span class="itm-t">理解度チェック ─ 社内の問い合わせ</span></a>
+<a class="itm toc-link" href="../06-summary/07-mock2.html"><span class="itm-n">6-7</span><span class="itm-t">未知のコードベースの不具合調査</span></a>
+<a class="itm toc-link itm-quiz" href="../06-summary/08-qm2.html"><span class="itm-n">6-8</span><span class="itm-t">理解度チェック ─ 不具合の調査</span></a>
+<a class="itm toc-link" href="../06-summary/09-mock3.html"><span class="itm-n">6-9</span><span class="itm-t">5人のチームに導入する</span></a>
+<a class="itm toc-link itm-quiz" href="../06-summary/10-qm3.html"><span class="itm-n">6-10</span><span class="itm-t">理解度チェック ─ チームへの導入</span></a>
+<a class="itm toc-link" href="../06-summary/11-mock4.html"><span class="itm-n">6-11</span><span class="itm-t">請求書から項目を抜き出す</span></a>
+<a class="itm toc-link itm-quiz" href="../06-summary/12-qm4.html"><span class="itm-n">6-12</span><span class="itm-t">理解度チェック ─ 請求書の抽出</span></a>
+<a class="itm toc-link" href="../06-summary/13-mock5.html"><span class="itm-n">6-13</span><span class="itm-t">社外サービスを繋ぐ</span></a>
+<a class="itm toc-link itm-quiz" href="../06-summary/14-qm5.html"><span class="itm-n">6-14</span><span class="itm-t">理解度チェック ─ 社外サービスの接続</span></a>
+<a class="itm toc-link" href="../06-summary/15-mock6.html"><span class="itm-n">6-15</span><span class="itm-t">300ファイルの一括移行</span></a>
+<a class="itm toc-link itm-quiz" href="../06-summary/16-qm6.html"><span class="itm-n">6-16</span><span class="itm-t">理解度チェック ─ 一括移行</span></a>
+<a class="itm toc-link" href="../06-summary/17-mock7.html"><span class="itm-n">6-17</span><span class="itm-t">CI に自動レビューを組み込む</span></a>
+<a class="itm toc-link on itm-quiz" href="../06-summary/18-qm7.html"><span class="itm-n">6-18</span><span class="itm-t">理解度チェック ─ CI の自動レビュー</span></a></nav>
   <a class="toc-all" href="../index.html#all">全項目一覧（90項）</a>
 </aside>
 <main class="doc">
-<p class="crumb" data-domain="code"><b>Domain 3</b><span>Claude Code の設定とワークフロー</span><span class="w">出題比率 20%（約12問）</span></p>
+<p class="crumb" data-domain="summary"><b>まとめ</b><span>全体をもう一度</span></p>
 <!-- ▼ 本文 ─ ここだけを編集する。この前後は node tools/reindex.mjs が書き出す -->
-<section class="sec sec-quiz" id="q32" data-quiz="q32">
+<section class="sec sec-quiz" id="qm7" data-quiz="m7">
 <header class="sec-head">
-  <h2>3-6　理解度チェック ─ コマンドとスキル</h2>
+  <h2>6-18　理解度チェック ─ CI の自動レビュー</h2>
 </header>
-<p class="lead"></p>
+<p class="lead">3問。</p>
   <div class="qwrap"></div>
 </section>
 <!-- ▲ 本文 -->
 <nav class="secpager">
-<a class="pgv prev" href="../03-claude-code/05-cmdskill.html"><span class="pgv-l">前へ</span><span class="pgv-t">3-5　スラッシュコマンドとスキル</span></a>
-<span class="pgv-n">Domain 3 6 / 14</span>
-<a class="pgv next" href="../03-claude-code/07-rules.html"><span class="pgv-l">次へ</span><span class="pgv-t">3-7　パス固有ルール</span></a>
+<a class="pgv prev" href="../06-summary/17-mock7.html"><span class="pgv-l">前へ</span><span class="pgv-t">6-17　CI に自動レビューを組み込む</span></a>
+<span class="pgv-n">まとめ 18 / 18</span>
+<span class="pgv next end"><span class="pgv-l">ここで終わり</span><span class="pgv-t">おつかれさまでした</span></span>
 </nav>
 </main>
 </div>

@@ -64,7 +64,7 @@
 <a class="itm toc-link" href="../04-prompt/13-batch.html"><span class="itm-n">4-13</span><span class="itm-t">バッチ処理</span></a>
 <a class="itm toc-link" href="../04-prompt/14-multi.html"><span class="itm-n">4-14</span><span class="itm-t">多重レビュー</span></a>
 <a class="itm toc-link itm-quiz" href="../04-prompt/15-q56.html"><span class="itm-n">4-15</span><span class="itm-t">理解度チェック ─ バッチと多重化</span></a></nav>
-  <a class="toc-all" href="../index.html#all">全項目一覧（88項）</a>
+  <a class="toc-all" href="../index.html#all">全項目一覧（90項）</a>
 </aside>
 <main class="doc">
 <p class="crumb" data-domain="prompt"><b>Domain 4</b><span>プロンプト設計と構造化出力</span><span class="w">出題比率 20%（約12問）</span></p>
@@ -168,6 +168,7 @@
     「道具は渡しておくが、今回は使わせたくない」→ <b><code>none</code></b>。ツール定義を外す必要はありません。</div>
   </div>
   <p class="point"><b>ポイント</b>「JSONで返して」と頼むのではなく、<b>ツールを使わざるを得なくする</b>。これが構造化出力の強制。</p>
+  <p class="note">※ どの型にも <code>"disable_parallel_tool_use": true</code> を添えられます。付けると<b>1回の応答で呼ばれる道具が1つに制限されます</b>（Domain 1〈子はどう起こすのか〉の並列ツール使用を切る指定）。抽出のように「1件につき1つ」と決まっている場面で使います。</p>
 
 <h3 class="sub" id="struct-3">受け皿の形で、揺れを潰す</h3>
 <p class="lead">スキーマは「形を決める」だけでなく、<b>迷ったときの逃げ道</b>まで決めるものです。</p>
@@ -227,7 +228,7 @@
     <div class="modal-foot"><kbd>Esc</kbd> で閉じる</div>
   </div>
 </div>
-<script src="../assets/quiz-data.js?v=4385afea"></script>
-<script src="../assets/search-index.js?v=e73243a3"></script>
-<script src="../assets/app.js?v=0564f87d"></script>
+<script src="../assets/quiz-data.js?v=305bd836"></script>
+<script src="../assets/search-index.js?v=672b94c4"></script>
+<script src="../assets/app.js?v=5bf1e1db"></script>
 </body></html>
