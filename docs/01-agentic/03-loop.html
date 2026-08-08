@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/style.css?v=acf8ceb2">
+<link rel="stylesheet" href="../assets/style.css?v=b611c55a">
 </head>
 <body data-page="loop">
 <script>(function(){var t=localStorage.getItem('ccarf-theme');if(t)document.documentElement.dataset.theme=t;})();</script>
@@ -46,7 +46,7 @@
 <div class="shell">
 <aside class="toc">
   <div class="toc-head">Domain 1</div>
-  <nav class="toc-list"><a class="toc-link" href="../01-agentic/01-d1about.html">1-1　1往復では終わらない仕事</a>
+  <nav class="toc-list"><a class="toc-link" href="../01-agentic/01-d1about.html">1-1　このドメインについて</a>
 <a class="toc-link" href="../01-agentic/02-tools.html">1-2　ツールを渡すとは、説明書を渡すこと</a>
 <a class="toc-link on" href="../01-agentic/03-loop.html">1-3　エージェントループの1周</a>
 <a class="toc-link" href="../01-agentic/04-stop.html">1-4　stop_reason で分岐する</a>
@@ -64,79 +64,74 @@
 <a class="toc-link toc-quiz" href="../01-agentic/16-q3.html">1-16　理解度チェック ─ 起動と強制</a>
 <a class="toc-link" href="../01-agentic/17-session.html">1-17　セッションをまたぐ</a>
 <a class="toc-link toc-quiz" href="../01-agentic/18-q4.html">1-18　理解度チェック ─ セッション</a></nav>
+  <a class="toc-all" href="../index.html#all">全項目一覧（88項）</a>
 </aside>
 <main class="doc">
-<p class="crumb" data-domain="agentic"><b>Domain 1</b><span>エージェント設計とオーケストレーション</span><span class="w">出題比率 27%</span></p>
+<p class="crumb" data-domain="agentic"><b>Domain 1</b><span>エージェント設計とオーケストレーション</span><span class="w">出題比率 27%（約16問）</span></p>
 <!-- ▼ 本文 ─ ここだけを編集する。この前後は node tools/reindex.mjs が書き出す -->
 <section class="sec" id="loop" data-widget="p-loop">
 <header class="sec-head">
   <h2>1-3　エージェントループの1周</h2>
 </header>
-<p class="lead">「モデルが要求 → アプリが実行 → 結果を返して再びモデルへ」。この4手が1周です。1手ずつ進めて、会話がどう伸びるかを見てください。</p>
+<p class="lead">「アプリが送る → モデルが要求 → アプリが実行 → 結果を返してまた送る」。この4つで1周です。1つずつ進めて、会話がどう伸びるかを見てください。</p>
 <p class="task"><span class="tn">BLUEPRINT 1.1</span><b>エージェントループの設計と実装</b></p>
-<p class="goal"><b>ゴール</b>1周の4手と、<code>tool_use</code> への返し方を言える。</p>
-  <div class="figbox"><div class="diagram">
-  <svg viewBox="0 0 760 300">
-    <g opacity=".55">
-      <path d="M505 50 C 600 60, 660 90, 655 112" fill="none" stroke="var(--fig-muted)" stroke-width="2" marker-end="url(#ar)"/>
-      <path d="M640 182 C 640 220, 560 250, 512 254" fill="none" stroke="var(--fig-muted)" stroke-width="2" marker-end="url(#ar)"/>
-      <path d="M255 256 C 190 250, 120 220, 120 184" fill="none" stroke="var(--fig-muted)" stroke-width="2" marker-end="url(#ar)"/>
-      <path d="M120 112 C 118 88, 180 58, 250 48" fill="none" stroke="var(--fig-amber)" stroke-width="2" marker-end="url(#ara)"/></g>
-    <g class="nd" id="n1"><rect x="255" y="20" width="250" height="52" rx="10" fill="var(--fig-fill-amber)" stroke="var(--fig-line-amber)"/>
-      <text class="ttl" x="380" y="44" text-anchor="middle" style="fill:var(--fig-amber)">① モデルが考える</text>
-      <text class="sm" x="380" y="62" text-anchor="middle">「まず中身を検索する必要がある」</text></g>
-    <g class="nd" id="n2"><rect x="530" y="118" width="220" height="60" rx="10" fill="var(--fig-surface)" stroke="var(--fig-line)"/>
-      <text class="ttl" x="640" y="142" text-anchor="middle">② tool_use を返す</text>
-      <text class="mono" x="640" y="162" text-anchor="middle">search_files(pattern:"TODO")</text></g>
-    <g class="nd" id="n3"><rect x="255" y="228" width="250" height="56" rx="10" fill="var(--fig-fill-blue)" stroke="var(--fig-line-blue)"/>
-      <text class="ttl" x="380" y="252" text-anchor="middle" style="fill:var(--fig-blue)">③ アプリが実行する</text>
-      <text class="sm" x="380" y="271" text-anchor="middle">ファイルを走査する / APIを叩く</text></g>
-    <g class="nd" id="n4"><rect x="10" y="118" width="220" height="60" rx="10" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)"/>
-      <text class="ttl" x="120" y="142" text-anchor="middle" style="fill:var(--fig-green)">④ tool_result を返す</text>
-      <text class="mono" x="120" y="162" text-anchor="middle">{"hits":3}</text></g>
-    <text class="sm" x="380" y="152" text-anchor="middle">④のあと、また①に戻る</text>
-    <text class="sm" x="380" y="172" text-anchor="middle">＝ 会話履歴が1往復ぶん伸びる</text>
-  </svg>
-  </div></div>
-  <div class="play" style="margin-top:12px">
-    <div class="head">▶ ボタンを押すと1手進み、下に会話が積み上がります</div>
-    <div class="ctrl"><button class="go" id="lp-next">1手進める →</button><button id="lp-reset">最初から</button></div>
-    <div class="log" id="lp-log"></div>
-  </div>
-  <div class="detail"><h3>図の読み方</h3>
-    <ol class="ann">
-      <li><span class="n">1</span><span><b>モデルが考える</b>。まだ外には何も起きていません。</span></li>
-      <li><span class="n">2</span><span><b>tool_use を返す</b>。要求が応答として返り、<b>ここでモデルの処理はいったん終わります</b>。（下のログに出てくる <code>stop_reason</code> は、このすぐあとで扱います）</span></li>
-      <li><span class="n">3</span><span><b>アプリが実行する</b>。<b>この間モデルは動いていません。</b>待っているのではなく、呼ばれていないだけです。</span></li>
-      <li><span class="n">4</span><span><b>tool_result を返す</b>。結果を末尾に足して、もう一度送ります。</span></li>
-      <li><span class="n">5</span><span>①に戻る。ただし<b>「続きから再開」ではなく</b>、伸びた履歴をまた最初から読み直しています。</span></li>
-    </ol>
-    <p>矢印は「<b>処理の担当が移る向き</b>」であって、データが自動で流れているのではありません。動かしているのは常にアプリ側です。Claude が書いたのは②と⑤だけで、③④はすべてコードの中の出来事です。</p>
+<p class="goal"><b>ゴール</b>1周の4つの手順と、<code>tool_use</code> への返し方を言える。</p>
+
+<div class="figbox"><figure class="fig run">
+  <p class="fig-t">1周の4つ ─ 動かしているのは、いつもアプリ側の <code>while</code> 文</p>
+  <div class="fig-seq">
+    <div class="sq-head"><span class="sq-b s1">アプリ</span><span class="sq-a s1">Claude</span></div>
+    <div class="sq-body">
+    <div class="sq-row to-r nd s2" id="n1">
+      <span class="sq-lbl"><span class="sq-n">1</span>質問 ＋ <b>ツール定義</b> ＋ これまでの履歴を送る</span>
+      <span class="sq-note">1周は<b>アプリが送るところから</b>始まる。モデルは呼ばれて初めて動く</span>
     </div>
-  <p class="point"><b>ポイント</b>tool_use を受け取ったら、必ず対応する tool_result を返して会話を続ける。返さずに次の質問を足すと、会話は壊れる。</p>
+    <div class="sq-row to-l nd s3" id="n2">
+      <span class="sq-lbl"><span class="sq-n">2</span><code>tool_use</code> を返す</span>
+      <span class="sq-note">ここでモデルの処理はいったん終わる（待っているのではなく、終わっている）</span>
+    </div>
+    <div class="sq-self nd s4" id="n3">
+      <b><span class="sq-n">3</span>アプリが要求されたツールを実行する</b>
+      <span class="sq-note">この間モデルは動いていない</span>
+    </div>
+    <div class="sq-row to-r nd s5" id="n4">
+      <span class="sq-lbl"><span class="sq-n">4</span>結果を <code>tool_result</code> として足し、<b>もう一度まるごと</b>送る</span>
+      <span class="sq-note">これが次の周の 1 になる。「続きから再開」ではなく、伸びた履歴をまた最初から読み直す</span>
+    </div>
+    </div>
+  </div>
+  <p class="fig-f">矢印は<b>処理の担当が移る向き</b>で、データが自動で流れているのではない。Claude が書いたのは 2 だけで、1・3・4 はすべてコードの中の出来事。だから「5周までで打ち切る」も自由に書ける。</p>
+</figure></div>
+
+<div class="play" style="margin-top:12px">
+  <div class="head">▶ ボタンを押すと1つ進みます。上の図の対応する番号が明るくなり、下に会話が積み上がります</div>
+  <div class="ctrl"><button class="go" id="lp-next">1つ進める →</button><button id="lp-reset">最初から</button></div>
+  <div class="log" id="lp-log"></div>
+</div>
+
+<p class="point"><b>ポイント</b><code>tool_use</code> を受け取ったら、必ず対応する <code>tool_result</code> を返して会話を続ける。返さずに次の質問を足すと、会話は壊れる。</p>
 
 <h3 class="sub">「依頼する側」がねじれて見える</h3>
-<div class="detail"><h3>「依頼する側」がねじれて見える</h3>
-    <p>通信の形でいえば、<b>アプリがクライアント、モデル側がサーバ</b>です。接続を開いてリクエストを送るのは、いつもアプリのほうです。</p>
-    <p>ところが②では、<b>モデルが「これを実行してほしい」と依頼し、アプリが実行して報告しています</b>。通信では問い合わせる側だったアプリが、仕事の中身では受ける側になっている ─ ここがねじれて見える理由です。</p>
-    <div class="myth">
-      <span class="t o">帰結</span><span>モデルは自分から接続を開けないので、<b>聞かれたときにしか要求を出せません</b>。アプリが次のリクエストを送らなければ、モデルは何もしません。待っているのですらなく、処理そのものが終わっています。<b>「エージェントが勝手に動き続ける」ことが構造上ありえない</b>のは、これが理由です。</span>
-    </div>
-    <div class="ex"><span class="exl">④を返し忘れるとどうなるか</span>
-    「TODO を探して」と頼んだのに、返事が来ないまま次の話をされる状態です。<br>
-    Claude 側から見ると<b>頼んだ仕事の結果が永久に来ない</b>ので、会話の筋が通らなくなります。API が形式エラーを返すこともあります。</div>
-    <div class="myth">
-      <span class="t">誤解</span><span>「ループを回す＝Claude が自律的に動き続けている」</span>
-      <span class="t o">実際は</span><span>回しているのは<b>アプリ側の while 文</b>。だから「5周までで打ち切る」も自由に書けます。</span>
-    </div>
+<div class="detail">
+  <p>通信の形でいえば、<b>アプリがクライアント、モデル側がサーバ</b>です。接続を開いてリクエストを送るのは、いつもアプリのほうです。</p>
+  <p>ところが手順2では、<b>モデルが「これを実行してほしい」と依頼し、アプリが実行して報告しています</b>。通信では問い合わせる側だったアプリが、仕事の中身では受ける側になっている ─ ここがねじれて見える理由です。</p>
+  <div class="myth">
+    <span class="t o">帰結</span><span>モデルは自分から接続を開けないので、<b>聞かれたときにしか要求を出せません</b>。アプリが次のリクエストを送らなければ、モデルは何もしません。待っているのですらなく、処理そのものが終わっています。<b>「エージェントが勝手に動き続ける」ことが構造上ありえない</b>のは、これが理由です。</span>
   </div>
-  <p class="point"><b>ポイント</b>tool_use を受け取ったら、必ず対応する tool_result を返して会話を続ける。返さずに次の質問を足すと、会話は壊れる。</p>
+  <div class="ex"><span class="exl">手順4を返し忘れるとどうなるか</span>
+  「TODO を探して」と頼んだのに、返事が来ないまま次の話をされる状態です。<br>
+  Claude 側から見ると<b>頼んだ仕事の結果が永久に来ない</b>ので、会話の筋が通らなくなります。API が形式エラーを返すこともあります。</div>
+  <div class="myth">
+    <span class="t">誤解</span><span>「ループを回す＝Claude が自律的に動き続けている」</span>
+    <span class="t o">実際は</span><span>回しているのは<b>アプリ側の while 文</b>。だから「5周までで打ち切る」も自由に書けます。</span>
+  </div>
+</div>
 </section>
 <!-- ▲ 本文 -->
 <nav class="secpager">
-<a class="pgv prev" href="../01-agentic/02-tools.html"><span class="pgv-l">前へ</span>1-2　ツールを渡すとは、説明書を渡すこと</a>
+<a class="pgv prev" href="../01-agentic/02-tools.html"><span class="pgv-l">前へ</span><span class="pgv-t">1-2　ツールを渡すとは、説明書を渡すこと</span></a>
 <span class="pgv-n">Domain 1 3 / 18</span>
-<a class="pgv next" href="../01-agentic/04-stop.html"><span class="pgv-l">次へ</span>1-4　stop_reason で分岐する</a>
+<a class="pgv next" href="../01-agentic/04-stop.html"><span class="pgv-l">次へ</span><span class="pgv-t">1-4　stop_reason で分岐する</span></a>
 </nav>
 </main>
 </div>
@@ -148,6 +143,6 @@
   </div>
 </div>
 <script src="../assets/quiz-data.js?v=4385afea"></script>
-<script src="../assets/search-index.js?v=98a5172a"></script>
-<script src="../assets/app.js?v=1c7668ec"></script>
+<script src="../assets/search-index.js?v=de7413f7"></script>
+<script src="../assets/app.js?v=0564f87d"></script>
 </body></html>

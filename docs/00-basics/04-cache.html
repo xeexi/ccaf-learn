@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/style.css?v=acf8ceb2">
+<link rel="stylesheet" href="../assets/style.css?v=b611c55a">
 </head>
 <body data-page="cache">
 <script>(function(){var t=localStorage.getItem('ccarf-theme');if(t)document.documentElement.dataset.theme=t;})();</script>
@@ -55,6 +55,7 @@
 <a class="toc-link toc-sub" href="#cache-3">実物を見る ─ cache_control で区切りを打つ</a>
 <a class="toc-link" href="../00-basics/05-token.html">0-5　確率で次の1トークンを選ぶ</a>
 <a class="toc-link toc-quiz" href="../00-basics/06-q.html">0-6　理解度チェック</a></nav>
+  <a class="toc-all" href="../index.html#all">全項目一覧（88項）</a>
 </aside>
 <main class="doc">
 <p class="crumb" data-domain="basics"><b>前提</b><span>会話の実体</span></p>
@@ -66,7 +67,6 @@
 
 <h3 class="sub" id="cache-1">同じ前半は、使い回せる</h3>
 <p class="lead">毎回まるごと送り直しますが、前半が前回と同じなら計算をやり直す必要はありません。これがプロンプトキャッシュです。</p>
-<p class="task">ブループリント対応なし ── 各タスクの土台になる知識</p>
 <p class="goal"><b>ゴール</b>キャッシュが効く条件と、崩れる条件を言える。</p>
   <div class="play">
     <div class="head">▶ 並べ方を切り替えて、2回目の負担を比べる</div>
@@ -78,17 +78,13 @@
     <div class="reqbar" id="cb1"></div>
     <div class="rlabel">2回目のリクエスト（1文だけ足した）</div>
     <div class="reqbar" id="cb2"></div>
+    <div class="fig-legend" style="margin-top:14px">
+      <span class="lg"><span class="sw" style="background:color-mix(in srgb,var(--green) 22%,var(--surface-2));border-color:var(--fig-line-green)"></span><b>前回と一致</b><span class="n">計算をやり直さない</span></span>
+      <span class="lg"><span class="sw" style="background:color-mix(in srgb,var(--amber) 20%,var(--surface-2));border-color:var(--fig-line-amber)"></span><b>今回足された分</b><span class="n">計算するのはここだけ</span></span>
+      <span class="lg"><span class="sw" style="background:color-mix(in srgb,var(--red) 11%,var(--surface-2));border-color:var(--fig-line-red)"></span><b>計算し直す</b><span class="n">1回目は全部ここ。先頭が変わると2回目も全部ここになる</span></span>
+    </div>
     <div class="answer show" id="cans"></div>
   </div>
-  <div class="detail"><h3>画面の読み方</h3>
-    <ol class="ann">
-      <li><span class="n">1</span><span>上の帯が<b>1回目</b>、下の帯が<b>2回目</b>（1文だけ足した状態）。</span></li>
-      <li><span class="n">2</span><span>緑が<b>前回と先頭から一致している範囲</b>。ここは計算をやり直しません。</span></li>
-      <li><span class="n">3</span><span>橙が<b>今回足された分</b>。計算するのはここだけです。</span></li>
-      <li><span class="n">4</span><span>「冒頭に日付を入れる」に切り替えると<b>緑が消えます</b>。先頭が変わると、後ろ全部が作り直しになるからです。</span></li>
-    </ol>
-    </div>
-  <p class="point"><b>ポイント</b>キャッシュは「先頭から一致している範囲」だけ効く。1文字でも前を書き換えると、そこから後ろは全部作り直しになる。だからDomain 4の「長い資料は先、指示は後」は、精度だけでなくコストの話でもある。</p>
 
 <h3 class="sub" id="cache-2">キャッシュが崩れる3つの場合</h3>
 <div class="detail"><div class="ex"><span class="exl">よくある失敗</span>
@@ -126,17 +122,16 @@
       <li><span class="n">1</span><span>このブロック<b>までが</b>まとめてキャッシュ対象になります。区切りは1リクエストにつき<b>最大4つ</b>まで。</span></li>
       <li><span class="n">2</span><span><b>作った</b>トークン数。1回目はここに数字が出ます。書き込みは通常の入力より割高です。</span></li>
       <li><span class="n">3</span><span><b>読めた</b>トークン数。2回目以降ここに数字が入り、<code>input_tokens</code> が小さくなります。<b>効いたかどうかはこの値で判断します</b>。</span></li>
-      <li><span class="n">4</span><span>有効期限は<b>既定で5分</b>。<code>"ttl": "1h"</code> を足せば1時間保ちますが、そのぶん単価が上がります。</span></li>
     </ol>
   </div>
   <p class="point"><b>ポイント</b>効いたかどうかは <code>usage.cache_read_input_tokens</code> で確かめる。区切りは最大4つ、既定の有効期限は5分。</p>
-  <p class="note">※ 短いプロンプトはそもそもキャッシュされません（モデルごとに最小トークン数が決まっています）。また、会話をふつうに続けている場合は明示しなくても自動で効きます。<code>cache_control</code> を自分で打つのは、<b>同じ長い前半に対して1回きりのリクエストを何本も投げる</b>ときです。</p>
+  <p class="note">※ 有効期限は<b>既定で5分</b>。<code>"ttl": "1h"</code> を足せば1時間保ちますが、そのぶん単価が上がります。<br>※ 短いプロンプトはそもそもキャッシュされません（モデルごとに最小トークン数が決まっています）。また、会話をふつうに続けている場合は明示しなくても自動で効きます。<code>cache_control</code> を自分で打つのは、<b>同じ長い前半に対して1回きりのリクエストを何本も投げる</b>ときです。</p>
 </section>
 <!-- ▲ 本文 -->
 <nav class="secpager">
-<a class="pgv prev" href="../00-basics/03-window.html"><span class="pgv-l">前へ</span>0-3　トークンとコンテキストウィンドウ</a>
+<a class="pgv prev" href="../00-basics/03-window.html"><span class="pgv-l">前へ</span><span class="pgv-t">0-3　トークンとコンテキストウィンドウ</span></a>
 <span class="pgv-n">前提 4 / 6</span>
-<a class="pgv next" href="../00-basics/05-token.html"><span class="pgv-l">次へ</span>0-5　確率で次の1トークンを選ぶ</a>
+<a class="pgv next" href="../00-basics/05-token.html"><span class="pgv-l">次へ</span><span class="pgv-t">0-5　確率で次の1トークンを選ぶ</span></a>
 </nav>
 </main>
 </div>
@@ -148,6 +143,6 @@
   </div>
 </div>
 <script src="../assets/quiz-data.js?v=4385afea"></script>
-<script src="../assets/search-index.js?v=98a5172a"></script>
-<script src="../assets/app.js?v=1c7668ec"></script>
+<script src="../assets/search-index.js?v=de7413f7"></script>
+<script src="../assets/app.js?v=0564f87d"></script>
 </body></html>

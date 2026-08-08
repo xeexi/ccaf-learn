@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/style.css?v=acf8ceb2">
+<link rel="stylesheet" href="../assets/style.css?v=b611c55a">
 </head>
 <body data-page="split">
 <script>(function(){var t=localStorage.getItem('ccarf-theme');if(t)document.documentElement.dataset.theme=t;})();</script>
@@ -46,7 +46,7 @@
 <div class="shell">
 <aside class="toc">
   <div class="toc-head">Domain 1</div>
-  <nav class="toc-list"><a class="toc-link" href="../01-agentic/01-d1about.html">1-1　1往復では終わらない仕事</a>
+  <nav class="toc-list"><a class="toc-link" href="../01-agentic/01-d1about.html">1-1　このドメインについて</a>
 <a class="toc-link" href="../01-agentic/02-tools.html">1-2　ツールを渡すとは、説明書を渡すこと</a>
 <a class="toc-link" href="../01-agentic/03-loop.html">1-3　エージェントループの1周</a>
 <a class="toc-link" href="../01-agentic/04-stop.html">1-4　stop_reason で分岐する</a>
@@ -64,9 +64,10 @@
 <a class="toc-link toc-quiz" href="../01-agentic/16-q3.html">1-16　理解度チェック ─ 起動と強制</a>
 <a class="toc-link" href="../01-agentic/17-session.html">1-17　セッションをまたぐ</a>
 <a class="toc-link toc-quiz" href="../01-agentic/18-q4.html">1-18　理解度チェック ─ セッション</a></nav>
+  <a class="toc-all" href="../index.html#all">全項目一覧（88項）</a>
 </aside>
 <main class="doc">
-<p class="crumb" data-domain="agentic"><b>Domain 1</b><span>エージェント設計とオーケストレーション</span><span class="w">出題比率 27%</span></p>
+<p class="crumb" data-domain="agentic"><b>Domain 1</b><span>エージェント設計とオーケストレーション</span><span class="w">出題比率 27%（約16問）</span></p>
 <!-- ▼ 本文 ─ ここだけを編集する。この前後は node tools/reindex.mjs が書き出す -->
 <section class="sec" id="split">
 <header class="sec-head">
@@ -75,52 +76,37 @@
 <p class="lead">複数に分けると強くなるとは限りません。分けるほど、渡し忘れと統合の失敗が増えます。</p>
 <p class="task"><span class="tn">BLUEPRINT 1.2</span><b>コーディネータ／サブエージェント構成での統率</b></p>
 <p class="goal"><b>ゴール</b>分けたときに増える失敗を挙げられる。</p>
-  <div class="figbox"><div class="diagram run">
-  <svg viewBox="0 0 760 270">
-    <text class="ttl s1" x="30" y="34">この3つに当てはまるか</text>
-    <g class="s2"><rect x="30" y="48" width="420" height="42" rx="8" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
-      <text class="lbl" x="50" y="74">① 別々に大量の資料を読む必要がある（文脈が混ざる）</text></g>
-    <g class="s3"><rect x="30" y="98" width="420" height="42" rx="8" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
-      <text class="lbl" x="50" y="124">② 互いに待たなくてよい（同時に走らせられる）</text></g>
-    <g class="s4"><rect x="30" y="148" width="420" height="42" rx="8" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
-      <text class="lbl" x="50" y="174">③ 求める専門性や指示が明らかに違う</text></g>
-    <g class="s5"><line x1="460" y1="118" x2="510" y2="86" stroke="var(--fig-green)" stroke-width="2" marker-end="url(#ar)"/>
-      <rect x="520" y="56" width="220" height="60" rx="10" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)"/>
-      <text class="ttl" x="630" y="82" text-anchor="middle" style="fill:var(--fig-green)">1つでも当てはまる</text>
-      <text class="sm" x="630" y="102" text-anchor="middle">→ 分けて、子に任せる</text></g>
-    <g class="s6"><line x1="460" y1="140" x2="510" y2="168" stroke="var(--fig-muted)" stroke-width="2" marker-end="url(#ar)"/>
-      <rect x="520" y="140" width="220" height="60" rx="10" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
-      <text class="ttl" x="630" y="166" text-anchor="middle">どれも当てはまらない</text>
-      <text class="sm" x="630" y="186" text-anchor="middle">→ 1体のまま。分けない</text></g>
-    <g class="s7"><rect x="30" y="212" width="710" height="46" rx="10" fill="var(--fig-fill-red)" stroke="var(--fig-line-red)"/>
-      <text class="lbl" x="50" y="234" style="fill:var(--fig-red)">分けた瞬間、「前提の渡し忘れ」と「結果の統合ミス」という新しい失敗が生まれる。</text>
-      <text class="sm" x="50" y="252">迷ったら1体。うまくいかない理由がはっきりしてから分ける。</text></g>
-  </svg>
-  </div></div>
-  <div class="detail">
-    <h3>図の読み方</h3>
-    <ol class="ann">
-      <li><span class="n">1</span><span><b>「この3つに当てはまるか」</b>（左）── 判断の条件です。3つとも<b>「分ける理由があるか」</b>を問うています。「分けたほうが速そう」は理由に入りません。</span></li>
-      <li><span class="n">2</span><span><b>「1つでも当てはまる」</b>（右上・緑）── 分けて子に任せます。<b>3つ全部そろう必要はありません。</b></span></li>
-      <li><span class="n">3</span><span><b>「どれも当てはまらない」</b>（右下）── 1体のまま。分けません。</span></li>
-      <li><span class="n">4</span><span>下の赤い帯が<b>分けた瞬間に生まれる新しい失敗</b>。前提の渡し忘れと、結果の統合ミスです。分ける前には存在しなかった不具合が増えます。</span></li>
-    </ol>
-    <p>とくに条件①は重要です。<b>別々に大量の資料を読む作業は、分けないと窓が共倒れになります</b>（Domain 5）。</p>
-    <div class="ex"><span class="exl">分けない例／分ける例</span>
-    ✗ 3つのファイルに、決まった順で同じ修正を入れる → <b>1体でよい</b>。順番も内容も決まっていて、読む量も少ない<br>
-    ○ 10個のリポジトリを、それぞれ独立に調査する → <b>分ける</b>。互いに待つ必要がなく、それぞれ大量に読む</div>
-    <div class="myth">
-      <span class="t">誤解</span><span>「複数エージェント構成＝高度で優れた設計」</span>
-      <span class="t o">実際は</span><span>分ける理由がないのに分ければ、<b>ただの劣化</b>です。渡し忘れと統合ミスだけが増えます。</span>
-    </div>
+
+<table class="tbl">
+  <thead><tr><th></th><th>1体のまま</th><th>分ける（親＋子）</th></tr></thead>
+  <tbody>
+    <tr><th>選ぶ条件</th>
+      <td data-l="1体のまま">下の3つが<b>どれも当てはまらない</b>とき</td>
+      <td data-l="分ける">① 別々に<b>大量の資料を読む</b>　② 互いに<b>待つ必要がない</b>　③ <b>責務が違う</b><br><span class="ok">1つでも当てはまれば分ける</span>（3つ全部そろう必要はない）</td></tr>
+    <tr><th>例</th>
+      <td data-l="1体のまま">3つのファイルに、決まった順で同じ修正を入れる<br><span class="n">順番も内容も決まっていて、読む量も少ない</span></td>
+      <td data-l="分ける">10個のリポジトリを、それぞれ独立に調査する<br><span class="n">互いに待つ必要がなく、それぞれ大量に読む</span></td></tr>
+    <tr><th>増える失敗</th>
+      <td data-l="1体のまま">─</td>
+      <td data-l="分ける"><span class="ng">前提の渡し忘れ</span>／<span class="ng">結果の統合ミス</span><br>分ける前には存在しなかった不具合が増える</td></tr>
+  </tbody>
+</table>
+
+<p class="point"><b>ポイント</b>「複数エージェントにすべきか」を問う設問では、単純な1体で足りる選択肢が正解のことが多い。分けるのは理由があるときだけ。</p>
+
+<div class="detail">
+  <p>とくに条件①は重要です。<b>別々に大量の資料を読む作業は、分けないと窓が共倒れになります</b>（Domain 5）。「分けたほうが速そう」は理由に入りません。</p>
+  <div class="myth">
+    <span class="t">誤解</span><span>「複数エージェント構成＝高度で優れた設計」</span>
+    <span class="t o">実際は</span><span>分ける理由がないのに分ければ、<b>ただの劣化</b>です。渡し忘れと統合ミスだけが増えます。</span>
   </div>
-  <p class="point"><b>ポイント</b>「複数エージェントにすべきか」を問う設問では、単純な1体で足りる選択肢が正解のことが多い。分けるのは理由があるときだけ。</p>
+</div>
 </section>
 <!-- ▲ 本文 -->
 <nav class="secpager">
-<a class="pgv prev" href="../01-agentic/08-q1.html"><span class="pgv-l">前へ</span>1-8　理解度チェック ─ ループ</a>
+<a class="pgv prev" href="../01-agentic/08-q1.html"><span class="pgv-l">前へ</span><span class="pgv-t">1-8　理解度チェック ─ ループ</span></a>
 <span class="pgv-n">Domain 1 9 / 18</span>
-<a class="pgv next" href="../01-agentic/10-parent.html"><span class="pgv-l">次へ</span>1-10　親子の形</a>
+<a class="pgv next" href="../01-agentic/10-parent.html"><span class="pgv-l">次へ</span><span class="pgv-t">1-10　親子の形</span></a>
 </nav>
 </main>
 </div>
@@ -132,6 +118,6 @@
   </div>
 </div>
 <script src="../assets/quiz-data.js?v=4385afea"></script>
-<script src="../assets/search-index.js?v=98a5172a"></script>
-<script src="../assets/app.js?v=1c7668ec"></script>
+<script src="../assets/search-index.js?v=de7413f7"></script>
+<script src="../assets/app.js?v=0564f87d"></script>
 </body></html>

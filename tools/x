@@ -1,0 +1,64 @@
+#!/usr/bin/env bash
+# =========================================================
+#  node を入れずに tools/*.mjs を回すための docker ラッパー
+#
+#    ./tools/x reindex    節ファイルの周りを書き出す ＋ 索引の再生成
+#    ./tools/x check      静的チェック（exit 1 なら要修正）
+#    ./tools/x measure    ブラウザ実測（文字サイズ・右端・横溢れ・コントラスト）
+#    ./tools/x node …     任意の node コマンド
+#
+#  -u $(id -u):$(id -g) を必ず付けること。
+#  付けないと reindex が書き出す HTML が root 所有になり、
+#  以後ホスト側から編集できなくなる。
+# =========================================================
+set -euo pipefail
+
+REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+NODE_IMAGE="${CCARF_NODE_IMAGE:-node:22-alpine}"
+
+# Playwright イメージは**ブラウザだけ**同梱していて、playwright ライブラリは入っていない。
+# ライブラリは tools/.cache に入れる。バージョンはイメージのタグと必ず一致させること
+# （ズレるとブラウザのリビジョン検査で落ちる）。
+PW_VER="${CCARF_PW_VER:-1.62.1}"
+PW_IMAGE="${CCARF_PW_IMAGE:-mcr.microsoft.com/playwright:v$PW_VER-noble}"
+CACHE="$REPO/tools/.cache"
+
+run() {   # run <イメージ> <コマンド…>
+  local image="$1"; shift
+  docker run --rm -i \
+    -u "$(id -u):$(id -g)" \
+    -v "$REPO:/w" -w /w \
+    -e HOME=/w/tools/.cache \
+    -e NODE_PATH=/w/tools/.cache/node_modules \
+    "$image" "$@"
+}
+
+cmd="${1:-}"; shift || true
+
+case "$cmd" in
+  reindex)  run "$NODE_IMAGE" node tools/reindex.mjs "$@" ;;
+  check)    run "$NODE_IMAGE" node tools/check.mjs   "$@" ;;
+  measure)
+    mkdir -p "$CACHE"
+    if [ ! -d "$CACHE/node_modules/playwright" ]; then
+      echo "playwright@$PW_VER を tools/.cache に用意します（初回のみ）…" >&2
+      run "$PW_IMAGE" env PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 \
+        npm install --prefix tools/.cache --no-audit --no-fund --loglevel=error \
+        "playwright@$PW_VER"
+    fi
+    run "$PW_IMAGE" node tools/measure.mjs "$@"
+    ;;
+  node)     run "$NODE_IMAGE" node "$@" ;;
+  shell)    docker run --rm -it -u "$(id -u):$(id -g)" -v "$REPO:/w" -w /w "$NODE_IMAGE" sh ;;
+  *)
+    cat >&2 <<'USAGE'
+使い方: ./tools/x <サブコマンド>
+
+  reindex   節ファイルの周りを書き出す ＋ 検索インデックスの再生成 ＋ ?v= の打ち直し
+  check     静的チェック（過去の不具合の再発検出）
+  measure   ブラウザ実測（390/640/860/1024/1440px × 両テーマ）
+  node …    任意の node コマンド
+  shell     コンテナの中に入る
+USAGE
+    exit 2 ;;
+esac

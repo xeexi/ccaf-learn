@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/style.css?v=acf8ceb2">
+<link rel="stylesheet" href="../assets/style.css?v=b611c55a">
 </head>
 <body data-page="intercept">
 <script>(function(){var t=localStorage.getItem('ccarf-theme');if(t)document.documentElement.dataset.theme=t;})();</script>
@@ -46,7 +46,7 @@
 <div class="shell">
 <aside class="toc">
   <div class="toc-head">Domain 1</div>
-  <nav class="toc-list"><a class="toc-link" href="../01-agentic/01-d1about.html">1-1　1往復では終わらない仕事</a>
+  <nav class="toc-list"><a class="toc-link" href="../01-agentic/01-d1about.html">1-1　このドメインについて</a>
 <a class="toc-link" href="../01-agentic/02-tools.html">1-2　ツールを渡すとは、説明書を渡すこと</a>
 <a class="toc-link" href="../01-agentic/03-loop.html">1-3　エージェントループの1周</a>
 <a class="toc-link" href="../01-agentic/04-stop.html">1-4　stop_reason で分岐する</a>
@@ -64,95 +64,129 @@
 <a class="toc-link toc-quiz" href="../01-agentic/16-q3.html">1-16　理解度チェック ─ 起動と強制</a>
 <a class="toc-link" href="../01-agentic/17-session.html">1-17　セッションをまたぐ</a>
 <a class="toc-link toc-quiz" href="../01-agentic/18-q4.html">1-18　理解度チェック ─ セッション</a></nav>
+  <a class="toc-all" href="../index.html#all">全項目一覧（88項）</a>
 </aside>
 <main class="doc">
-<p class="crumb" data-domain="agentic"><b>Domain 1</b><span>エージェント設計とオーケストレーション</span><span class="w">出題比率 27%</span></p>
+<p class="crumb" data-domain="agentic"><b>Domain 1</b><span>エージェント設計とオーケストレーション</span><span class="w">出題比率 27%（約16問）</span></p>
 <!-- ▼ 本文 ─ ここだけを編集する。この前後は node tools/reindex.mjs が書き出す -->
 <section class="sec" id="intercept">
 <header class="sec-head">
   <h2>1-15　ツール呼び出しに割り込む</h2>
 </header>
-<p class="lead">フックはツールの前後に割り込みます。できるのは4つ ── <b>止める・入力を書き換える・出力を差し替える・記録する</b>。前節の関門は、このうち「止める」だけを使った形です。</p>
+<p class="lead">フックはツールの前後に割り込みます。前節の関門は、このうち「止める」だけを使った形です。</p>
 <p class="task"><span class="tn">BLUEPRINT 1.5</span><b>hooks によるツール呼び出しの介入とデータ正規化</b></p>
 <p class="goal"><b>ゴール</b>割り込みでできる4つを言い分けられる。</p>
-  <div class="figbox"><div class="diagram run">
-  <svg viewBox="0 0 760 372">
-    <g class="s1"><rect x="16" y="60" width="146" height="58" rx="10" fill="var(--fig-fill-amber)" stroke="var(--fig-line-amber)"/>
-      <text class="lbl" x="89" y="84" text-anchor="middle" style="fill:var(--fig-amber)">モデルが要求</text>
-      <text class="sm" x="89" y="104" text-anchor="middle">引数つき</text>
-      <line x1="168" y1="88" x2="200" y2="88" stroke="var(--fig-muted)" stroke-width="2" marker-end="url(#ar)"/></g>
-    <g class="s2"><rect x="206" y="52" width="150" height="74" rx="10" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)" stroke-width="2"/>
-      <text class="lbl" x="281" y="78" text-anchor="middle" style="fill:var(--fig-green)">前に割り込む</text>
-      <text class="mono" x="281" y="100" text-anchor="middle">PreToolUse</text>
-      <text class="sm" x="281" y="118" text-anchor="middle">止める／書き換える</text>
-      <line x1="362" y1="88" x2="394" y2="88" stroke="var(--fig-muted)" stroke-width="2" marker-end="url(#ar)"/></g>
-    <g class="s3"><rect x="400" y="60" width="130" height="58" rx="10" fill="var(--fig-fill-blue)" stroke="var(--fig-line-blue)"/>
-      <text class="lbl" x="465" y="94" text-anchor="middle" style="fill:var(--fig-blue)">ツールが動く</text>
-      <line x1="536" y1="88" x2="568" y2="88" stroke="var(--fig-muted)" stroke-width="2" marker-end="url(#ar)"/></g>
-    <g class="s4"><rect x="574" y="52" width="170" height="74" rx="10" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)" stroke-width="2"/>
-      <text class="lbl" x="659" y="78" text-anchor="middle" style="fill:var(--fig-green)">後に割り込む</text>
-      <text class="mono" x="659" y="100" text-anchor="middle">PostToolUse</text>
-      <text class="sm" x="659" y="118" text-anchor="middle">差し替える／足す</text></g>
 
-    <text class="sm s5" x="16" y="164">できること4つ</text>
-    <g class="s5"><rect x="16" y="176" width="360" height="76" rx="10" fill="var(--fig-fill-red)" stroke="var(--fig-line-red)"/>
-      <text class="lbl" x="36" y="202" style="fill:var(--fig-red)">① 止める</text>
-      <text class="sm" x="36" y="226">危ない引数なら実行させない</text>
-      <text class="sm" x="36" y="244">理由を返して直させる（前節の関門）</text></g>
-    <g class="s6"><rect x="384" y="176" width="360" height="76" rx="10" fill="var(--fig-fill-amber)" stroke="var(--fig-line-amber)"/>
-      <text class="lbl" x="404" y="202" style="fill:var(--fig-amber)">② 入力を書き換える</text>
-      <text class="sm" x="404" y="226">パスを差し替える・資格情報を入れる</text>
-      <text class="sm" x="404" y="244">モデルの出した引数を、通る形に直す</text></g>
-    <g class="s7"><rect x="16" y="262" width="360" height="76" rx="10" fill="var(--fig-fill-amber)" stroke="var(--fig-line-amber)"/>
-      <text class="lbl" x="36" y="288" style="fill:var(--fig-amber)">③ 出力を差し替える</text>
-      <text class="sm" x="36" y="312">形を整える・秘密を伏せる</text>
-      <text class="sm" x="36" y="330">モデルが読む前に手を入れられる</text></g>
-    <g class="s8"><rect x="384" y="262" width="360" height="76" rx="10" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
-      <text class="lbl" x="404" y="288">④ 記録する</text>
-      <text class="sm" x="404" y="312">呼び出しを残す・通知を送る</text>
-      <text class="sm" x="404" y="330">待たずに進む形にもできる</text></g>
-    <text class="sm s9" x="380" y="364" text-anchor="middle">①だけが「通さない」。②〜④はモデルの判断を通さずにデータを整える側</text>
-  </svg>
-  </div></div>
-  <div class="detail"><h3>図の読み方</h3>
-    <ol class="ann">
-      <li><span class="n">1</span><span>割り込める場所は2つだけです ── ツールが動く<b>前</b>と<b>後</b>。前で引数、後で返り値に手を入れます。</span></li>
-      <li><span class="n">2</span><span><b>② 入力を書き換える</b>が効くのは、モデルに正しい引数を出させるより<b>確実で安い</b>からです。「必ずこのディレクトリの下に書いて」と頼む代わりに、パスを書き換えます。</span></li>
-      <li><span class="n">3</span><span><b>③ 出力を差し替える</b>は前提編とつながります。モデルが読む前に整えるので、<b>整えた後の形しか窓に載りません</b>。生の巨大な返り値を履歴に残さずに済みます。</span></li>
-      <li><span class="n">4</span><span><b>④ 記録する</b>は待たずに進む形も選べます。記録のために毎回止まる必要がないので、通知やログ送信を挟んでも遅くなりません。</span></li>
-      <li><span class="n">5</span><span>下の一文が要点です。フックは「禁止するもの」ではなく<b>データを通す前後で整える場所</b>。この見方だと、①はその一機能にすぎません。</span></li>
-    </ol>
-    <h3>実物を見る ─ 入力の書き換え</h3>
-    <p class="codelabel">PreToolUse が返す JSON</p>
-    <pre class="code">{
+<div class="figbox"><figure class="fig run">
+  <p class="fig-t">割り込める場所は2つ、できることは4つ</p>
+  <p class="fig-lbl s1">ツールが動く <b>前</b>　── <code>PreToolUse</code></p>
+  <div class="fig-row s1" style="--cols:2">
+    <div class="fig-card">
+      <b class="fig-h">① 止める</b>
+      <span class="fig-note">条件を満たさない呼び出しを実行させない。<b>前節の関門はこれ</b></span>
+    </div>
+    <div class="fig-card">
+      <b class="fig-h">② 入力を書き換える</b>
+      <span class="fig-note">モデルが出した引数を差し替える。「必ずこのディレクトリの下に書いて」と<b>頼むより確実で安い</b></span>
+    </div>
+  </div>
+  <p class="fig-lbl s2">ツールが動いた <b>後</b>　── <code>PostToolUse</code></p>
+  <div class="fig-row s2" style="--cols:2">
+    <div class="fig-card">
+      <b class="fig-h">③ 出力を差し替える</b>
+      <span class="fig-note">モデルが読む前に整えるので、<b>整えた後の形しか窓に載らない</b>。生の巨大な返り値を履歴に残さずに済む</span>
+    </div>
+    <div class="fig-card">
+      <b class="fig-h">④ 記録する</b>
+      <span class="fig-note">通知・ログ送信。<b>待たずに進む形も選べる</b>ので、挟んでも遅くならない</span>
+    </div>
+  </div>
+  <p class="fig-f">フックは「禁止するもの」ではなく、<b>データを通す前後で整える場所</b>。この見方だと ① はその一機能にすぎない。設問では「止める」以外を問われることがある。</p>
+</figure></div>
+
+<p class="point"><b>ポイント</b>割り込める場所は前と後の2つ。できることは止める・入力を書き換える・出力を差し替える・記録するの4つ。</p>
+
+<h3 class="sub">誰が、何をしているのか</h3>
+<p class="lead">フックは「Claude が動かすもの」ではありません。<b>呼ぶのも、返ってきた判定を適用するのも Claude Code（アプリ）</b>です。モデルは最初に「使いたい」と言っただけで、以降には関われません。</p>
+
+<div class="figbox"><figure class="fig run">
+  <p class="fig-t"><code>Write</code> を使いたい、と言われてから実行するまで</p>
+  <div class="fig-seq lanes3">
+    <div class="sq-head">
+      <span class="sq-c s1">フック<br><span style="font-weight:400">あなたが書いたプログラム</span></span>
+      <span class="sq-b s1">Claude Code<br><span style="font-weight:400">アプリ</span></span>
+      <span class="sq-a s1">Claude<br><span style="font-weight:400">モデル</span></span>
+    </div>
+    <div class="sq-body">
+      <div class="sq-row cb k-amber s2">
+        <span class="sq-lbl"><span class="sq-n">1</span><code>tool_use</code>「<code>Write(file_path:"/etc/passwd")</code> を使いたい」</span>
+        <span class="sq-note">モデルの出番はここで終わり。以降には一切関われない</span>
+      </div>
+      <div class="sq-row ba s3">
+        <span class="sq-lbl"><span class="sq-n">2</span>ツール名と引数を JSON で標準入力に流す</span>
+        <span class="sq-note"><code>PreToolUse</code> に登録したコマンドを、Claude Code が起動する</span>
+      </div>
+      <div class="sq-row ab s4">
+        <span class="sq-lbl"><span class="sq-n">3</span><code>hookSpecificOutput</code> を JSON で返す</span>
+        <span class="sq-note">中身は <code>permissionDecision</code>（通す／止める／人に聞く）と <code>updatedInput</code>（差し替えたい引数）</span>
+      </div>
+      <div class="sq-self mid s5">
+        <b><span class="sq-n">4</span>Claude Code が判定を適用する</b>
+        <ul>
+          <li><code>deny</code> ── 実行しない。理由をモデルに返す</li>
+          <li><code>allow</code> ── そのまま実行する（通常の確認を飛ばす）</li>
+          <li><code>ask</code> ── <b>あなたに</b>確認を出す</li>
+          <li><b>指定なし</b> ── 通常の権限判定（<code>settings.json</code>）に流れる</li>
+        </ul>
+        <span class="sq-note"><code>updatedInput</code> があれば、ここで引数を差し替えてから実行する</span>
+      </div>
+      <div class="sq-self mid s6">
+        <b><span class="sq-n">5</span>通れば、Claude Code がツールを実行する</b>
+        <span class="sq-note">実行後に <code>PostToolUse</code> を呼べば、結果の差し替えや記録ができる（2〜3 と同じ形）</span>
+      </div>
+      <div class="sq-row bc k-blue s7">
+        <span class="sq-lbl"><span class="sq-n">6</span><code>tool_result</code> を返す</span>
+        <span class="sq-note">止めた場合も、<b>止めた理由</b>がここに入って会話は続く</span>
+      </div>
+    </div>
+  </div>
+  <p class="fig-f">モデルが関わるのは <b>1</b> と <b>6</b> だけ。<b>2〜5 はモデルから見えない</b>ので、「フックを無視して実行する」ことも「フックの判定を知る」こともできない。<b>だから確実に効く。</b></p>
+</figure></div>
+
+<h3 class="sub">実物を見る ─ 入力の書き換え</h3>
+<div class="figbox" style="padding:16px 18px">
+  <p class="codelabel">PreToolUse が返す JSON</p>
+  <pre class="code">{
   <span class="k">"hookSpecificOutput"</span>: {<span class="n">1</span>
     <span class="k">"hookEventName"</span>: <span class="s">"PreToolUse"</span>,
     <span class="hl"><span class="k">"updatedInput"</span>: { <span class="k">"file_path"</span>: <span class="s">"/sandbox/notes.md"</span> },</span><span class="n">2</span>
     <span class="k">"permissionDecision"</span>: <span class="s">"allow"</span><span class="n">3</span>
   }
 }</pre>
-    <ol class="ann">
-      <li><span class="n">1</span><span><code>updatedInput</code> は必ず <code>hookSpecificOutput</code> の<b>中</b>に置きます。外側に書くと効きません ── 公式ドキュメントが躓きどころとして挙げている点です。</span></li>
-      <li><span class="n">2</span><span>元の引数を書き換えるのではなく<b>新しい値を返します</b>。ここではモデルが出したパスを、サンドボックス配下に差し替えています。</span></li>
-      <li><span class="n">3</span><span>書き換えた入力をそのまま通すなら <code>allow</code>、人に見せるなら <code>ask</code>。指定を省いても書き換えは効き、通常の権限判定に流れます。</span></li>
-    </ol>
-    <div class="ex"><span class="exl">判定が競合したときの優先順位</span>
-    <code>deny</code> ＞ <code>defer</code> ＞ <code>ask</code> ＞ <code>allow</code><br>
-    どれか1つが <code>deny</code> を返せば、他が何を返しても実行されません。<b>禁止が最も強い</b>と覚えます。<br>
-    ※ <code>defer</code>（あとで判断する）と入力の書き換えは併用できません。書き換えが捨てられます。</div>
-    <div class="myth">
-      <span class="t">誤解</span><span>「フックは危険な操作を止めるための仕組み」</span>
-      <span class="t o">実際は</span><span>止めるのは4つのうち1つです。<b>入力と出力を整える</b>用途 ── パスの差し替え、資格情報の注入、返り値の形を揃える ── も同じ場所で行います。設問では「止める」以外を問われることがあります。</span>
-    </div>
+  <ol class="ann">
+    <li><span class="n">1</span><span><code>updatedInput</code> は必ず <code>hookSpecificOutput</code> の<b>中</b>に置きます。外側に書くと効きません ── 公式ドキュメントが躓きどころとして挙げている点です。</span></li>
+    <li><span class="n">2</span><span>元の引数を書き換えるのではなく<b>新しい値を返します</b>。ここではモデルが出したパスを、サンドボックス配下に差し替えています。</span></li>
+    <li><span class="n">3</span><span>書き換えた入力をそのまま通すなら <code>allow</code>、人に見せるなら <code>ask</code>。指定を省いても書き換えは効き、通常の権限判定に流れます。</span></li>
+  </ol>
+</div>
+
+<div class="detail">
+  <div class="ex"><span class="exl">判定が競合したときの優先順位</span>
+  <code>deny</code> ＞ <code>defer</code> ＞ <code>ask</code> ＞ <code>allow</code><br>
+  どれか1つが <code>deny</code> を返せば、他が何を返しても実行されません。<b>禁止が最も強い</b>と覚えます。<br>
+  ※ <code>defer</code>（あとで判断する）と入力の書き換えは併用できません。書き換えが捨てられます。</div>
+  <div class="myth">
+    <span class="t">誤解</span><span>「フックは危険な操作を止めるための仕組み」</span>
+    <span class="t o">実際は</span><span>止めるのは4つのうち1つです。<b>入力と出力を整える</b>用途 ── パスの差し替え、資格情報の注入、返り値の形を揃える ── も同じ場所で行います。</span>
   </div>
-<p class="point"><b>ポイント</b>割り込める場所は前と後の2つ。できることは止める・入力を書き換える・出力を差し替える・記録するの4つ。</p>
+</div>
 <p class="note">※ 「必ず起きてほしい処理を仕組み側に置く」という考え方そのものは Domain 5 の〈確実にしたいことは仕組み側へ〉にあります。ここはその割り込み口の中身です。</p>
 </section>
 <!-- ▲ 本文 -->
 <nav class="secpager">
-<a class="pgv prev" href="../01-agentic/14-gate.html"><span class="pgv-l">前へ</span>1-14　前提は関門で、引き継ぎは欄で</a>
+<a class="pgv prev" href="../01-agentic/14-gate.html"><span class="pgv-l">前へ</span><span class="pgv-t">1-14　前提は関門で、引き継ぎは欄で</span></a>
 <span class="pgv-n">Domain 1 15 / 18</span>
-<a class="pgv next" href="../01-agentic/16-q3.html"><span class="pgv-l">次へ</span>1-16　理解度チェック ─ 起動と強制</a>
+<a class="pgv next" href="../01-agentic/16-q3.html"><span class="pgv-l">次へ</span><span class="pgv-t">1-16　理解度チェック ─ 起動と強制</span></a>
 </nav>
 </main>
 </div>
@@ -164,6 +198,6 @@
   </div>
 </div>
 <script src="../assets/quiz-data.js?v=4385afea"></script>
-<script src="../assets/search-index.js?v=98a5172a"></script>
-<script src="../assets/app.js?v=1c7668ec"></script>
+<script src="../assets/search-index.js?v=de7413f7"></script>
+<script src="../assets/app.js?v=0564f87d"></script>
 </body></html>

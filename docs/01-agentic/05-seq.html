@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/style.css?v=acf8ceb2">
+<link rel="stylesheet" href="../assets/style.css?v=b611c55a">
 </head>
 <body data-page="seq">
 <script>(function(){var t=localStorage.getItem('ccarf-theme');if(t)document.documentElement.dataset.theme=t;})();</script>
@@ -46,7 +46,7 @@
 <div class="shell">
 <aside class="toc">
   <div class="toc-head">Domain 1</div>
-  <nav class="toc-list"><a class="toc-link" href="../01-agentic/01-d1about.html">1-1　1往復では終わらない仕事</a>
+  <nav class="toc-list"><a class="toc-link" href="../01-agentic/01-d1about.html">1-1　このドメインについて</a>
 <a class="toc-link" href="../01-agentic/02-tools.html">1-2　ツールを渡すとは、説明書を渡すこと</a>
 <a class="toc-link" href="../01-agentic/03-loop.html">1-3　エージェントループの1周</a>
 <a class="toc-link" href="../01-agentic/04-stop.html">1-4　stop_reason で分岐する</a>
@@ -64,116 +64,82 @@
 <a class="toc-link toc-quiz" href="../01-agentic/16-q3.html">1-16　理解度チェック ─ 起動と強制</a>
 <a class="toc-link" href="../01-agentic/17-session.html">1-17　セッションをまたぐ</a>
 <a class="toc-link toc-quiz" href="../01-agentic/18-q4.html">1-18　理解度チェック ─ セッション</a></nav>
+  <a class="toc-all" href="../index.html#all">全項目一覧（88項）</a>
 </aside>
 <main class="doc">
-<p class="crumb" data-domain="agentic"><b>Domain 1</b><span>エージェント設計とオーケストレーション</span><span class="w">出題比率 27%</span></p>
+<p class="crumb" data-domain="agentic"><b>Domain 1</b><span>エージェント設計とオーケストレーション</span><span class="w">出題比率 27%（約16問）</span></p>
 <!-- ▼ 本文 ─ ここだけを編集する。この前後は node tools/reindex.mjs が書き出す -->
-<section class="sec" id="seq" data-widget="p-seq">
+<section class="sec" id="seq">
 <header class="sec-head">
   <h2>1-5　誰が、何を送っているのか</h2>
 </header>
-<p class="lead">「どちらからどちらへ、何が渡ったか」を時間順に並べた図です。</p>
+<p class="lead">「どちらからどちらへ、何が渡ったか」を時間順に並べます。向きさえ固定して覚えれば、あとの章はすべてこの上に乗ります。</p>
 <p class="task"><span class="tn">BLUEPRINT 1.1</span><b>エージェントループの設計と実装</b></p>
 <p class="goal"><b>ゴール</b>送る側と返る側で、何が渡るのかを言える。</p>
-  <div class="figbox"><div class="diagram run">
-  <svg viewBox="0 0 760 470">
-    <g class="s1">
-      <rect x="40" y="16" width="170" height="40" rx="8" fill="var(--fig-fill-blue)" stroke="var(--fig-line-blue)"/>
-      <text class="ttl" x="125" y="41" text-anchor="middle" style="fill:var(--fig-blue)">アプリ</text>
-      <rect x="330" y="16" width="170" height="40" rx="8" fill="var(--fig-fill-amber)" stroke="var(--fig-line-amber)"/>
-      <text class="ttl" x="415" y="41" text-anchor="middle" style="fill:var(--fig-amber)">Claude（モデル）</text>
-      <rect x="610" y="16" width="130" height="40" rx="8" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
-      <text class="ttl" x="675" y="41" text-anchor="middle">DB / ツール</text>
-      <line x1="125" y1="56" x2="125" y2="440" stroke="var(--fig-dash)" stroke-width="1.5" stroke-dasharray="4 5"/>
-      <line x1="415" y1="56" x2="415" y2="440" stroke="var(--fig-dash)" stroke-width="1.5" stroke-dasharray="4 5"/>
-      <line x1="675" y1="56" x2="675" y2="440" stroke="var(--fig-dash)" stroke-width="1.5" stroke-dasharray="4 5"/>
-    </g>
 
-    <g class="s2">
-      <text class="mono" x="270" y="88" text-anchor="middle" style="fill:var(--fig-blue)">system ＋ tools ＋ messages[user]</text>
-      <line x1="125" y1="100" x2="409" y2="100" stroke="var(--fig-blue)" stroke-width="2" marker-end="url(#arb)"/>
-      <circle cx="125" cy="100" r="9" fill="var(--fig-blue)"/><text class="sm" x="125" y="104" text-anchor="middle" style="fill:var(--fig-surface)">1</text>
-    </g>
-
-    <g class="s3">
-      <text class="mono" x="270" y="134" text-anchor="middle" style="fill:var(--fig-amber)">content[ tool_use ]</text>
-      <text class="mono" x="270" y="150" text-anchor="middle" style="fill:var(--fig-amber)">stop_reason: "tool_use"</text>
-      <line x1="415" y1="162" x2="131" y2="162" stroke="var(--fig-amber)" stroke-width="2" marker-end="url(#ara)"/>
-      <circle cx="415" cy="162" r="9" fill="var(--fig-amber)"/><text class="sm" x="415" y="166" text-anchor="middle" style="fill:var(--fig-surface)">2</text>
-    </g>
-
-    <g class="s4">
-      <rect x="408" y="168" width="14" height="128" rx="3" fill="var(--fig-bar)" stroke="var(--fig-line)"/>
-      <text class="sm" x="470" y="314" style="fill:var(--fig-muted)">↑ この間、モデルは動いていない</text>
-    </g>
-
-    <g class="s5">
-      <text class="mono" x="550" y="192" text-anchor="middle">search_files("TODO")</text>
-      <line x1="125" y1="204" x2="669" y2="204" stroke="var(--fig-muted)" stroke-width="2" marker-end="url(#ar)"/>
-      <circle cx="125" cy="204" r="9" fill="var(--fig-muted)"/><text class="sm" x="125" y="208" text-anchor="middle" style="fill:var(--fig-surface)">3</text>
-      <text class="mono" x="550" y="238" text-anchor="middle">{"hits":3}</text>
-      <line x1="675" y1="250" x2="131" y2="250" stroke="var(--fig-muted)" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#ar)"/>
-    </g>
-
-    <g class="s6">
-      <text class="mono" x="270" y="298" text-anchor="middle" style="fill:var(--fig-blue)">1回目の全部 ＋ assistant[tool_use]</text>
-      <text class="mono" x="270" y="314" text-anchor="middle" style="fill:var(--fig-blue)">＋ user[ tool_result ]</text>
-      <line x1="125" y1="326" x2="409" y2="326" stroke="var(--fig-blue)" stroke-width="2" marker-end="url(#arb)"/>
-      <circle cx="125" cy="326" r="9" fill="var(--fig-blue)"/><text class="sm" x="125" y="330" text-anchor="middle" style="fill:var(--fig-surface)">4</text>
-    </g>
-
-    <g class="s7">
-      <text class="mono" x="270" y="360" text-anchor="middle" style="fill:var(--fig-amber)">content[ text ]</text>
-      <text class="mono" x="270" y="376" text-anchor="middle" style="fill:var(--fig-amber)">stop_reason: "end_turn"</text>
-      <line x1="415" y1="388" x2="131" y2="388" stroke="var(--fig-amber)" stroke-width="2" marker-end="url(#ara)"/>
-      <circle cx="415" cy="388" r="9" fill="var(--fig-amber)"/><text class="sm" x="415" y="392" text-anchor="middle" style="fill:var(--fig-surface)">5</text>
-    </g>
-
-    <g class="s8">
-      <rect x="40" y="410" width="700" height="52" rx="10" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
-      <text class="lbl" x="60" y="432" style="fill:var(--fig-blue)">→ 青（アプリが送る）は、いつも messages。それ以外を送ることはない</text>
-      <text class="lbl" x="60" y="452" style="fill:var(--fig-amber)">← 橙（モデルが返す）には、必ず stop_reason が付いてくる</text>
-    </g>
-  </svg>
-  </div></div>
-  <div class="detail"><h3>図の読み方</h3>
-    <ol class="ann">
-      <li><span class="n">1</span><span>アプリが<b>送る</b>。中身は <code>system</code>・<code>tools</code>・<code>messages</code> だけ。<b>接続を開けるのはこちら側だけ</b>です。</span></li>
-      <li><span class="n">2</span><span>モデルが<b>返す</b>。<code>tool_use</code> と <code>stop_reason</code> は<b>返ってくる側のもので、こちらから送るものではありません。</b>ただし<b>この2つは扱いが違います</b>。<code>tool_use</code> は <code>content</code> の<b>中身</b>なので次の往復で履歴として送り返しますが、<code>stop_reason</code> は <code>content</code> の<b>外側</b>にあるメタデータで、履歴には入りません。<b>つまり窓（コンテキストウィンドウ）も食いません</b>。<code>usage</code> や <code>id</code> も同じです。</span></li>
-      <li><span class="n">3</span><span>アプリがDBを引く。このやり取りは<b>モデルからは見えません</b>。</span></li>
-      <li><span class="n">4</span><span>アプリが<b>また送る</b>。中身は<b>1回目の全部＋前回の応答＋ <code>tool_result</code></b>。増えているだけで、形は①と同じ。</span></li>
-      <li><span class="n">5</span><span>モデルが最終的な答えを返す。<code>stop_reason</code> は <code>end_turn</code>。</span></li>
-    </ol>
+<div class="figbox"><figure class="fig run">
+  <p class="fig-t">1往復で、どちらからどちらへ、何が渡るか</p>
+  <div class="fig-seq">
+    <div class="sq-head"><span class="sq-b s1">アプリ</span><span class="sq-a s1">Claude</span></div>
+    <div class="sq-body">
+    <div class="sq-row to-r s2">
+      <span class="sq-lbl"><span class="sq-n">1</span><code>system</code> ・ <code>tools</code> ・ <code>messages</code></span>
+      <span class="sq-note">接続を開けるのはアプリ側だけ</span>
     </div>
-  <p class="point"><b>ポイント</b>送るのは messages、返るのは content と stop_reason。この向きさえ固定して覚えれば、あとの章はすべてこの上に乗る。</p>
+    <div class="sq-row to-l s3">
+      <span class="sq-lbl"><span class="sq-n">2</span><code>content[ tool_use ]</code> ・ <code>stop_reason</code></span>
+      <span class="sq-note">どちらも返ってくる側のもの。ここで応答は終わる</span>
+    </div>
+    <div class="sq-self s4">
+      <b><span class="sq-n">3</span>アプリが DB を引く</b>
+      <span class="sq-note">このやり取りはモデルからは見えない</span>
+    </div>
+    <div class="sq-idle s4">Claude はこの間、動いていない<br>（待っているのではなく、2 で終わっている）</div>
+    <div class="sq-row to-r s5">
+      <span class="sq-lbl"><span class="sq-n">4</span>1回目の全部 ＋ 前回の応答 ＋ <code>tool_result</code></span>
+      <span class="sq-note">増えているだけで、形は 1 と同じ</span>
+    </div>
+    <div class="sq-row to-l s6">
+      <span class="sq-lbl"><span class="sq-n">5</span><code>content[ text ]</code> ・ <code>stop_reason = end_turn</code></span>
+      <span class="sq-note">ここでループを抜ける</span>
+    </div>
+    </div>
+  </div>
+
+  <div class="fig-row s7" style="--cols:2">
+    <div class="fig-card blue">
+      <b class="fig-h">→ 送る側にしか入らないもの</b>
+      <ul><li><code>system</code></li><li><code>tools</code></li><li><code>messages</code>（<code>tool_result</code> はこの中）</li></ul>
+    </div>
+    <div class="fig-card amber">
+      <b class="fig-h">← 返る側にしか入らないもの</b>
+      <ul><li><code>content</code>（<code>tool_use</code> はこの中）</li><li><code>stop_reason</code></li><li><code>usage</code> / <code>id</code></li></ul>
+    </div>
+    </div>
+  </div>
+  <p class="fig-f"><b>この2つは扱いが違う。</b><code>tool_use</code> は <code>content</code> の<b>中身</b>なので次の往復で履歴として送り返すが、<code>stop_reason</code> は <code>content</code> の<b>外側</b>のメタデータで履歴に入らない ── つまり<b>窓を食わない</b>。<code>usage</code> や <code>id</code> も同じ。</p>
+</figure></div>
+
+<p class="point"><b>ポイント</b>送るのは <code>messages</code>、返るのは <code>content</code> と <code>stop_reason</code>。この向きさえ固定して覚えれば、あとの章はすべてこの上に乗る。</p>
 
 <h3 class="sub">向きを取り違えないために</h3>
-<div class="detail"><p>モデルの縦線に付いた灰色の帯（②〜④の間）を見てください。<b>この間、モデルは動いていません。</b>待っているのではなく、②で処理が終わっているだけです。次に動くのは、アプリが④を送った瞬間です。</p>
-    <div class="myth">
-      <span class="t">誤解</span><span>「アプリが <code>tool_use</code> を送り、以降は <code>stop_reason</code> を送り続ける」</span>
-      <span class="t o">実際は</span><span>向きが逆です。<b>アプリが送るのは常に <code>messages</code></b>（その中に <code>tool_result</code> を入れる）。<b><code>tool_use</code> と <code>stop_reason</code> は、毎回モデルから返ってくる側</b>です。<code>stop_reason</code> は「以降ずっと」ではなく、<b>1回目の応答にも付いています</b>。</span>
-    </div>
-    <h3>カードゲームにたとえると</h3>
-    <p><b>札に触れない助言者</b>に相談していると考えてください。①〜⑤がそのまま次の3つに対応します。</p>
-    <p>・<b>手札を読み上げる</b>＝<b>ツール定義</b>。相手は前のターンの手札を覚えていないので、<b>毎ターン読み上げ直します</b>（前提編の「毎回まるごと送り直す」）。<br>
-    ・<b>「この札を切って」という指示</b>＝<code>tool_use</code>。言うだけで、相手は札に触れません。<b>切るのはいつもあなた</b>です。<br>
-    ・<b>切った結果を伝える</b>＝<code>tool_result</code>。</p>
-    <div class="myth">
-      <span class="t">つまずきやすい</span><span><code>tool_result</code> を「切ったあとの盤面」と考えると、少しずれます。<b>盤面が自動で見えるわけではありません。</b>あなたが言葉にして渡した分だけが、相手の知る情報になります。だからDomain 5で「ツールが返す量を絞る」という設計の話になります。</span>
-      <span class="t o">この比喩の外</span><span>実際の <code>tool_result</code> には<b>どの指示に対する結果か</b>を示す id を付けます（「実物を見る③」）。指示が同時に複数出ることがあるためで、1手ずつ進むカードゲームでは表せない部分です。</span>
-    </div>
-    <div class="ex"><span class="exl">3往復すると、どうなるか</span>
-    ①④のような<b>青い矢印が3本</b>になり、そのたびに <code>messages</code> が長くなります。<br>
-    橙の矢印も3本で、<b>最後の1本だけが <code>end_turn</code></b>、それまでは <code>tool_use</code> です。<br>
-    ループが回るとは、この<b>青と橙の往復が増えること</b>にほかなりません。</div>
+<div class="detail">
+  <p>2 と 4 のあいだ、<b>モデルは動いていません。</b>待っているのではなく、2 で処理が終わっているだけです。次に動くのは、アプリが 4 を送った瞬間です。</p>
+  <div class="myth">
+    <span class="t">誤解</span><span>「アプリが <code>tool_use</code> を送り、以降は <code>stop_reason</code> を送り続ける」</span>
+    <span class="t o">実際は</span><span>向きが逆です。<b>アプリが送るのは常に <code>messages</code></b>（その中に <code>tool_result</code> を入れる）。<b><code>tool_use</code> と <code>stop_reason</code> は、毎回モデルから返ってくる側</b>です。<code>stop_reason</code> は「以降ずっと」ではなく、<b>1回目の応答にも付いています</b>。</span>
   </div>
-  <p class="point"><b>ポイント</b>送るのは messages、返るのは content と stop_reason。この向きさえ固定して覚えれば、あとの章はすべてこの上に乗る。</p>
+  <div class="ex"><span class="exl">3往復すると、どうなるか</span>
+  <b>アプリ → Claude が3本</b>になり、そのたびに <code>messages</code> が長くなります。<br>
+  返りも3本で、<b>最後の1本だけが <code>end_turn</code></b>、それまでは <code>tool_use</code> です。<br>
+  ループが回るとは、この<b>往復が増えること</b>にほかなりません。</div>
+</div>
 </section>
 <!-- ▲ 本文 -->
 <nav class="secpager">
-<a class="pgv prev" href="../01-agentic/04-stop.html"><span class="pgv-l">前へ</span>1-4　stop_reason で分岐する</a>
+<a class="pgv prev" href="../01-agentic/04-stop.html"><span class="pgv-l">前へ</span><span class="pgv-t">1-4　stop_reason で分岐する</span></a>
 <span class="pgv-n">Domain 1 5 / 18</span>
-<a class="pgv next" href="../01-agentic/06-real.html"><span class="pgv-l">次へ</span>1-6　実物を見る ─ 往復のJSON</a>
+<a class="pgv next" href="../01-agentic/06-real.html"><span class="pgv-l">次へ</span><span class="pgv-t">1-6　実物を見る ─ 往復のJSON</span></a>
 </nav>
 </main>
 </div>
@@ -185,6 +151,6 @@
   </div>
 </div>
 <script src="../assets/quiz-data.js?v=4385afea"></script>
-<script src="../assets/search-index.js?v=98a5172a"></script>
-<script src="../assets/app.js?v=1c7668ec"></script>
+<script src="../assets/search-index.js?v=de7413f7"></script>
+<script src="../assets/app.js?v=0564f87d"></script>
 </body></html>

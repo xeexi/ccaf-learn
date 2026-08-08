@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/style.css?v=acf8ceb2">
+<link rel="stylesheet" href="../assets/style.css?v=b611c55a">
 </head>
 <body data-page="chain">
 <script>(function(){var t=localStorage.getItem('ccarf-theme');if(t)document.documentElement.dataset.theme=t;})();</script>
@@ -46,7 +46,7 @@
 <div class="shell">
 <aside class="toc">
   <div class="toc-head">Domain 1</div>
-  <nav class="toc-list"><a class="toc-link" href="../01-agentic/01-d1about.html">1-1　1往復では終わらない仕事</a>
+  <nav class="toc-list"><a class="toc-link" href="../01-agentic/01-d1about.html">1-1　このドメインについて</a>
 <a class="toc-link" href="../01-agentic/02-tools.html">1-2　ツールを渡すとは、説明書を渡すこと</a>
 <a class="toc-link" href="../01-agentic/03-loop.html">1-3　エージェントループの1周</a>
 <a class="toc-link" href="../01-agentic/04-stop.html">1-4　stop_reason で分岐する</a>
@@ -64,9 +64,10 @@
 <a class="toc-link toc-quiz" href="../01-agentic/16-q3.html">1-16　理解度チェック ─ 起動と強制</a>
 <a class="toc-link" href="../01-agentic/17-session.html">1-17　セッションをまたぐ</a>
 <a class="toc-link toc-quiz" href="../01-agentic/18-q4.html">1-18　理解度チェック ─ セッション</a></nav>
+  <a class="toc-all" href="../index.html#all">全項目一覧（88項）</a>
 </aside>
 <main class="doc">
-<p class="crumb" data-domain="agentic"><b>Domain 1</b><span>エージェント設計とオーケストレーション</span><span class="w">出題比率 27%</span></p>
+<p class="crumb" data-domain="agentic"><b>Domain 1</b><span>エージェント設計とオーケストレーション</span><span class="w">出題比率 27%（約16問）</span></p>
 <!-- ▼ 本文 ─ ここだけを編集する。この前後は node tools/reindex.mjs が書き出す -->
 <section class="sec" id="chain">
 <header class="sec-head">
@@ -75,55 +76,39 @@
 <p class="lead">毎回同じ順番でよい仕事は、モデルに考えさせずコードで並べます。対象が毎回変わる仕事だけ、その場で分けさせます。</p>
 <p class="task"><span class="tn">BLUEPRINT 1.6</span><b>複雑なワークフローのタスク分解</b></p>
 <p class="goal"><b>ゴール</b>固定チェーンと動的分解を選び分けられる。</p>
-  <div class="figbox"><div class="diagram run">
-  <svg viewBox="0 0 760 250">
-    <g class="s1"><rect x="16" y="24" width="350" height="200" rx="12" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)"/>
-      <text class="ttl" x="191" y="52" text-anchor="middle" style="fill:var(--fig-green)">固定チェーン</text>
-      <rect x="40" y="70" width="80" height="34" rx="6" fill="var(--fig-surface)" stroke="var(--fig-line-green)"/><text class="lbl" x="80" y="92" text-anchor="middle">抽出</text>
-      <line x1="126" y1="87" x2="150" y2="87" stroke="var(--fig-muted)" stroke-width="2" marker-end="url(#ar)"/>
-      <rect x="156" y="70" width="80" height="34" rx="6" fill="var(--fig-surface)" stroke="var(--fig-line-green)"/><text class="lbl" x="196" y="92" text-anchor="middle">検証</text>
-      <line x1="242" y1="87" x2="266" y2="87" stroke="var(--fig-muted)" stroke-width="2" marker-end="url(#ar)"/>
-      <rect x="272" y="70" width="80" height="34" rx="6" fill="var(--fig-surface)" stroke="var(--fig-line-green)"/><text class="lbl" x="312" y="92" text-anchor="middle">出力</text>
-      <text class="lbl" x="40" y="140">毎回同じ順番。テストできる</text>
-      <text class="lbl" x="40" y="166">結果がぶれない</text>
-      <text class="sm" x="40" y="196">向く仕事：帳票の処理、決まった検査、定型の変換</text></g>
-    <g class="s2"><rect x="394" y="24" width="350" height="200" rx="12" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
-      <text class="ttl" x="569" y="52" text-anchor="middle">動的分解</text>
-      <rect x="500" y="66" width="140" height="30" rx="6" fill="var(--fig-fill-amber)" stroke="var(--fig-line-amber)"/>
-      <text class="lbl" x="570" y="86" text-anchor="middle" style="fill:var(--fig-amber)">親がその場で割る</text>
-      <line x1="540" y1="98" x2="470" y2="120" stroke="var(--fig-muted)" stroke-width="1.5" marker-end="url(#ar)"/>
-      <line x1="570" y1="98" x2="570" y2="120" stroke="var(--fig-muted)" stroke-width="1.5" marker-end="url(#ar)"/>
-      <line x1="600" y1="98" x2="670" y2="120" stroke="var(--fig-muted)" stroke-width="1.5" marker-end="url(#ar)"/>
-      <rect x="430" y="124" width="76" height="26" rx="5" fill="var(--fig-surface)" stroke="var(--fig-line)"/>
-      <rect x="532" y="124" width="76" height="26" rx="5" fill="var(--fig-surface)" stroke="var(--fig-line)"/>
-      <rect x="634" y="124" width="76" height="26" rx="5" fill="var(--fig-surface)" stroke="var(--fig-line)"/>
-      <text class="lbl" x="418" y="180">対象の数も種類も毎回変わるときだけ</text>
-      <text class="sm" x="418" y="204">向く仕事：未知のコードベース調査、範囲不明の修正</text></g>
-  </svg>
-  </div></div>
-  <div class="detail">
-    <h3>図の読み方</h3>
-    <ol class="ann">
-      <li><span class="n">1</span><span>左（緑）が<b>固定チェーン</b>。抽出 → 検証 → 出力が、毎回この順で流れます。<b>枝分かれがありません</b>。</span></li>
-      <li><span class="n">2</span><span>順番が決まっているので、<b>どこで詰まったか分かり、テストもできます</b>。結果もぶれません。</span></li>
-      <li><span class="n">3</span><span>右が<b>動的分解</b>。親がその場で仕事を割るので、<b>枝の数も中身も毎回変わります</b>。</span></li>
-      <li><span class="n">4</span><span>下の一文が、それぞれ向く仕事です。判断の基準はひとつ ─ <b>「毎回やることが決まっているか」</b>。</span></li>
-    </ol>
-    <div class="ex"><span class="exl">どちらを選ぶか</span>
-    毎月の請求書処理（項目は毎回同じ）→ <b>固定チェーン</b>。抽出 → 検証 → 出力をコードで並べる<br>
-    未知のバグの原因調査（どこを見るか毎回違う）→ <b>動的分解</b>。親がその場で調べる先を割り振る</div>
-    <div class="myth">
-      <span class="t">誤解</span><span>「動的に分解できるほうが賢いから、そちらが良い」</span>
-      <span class="t o">実際は</span><span>柔軟さの代償は<b>結果のばらつき</b>です。決まった手順を動的にするのは、まさに試験で誤答になる過剰設計です。</span>
-    </div>
+
+<table class="tbl">
+  <thead><tr><th></th><th>固定チェーン</th><th>動的分解</th></tr></thead>
+  <tbody>
+    <tr><th>形</th>
+      <td data-l="固定チェーン">抽出 → 検証 → 出力が、<b>毎回この順</b>で流れる。枝分かれがない</td>
+      <td data-l="動的分解">親が<b>その場で</b>仕事を割る。枝の数も中身も毎回変わる</td></tr>
+    <tr><th>誰が順番を決めるか</th>
+      <td data-l="固定チェーン"><b>コード</b>。モデルは各段の中身だけを担当する</td>
+      <td data-l="動的分解"><b>モデル</b>。何をいくつに分けるかから任せる</td></tr>
+    <tr><th>向く仕事</th>
+      <td data-l="固定チェーン">毎回やることが<b>決まっている</b>（毎月の請求書処理）</td>
+      <td data-l="動的分解">対象が<b>毎回変わる</b>（未知のバグの原因調査）</td></tr>
+    <tr><th>代償</th>
+      <td data-l="固定チェーン"><span class="ok">どこで詰まったか分かり、テストもできる。結果もぶれない</span></td>
+      <td data-l="動的分解"><span class="ng">結果がばらつく。</span>同じ入力でも通る道が変わる</td></tr>
+  </tbody>
+</table>
+
+<p class="point"><b>ポイント</b>判断の基準はひとつ ──「毎回やることが決まっているか」。柔軟さには「結果がばらつく」という代償があり、決まった手順を動的分解にするのは、まさに過剰設計。</p>
+
+<div class="detail">
+  <div class="myth">
+    <span class="t">誤解</span><span>「動的に分解できるほうが賢いから、そちらが良い」</span>
+    <span class="t o">実際は</span><span>柔軟さの代償は<b>結果のばらつき</b>です。決まった手順を動的にするのは、まさに試験で誤答になる過剰設計です。</span>
   </div>
-  <p class="point"><b>ポイント</b>柔軟さには「結果がばらつく」という代償がある。決まった手順を動的分解にするのは、まさに過剰設計。</p>
+</div>
 </section>
 <!-- ▲ 本文 -->
 <nav class="secpager">
-<a class="pgv prev" href="../01-agentic/10-parent.html"><span class="pgv-l">前へ</span>1-10　親子の形</a>
+<a class="pgv prev" href="../01-agentic/10-parent.html"><span class="pgv-l">前へ</span><span class="pgv-t">1-10　親子の形</span></a>
 <span class="pgv-n">Domain 1 11 / 18</span>
-<a class="pgv next" href="../01-agentic/12-q2.html"><span class="pgv-l">次へ</span>1-12　理解度チェック ─ 複数エージェント</a>
+<a class="pgv next" href="../01-agentic/12-q2.html"><span class="pgv-l">次へ</span><span class="pgv-t">1-12　理解度チェック ─ 複数エージェント</span></a>
 </nav>
 </main>
 </div>
@@ -135,6 +120,6 @@
   </div>
 </div>
 <script src="../assets/quiz-data.js?v=4385afea"></script>
-<script src="../assets/search-index.js?v=98a5172a"></script>
-<script src="../assets/app.js?v=1c7668ec"></script>
+<script src="../assets/search-index.js?v=de7413f7"></script>
+<script src="../assets/app.js?v=0564f87d"></script>
 </body></html>

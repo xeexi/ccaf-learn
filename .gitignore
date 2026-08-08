@@ -1,2 +1,8 @@
 .DS_Store
 Thumbs.db
+
+# Claude Code のローカル設定（個人用・コミットしない）
+.claude/settings.local.json
+
+# docker 経由の実行キャッシュ（playwright・測定結果）
+tools/.cache/

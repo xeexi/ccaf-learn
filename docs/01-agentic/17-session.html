@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/style.css?v=acf8ceb2">
+<link rel="stylesheet" href="../assets/style.css?v=b611c55a">
 </head>
 <body data-page="session">
 <script>(function(){var t=localStorage.getItem('ccarf-theme');if(t)document.documentElement.dataset.theme=t;})();</script>
@@ -46,7 +46,7 @@
 <div class="shell">
 <aside class="toc">
   <div class="toc-head">Domain 1</div>
-  <nav class="toc-list"><a class="toc-link" href="../01-agentic/01-d1about.html">1-1　1往復では終わらない仕事</a>
+  <nav class="toc-list"><a class="toc-link" href="../01-agentic/01-d1about.html">1-1　このドメインについて</a>
 <a class="toc-link" href="../01-agentic/02-tools.html">1-2　ツールを渡すとは、説明書を渡すこと</a>
 <a class="toc-link" href="../01-agentic/03-loop.html">1-3　エージェントループの1周</a>
 <a class="toc-link" href="../01-agentic/04-stop.html">1-4　stop_reason で分岐する</a>
@@ -64,9 +64,10 @@
 <a class="toc-link toc-quiz" href="../01-agentic/16-q3.html">1-16　理解度チェック ─ 起動と強制</a>
 <a class="toc-link on" href="../01-agentic/17-session.html">1-17　セッションをまたぐ</a>
 <a class="toc-link toc-quiz" href="../01-agentic/18-q4.html">1-18　理解度チェック ─ セッション</a></nav>
+  <a class="toc-all" href="../index.html#all">全項目一覧（88項）</a>
 </aside>
 <main class="doc">
-<p class="crumb" data-domain="agentic"><b>Domain 1</b><span>エージェント設計とオーケストレーション</span><span class="w">出題比率 27%</span></p>
+<p class="crumb" data-domain="agentic"><b>Domain 1</b><span>エージェント設計とオーケストレーション</span><span class="w">出題比率 27%（約16問）</span></p>
 <!-- ▼ 本文 ─ ここだけを編集する。この前後は node tools/reindex.mjs が書き出す -->
 <section class="sec" id="session">
 <header class="sec-head">
@@ -75,51 +76,44 @@
 <p class="lead">作業は1回で終わりません。前回の続きから始めるか、途中から枝を作るか、まっさらから始めるかを選びます。</p>
 <p class="task"><span class="tn">BLUEPRINT 1.7</span><b>セッション状態・再開・分岐の管理</b></p>
 <p class="goal"><b>ゴール</b>再開・枝分かれ・新規の使い分けができる。</p>
-  <div class="figbox"><div class="diagram run">
-  <svg viewBox="0 0 760 300">
-    <text class="sm s1" x="16" y="30">もとのセッション（履歴あり）</text>
-    <g class="s1"><rect x="16" y="40" width="420" height="28" rx="6" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
-      <rect x="16" y="40" width="420" height="28" rx="6" fill="var(--fig-line-blue)"/>
-      <line x1="442" y1="54" x2="474" y2="54" stroke="var(--fig-muted)" stroke-width="2" marker-end="url(#ar)"/>
-      <rect x="480" y="40" width="264" height="28" rx="6" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)" stroke-dasharray="4 3"/>
-      <text class="sm" x="612" y="59" text-anchor="middle">続きを足していく</text></g>
-    <text class="sm s2" x="16" y="90" style="fill:var(--fig-green)">再開 ── 履歴ごと戻る。窓は空かない</text>
 
-    <g class="s3"><path d="M300 74 L300 128" fill="none" stroke="var(--fig-amber)" stroke-width="2" marker-end="url(#ara)"/>
-      <rect x="300" y="134" width="444" height="28" rx="6" fill="var(--fig-fill-neutral)" stroke="var(--fig-line-amber)"/>
-      <rect x="300" y="134" width="140" height="28" rx="6" fill="var(--fig-line-amber)"/>
-      <text class="sm" x="522" y="153" text-anchor="middle">同じ履歴を持つ別のセッション</text>
-      <text class="sm" x="16" y="153" style="fill:var(--fig-amber)">枝を作る ── 元は変わらない</text></g>
+<table class="tbl">
+  <thead><tr><th></th><th>再開</th><th>枝分かれ</th><th>新規</th></tr></thead>
+  <tbody>
+    <tr><th>コマンド</th>
+      <td data-l="再開"><code>claude --continue</code>（直前）<br><code>claude --resume</code>（一覧から選ぶ）</td>
+      <td data-l="枝分かれ"><code>claude --resume &lt;id&gt; --fork-session</code></td>
+      <td data-l="新規"><code>claude</code></td></tr>
+    <tr><th>もとの会話</th>
+      <td data-l="再開"><b>そのまま伸びる</b></td>
+      <td data-l="枝分かれ"><b>変わらない</b>。別 ID で枝ができる</td>
+      <td data-l="新規">関係しない</td></tr>
+    <tr><th>選ぶ場面</th>
+      <td data-l="再開">続きをやる</td>
+      <td data-l="枝分かれ">同じ地点から<b>複数の案を試して比べる</b></td>
+      <td data-l="新規">前の文脈が<b>邪魔</b>なとき</td></tr>
+    <tr><th>窓の重さ</th>
+      <td data-l="再開"><span class="ng">軽くならない。</span>長くなった会話は長いまま戻る</td>
+      <td data-l="枝分かれ"><span class="ng">軽くならない。</span>枝を切った地点の重さを引き継ぐ</td>
+      <td data-l="新規"><span class="ok">軽い。</span>ただし前提の渡し直しが要る</td></tr>
+  </tbody>
+</table>
 
-    <g class="s4"><rect x="16" y="200" width="728" height="28" rx="6" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
-      <text class="sm" x="380" y="219" text-anchor="middle">履歴なし ── 前提をもう一度渡す</text>
-      <text class="sm" x="16" y="192" style="fill:var(--fig-muted)">新規</text></g>
-    <text class="sm s5" x="380" y="272" text-anchor="middle">軽くしたいときに選ぶのは新規か圧縮。再開は「文脈を保つ」ための操作で、軽くする操作ではない</text>
-  </svg>
-  </div></div>
-  <div class="detail"><h3>図の読み方</h3>
-    <ol class="ann">
-      <li><span class="n">1</span><span>上の帯を伸ばすのが再開です。直前のものを開くか、ID や名前で選ぶかの違いしかありません ── <code>--continue</code> と <code>--resume</code>。</span></li>
-      <li><span class="n">2</span><span>橙の枝が <code>--fork-session</code> です。<b>もとのセッションは変わらない</b>ので、同じ地点から複数の案を試して比べられます。</span></li>
-      <li><span class="n">3</span><span>伸ばすのだから<b>窓は空きません</b>。長くなった会話は長いまま戻ります。ここを取り違えると「再開したのに重い」と悩みます。</span></li>
-      <li><span class="n">4</span><span><b>新規</b>を選ぶのは前の文脈が邪魔なときです。渡し直しの手間が増えるので、CLAUDE.md に書けることは先に書いておくと楽になります。</span></li>
-    </ol>
-    <div class="ex"><span class="exl">コマンドの形</span>
-    <code>claude --continue</code> … 直前の会話を開く<br>
-    <code>claude --resume</code> … 一覧から選ぶ（ID や名前を渡せる）<br>
-    <code>claude --resume &lt;id&gt; --fork-session</code> … その地点から別 ID で枝を作る</div>
-    <div class="myth">
-      <span class="t">誤解</span><span>「セッションを再開すれば、軽い状態から始まる」</span>
-      <span class="t o">実際は</span><span>履歴ごと復元されるので、<b>再開した時点の重さがそのまま戻ります</b>。軽くしたいなら圧縮するか、新規で始めて必要な前提だけ渡します。</span>
-    </div>
+<p class="point"><b>ポイント</b>再開は文脈を保つ手、枝は同じ地点から分ける手、新規は文脈を捨てる手。<b>窓を軽くするのはどれでもない。</b></p>
+
+<div class="detail">
+  <p>新規を選ぶと渡し直しの手間が増えるので、<code>CLAUDE.md</code> に書けることは先に書いておくと楽になります。</p>
+  <div class="myth">
+    <span class="t">誤解</span><span>「セッションを再開すれば、軽い状態から始まる」</span>
+    <span class="t o">実際は</span><span>履歴ごと復元されるので、<b>再開した時点の重さがそのまま戻ります</b>。軽くしたいなら圧縮するか、新規で始めて必要な前提だけ渡します。</span>
   </div>
-<p class="point"><b>ポイント</b>再開は文脈を保つ手、枝は同じ地点から分ける手、新規は文脈を捨てる手。窓を軽くするのはどれでもない。</p>
+</div>
 </section>
 <!-- ▲ 本文 -->
 <nav class="secpager">
-<a class="pgv prev" href="../01-agentic/16-q3.html"><span class="pgv-l">前へ</span>1-16　理解度チェック ─ 起動と強制</a>
+<a class="pgv prev" href="../01-agentic/16-q3.html"><span class="pgv-l">前へ</span><span class="pgv-t">1-16　理解度チェック ─ 起動と強制</span></a>
 <span class="pgv-n">Domain 1 17 / 18</span>
-<a class="pgv next" href="../01-agentic/18-q4.html"><span class="pgv-l">次へ</span>1-18　理解度チェック ─ セッション</a>
+<a class="pgv next" href="../01-agentic/18-q4.html"><span class="pgv-l">次へ</span><span class="pgv-t">1-18　理解度チェック ─ セッション</span></a>
 </nav>
 </main>
 </div>
@@ -131,6 +125,6 @@
   </div>
 </div>
 <script src="../assets/quiz-data.js?v=4385afea"></script>
-<script src="../assets/search-index.js?v=98a5172a"></script>
-<script src="../assets/app.js?v=1c7668ec"></script>
+<script src="../assets/search-index.js?v=de7413f7"></script>
+<script src="../assets/app.js?v=0564f87d"></script>
 </body></html>

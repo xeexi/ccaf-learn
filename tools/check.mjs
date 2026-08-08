@@ -160,16 +160,27 @@ order.forEach(s => {
 });
 if (!goalNg) console.log(`  ✓ 本文 ${order.filter(s => !s.quiz).length} 節すべてにあり`);
 
-/* --- 5e. 本文セクションに出題タスクの表示（.task）があるか ------------
-   どの節がブループリントのどこに対応するかを、節ごとに明示しておく。 */
+/* --- 5e. 出題タスクの表示（.task）が正しく出ているか ------------------
+   対応するタスクがある節には BLUEPRINT ラベルを出す。
+   対応がない節（土台・導入・まとめ・模擬）には**何も出さない** ──
+   「ブループリント対応なし」と書くのは、読み手にとって情報がないため。
+   ここでは「ラベルがあるなら BLUEPRINT を名乗っていること」だけを見る。
+   対応があるのに表示が抜けている件は、下の 5f（網羅）が id 単位で拾う。 */
 console.log('\n■ 出題タスクの表示');
 let tlNg = 0;
 order.forEach(s => {
-  if (s.quiz || /class="task"/.test(s.body)) return;
-  bad(`${s.f} #${(s.body.match(/id="([^"]+)"/) || [])[1]}: 出題タスクの表示（.task）がない`);
-  tlNg++;
+  const m = s.body.match(/<p class="task">([\s\S]*?)<\/p>/);
+  if (!m) return;
+  if (!/<span class="tn">BLUEPRINT \d\.\d<\/span>/.test(m[1])) {
+    bad(`${s.f} #${(s.body.match(/id="([^"]+)"/) || [])[1]}: .task が BLUEPRINT ラベルの形になっていない`);
+    tlNg++;
+  }
 });
-if (!tlNg) console.log('  ✓ 本文すべてに対応タスク（または土台・導入の明示）あり');
+[...FILES, 'index.html'].forEach(f => {
+  const h = fs.readFileSync(path.join(ROOT, f), 'utf8');
+  if (h.includes('ブループリント対応なし')) { bad(`${f}: 「ブループリント対応なし」が残っている`); tlNg++; }
+});
+if (!tlNg) console.log(`  ✓ ラベルのある ${order.filter(s => /class="task"/.test(s.body)).length} 節はすべて BLUEPRINT 表記`);
 
 /* --- 5d. 出題ブループリントのタスクに、対応する節があるか -------------
    「網羅しているか」を主観で答えないための機械判定（§7 #9）。
@@ -218,7 +229,14 @@ let covNg = 0;
 Object.entries(TASKS).forEach(([t, ids]) => {
   if (!ids.some(i => allIds.has(i))) { bad(`タスク「${t}」に対応する節がない（想定 id: ${ids.join(" / ")}）`); covNg++; }
 });
-if (!covNg) console.log(`  ✓ ${Object.keys(TASKS).length} タスクすべてに対応する節あり`);
+// 対応タスクのある節から BLUEPRINT ラベルが落ちていないか（5e の裏返し）
+const taskIds = new Set(Object.values(TASKS).flat());
+order.forEach(s => {
+  const id = (s.body.match(/id="([^"]+)"/) || [])[1];
+  if (s.quiz || !taskIds.has(id)) return;
+  if (!/class="task"/.test(s.body)) { bad(`${s.f} #${id}: 対応タスクがあるのに BLUEPRINT ラベルがない`); covNg++; }
+});
+if (!covNg) console.log(`  ✓ ${Object.keys(TASKS).length} タスクすべてに対応する節あり（ラベルも欠落なし）`);
 
 /* --- 5f. 文字サイズが段階（--fs-*）で書かれているか -------------------
    px を直接書くと段階が増えていき、「ばらつきが大きい」状態に戻る。

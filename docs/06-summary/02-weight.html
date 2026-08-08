@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/style.css?v=acf8ceb2">
+<link rel="stylesheet" href="../assets/style.css?v=b611c55a">
 </head>
 <body data-page="weight">
 <script>(function(){var t=localStorage.getItem('ccarf-theme');if(t)document.documentElement.dataset.theme=t;})();</script>
@@ -48,20 +48,21 @@
   <div class="toc-head">まとめ</div>
   <nav class="toc-list"><a class="toc-link" href="../06-summary/01-all.html">6-1　1枚で全体を見る</a>
 <a class="toc-link on" href="../06-summary/02-weight.html">6-2　どこに時間を使うか</a>
-<a class="toc-link toc-quiz" href="../06-summary/03-q.html">6-3　総合チェック</a>
+<a class="toc-link toc-quiz" href="../06-summary/03-q.html">6-3　理解度チェック ─ 全ドメイン総合</a>
 <a class="toc-link" href="../06-summary/04-mockabout.html">6-4　シナリオで解く</a>
 <a class="toc-link" href="../06-summary/05-mock1.html">6-5　社内の問い合わせに答えるエージェント</a>
-<a class="toc-link toc-quiz" href="../06-summary/06-qm1.html">6-6　解いてみる</a>
+<a class="toc-link toc-quiz" href="../06-summary/06-qm1.html">6-6　理解度チェック ─ 社内の問い合わせ</a>
 <a class="toc-link" href="../06-summary/07-mock2.html">6-7　未知のコードベースの不具合調査</a>
-<a class="toc-link toc-quiz" href="../06-summary/08-qm2.html">6-8　解いてみる</a>
+<a class="toc-link toc-quiz" href="../06-summary/08-qm2.html">6-8　理解度チェック ─ 不具合の調査</a>
 <a class="toc-link" href="../06-summary/09-mock3.html">6-9　5人のチームに導入する</a>
-<a class="toc-link toc-quiz" href="../06-summary/10-qm3.html">6-10　解いてみる</a>
+<a class="toc-link toc-quiz" href="../06-summary/10-qm3.html">6-10　理解度チェック ─ チームへの導入</a>
 <a class="toc-link" href="../06-summary/11-mock4.html">6-11　請求書から項目を抜き出す</a>
-<a class="toc-link toc-quiz" href="../06-summary/12-qm4.html">6-12　解いてみる</a>
+<a class="toc-link toc-quiz" href="../06-summary/12-qm4.html">6-12　理解度チェック ─ 請求書の抽出</a>
 <a class="toc-link" href="../06-summary/13-mock5.html">6-13　社外サービスを繋ぐ</a>
-<a class="toc-link toc-quiz" href="../06-summary/14-qm5.html">6-14　解いてみる</a>
+<a class="toc-link toc-quiz" href="../06-summary/14-qm5.html">6-14　理解度チェック ─ 社外サービスの接続</a>
 <a class="toc-link" href="../06-summary/15-mock6.html">6-15　300ファイルの一括移行</a>
-<a class="toc-link toc-quiz" href="../06-summary/16-qm6.html">6-16　解いてみる</a></nav>
+<a class="toc-link toc-quiz" href="../06-summary/16-qm6.html">6-16　理解度チェック ─ 一括移行</a></nav>
+  <a class="toc-all" href="../index.html#all">全項目一覧（88項）</a>
 </aside>
 <main class="doc">
 <p class="crumb" data-domain="summary"><b>まとめ</b><span>全体をもう一度</span></p>
@@ -71,64 +72,35 @@
   <h2>6-2　どこに時間を使うか</h2>
 </header>
 <p class="lead">60問の内訳です。残り時間が限られているときに、どこを見直すかの判断材料になります。</p>
-<p class="task">ブループリント対応なし ── 全ドメインのまとめ</p>
 <p class="goal"><b>ゴール</b>「配点 × 自分の弱さ」で優先順位を決められる。</p>
-  <div class="figbox"><div class="diagram run">
-  <svg viewBox="0 0 760 250">
-    <text class="ttl s1" x="16" y="24">出題比率 ─ 60問の内訳</text>
-    <g class="s1">
-      <text class="lbl" x="16" y="62">Domain 1</text>
-      <text class="sm" x="96" y="62">エージェント設計</text>
-      <rect x="236" y="48" width="400" height="20" rx="5" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
-      <rect x="236" y="48" width="400" height="20" rx="5" fill="var(--accent)"/>
-      <text class="lbl" x="650" y="63" style="fill:var(--accent);font-weight:700">27%</text>
-    </g>
-    <g class="s2">
-      <text class="lbl" x="16" y="96">Domain 2</text>
-      <text class="sm" x="96" y="96">ツールと MCP</text>
-      <rect x="236" y="82" width="400" height="20" rx="5" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
-      <rect x="236" y="82" width="267" height="20" rx="5" fill="var(--accent)" opacity="0.5"/>
-      <text class="lbl" x="650" y="97">18%</text>
-    </g>
-    <g class="s3">
-      <text class="lbl" x="16" y="130">Domain 3</text>
-      <text class="sm" x="96" y="130">Claude Code の設定</text>
-      <rect x="236" y="116" width="400" height="20" rx="5" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
-      <rect x="236" y="116" width="296" height="20" rx="5" fill="var(--accent)" opacity="0.5"/>
-      <text class="lbl" x="650" y="131">20%</text>
-    </g>
-    <g class="s4">
-      <text class="lbl" x="16" y="164">Domain 4</text>
-      <text class="sm" x="96" y="164">プロンプトと構造化出力</text>
-      <rect x="236" y="150" width="400" height="20" rx="5" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
-      <rect x="236" y="150" width="296" height="20" rx="5" fill="var(--accent)" opacity="0.5"/>
-      <text class="lbl" x="650" y="165">20%</text>
-    </g>
-    <g class="s5">
-      <text class="lbl" x="16" y="198">Domain 5</text>
-      <text class="sm" x="96" y="198">コンテキスト管理</text>
-      <rect x="236" y="184" width="400" height="20" rx="5" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
-      <rect x="236" y="184" width="222" height="20" rx="5" fill="var(--accent)" opacity="0.5"/>
-      <text class="lbl" x="650" y="199">15%</text>
-    </g>
-    <text class="sm s6" x="16" y="236">最大の Domain 1 でも4分の1強。5つの差は小さく、捨てられる範囲はない</text>
-  </svg>
-  </div></div>
-  <div class="detail"><h3>図の読み方</h3>
-    <ol class="ann">
-      <li><span class="n">1</span><span><b>Domain 1</b>（強調してある帯）が最長ですが、それでも全体の4分の1強です。<b>捨てられる範囲はありません。</b></span></li>
-      <li><span class="n">2</span><span><b>Domain 3</b> と <b>Domain 4</b> は帯の長さが同じ ── 同率です。前者は設定ファイルと運用、後者は指示の書き方で、<b>覚え方の性質がかなり違います。</b>同じ配点でも準備の仕方は分けたほうがよい組み合わせです。</span></li>
-      <li><span class="n">3</span><span>最短の <b>Domain 5</b> でも9問前後あります。帯の長さは問題数の配分でしかなく、<b>1問の重みはどのドメインでも同じ</b>です。</span></li>
-      <li><span class="n">4</span><span>合格点は1,000点満点で720点。満点を狙う試験ではないので、<b>帯の長さが近い5つのうち、自分が弱い側から埋める</b>ほうが効きます。</span></li>
-    </ol>
+
+<!--#weightfig--><div class="figbox"><figure class="fig run">
+  <p class="fig-t">本試験 60 問の内訳 ─ 帯の全長が 60 問</p>
+  <div class="fig-seg s1"><span class="seg" data-domain="agentic" style="width:27%">16問</span><span class="seg" data-domain="tools" style="width:18%">11問</span><span class="seg" data-domain="code" style="width:20%">12問</span><span class="seg" data-domain="prompt" style="width:20%">12問</span><span class="seg" data-domain="context" style="width:15%">9問</span></div>
+  <div class="fig-legend">
+    <span class="lg s1" data-domain="agentic"><span class="sw"></span><b>Domain 1</b><span class="n">27%　エージェントの組み立て</span></span>
+    <span class="lg s2" data-domain="tools"><span class="sw"></span><b>Domain 2</b><span class="n">18%　道具そのものの設計</span></span>
+    <span class="lg s3" data-domain="code"><span class="sw"></span><b>Domain 3</b><span class="n">20%　Claude Code の運用</span></span>
+    <span class="lg s4" data-domain="prompt"><span class="sw"></span><b>Domain 4</b><span class="n">20%　指示と出力の設計</span></span>
+    <span class="lg s5" data-domain="context"><span class="sw"></span><b>Domain 5</b><span class="n">15%　長く動かすための備え</span></span>
   </div>
+  <p class="fig-f">いちばん多い Domain 1 でも 16 問、いちばん少ない Domain 5 でも 9 問。<b>その差は 7 問</b>で、1問の重みはどこも同じ。捨てられる範囲はない。</p>
+</figure></div><!--/#weightfig-->
+
 <p class="point"><b>ポイント</b>比率は問題数の配分。優先順位は「配点 × 自分の弱さ」で決める。</p>
+
+<div class="detail">
+  <div class="ex"><span class="exl">読み取れること</span>
+  ・<b>Domain 3 と Domain 4 は同率（各12問前後）</b>。ただし前者は設定ファイルと運用、後者は指示の書き方で、<b>覚え方の性質がかなり違います</b>。同じ配点でも準備の仕方は分けたほうがよい組み合わせです。<br>
+  ・最短の <b>Domain 5 でも9問前後</b>。帯の長さは問題数の配分でしかなく、<b>1問の重みはどのドメインでも同じ</b>です。<br>
+  ・合格点は1,000点満点で720点。<b>満点を狙う試験ではない</b>ので、長さが近い5つのうち<b>自分が弱い側から埋める</b>ほうが効きます。</div>
+</div>
 </section>
 <!-- ▲ 本文 -->
 <nav class="secpager">
-<a class="pgv prev" href="../06-summary/01-all.html"><span class="pgv-l">前へ</span>6-1　1枚で全体を見る</a>
+<a class="pgv prev" href="../06-summary/01-all.html"><span class="pgv-l">前へ</span><span class="pgv-t">6-1　1枚で全体を見る</span></a>
 <span class="pgv-n">まとめ 2 / 16</span>
-<a class="pgv next" href="../06-summary/03-q.html"><span class="pgv-l">次へ</span>6-3　総合チェック</a>
+<a class="pgv next" href="../06-summary/03-q.html"><span class="pgv-l">次へ</span><span class="pgv-t">6-3　理解度チェック ─ 全ドメイン総合</span></a>
 </nav>
 </main>
 </div>
@@ -140,6 +112,6 @@
   </div>
 </div>
 <script src="../assets/quiz-data.js?v=4385afea"></script>
-<script src="../assets/search-index.js?v=98a5172a"></script>
-<script src="../assets/app.js?v=1c7668ec"></script>
+<script src="../assets/search-index.js?v=de7413f7"></script>
+<script src="../assets/app.js?v=0564f87d"></script>
 </body></html>

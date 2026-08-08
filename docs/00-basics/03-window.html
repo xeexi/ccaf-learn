@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/style.css?v=acf8ceb2">
+<link rel="stylesheet" href="../assets/style.css?v=b611c55a">
 </head>
 <body data-page="window">
 <script>(function(){var t=localStorage.getItem('ccarf-theme');if(t)document.documentElement.dataset.theme=t;})();</script>
@@ -54,6 +54,7 @@
 <a class="toc-link" href="../00-basics/04-cache.html">0-4　プロンプトキャッシュ</a>
 <a class="toc-link" href="../00-basics/05-token.html">0-5　確率で次の1トークンを選ぶ</a>
 <a class="toc-link toc-quiz" href="../00-basics/06-q.html">0-6　理解度チェック</a></nav>
+  <a class="toc-all" href="../index.html#all">全項目一覧（88項）</a>
 </aside>
 <main class="doc">
 <p class="crumb" data-domain="basics"><b>前提</b><span>会話の実体</span></p>
@@ -65,70 +66,59 @@
 
 <h3 class="sub" id="window-1">文章は「トークン」に刻まれ、窓に入る分だけ扱える</h3>
 <p class="lead">文字ではなくトークン（単語の断片）が処理の単位です。1回のやり取りで扱える総量には上限（コンテキストウィンドウ）があります。</p>
-<p class="task">ブループリント対応なし ── 各タスクの土台になる知識</p>
 <p class="goal"><b>ゴール</b>入力と出力が同じ枠を食い合うことを説明できる。</p>
-  <div class="figbox"><div class="diagram run">
-  <svg viewBox="0 0 760 280">
-    <text class="ttl s1" x="22" y="40">① 刻む</text>
-    <g class="s1">
-      <rect x="140" y="22" width="66" height="28" rx="6" fill="var(--fig-fill-blue)" stroke="var(--fig-line-blue)"/><text class="mono" x="173" y="41" text-anchor="middle">エージ</text>
-      <rect x="212" y="22" width="60" height="28" rx="6" fill="var(--fig-fill-blue)" stroke="var(--fig-line-blue)"/><text class="mono" x="242" y="41" text-anchor="middle">ェント</text>
-      <rect x="278" y="22" width="46" height="28" rx="6" fill="var(--fig-fill-blue)" stroke="var(--fig-line-blue)"/><text class="mono" x="301" y="41" text-anchor="middle">を</text>
-      <rect x="330" y="22" width="60" height="28" rx="6" fill="var(--fig-fill-blue)" stroke="var(--fig-line-blue)"/><text class="mono" x="360" y="41" text-anchor="middle">設計</text>
-      <rect x="396" y="22" width="52" height="28" rx="6" fill="var(--fig-fill-blue)" stroke="var(--fig-line-blue)"/><text class="mono" x="422" y="41" text-anchor="middle">する</text>
-      <text class="sm" x="470" y="41">≒ 5トークン（日本語は1文字1〜2トークン前後）</text></g>
 
-    <text class="ttl s2" x="22" y="100">② 窓に積む</text>
-    <g class="s2"><rect x="140" y="76" width="560" height="140" rx="12" fill="var(--fig-surface)" stroke="var(--fig-amber)" stroke-width="2"/>
-      <text class="sm" x="420" y="96" text-anchor="middle" style="fill:var(--fig-amber)">コンテキストウィンドウ（入力＋出力の合計上限）</text></g>
-    <g class="s3"><rect x="156" y="108" width="120" height="30" rx="6" fill="var(--fig-fill-amber)" stroke="var(--fig-line-amber)"/>
-      <text class="lbl" x="216" y="128" text-anchor="middle">システム指示</text></g>
-    <g class="s4"><rect x="286" y="108" width="150" height="30" rx="6" fill="var(--fig-fill-blue)" stroke="var(--fig-line-blue)"/>
-      <text class="lbl" x="361" y="128" text-anchor="middle">ツールの定義</text></g>
-    <g class="s5"><rect x="446" y="108" width="238" height="30" rx="6" fill="var(--fig-fill-blue)" stroke="var(--fig-line-blue)"/>
-      <text class="lbl" x="565" y="128" text-anchor="middle">会話履歴（どんどん伸びる）</text></g>
-    <g class="s6"><rect x="156" y="148" width="300" height="30" rx="6" fill="var(--fig-fill-blue)" stroke="var(--fig-line-blue)"/>
-      <text class="lbl" x="306" y="168" text-anchor="middle">ツールが返した結果（かなり長くなりがち）</text>
-      <rect x="466" y="148" width="120" height="30" rx="6" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)"/>
-      <text class="lbl" x="526" y="161" text-anchor="middle" style="fill:var(--fig-green)">今回の出力</text>
-      <text class="sm" x="526" y="174" text-anchor="middle" style="fill:var(--fig-green)">これから書く分</text></g>
-    <g class="s7"><rect x="596" y="148" width="88" height="30" rx="6" fill="var(--fig-fill-red)" stroke="var(--fig-line-red)"/>
-      <text class="sm" x="640" y="168" text-anchor="middle" style="fill:var(--fig-red)">残り少し</text>
-      <text class="sm" x="420" y="200" text-anchor="middle">溢れると、古い部分を捨てる／要約するしかない</text></g>
-    <text class="sm s8" x="420" y="248" text-anchor="middle">「窓を広く使う」より「窓に何を入れるか選ぶ」ほうが効く ─ Domain 5へ</text>
-  </svg>
-  </div></div>
-  <div class="detail"><h3>図の読み方</h3>
-    <ol class="ann">
-      <li><span class="n">1</span><span>上段が<b>①刻む</b>。文章がトークンという単位に分割されます（刻み方は下の注記のとおり、あくまで例です）。</span></li>
-      <li><span class="n">2</span><span>下段の太い枠が<b>コンテキストウィンドウ</b>。1回のやり取りで扱える総量の上限です。</span></li>
-      <li><span class="n">3</span><span>枠の中に並ぶ箱が<b>そこに載るもの</b>。システム指示、ツールの定義、会話履歴、そして<b>ツールが返した結果</b>（＝ <code>tool_result</code>。ここまでが<b>送る側＝入力</b>）。</span></li>
-      <li><span class="n">4</span><span>右下の緑が<b>今回の出力</b>。<b>これからモデルが書く分</b>で、<code>tool_result</code> とは別物です。<b>入力と出力が同じ枠を共有している</b>のがこの図の要点です。</span></li>
-      <li><span class="n">5</span><span>右端の赤い箱が<b>残り</b>。どれかが太れば、他が痩せます。</span></li>
-    </ol>
-    </div>
-  <p class="point"><b>ポイント</b>ウィンドウは共有資源。ツールの定義文も、ツールが返した長大なログも、同じ窓を食う。</p>
-  <p class="note">※ 上の刻み方は説明用の例です。実際の境界はモデルのトークナイザが決めるもので、日本語の単語や文節とは一致しません。「エージ／ェント」のように語の途中で切れることも、逆に頻出語がまるごと1トークンになることもあります。<b>覚えるべきは境界そのものではなく、「文字数ではなくトークン数で数えられている」ことです。</b></p>
+<div class="figbox"><figure class="fig run">
+  <p class="fig-t">① 文章はトークンに刻まれる</p>
+  <div class="fig-turn s1">
+    <span class="t-lbl">エージェントを設計する</span>
+    <span class="fig-msgs">
+      <span class="m m-u">エージ</span><span class="m m-u">ェント</span><span class="m m-u">を</span><span class="m m-u">設計</span><span class="m m-u">する</span>
+    </span>
+    <span class="t-n">≒ 5トークン</span>
+  </div>
+
+  <p class="fig-t s2" style="margin-top:8px">② 刻んだものが、1つの窓を分け合う</p>
+  <div class="fig-seg s2">
+    <span class="seg" style="width:8%;background:var(--fig-blue)">指示</span>
+    <span class="seg" style="width:10%;background:var(--fig-blue)">定義</span>
+    <span class="seg" style="width:22%;background:var(--fig-blue)">会話履歴</span>
+    <span class="seg" style="width:34%;background:var(--fig-blue)">ツールの結果</span>
+    <span class="seg" style="width:14%;background:var(--fig-amber)">出力</span>
+    <span class="seg" style="width:12%;background:var(--fig-fill-neutral);color:var(--fig-muted)">残り</span>
+  </div>
+  <div class="fig-legend s3">
+    <span class="lg"><span class="sw" style="background:var(--fig-blue)"></span><b>システム指示</b><span class="n">恒久のルール</span></span>
+    <span class="lg"><span class="sw" style="background:var(--fig-blue)"></span><b>ツールの定義</b><span class="n">説明文もここを食う</span></span>
+    <span class="lg"><span class="sw" style="background:var(--fig-blue)"></span><b>会話履歴</b><span class="n">やり取りのたびに伸びる</span></span>
+    <span class="lg"><span class="sw" style="background:var(--fig-blue)"></span><b>ツールが返した結果</b><span class="n"><code>tool_result</code>。いちばん太りやすい</span></span>
+    <span class="lg"><span class="sw" style="background:var(--fig-amber)"></span><b>今回の出力</b><span class="n">これからモデルが書く分</span></span>
+    <span class="lg"><span class="sw" style="background:var(--fig-fill-neutral)"></span><b>残り</b><span class="n">どれかが太れば、ここが痩せる</span></span>
+  </div>
+  <p class="fig-f"><span style="color:var(--fig-blue)">■</span> <b>青の4つが入力</b>（送る側）、<span style="color:var(--fig-amber)">■</span> <b>橙が出力</b>（返る側）。<b>入力と出力は別枠ではなく、同じ1本を食い合う。</b>溢れたら古い部分を捨てるか要約するしかない。</p>
+</figure></div>
+
+<p class="point"><b>ポイント</b>ウィンドウは共有資源。ツールの定義文も、ツールが返した長大なログも、これから書く出力も、同じ窓を食う。</p>
+<p class="note">※ 上の刻み方も帯の割合も、説明用の例です。実際の境界はモデルのトークナイザが決めるもので、日本語の単語や文節とは一致しません。「エージ／ェント」のように語の途中で切れることも、逆に頻出語がまるごと1トークンになることもあります。<b>覚えるべきは境界そのものではなく、「文字数ではなくトークン数で数えられている」ことです。</b></p>
 
 <h3 class="sub" id="window-2">窓は「広ければ安心」ではない</h3>
-<div class="detail"><h3>たとえるなら</h3>
-    <p><b>作業机の広さ</b>です。机に置ける紙の量は決まっていて、そこに全部を並べないと仕事ができません。はみ出したら、古い紙を捨てるか、要約した1枚に置き換えるしかありません。</p>
-    <div class="ex"><span class="exl">現実に起きること</span>
-    ログ検索ツールが5万行を返す → その5万行が会話履歴に残り続ける → 数回のやり取りで机が満杯 → 最初に置いた指示を捨てるしかなくなる。<br>
-    対策は「ツール側で必要な行だけ返す」。<b>机に載せる前に減らす</b>のが一番効きます。</div>
-    <h3>「窓が大きい＝安心」ではない</h3>
-    <div class="myth">
-      <span class="t">誤解</span><span>「窓が広いモデルを使えば、何でも詰め込んでよい」</span>
-      <span class="t o">実際は</span><span>詰め込むほど遅く・高くなり、大事な指示が埋もれて効きにくくなる。<b>広く使うより、何を入れるか選ぶ</b>ほうが結果が良くなる（Domain 5）。</span>
-    </div>
+<div class="detail">
+  <h3>たとえるなら</h3>
+  <p><b>作業机の広さ</b>です。机に置ける紙の量は決まっていて、そこに全部を並べないと仕事ができません。はみ出したら、古い紙を捨てるか、要約した1枚に置き換えるしかありません。</p>
+  <div class="ex"><span class="exl">現実に起きること</span>
+  ログ検索ツールが5万行を返す → その5万行が会話履歴に残り続ける → 数回のやり取りで机が満杯 → 最初に置いた指示を捨てるしかなくなる。<br>
+  対策は「ツール側で必要な行だけ返す」。<b>机に載せる前に減らす</b>のが一番効きます。</div>
+  <div class="myth">
+    <span class="t">誤解</span><span>「窓が広いモデルを使えば、何でも詰め込んでよい」</span>
+    <span class="t o">実際は</span><span>詰め込むほど遅く・高くなり、大事な指示が埋もれて効きにくくなる。<b>広く使うより、何を入れるか選ぶ</b>ほうが結果が良くなる（Domain 5）。</span>
   </div>
-  <p class="point"><b>ポイント</b>ウィンドウは共有資源。ツールの定義文も、ツールが返した長大なログも、同じ窓を食う。</p>
+</div>
 </section>
 <!-- ▲ 本文 -->
 <nav class="secpager">
-<a class="pgv prev" href="../00-basics/02-resend.html"><span class="pgv-l">前へ</span>0-2　会話は毎回、まるごと送り直している</a>
+<a class="pgv prev" href="../00-basics/02-resend.html"><span class="pgv-l">前へ</span><span class="pgv-t">0-2　会話は毎回、まるごと送り直している</span></a>
 <span class="pgv-n">前提 3 / 6</span>
-<a class="pgv next" href="../00-basics/04-cache.html"><span class="pgv-l">次へ</span>0-4　プロンプトキャッシュ</a>
+<a class="pgv next" href="../00-basics/04-cache.html"><span class="pgv-l">次へ</span><span class="pgv-t">0-4　プロンプトキャッシュ</span></a>
 </nav>
 </main>
 </div>
@@ -140,6 +130,6 @@
   </div>
 </div>
 <script src="../assets/quiz-data.js?v=4385afea"></script>
-<script src="../assets/search-index.js?v=98a5172a"></script>
-<script src="../assets/app.js?v=1c7668ec"></script>
+<script src="../assets/search-index.js?v=de7413f7"></script>
+<script src="../assets/app.js?v=0564f87d"></script>
 </body></html>

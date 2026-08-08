@@ -42,6 +42,11 @@
   --fig-fill-red:#331722;
   --fig-line-red:#9E4159;
 
+  /* 押せるもの（ボタン・選択肢）の面。地より一段濃くして、下辺の影で浮かせる */
+  --btn-face:#22304D;
+  --btn-line:#3A4A6B;
+  --btn-raise:0 2px 0 #101828, 0 2px 6px rgba(0,0,0,.35);
+
   --radius:14px;
   --radius-sm:9px;
   --sans:"Inter","Noto Sans JP",system-ui,-apple-system,"Segoe UI",sans-serif;
@@ -76,7 +81,7 @@ html[data-theme="light"]{
   --fig-bar:#D7DEEA;
   --fig-line:#CBD4E2;
   --fig-dash:#A8B5CA;
-  --fig-muted:#64748B;
+  --fig-muted:#57657C;   /* #64748B は図のカード地の上で 4.2〜4.4:1 と AA 未達だった */
   --fig-blue:#0369A1;
   --fig-fill-blue:#E6F3FC;
   --fig-line-blue:#7FC0E6;
@@ -89,6 +94,9 @@ html[data-theme="light"]{
   --fig-red:#BE123C;
   --fig-fill-red:#FDEAEF;
   --fig-line-red:#EFA3B5;
+  --btn-face:#EDF1F7;
+  --btn-line:#C3CDDC;
+  --btn-raise:0 2px 0 #D5DCE7, 0 2px 5px rgba(15,23,42,.08);
   --shadow:0 1px 2px rgba(15,23,42,.05),0 10px 30px -18px rgba(15,23,42,.35);
 }
 
@@ -168,6 +176,20 @@ kbd{
 .nav-item.on .nav-num{ color:var(--accent) }
 .nav-item.on .nav-title{ color:var(--ink); font-weight:600 }
 
+/* 狭い画面で「いま居るドメイン」を出すボタン。app.js が挿す（広い画面では出ない） */
+.nav-cur{
+  display:none; align-items:center; gap:9px; flex:1; min-width:0;
+  min-height:44px; padding:0 13px; border-radius:10px; text-align:left;
+  border:1px solid var(--btn-line); background:var(--btn-face);
+  font-family:inherit; font-size:var(--fs-base); color:var(--ink); cursor:pointer;
+  box-shadow:var(--btn-raise);
+}
+.nav-cur:active{ transform:translateY(1px); box-shadow:none }
+.nav-cur-num{ flex:none; font-size:var(--fs-xs); letter-spacing:.1em; font-weight:700; color:var(--accent) }
+.nav-cur-t{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap }
+.nav-cur::after{ content:"▾"; margin-left:auto; flex:none; color:var(--muted) }
+.nav-open .nav-cur::after{ content:"▴" }
+
 /* ---------- レイアウト ---------- */
 .shell{
   display:grid; grid-template-columns:264px minmax(0,1fr);
@@ -204,6 +226,7 @@ kbd{
   background:var(--surface-2); color:var(--ink-2); transition:.16s;
 }
 .secpager .pgv.next{ text-align:right }
+.secpager .pgv-t{ display:block; min-width:0 }
 .secpager a.pgv:hover{ border-color:var(--accent); color:var(--accent) }
 .secpager .pgv.end{ color:var(--muted); background:transparent; border-style:dashed }
 .secpager .pgv-l{
@@ -243,8 +266,13 @@ kbd{
   margin:26px 0 10px; font-weight:700;
 }
 .detail h3:first-child{ margin-top:0 }
-.lead{ margin:0 0 22px; font-size:var(--fs-base); line-height:1.9; color:var(--ink-2); text-wrap:pretty }
-.sec p{ margin:0 0 14px; text-wrap:pretty }
+/* text-wrap:pretty は使わない。
+   iPhone（Safari／WebKit）は段落全体を再最適化するため、日本語だと
+   **行末に4〜6文字ぶんの空きを残して折り返す**。390px で実測した余りは
+   pretty あり 62〜76px ／ なし 3〜22px（内容領域の右端から測定・パディング除く）。
+   Chromium では 10〜14px 程度にしかならないので、PC で見ても気づけない。 */
+.lead{ margin:0 0 22px; font-size:var(--fs-base); line-height:1.9; color:var(--ink-2) }
+.sec p{ margin:0 0 14px }
 .sec p:last-child{ margin-bottom:0 }
 code{
   /* em にすると親のサイズぶんだけ段階外の値ができる（実測で 12.04px と 13.76px が出ていた）。
@@ -270,18 +298,270 @@ svg .mono{ font-family:var(--mono); font-size:12px }
 [data-widget="p-seq"] svg .sm,[data-widget="p-seq2"] svg .sm{ font-size:12px }
 [data-widget="p-seq"] svg .lbl,[data-widget="p-seq2"] svg .lbl{ font-size:13px }
 
-/* 図の段階表示 */
+/* ---------- 図を HTML で組む ----------
+   SVG を幅760で固定すると、iPhone では箱の中を横スワイプすることになり、
+   一度に見渡せない。HTML で組めば **PC は横並び・iPhone は縦積み** に折り返り、
+   図の中の文字も実テキストなので、どの幅でも 14px のまま読める。
+   SVG は「形そのものが情報」の図（曲線・重なり）だけに残す。 */
+.fig{
+  /* <figure> の UA 既定は margin:1em 40px。放っておくと左右で 80px はみ出す */
+  margin:0; display:flex; flex-direction:column; gap:14px; width:100%;
+}
+.fig-t{                                  /* 図のタイトル ─ 何を見る図かを1行で */
+  margin:0; font-size:var(--fs-sm); font-weight:700; color:var(--ink);
+}
+.fig-f{                                  /* 図の結び ─ この図で言いたいこと1行 */
+  margin:0; font-size:var(--fs-xs); color:var(--fig-muted); line-height:1.7;
+}
+.fig-row{
+  --gap:12px;
+  display:grid; gap:var(--gap);
+  grid-template-columns:repeat(var(--cols,3),minmax(0,1fr));
+}
+.fig-card{
+  position:relative; display:flex; flex-direction:column; gap:6px;
+  padding:14px; border-radius:10px;
+  background:var(--fig-fill-neutral); border:1px solid var(--fig-line);
+}
+.fig-lbl{                                /* 図の中の小見出し ─ 段が何を表すか */
+  margin:0; font-size:var(--fs-xs); font-weight:700; letter-spacing:.06em; color:var(--accent);
+}
+.fig-h{ font-size:var(--fs-sm); font-weight:700; color:var(--ink) }
+.fig-note{ font-size:var(--fs-xs); color:var(--fig-muted); line-height:1.7 }
+.fig-card ul{ margin:0; padding-left:1.15em; font-size:var(--fs-xs); line-height:1.8; color:var(--ink-2) }
+
+/* 色は**意味と結びついているときだけ**使う。区別したいだけなら色を付けない。
+     青 ＝ アプリ側・送る側
+     橙 ＝ モデル側・返す側
+     緑 ＝ 正しい・推奨
+     赤 ＝ 誤り・危険
+   「ここが要点」と示したいだけのときは .key（アクセントの縁）を使う。 */
+.fig-card.key{
+  border-color:var(--accent); border-left-width:3px;
+  background:color-mix(in srgb, var(--accent) 8%, var(--fig-fill-neutral));
+}
+.fig-card.key > .fig-h{ color:var(--ink) }
+.fig-card.blue { background:var(--fig-fill-blue);  border-color:var(--fig-line-blue) }
+.fig-card.amber{ background:var(--fig-fill-amber); border-color:var(--fig-line-amber) }
+.fig-card.green{ background:var(--fig-fill-green); border-color:var(--fig-line-green) }
+.fig-card.red  { background:var(--fig-fill-red);   border-color:var(--fig-line-red) }
+.fig-card.blue  > .fig-h{ color:var(--fig-blue) }
+.fig-card.amber > .fig-h{ color:var(--fig-amber) }
+.fig-card.green > .fig-h{ color:var(--fig-green) }
+.fig-card.red   > .fig-h{ color:var(--fig-red) }
+
+/* 順番のある並びには矢印を出す。横並びなら →、縦積みなら ↓ に変わる */
+.fig-row.flow > * + *::before{
+  content:"→"; position:absolute; z-index:1;
+  left:calc(var(--gap) / -2); top:50%; transform:translate(-50%,-50%);
+  color:var(--fig-muted); line-height:1;
+}
+
+/* 手順 ─ 番号つきの段。各段に「誰が」を出すので、分担がそのまま読める。
+   図の外に番号説明（.ann）を置かずに済むのが要点。 */
+.fig-steps{
+  counter-reset:figstep; margin:0; padding:0; list-style:none;
+  display:grid; gap:0;
+}
+.fig-steps > li{
+  position:relative; display:grid; gap:3px 12px; align-items:start;
+  grid-template-columns:26px auto minmax(0,1fr);
+  padding:0 0 18px;
+}
+.fig-steps > li:last-child{ padding-bottom:0 }
+.fig-steps > li::before{
+  counter-increment:figstep; content:counter(figstep);
+  grid-row:1; width:26px; height:26px; border-radius:50%;
+  display:grid; place-items:center;
+  background:var(--accent); color:var(--bg);
+  font-size:var(--fs-xs); font-weight:700; line-height:1;
+}
+html[data-theme="light"] .fig-steps > li::before{ color:#fff }
+/* 段と段を縦線でつなぐ ─ 順番であることが一目で分かる */
+.fig-steps > li:not(:last-child)::after{
+  content:""; position:absolute; left:12px; top:30px; bottom:2px; width:2px;
+  background:var(--fig-line);
+}
+.fig-who{                                /* 誰が ─ 色が役割を表す（青＝アプリ側、橙＝モデル側） */
+  flex:none; padding:2px 9px; border-radius:99px; white-space:nowrap;
+  font-size:var(--fs-xs); font-weight:700;
+  background:var(--fig-fill-neutral); border:1px solid var(--fig-line); color:var(--ink-2);
+}
+.fig-who.blue { background:var(--fig-fill-blue);  border-color:var(--fig-line-blue);  color:var(--fig-blue) }
+.fig-who.amber{ background:var(--fig-fill-amber); border-color:var(--fig-line-amber); color:var(--fig-amber) }
+.fig-who.green{ background:var(--fig-fill-green); border-color:var(--fig-line-green); color:var(--fig-green) }
+.fig-who.red  { background:var(--fig-fill-red);   border-color:var(--fig-line-red);   color:var(--fig-red) }
+.fig-do{ font-size:var(--fs-sm); line-height:1.75; color:var(--ink-2) }
+.fig-do b{ color:var(--ink) }
+.fig-do .key{ color:var(--accent); font-weight:700 }
+
+/* 回を追うごとに送る量が増える様子 */
+.fig-turn{
+  display:grid; gap:6px 12px; align-items:center; padding:10px 0;
+  grid-template-columns:auto minmax(0,1fr) auto;
+  border-top:1px solid var(--line-soft);
+}
+.fig-turn:first-of-type{ border-top:0 }
+.fig-turn .t-lbl{ font-size:var(--fs-xs); font-weight:700; color:var(--accent); white-space:nowrap }
+.fig-turn .t-n{ font-size:var(--fs-xs); color:var(--fig-muted); font-family:var(--mono); white-space:nowrap }
+.fig-msgs{ display:flex; flex-wrap:wrap; gap:5px }
+.fig-msgs .m{
+  padding:3px 9px; border-radius:6px; font-size:var(--fs-xs); line-height:1.5;
+  background:var(--fig-fill-neutral); border:1px solid var(--fig-line); color:var(--ink-2);
+}
+.fig-msgs .m-u{ background:var(--fig-fill-blue);  border-color:var(--fig-line-blue) }
+.fig-msgs .m-a{ background:var(--fig-fill-amber); border-color:var(--fig-line-amber) }
+.fig-msgs .m.now{ border-width:2px; font-weight:700; color:var(--ink) }
+
+/* 1本の枠を分け合う（積み上げ帯）＋ 色で対応づける凡例 */
+.fig-seg{
+  display:flex; height:40px; border-radius:8px; overflow:hidden;
+  border:1px solid var(--fig-line); background:var(--fig-fill-neutral);
+}
+.fig-seg .seg{
+  height:100%; display:grid; place-items:center; overflow:hidden;
+  background:var(--accent); color:var(--bg);
+  font-size:var(--fs-xs); font-weight:700; white-space:nowrap;
+  border-right:1px solid var(--fig-surface);
+}
+.fig-seg .seg:last-child{ border-right:0 }
+html[data-theme="light"] .fig-seg .seg{ color:#fff }
+.fig-legend{ display:grid; gap:7px 18px; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)) }
+.fig-legend .lg{
+  display:grid; grid-template-columns:14px auto minmax(0,1fr); gap:9px; align-items:baseline;
+  font-size:var(--fs-xs); line-height:1.7; color:var(--ink-2);
+}
+.fig-legend .lg .sw{
+  width:14px; height:14px; border-radius:4px; align-self:center;
+  background:var(--accent); border:1px solid var(--fig-line);
+}
+.fig-legend .lg b{ color:var(--ink); white-space:nowrap }
+.fig-legend .lg .n{ color:var(--fig-muted) }
+
+/* ---------- シーケンス図（やり取りの向きを見せる） ----------
+   「誰から誰へ」を番号つきの箇条書きで書くと、向きを読み取るのに一拍かかる。
+   ライフラインと矢印にすると、向きが形そのものになる。
+   縦に伸びる作りなので、iPhone でも横スクロールが要らない。
+
+   レーンは2本が既定。3者が絡むとき（モデル／アプリ／フック）は .lanes3 を付ける。
+   ライフラインは .sq-body の背景として引く ── 見出しが2行になっても位置がずれない。 */
+.fig-seq{ --l1:25%; --l2:75%; display:grid; gap:0 }
+.fig-seq.lanes3{ --l1:16.667%; --l2:50%; --l3:83.333% }
+
+.sq-head{ display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:8px }
+.fig-seq.lanes3 .sq-head{ grid-template-columns:1fr 1fr 1fr; gap:10px }
+.sq-head span{
+  padding:8px 10px; border-radius:9px; text-align:center;
+  font-size:var(--fs-sm); font-weight:700; line-height:1.4;
+}
+.sq-head .sq-a{ background:var(--fig-fill-amber); border:1px solid var(--fig-line-amber); color:var(--fig-amber) }
+.sq-head .sq-b{ background:var(--fig-fill-blue);  border:1px solid var(--fig-line-blue);  color:var(--fig-blue) }
+.sq-head .sq-c{ background:var(--fig-fill-neutral); border:1px solid var(--fig-line); color:var(--ink) }
+
+.sq-body{
+  position:relative;
+  background-repeat:no-repeat;
+  background-size:2px 100%;
+  background-image:
+    linear-gradient(var(--fig-line),var(--fig-line)),
+    linear-gradient(var(--fig-line),var(--fig-line));
+  background-position:calc(var(--l1) - 1px) 0, calc(var(--l2) - 1px) 0;
+}
+.fig-seq.lanes3 .sq-body{
+  background-image:
+    linear-gradient(var(--fig-line),var(--fig-line)),
+    linear-gradient(var(--fig-line),var(--fig-line)),
+    linear-gradient(var(--fig-line),var(--fig-line));
+  background-position:calc(var(--l1) - 1px) 0, calc(var(--l2) - 1px) 0, calc(var(--l3) - 1px) 0;
+}
+
+/* 1本の矢印＝1回のやり取り。--from / --to でどのレーン間かを決める */
+.sq-row{ position:relative; z-index:1; padding:12px 2% 22px; text-align:center }
+.sq-row::before{                       /* 矢の軸 */
+  content:""; position:absolute; bottom:10px; height:2px;
+  left:min(var(--from),var(--to)); right:calc(100% - max(var(--from),var(--to)));
+}
+.sq-row::after{                        /* 矢じり */
+  content:""; position:absolute; bottom:6px; width:0; height:0;
+  border-top:5px solid transparent; border-bottom:5px solid transparent;
+}
+/* 幾何（どのレーンからどのレーンへ）と、色（何のやり取りか）を分けて指定する。
+   3レーンでは「右向き＝送る」が成り立たないので、向きに色を結びつけない。 */
+.sq-row.to-r,.sq-row.ab{ --from:var(--l1); --to:var(--l2) }
+.sq-row.to-l,.sq-row.ba{ --from:var(--l2); --to:var(--l1) }
+.sq-row.bc{ --from:var(--l2); --to:var(--l3) }
+.sq-row.cb{ --from:var(--l3); --to:var(--l2) }
+.sq-row::before{ background:var(--sq-l,var(--fig-line)) }
+.sq-row.to-r::after,.sq-row.ab::after,.sq-row.bc::after{
+  left:calc(var(--to) - 9px); border-left:9px solid var(--sq-c,var(--fig-muted));
+}
+.sq-row.to-l::after,.sq-row.ba::after,.sq-row.cb::after{
+  left:var(--to); border-right:9px solid var(--sq-c,var(--fig-muted));
+}
+/* 2レーンの既定 ─ 右向き＝アプリが送る（青）、左向き＝モデルが返す（橙） */
+.sq-row.to-r{ --sq-c:var(--fig-blue);  --sq-l:var(--fig-line-blue) }
+.sq-row.to-l{ --sq-c:var(--fig-amber); --sq-l:var(--fig-line-amber) }
+/* 3レーンでは意味に合わせて明示する（付けなければ中立） */
+.sq-row.k-blue { --sq-c:var(--fig-blue);  --sq-l:var(--fig-line-blue) }
+.sq-row.k-amber{ --sq-c:var(--fig-amber); --sq-l:var(--fig-line-amber) }
+.sq-lbl{ display:block; font-size:var(--fs-sm); font-weight:700; color:var(--ink); line-height:1.6 }
+.sq-note{ display:block; margin-top:2px; font-size:var(--fs-xs); color:var(--fig-muted); line-height:1.7 }
+.sq-n{                                  /* 手順の番号 */
+  display:inline-grid; place-items:center; width:20px; height:20px; border-radius:50%;
+  background:var(--accent); color:var(--bg);
+  font-size:var(--fs-xs); font-weight:700; margin-right:7px; vertical-align:1px;
+}
+html[data-theme="light"] .sq-n{ color:#fff }
+
+/* 自分の中だけで完結する処理（相手には見えない） */
+.sq-self{
+  position:relative; z-index:1; margin:2px 30% 16px 4%;
+  padding:9px 13px; border-radius:9px; text-align:left;
+  border:1px dashed var(--fig-line); background:var(--fig-fill-neutral);
+}
+.sq-self.right{ margin:2px 4% 16px 30% }
+.sq-self.mid  { margin:2px 14% 16px 14%; text-align:left }
+.sq-self > b{ display:block; font-size:var(--fs-sm); color:var(--ink); font-weight:700 }
+.sq-self ul{ margin:4px 0 0; padding-left:1.2em; font-size:var(--fs-xs); line-height:1.85; color:var(--ink-2) }
+
+/* 相手が動いていない区間 */
+.sq-idle{
+  position:relative; z-index:1; margin:-6px 0 14px; padding:8px 0;
+  font-size:var(--fs-xs); color:var(--fig-muted); text-align:center; line-height:1.7;
+  border-top:1px dashed var(--fig-dash); border-bottom:1px dashed var(--fig-dash);
+  background:var(--fig-surface);
+}
+.sq-idle > b{ display:block; font-size:var(--fs-sm); color:var(--ink); font-weight:700 }
+
+/* 量・比率をそのまま長さで見せる帯 */
+.fig-bars{ display:grid; gap:10px }
+.fig-bar{
+  display:grid; gap:4px 12px; align-items:center;
+  grid-template-columns:minmax(84px,auto) minmax(0,1fr) minmax(92px,auto);
+}
+.fig-bar .b-name{ font-size:var(--fs-sm); font-weight:700; color:var(--ink) }
+.fig-bar .b-track{ display:block;
+  height:20px; border-radius:5px; overflow:hidden;
+  background:var(--fig-fill-neutral); border:1px solid var(--fig-line);
+}
+.fig-bar .b-fill{ display:block; height:100%; background:var(--accent); border-radius:4px }
+.fig-bar .b-val{ font-size:var(--fs-xs); color:var(--ink-2); font-family:var(--mono); text-align:right }
+.fig-bar .b-val b{ color:var(--accent) }
+
+/* 図の段階表示（SVG・HTML 共通） */
 .diagram.run g[class^="s"],.diagram.run text[class*="s1"],
 .diagram.run text[class*="s2"],.diagram.run text[class*="s3"],
 .diagram.run text[class*="s4"],.diagram.run text[class*="s5"],
 .diagram.run text[class*="s6"],.diagram.run text[class*="s7"],
-.diagram.run text[class*="s8"]{ animation:fadein .42s both }
-.diagram.run .s1{ animation-delay:.02s } .diagram.run .s2{ animation-delay:.14s }
-.diagram.run .s3{ animation-delay:.26s } .diagram.run .s4{ animation-delay:.38s }
-.diagram.run .s5{ animation-delay:.50s } .diagram.run .s6{ animation-delay:.62s }
-.diagram.run .s7{ animation-delay:.74s } .diagram.run .s8{ animation-delay:.86s }
+.diagram.run text[class*="s8"],
+.fig.run .s1,.fig.run .s2,.fig.run .s3,.fig.run .s4,
+.fig.run .s5,.fig.run .s6,.fig.run .s7,.fig.run .s8{ animation:fadein .42s both }
+.run .s1{ animation-delay:.02s } .run .s2{ animation-delay:.14s }
+.run .s3{ animation-delay:.26s } .run .s4{ animation-delay:.38s }
+.run .s5{ animation-delay:.50s } .run .s6{ animation-delay:.62s }
+.run .s7{ animation-delay:.74s } .run .s8{ animation-delay:.86s }
 @keyframes fadein{ from{opacity:0; transform:translateY(4px)} to{opacity:1; transform:none} }
-@media (prefers-reduced-motion:reduce){ .diagram.run *{ animation:none !important } }
+@media (prefers-reduced-motion:reduce){ .diagram.run *,.fig.run *{ animation:none !important } }
 
 /* ---------- 番号つき解説 ---------- */
 .detail{ margin-top:6px }
@@ -303,9 +583,10 @@ html[data-theme="light"] .ann .n{ color:#fff }
 .ann .rng{ background:var(--surface-3); border-radius:4px; padding:1px 4px }
 
 /* ---------- 例・誤解・ポイント・注記 ---------- */
+/* 具体例。面は持たせず、左の罫線だけで本文と区別する */
 .ex{
-  margin:18px 0; padding:16px 18px; background:var(--surface); border:1px solid var(--line);
-  border-radius:var(--radius-sm); font-size:var(--fs-base); line-height:1.9;
+  margin:18px 0; padding:2px 0 2px 16px; border-left:2px solid var(--line);
+  font-size:var(--fs-base); line-height:1.9;
 }
 .exl{
   display:block; font-size:var(--fs-xs); letter-spacing:.1em; color:var(--muted);
@@ -313,15 +594,18 @@ html[data-theme="light"] .ann .n{ color:#fff }
 }
 .myth{
   display:grid; grid-template-columns:auto minmax(0,1fr); gap:8px 16px;
-  margin:18px 0; padding:16px 18px; background:var(--surface);
-  border:1px solid var(--line); border-left:3px solid var(--red); border-radius:var(--radius-sm);
+  margin:18px 0; padding:2px 0 2px 16px;
+  border-left:2px solid var(--red);
   font-size:var(--fs-base); line-height:1.85;
 }
 .myth .t{ font-size:var(--fs-xs); font-weight:700; color:var(--red); white-space:nowrap; padding-top:3px }
 .myth .t.o{ color:var(--green) }
+/* 節の結論。ページの中でいちばん強い面 ─ ここだけアクセントを地に敷く */
 .point{
-  margin:24px 0 0; padding:18px 20px; background:var(--surface-2);
-  border:1px solid var(--line); border-left:3px solid var(--accent);
+  margin:26px 0 0; padding:18px 22px;
+  background:color-mix(in srgb, var(--accent) 10%, var(--surface));
+  border:1px solid color-mix(in srgb, var(--accent) 34%, var(--line));
+  border-left:4px solid var(--accent);
   border-radius:var(--radius-sm); font-size:var(--fs-base); line-height:1.85;
 }
 .point > b:first-child{
@@ -337,9 +621,10 @@ html[data-theme="light"] .ann .n{ color:#fff }
   color:var(--accent); border:1px solid var(--line); border-radius:5px;
   padding:1px 7px; margin-right:8px;
 }
+/* ゴール（到達基準）。結論ではなく道しるべなので、箱にせず1行の見出し扱いにする */
 .goal{
-  margin:0 0 24px; padding:14px 18px; border-radius:var(--radius-sm);
-  border:1px dashed var(--line); background:var(--surface-2);
+  margin:0 0 24px; padding:2px 0 2px 16px;
+  border-left:2px solid var(--accent);
   font-size:var(--fs-base); line-height:1.9;
 }
 .goal > b:first-child{
@@ -348,9 +633,10 @@ html[data-theme="light"] .ann .n{ color:#fff }
 }
 .goal ul{ margin:0; padding-left:1.3em }
 .goal li{ margin:2px 0 }
+/* 補足。いちばん弱い。箱にしない */
 .note{
-  margin:16px 0 0; font-size:var(--fs-sm); line-height:1.85; color:var(--muted);
-  padding:13px 16px; background:var(--surface); border:1px dashed var(--line); border-radius:var(--radius-sm);
+  margin:18px 0 0; font-size:var(--fs-sm); line-height:1.85; color:var(--muted);
+  padding:2px 0 2px 16px; border-left:2px solid var(--line-soft);
 }
 .note b{ color:var(--ink-2) }
 
@@ -397,15 +683,21 @@ html[data-theme="light"] .code .n{ color:#fff }
 }
 .ctrl{ display:flex; flex-wrap:wrap; gap:9px; margin:16px 0 }
 .ctrl button{
-  font-family:inherit; font-size:var(--fs-base); font-weight:600; padding:9px 16px;
-  border-radius:9px; border:1px solid var(--line); background:var(--surface-2);
+  font-family:inherit; font-size:var(--fs-base); font-weight:600; padding:10px 18px;
+  border-radius:10px; border:1px solid var(--btn-line); background:var(--btn-face);
   color:var(--ink); cursor:pointer; transition:.15s;
+  box-shadow:var(--btn-raise);
 }
 .ctrl button:hover:not(:disabled){ border-color:var(--accent); color:var(--accent) }
-.ctrl button:active:not(:disabled){ transform:translateY(1px) }
-.ctrl button:disabled{ opacity:.4; cursor:default }
-.ctrl button.go{ background:var(--accent); color:#0B0F19; border-color:var(--accent) }
+.ctrl button:active:not(:disabled){ transform:translateY(1px); box-shadow:none }
+.ctrl button:disabled{ opacity:.4; cursor:default; box-shadow:none }
+.ctrl button.go{
+  background:var(--accent); color:var(--bg); border-color:var(--accent);
+  box-shadow:0 2px 0 color-mix(in srgb,var(--accent) 55%,#000), 0 2px 6px rgba(0,0,0,.2);
+}
+.ctrl button.go:hover{ color:var(--bg); filter:brightness(1.06) }
 html[data-theme="light"] .ctrl button.go{ color:#fff }
+html[data-theme="light"] .ctrl button.go:hover{ color:#fff }
 .tap{ animation:tap 1.1s ease 2 }
 @keyframes tap{ 0%,100%{box-shadow:0 0 0 0 color-mix(in srgb,var(--accent) 45%,transparent)}
   50%{box-shadow:0 0 0 7px transparent} }
@@ -427,16 +719,16 @@ html[data-theme="light"] .ctrl button.go{ color:#fff }
 .cand{ display:flex; flex-direction:column; gap:7px; margin-top:12px }
 .cand button{
   display:grid; grid-template-columns:20px 8em minmax(0,1fr) 3.4em; align-items:center; gap:11px;
-  font-family:inherit; font-size:var(--fs-base); padding:9px 13px; border-radius:9px;
-  border:1px solid var(--line); background:var(--surface-2); color:var(--ink);
-  cursor:pointer; text-align:left; transition:.15s;
+  font-family:inherit; font-size:var(--fs-base); padding:10px 14px; border-radius:10px;
+  border:1px solid var(--btn-line); background:var(--btn-face); color:var(--ink);
+  cursor:pointer; text-align:left; transition:.15s; box-shadow:var(--btn-raise);
 }
 .cand button:hover{ border-color:var(--accent) }
-.cand button:active{ transform:translateY(1px) }
+.cand button:active{ transform:translateY(1px); box-shadow:none }
 .cand .knob{ color:var(--accent); font-size:var(--fs-xs) }
 .cand .barwrap{ height:8px; border-radius:99px; background:var(--surface-3); overflow:hidden }
 .cand .barwrap i{ display:block; height:100%; background:var(--accent); border-radius:99px }
-.cand .p{ font-family:var(--mono); font-size:var(--fs-sm); color:var(--muted); text-align:right }
+.cand .p{ font-family:var(--mono); font-size:var(--fs-sm); color:var(--ink-2); text-align:right }
 .answer{
   margin-top:14px; padding:14px 16px; border-radius:9px; font-size:var(--fs-base); line-height:1.85;
   background:var(--surface-2); border:1px solid var(--line); display:none;
@@ -445,8 +737,8 @@ html[data-theme="light"] .ctrl button.go{ color:#fff }
 .answer b{ color:var(--green) }
 .answer b.ng{ color:var(--red) }
 .nd{ opacity:1; transition:opacity .3s }
-[data-widget="p-loop"] .diagram.stepping .nd{ opacity:.24 }
-[data-widget="p-loop"] .diagram.stepping .nd.on{ opacity:1 }
+[data-widget="p-loop"] .stepping .nd{ opacity:.24; transition:opacity .25s }
+[data-widget="p-loop"] .stepping .nd.on{ opacity:1 }
 #lp-log{ display:flex; flex-direction:column; gap:8px; margin-top:12px }
 #lp-log > div{
   padding:11px 14px; border-radius:9px; font-size:var(--fs-base); line-height:1.75;
@@ -457,9 +749,9 @@ html[data-theme="light"] .ctrl button.go{ color:#fff }
 #lp-log .m2{ border-left:3px solid var(--amber) }
 #lp-log .m3{ border-left:3px solid var(--blue) }
 #lp-log .m4{ border-left:3px solid var(--green) }
-#sr-svg g[id^="b-"]{ transition:opacity .25s }
-#sr-svg.pick g[id^="b-"]{ opacity:.28 }
-#sr-svg.pick g[id^="b-"].sel{ opacity:1 }
+#sr-fig [id^="b-"]{ transition:opacity .25s }
+#sr-fig.pick [id^="b-"]{ opacity:.28 }
+#sr-fig.pick [id^="b-"].sel{ opacity:1; border-color:var(--accent) }
 
 /* ---------- クイズ ---------- */
 .sec-quiz .sec-head h2{ color:var(--accent) }
@@ -476,12 +768,13 @@ html[data-theme="light"] .ctrl button.go{ color:#fff }
 .opt{
   display:grid; grid-template-columns:26px minmax(0,1fr); gap:13px; align-items:start;
   width:100%; text-align:left; font-family:inherit; font-size:var(--fs-base); line-height:1.75;
-  padding:13px 15px; margin-bottom:9px; border-radius:10px;
-  border:1px solid var(--line); background:var(--surface-2); color:var(--ink);
-  cursor:pointer; transition:.15s;
+  padding:14px 16px; margin-bottom:10px; border-radius:10px;
+  border:1px solid var(--btn-line); background:var(--btn-face); color:var(--ink);
+  cursor:pointer; transition:.15s; box-shadow:var(--btn-raise);
 }
 .opt:hover:not(.done){ border-color:var(--accent) }
-.opt:active:not(.done){ transform:translateY(1px) }
+.opt:active:not(.done){ transform:translateY(1px); box-shadow:none }
+.opt.done{ box-shadow:none; cursor:default }
 .opt .ol{
   display:grid; place-items:center; width:26px; height:26px; border-radius:8px;
   background:var(--surface-3); color:var(--muted); font-size:var(--fs-sm); font-weight:700;
@@ -582,6 +875,40 @@ html[data-theme="light"] .opt:hover:not(.done) .ol{ color:#fff }
 .cmp b{ color:var(--ink) }
 .cmp code{ white-space:nowrap }
 
+/* ---------- 比較表（どの節でも使える） ----------
+   区別が目的の節は、図にするより表のほうが速く読める。
+   枠で囲うより、上端のアクセント罫と行間で構造を見せるほうが読みやすい。
+   狭い画面では td の data-l を見出しにして、1行＝1かたまりに畳む。 */
+.tbl{
+  width:100%; border-collapse:separate; border-spacing:0; margin:24px 0;
+  font-size:var(--fs-sm); line-height:1.8;
+  border-top:2px solid var(--accent);
+  border-bottom:1px solid var(--line);
+}
+.tbl th,.tbl td{ padding:14px 16px; text-align:left; vertical-align:top }
+.tbl thead th{
+  padding-top:11px; padding-bottom:11px;
+  font-size:var(--fs-xs); letter-spacing:.12em; font-weight:700; color:var(--accent);
+  white-space:nowrap; border-bottom:1px solid var(--line);
+}
+.tbl thead th:first-child{ width:9em }
+.tbl tbody tr + tr th,.tbl tbody tr + tr td{ border-top:1px solid var(--line-soft) }
+.tbl tbody th{
+  font-size:var(--fs-xs); letter-spacing:.1em; font-weight:700; color:var(--accent);
+  white-space:nowrap; background:var(--surface-2);
+}
+.tbl tbody td{ color:var(--ink-2) }
+.tbl tbody tr:hover td{ background:var(--surface) }
+.tbl b{ color:var(--ink) }
+.tbl .n{ font-size:var(--fs-xs); color:var(--muted) }
+/* 結論を一目で拾わせる小さなラベル */
+.tbl .ok,.tbl .ng{
+  display:inline-block; padding:1px 8px; border-radius:99px;
+  font-size:var(--fs-xs); font-weight:700; line-height:1.7;
+}
+.tbl .ok{ color:var(--green); background:var(--fig-fill-green); border:1px solid var(--fig-line-green) }
+.tbl .ng{ color:var(--red);   background:var(--fig-fill-red);   border:1px solid var(--fig-line-red) }
+
 /* ---------- 一覧カード ---------- */
 .cards{
   max-width:1052px; margin:0 auto; padding:30px 26px 100px;
@@ -605,14 +932,62 @@ html[data-theme="light"] .opt:hover:not(.done) .ol{ color:#fff }
 .card .c-list li::before{ content:"— "; color:var(--muted) }
 .card .c-meta{ margin-top:18px; font-size:var(--fs-xs); color:var(--muted); font-family:var(--mono) }
 
+/* ---------- 全項目一覧（目次） ----------
+   ドメインごとの縦カードを並べると、項数の違いがそのまま高さの差になって
+   隙間だらけになった。**横長の帯を縦に積み、項目だけを中で段組み**にする。 */
+.alllist{ margin-top:24px; display:grid; gap:16px }
+.al-dom{
+  border:1px solid var(--line); border-left:3px solid var(--accent);
+  border-radius:var(--radius); background:var(--surface); box-shadow:var(--shadow);
+  padding:18px 22px 12px;
+}
+.al-dom h3{
+  display:flex; align-items:baseline; gap:8px 14px; flex-wrap:wrap; margin:0;
+  font-size:var(--fs-base); font-weight:700; line-height:1.5;
+}
+.al-dom h3 a{ color:var(--ink); text-decoration:none }
+.al-dom h3 a:hover{ color:var(--accent) }
+.al-num{
+  flex:none; font-size:var(--fs-xs); letter-spacing:.16em; color:var(--accent); font-weight:700;
+  padding:2px 9px; border-radius:99px; background:var(--surface-2); border:1px solid var(--line);
+}
+.al-c{ margin-left:auto; flex:none; font-size:var(--fs-xs); color:var(--muted); font-family:var(--mono); font-weight:400 }
+.al-list{
+  margin:12px 0 0; padding:6px 0 0; list-style:none;
+  border-top:1px solid var(--line-soft);
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:0 26px;
+}
+.al-list li{ margin:0 }
+.al-link{
+  display:grid; grid-template-columns:3.4em minmax(0,1fr); gap:10px; align-items:baseline;
+  padding:8px 2px; min-height:38px;
+  font-size:var(--fs-sm); line-height:1.6; color:var(--ink-2); text-decoration:none;
+  border-bottom:1px solid var(--line-soft);
+}
+.al-link .al-n{ font-family:var(--mono); font-size:var(--fs-xs); color:var(--muted); white-space:nowrap }
+.al-link:hover{ color:var(--accent) }
+.al-link:hover .al-n{ color:var(--accent) }
+.al-quiz{ color:var(--muted) }
+.al-quiz .al-t::before{ content:"◇ " }
+
+/* 節ページの目次から、全項目一覧へ戻る導線 */
+.toc-all{
+  display:block; margin:14px 0 0; padding:9px 14px;
+  font-size:var(--fs-sm); color:var(--muted); text-decoration:none;
+  border:1px dashed var(--line); border-radius:9px;
+}
+.toc-all:hover{ color:var(--accent); border-color:var(--accent) }
+
 /* ---------- レスポンシブ ---------- */
 /* ---------- 目次の開閉ボタン（狭い画面） ---------- */
 .toc-toggle{
   display:none; width:100%; align-items:center; gap:10px; text-align:left;
   font-family:inherit; font-size:var(--fs-base); font-weight:600;
   padding:12px 15px; margin:14px 0 0; border-radius:10px;
-  border:1px solid var(--line); background:var(--surface-2); color:var(--ink); cursor:pointer;
+  border:1px solid var(--btn-line); background:var(--btn-face); color:var(--ink); cursor:pointer;
+  box-shadow:var(--btn-raise);
 }
+.toc-toggle:active{ transform:translateY(1px); box-shadow:none }
 .toc-toggle span{
   flex:none; font-size:var(--fs-xs); letter-spacing:.14em; font-weight:700; color:var(--accent);
 }
@@ -636,9 +1011,25 @@ html[data-theme="light"] .opt:hover:not(.done) .ol{ color:#fff }
   .nav-item{ padding:7px 10px }
 }
 
-/* 目次が横に回る幅。目次は app.js が開閉式にする */
+/* 目次が横に回る幅。上部ナビと目次は app.js が開閉式にする。
+   上部＝ドメイン間の移動、目次＝ドメイン内の移動、と役割を分ける。 */
 @media (max-width:1080px){
-  .nav-item{ padding:7px 7px }
+  .brand-sub{ display:none }                 /* ブランドを1行に詰めて幅を空ける */
+
+  /* いま居るドメインのボタン。ここを押すと下にドメイン一覧が出る */
+  .navfold .nav-cur{ display:flex }
+  .navfold .nav-list{ display:none }
+  .navfold.nav-open .nav-list{
+    display:flex; flex-direction:column; gap:2px;
+    position:absolute; left:0; right:0; top:100%;
+    padding:8px; margin:0; overflow:visible;
+    background:var(--surface); border-bottom:1px solid var(--line);
+    box-shadow:var(--shadow); mask-image:none;
+  }
+  .navfold.nav-open .nav-item{ flex-direction:row; align-items:baseline; gap:10px; min-height:44px; padding:0 12px }
+  .navfold.nav-open .nav-item .nav-title{ display:block }
+  .navfold.nav-open .nav-cur{ border-color:var(--accent); color:var(--accent) }
+
   .shell{ grid-template-columns:1fr; gap:0 }
   .toc{ position:static; max-height:none; padding:20px 0 0 }
   .toc-list{ flex-direction:row; flex-wrap:wrap; border-left:0; gap:6px }
@@ -664,17 +1055,55 @@ html[data-theme="light"] .opt:hover:not(.done) .ol{ color:#fff }
 @media (max-width:640px){
   /* 見出しだけを個別に縮めるのではなく、段階の定義そのものを差し替える */
   html{ --fs-xl:26px; --fs-lg:22px }
+  /* ドメイン名を出す幅を稼ぐ（既定の gap:20px・padding:22px だと 116px しか残らない） */
+  .domnav{ gap:10px; padding:0 14px }
   .shell{ padding:0 16px 70px }
   .hero,.cards{ padding-left:16px; padding-right:16px }
   .hero{ padding-top:44px }
   .figbox{ padding:12px }
   .search-btn span{ display:none }
 
-  /* 前後の送りは縦に積む（横並びだと題名が入りきらない） */
-  .secpager{ flex-direction:column; gap:10px; margin-top:36px }
-  .secpager .pgv{ width:100% }
+  /* HTML で組んだ図は、iPhone では縦1列に折り返す（横スワイプが要らなくなる）。
+     順番のある並びの矢印は → から ↓ に向きを変える。 */
+  .fig-row{ grid-template-columns:1fr }
+  .fig-row.flow > * + *::before{
+    content:"↓"; left:50%; top:calc(var(--gap) / -2); transform:translate(-50%,-50%);
+  }
+  /* 帯は「名前」を上に出し、下に帯と数値を並べる */
+  .fig-bar{ grid-template-columns:minmax(0,1fr) auto }
+  .fig-bar .b-name{ grid-column:1 / -1 }
+
+  /* 手順は「番号＋誰が」を1行目、内容を2行目に折る */
+  .fig-steps > li{ grid-template-columns:26px minmax(0,1fr) }
+  .fig-who{ justify-self:start }
+  .fig-do{ grid-column:2 / -1 }
+
+  /* 3レーンの見出しは、狭い画面では詰める（既定だと1語ずつ折れる） */
+  .fig-seq.lanes3 .sq-head{ gap:6px }
+  .fig-seq.lanes3 .sq-head span{ padding:6px 4px; font-size:var(--fs-xs); line-height:1.4 }
+  .fig-seq.lanes3 .sq-self.mid{ margin-left:6%; margin-right:6% }
+
+  /* 送信の回は縦に積む */
+  .fig-turn{ grid-template-columns:auto auto }
+  .fig-turn .fig-msgs{ grid-column:1 / -1; order:3 }
+
+  /* 前後の送り ──「前へ／次へ」の札と節名を2行に積むと、1個あたり74px・
+     合計215px（画面の約1/4）になっていた。1個44pxの1行に畳む。
+     札は矢印に替えるが、読み上げのために文字は残す（clip-path で視覚的にだけ隠す）。 */
+  .secpager{ flex-direction:column; gap:8px; margin-top:32px; padding-top:16px }
+  .secpager .pgv{
+    width:100%; flex-direction:row; align-items:center; gap:10px;
+    min-height:44px; padding:0 14px;
+    white-space:nowrap; overflow:hidden;
+  }
+  .secpager .pgv-t{ overflow:hidden; text-overflow:ellipsis }
   .secpager .pgv.next{ text-align:left }
-  .secpager .pgv-n{ order:-1; align-self:flex-start }
+  .secpager .pgv-l{ position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%) }
+  .secpager .pgv::before{ flex:none; color:var(--muted) }
+  .secpager .prev::before{ content:"←" }
+  .secpager .next::before{ content:"→" }
+  .secpager a.pgv:hover::before{ color:var(--accent) }
+  .secpager .pgv-n{ order:3; align-self:center }
 
   /* 操作できる図：候補の行を2段にして、確率を下に回す */
   .cand button{ grid-template-columns:20px minmax(0,1fr) 3.4em; gap:8px 10px }
@@ -685,6 +1114,24 @@ html[data-theme="light"] .opt:hover:not(.done) .ol{ color:#fff }
 
   /* 一覧カードは1列 */
   .cards{ grid-template-columns:1fr }
+
+  /* 汎用の比較表：1行＝1かたまりのカードに畳む */
+  .tbl,.tbl tbody,.tbl tr,.tbl td,.tbl th{ display:block; width:auto }
+  .tbl{ border-top:0; border-bottom:0 }
+  .tbl thead{ display:none }
+  .tbl tbody tr{
+    margin-bottom:12px; padding:4px 0 10px;
+    border:1px solid var(--line); border-top:2px solid var(--accent); border-radius:var(--radius-sm);
+    background:var(--surface);
+  }
+  .tbl tbody tr + tr th,.tbl tbody tr + tr td{ border-top:0 }
+  .tbl th,.tbl td{ padding:6px 15px }
+  .tbl tbody th{ width:auto; background:transparent; padding-top:10px }
+  .tbl td::before{
+    display:block; content:attr(data-l); font-weight:700; color:var(--muted);
+    font-size:var(--fs-xs); letter-spacing:.08em; margin-bottom:1px;
+  }
+  .tbl td:not([data-l])::before{ content:none }
 
   /* 比較表は横並びをやめ、観点ごとの塊にする */
   .cmp,.cmp tbody,.cmp tr,.cmp td{ display:block; width:auto }

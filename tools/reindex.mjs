@@ -24,18 +24,33 @@ import crypto from 'crypto';
 const ROOT = path.join(path.resolve(new URL('..', import.meta.url).pathname), 'docs');
 
 /* ---------- ドメインの定義 ─ 順序もここで決まる ---------- */
+/* w = 出題比率、q = 本試験60問を比率で按分した問数（16+11+12+12+9 = 60）。
+   比率だけだと「で、何問なのか」が分からないので、必ず併記する。 */
+const EXAM_Q = 60;
 const DOMAINS = [
-  { dir: '00-basics',      key: 'basics',  num: '前提',     h1: '会話の実体',                            nav: '会話の実体',       w: '', sub: '全ドメイン共通の土台' },
-  { dir: '01-agentic',     key: 'agentic', num: 'Domain 1', h1: 'エージェント設計とオーケストレーション', nav: 'エージェント設計', w: '27%', sub: 'エージェントの組み立て' },
-  { dir: '02-tools',       key: 'tools',   num: 'Domain 2', h1: 'ツール設計と MCP 連携',                 nav: 'ツールと MCP',     w: '18%', sub: '道具そのものの設計' },
-  { dir: '03-claude-code', key: 'code',    num: 'Domain 3', h1: 'Claude Code の設定とワークフロー',       nav: 'Claude Code',      w: '20%', sub: 'Claude Code の運用' },
-  { dir: '04-prompt',      key: 'prompt',  num: 'Domain 4', h1: 'プロンプト設計と構造化出力',             nav: 'プロンプト設計',   w: '20%', sub: '指示と出力の設計' },
-  { dir: '05-context',     key: 'context', num: 'Domain 5', h1: 'コンテキスト管理と信頼性',               nav: 'コンテキスト管理', w: '15%', sub: '長く動かすための備え' },
-  { dir: '06-summary',     key: 'summary', num: 'まとめ',   h1: '全体をもう一度',                        nav: '全体をもう一度',   w: '', sub: '総合チェック・模擬試験' },
+  { dir: '00-basics',      key: 'basics',  num: '前提',     h1: '会話の実体',                            nav: '会話の実体',       w: '',    q: 0,  sub: '全ドメイン共通の土台' },
+  { dir: '01-agentic',     key: 'agentic', num: 'Domain 1', h1: 'エージェント設計とオーケストレーション', nav: 'エージェント設計', w: '27%', q: 16, sub: 'エージェントの組み立て' },
+  { dir: '02-tools',       key: 'tools',   num: 'Domain 2', h1: 'ツール設計と MCP 連携',                 nav: 'ツールと MCP',     w: '18%', q: 11, sub: '道具そのものの設計' },
+  { dir: '03-claude-code', key: 'code',    num: 'Domain 3', h1: 'Claude Code の設定とワークフロー',       nav: 'Claude Code',      w: '20%', q: 12, sub: 'Claude Code の運用' },
+  { dir: '04-prompt',      key: 'prompt',  num: 'Domain 4', h1: 'プロンプト設計と構造化出力',             nav: 'プロンプト設計',   w: '20%', q: 12, sub: '指示と出力の設計' },
+  { dir: '05-context',     key: 'context', num: 'Domain 5', h1: 'コンテキスト管理と信頼性',               nav: 'コンテキスト管理', w: '15%', q: 9,  sub: '長く動かすための備え' },
+  { dir: '06-summary',     key: 'summary', num: 'まとめ',   h1: '全体をもう一度',                        nav: '全体をもう一度',   w: '',    q: 0,  sub: '総合チェック・模擬試験' },
 ];
+/** 「出題比率 27%（約16問）」の形。比率のないドメインは空文字 */
+const weightLabel = d => d.w ? `出題比率 ${d.w}（約${d.q}問）` : '';
 
 const OPEN = '<!-- ▼ 本文 ─ ここだけを編集する。この前後は node tools/reindex.mjs が書き出す -->';
 const CLOSE = '<!-- ▲ 本文 -->';
+
+/* ---------- 複数ページで共通の塊 ----------
+   同じ図や表が2か所以上に要るとき、本文に <!--#名前--><!--/#名前--> と書いておけば
+   reindex が中身を差し込む。手で2か所コピーすると必ず片方だけ古くなる。
+   実体（BLOCKS）は部品を定義したあとに置くので、差し込みは読み込みの後に1回まとめて行う。 */
+const fillBlocks = (html) => Object.entries(BLOCKS).reduce(
+  (s, [name, make]) => s.replace(
+    new RegExp(`<!--#${name}-->[\\s\\S]*?<!--/#${name}-->`, 'g'),
+    () => `<!--#${name}-->${make()}<!--/#${name}-->`),
+  html);
 
 /* ---------- 1. 節ファイルを読む ---------- */
 const pages = [];
@@ -93,6 +108,32 @@ const MODAL = `<div class="modal" id="searchModal" hidden>
 
 const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
+/** 配点の図。トップと「6-2 どこに時間を使うか」の2か所に同じものが要るので、ここで1回だけ作る。
+ *  帯の全長＝60問。以前は帯の枠と Domain 1 のバーが同じ長さで、27% が満杯に見えていた。 */
+const weightFig = () => {
+  const ds = DOMAINS.filter(d => d.w);
+  // 5本を別々の帯にすると、どれも短くて差が読めなかった。
+  // 1本を5つに割って隣り合わせにすると、差がそのまま長さの差として見える。
+  const segs = ds.map(d =>
+    `<span class="seg" data-domain="${d.key}" style="width:${parseFloat(d.w)}%">${d.q}問</span>`).join('');
+  const legend = ds.map((d, i) =>
+    `    <span class="lg s${i + 1}" data-domain="${d.key}"><span class="sw"></span><b>${esc(d.num)}</b><span class="n">${esc(d.w)}　${esc(d.sub)}</span></span>`).join('\n');
+  return `<div class="figbox"><figure class="fig run">
+  <p class="fig-t">本試験 ${EXAM_Q} 問の内訳 ─ 帯の全長が ${EXAM_Q} 問</p>
+  <div class="fig-seg s1">${segs}</div>
+  <div class="fig-legend">
+${legend}
+  </div>
+  <p class="fig-f">いちばん多い Domain 1 でも 16 問、いちばん少ない Domain 5 でも 9 問。<b>その差は 7 問</b>で、1問の重みはどこも同じ。捨てられる範囲はない。</p>
+</figure></div>`;
+};
+
+/** 本文に <!--#名前--> で差し込める共通の塊。fillBlocks が使う */
+const BLOCKS = { weightfig: weightFig };
+
+/* 共通の塊を本文へ差し込む（部品の定義がそろったここで1回まとめて） */
+pages.forEach(p => { p.body = fillBlocks(p.body); });
+
 /** 各ドメインの入口（最初の節） */
 const entry = {};
 DOMAINS.forEach(d => {
@@ -122,14 +163,17 @@ const toc = (cur) => {
     }
     return s;
   });
+  // 目次はいま居るドメインの中だけを並べる。ドメインをまたいで探したいときのために、
+  // 全88項を並べた一覧（トップページ）への導線をここに置く。
   return `<aside class="toc">
   <div class="toc-head">${esc(cur.dom.num)}</div>
   <nav class="toc-list">${items.join('\n')}</nav>
+  <a class="toc-all" href="../index.html#all">全項目一覧（${pages.length}項）</a>
 </aside>`;
 };
 
 /** パンくず（ドメインの見出しを1行に畳んだもの） */
-const crumb = (cur) => `<p class="crumb" data-domain="${cur.dom.key}"><b>${esc(cur.dom.num)}</b><span>${esc(cur.dom.h1)}</span>${cur.dom.w ? `<span class="w">出題比率 ${cur.dom.w}</span>` : ''}</p>`;
+const crumb = (cur) => `<p class="crumb" data-domain="${cur.dom.key}"><b>${esc(cur.dom.num)}</b><span>${esc(cur.dom.h1)}</span>${cur.dom.w ? `<span class="w">${weightLabel(cur.dom)}</span>` : ''}</p>`;
 
 /** 前後の送り。ドメインの境目も越えて、本全体で1本につながる */
 const pager = (i) => {
@@ -137,12 +181,13 @@ const pager = (i) => {
   const lab = p => (p.num ? p.num + '　' : '') + p.title;
   const inDom = pages.filter(p => p.dom.dir === cur.dom.dir);
   const pos = inDom.findIndex(p => p.rel === cur.rel) + 1;
+  // 節名は span で包む。狭い画面で1行省略（text-overflow）を効かせるために要る
   const pv = prev
-    ? `<a class="pgv prev" href="../${prev.rel}"><span class="pgv-l">前へ</span>${esc(lab(prev))}</a>`
-    : `<a class="pgv prev" href="../index.html"><span class="pgv-l">前へ</span>目次</a>`;
+    ? `<a class="pgv prev" href="../${prev.rel}"><span class="pgv-l">前へ</span><span class="pgv-t">${esc(lab(prev))}</span></a>`
+    : `<a class="pgv prev" href="../index.html"><span class="pgv-l">前へ</span><span class="pgv-t">目次</span></a>`;
   const nx = next
-    ? `<a class="pgv next" href="../${next.rel}"><span class="pgv-l">次へ</span>${esc(lab(next))}</a>`
-    : `<span class="pgv next end"><span class="pgv-l">ここで終わり</span>おつかれさまでした</span>`;
+    ? `<a class="pgv next" href="../${next.rel}"><span class="pgv-l">次へ</span><span class="pgv-t">${esc(lab(next))}</span></a>`
+    : `<span class="pgv next end"><span class="pgv-l">ここで終わり</span><span class="pgv-t">おつかれさまでした</span></span>`;
   return `<nav class="secpager">
 ${pv}
 <span class="pgv-n">${cur.dom.num} ${pos} / ${inDom.length}</span>
@@ -199,42 +244,26 @@ if (fs.existsSync(idxPath)) {
   const navEnd = idx.indexOf('</nav>', idx.indexOf('<div class="search-wrap">'));
   if (a >= 0 && navEnd > a) idx = idx.slice(0, a) + domnav('', null) + idx.slice(navEnd + 6);
 
-  // ドメインごとのカード
-  const cards = DOMAINS.map(d => {
+  // 全項目一覧 ─ 88項をひとつに並べる。
+  // カードは各ドメインの入口（5項＋「ほか N 項」）なので、全体を見渡せる場所がここにしかない。
+  const allList = DOMAINS.map(d => {
     const list = pages.filter(p => p.dom.dir === d.dir);
-    const body = list.filter(p => !p.quiz), qz = list.filter(p => p.quiz);
-    const shown = list.slice(0, 5).map(p => `<li>${esc((p.num ? p.num + '　' : '') + p.title)}</li>`).join('');
-    const more = list.length > 5 ? `<li>ほか ${list.length - 5} 項</li>` : '';
-    return `<a class="card" href="${entry[d.dir]}" data-domain="${d.key}">
-  <span class="c-num">${esc(d.num)}</span>
-  <h2>${esc(d.h1)}</h2>
-  <p class="c-sub">${d.w ? '出題比率 ' + d.w + ' ・ ' + d.sub : d.sub}</p>
-  <ul class="c-list">${shown}${more}</ul>
-  <div class="c-meta">${list.length} 項（本文 ${body.length} ・ 理解度チェック ${qz.length}）</div>
-</a>`;
+    // 番号と題名を別の列に出す。混ぜて1行にすると、目で追う手がかりがなくなる
+    const items = list.map(p =>
+      `<li><a class="al-link${p.quiz ? ' al-quiz' : ''}" href="${p.rel}">` +
+      `<span class="al-n">${esc(p.num || '─')}</span><span class="al-t">${esc(p.title)}</span></a></li>`).join('');
+    return `<section class="al-dom" data-domain="${d.key}">
+  <h3><span class="al-num">${esc(d.num)}</span><a href="${entry[d.dir]}">${esc(d.h1)}</a><span class="al-c">${list.length}項</span></h3>
+  <ul class="al-list">${items}</ul>
+</section>`;
   }).join('\n');
-  idx = idx.replace(/<!--#cards-->[\s\S]*?<!--\/#cards-->/,
-                    `<!--#cards--><div class="cards">${cards}</div><!--/#cards-->`);
+  idx = idx.replace(/<!--#alllist-->[\s\S]*?<!--\/#alllist-->/,
+                    `<!--#alllist--><div class="alllist">${allList}</div><!--/#alllist-->`);
 
-  // ドメインごとの分量と、区切り（理解度チェック）の間隔
-  const vol = DOMAINS.map(d => {
-    const list = pages.filter(p => p.dom.dir === d.dir);
-    return `${d.num} ${list.length}項／区切り ${list.filter(p => p.quiz).length}`;
-  }).join('　・　');
-  let worst = { n: 0, dom: '' };
-  DOMAINS.forEach(d => {
-    let run = 0;
-    pages.filter(p => p.dom.dir === d.dir).forEach(p => {
-      if (p.quiz) { if (run > worst.n) worst = { n: run, dom: d.num }; run = 0; } else run++;
-    });
-    if (run > worst.n) worst = { n: run, dom: d.num };
-  });
-  const volHtml = `${vol}　── 全 ${pages.length} 項<br>
-  区切りは各ドメインの ◇ 理解度チェックです。1項＝1画面なので、区切りまでの項数がそのまま「一度に読む量」になります。<b>いちばん長い区切りは ${worst.dom} の ${worst.n} 項</b>で、そこだけは途中で切る前提で見てください。`;
-  idx = idx.replace(/<!--#volume-->[\s\S]*?<!--\/#volume-->/, `<!--#volume-->${volHtml}<!--/#volume-->`);
+  idx = fillBlocks(idx);        // 節ファイルと共通の塊（配点の図など）
 
   fs.writeFileSync(idxPath, idx);
-  console.log('index.html の上部ナビ・カード・分量を書き出し');
+  console.log('index.html の上部ナビ・全項目一覧・共通の図を書き出し');
 }
 
 /* ---------- 5. 検索インデックス ---------- */

@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/style.css?v=acf8ceb2">
+<link rel="stylesheet" href="../assets/style.css?v=b611c55a">
 </head>
 <body data-page="parent">
 <script>(function(){var t=localStorage.getItem('ccarf-theme');if(t)document.documentElement.dataset.theme=t;})();</script>
@@ -46,7 +46,7 @@
 <div class="shell">
 <aside class="toc">
   <div class="toc-head">Domain 1</div>
-  <nav class="toc-list"><a class="toc-link" href="../01-agentic/01-d1about.html">1-1　1往復では終わらない仕事</a>
+  <nav class="toc-list"><a class="toc-link" href="../01-agentic/01-d1about.html">1-1　このドメインについて</a>
 <a class="toc-link" href="../01-agentic/02-tools.html">1-2　ツールを渡すとは、説明書を渡すこと</a>
 <a class="toc-link" href="../01-agentic/03-loop.html">1-3　エージェントループの1周</a>
 <a class="toc-link" href="../01-agentic/04-stop.html">1-4　stop_reason で分岐する</a>
@@ -64,9 +64,10 @@
 <a class="toc-link toc-quiz" href="../01-agentic/16-q3.html">1-16　理解度チェック ─ 起動と強制</a>
 <a class="toc-link" href="../01-agentic/17-session.html">1-17　セッションをまたぐ</a>
 <a class="toc-link toc-quiz" href="../01-agentic/18-q4.html">1-18　理解度チェック ─ セッション</a></nav>
+  <a class="toc-all" href="../index.html#all">全項目一覧（88項）</a>
 </aside>
 <main class="doc">
-<p class="crumb" data-domain="agentic"><b>Domain 1</b><span>エージェント設計とオーケストレーション</span><span class="w">出題比率 27%</span></p>
+<p class="crumb" data-domain="agentic"><b>Domain 1</b><span>エージェント設計とオーケストレーション</span><span class="w">出題比率 27%（約16問）</span></p>
 <!-- ▼ 本文 ─ ここだけを編集する。この前後は node tools/reindex.mjs が書き出す -->
 <section class="sec" id="parent">
 <header class="sec-head">
@@ -75,74 +76,55 @@
 <p class="lead">子どうしは直接やり取りしません。全体を知っているのは親ひとりだけ、という形にします。</p>
 <p class="task"><span class="tn">BLUEPRINT 1.2</span><b>コーディネータ／サブエージェント構成での統率</b></p>
 <p class="goal"><b>ゴール</b>子どうしを直接つながせない理由を説明できる。</p>
-  <div class="figbox"><div class="diagram run">
-  <svg viewBox="0 0 760 392">
-    <text class="sm s1" x="380" y="22" text-anchor="middle">情報はすべて親を通る</text>
-    <g class="s1"><rect x="290" y="150" width="180" height="70" rx="12" fill="var(--fig-fill-amber)" stroke="var(--fig-line-amber)" stroke-width="2"/>
-      <text class="ttl" x="380" y="180" text-anchor="middle" style="fill:var(--fig-amber)">親</text>
-      <text class="sm" x="380" y="202" text-anchor="middle">段取りと統合だけ</text></g>
 
-    <g class="s2"><rect x="30" y="40" width="190" height="62" rx="10" fill="var(--fig-fill-blue)" stroke="var(--fig-line-blue)"/>
-      <text class="lbl" x="125" y="66" text-anchor="middle" style="fill:var(--fig-blue)">子A 仕様を調べる</text>
-      <text class="sm" x="125" y="88" text-anchor="middle">別の窓</text>
-      <line x1="296" y1="158" x2="234" y2="100" stroke="var(--fig-amber)" stroke-width="2" marker-end="url(#ara)"/>
-      <line x1="222" y1="112" x2="284" y2="170" stroke="var(--fig-green)" stroke-width="2" marker-end="url(#arg)"/>
-      <text class="sm" x="298" y="128" style="fill:var(--fig-amber)">指示</text>
-      <text class="sm" x="196" y="146" style="fill:var(--fig-green)">要約</text></g>
-
-    <g class="s3"><rect x="30" y="268" width="190" height="62" rx="10" fill="var(--fig-fill-blue)" stroke="var(--fig-line-blue)"/>
-      <text class="lbl" x="125" y="294" text-anchor="middle" style="fill:var(--fig-blue)">子B ログを読む</text>
-      <text class="sm" x="125" y="316" text-anchor="middle">別の窓</text>
-      <line x1="296" y1="212" x2="234" y2="270" stroke="var(--fig-amber)" stroke-width="2" marker-end="url(#ara)"/>
-      <line x1="222" y1="258" x2="284" y2="200" stroke="var(--fig-green)" stroke-width="2" marker-end="url(#arg)"/></g>
-
-    <g class="s4"><rect x="540" y="154" width="190" height="62" rx="10" fill="var(--fig-fill-blue)" stroke="var(--fig-line-blue)"/>
-      <text class="lbl" x="635" y="180" text-anchor="middle" style="fill:var(--fig-blue)">子C 影響範囲を探す</text>
-      <text class="sm" x="635" y="202" text-anchor="middle">別の窓</text>
-      <line x1="476" y1="172" x2="534" y2="172" stroke="var(--fig-amber)" stroke-width="2" marker-end="url(#ara)"/>
-      <line x1="534" y1="198" x2="476" y2="198" stroke="var(--fig-green)" stroke-width="2" marker-end="url(#arg)"/></g>
-
-    <g class="s5"><path d="M125 112 C 60 185, 60 185, 125 258" fill="none" stroke="var(--fig-red)" stroke-width="1.6" stroke-dasharray="4 4"/>
-      <text class="ttl" x="46" y="192" style="fill:var(--fig-red)">✕</text>
-      <text class="sm" x="70" y="212" style="fill:var(--fig-red)">直接は渡らない</text></g>
-
-    <g class="s6"><rect x="16" y="346" width="728" height="38" rx="8" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
-      <text class="sm" x="34" y="370">子Aの発見を子Bに使わせたいとき</text>
-      <rect x="250" y="354" width="110" height="22" rx="4" fill="var(--fig-surface)" stroke="var(--fig-line-blue)"/>
-      <text class="sm" x="305" y="369" text-anchor="middle">子A が返す</text>
-      <line x1="364" y1="365" x2="392" y2="365" stroke="var(--fig-muted)" stroke-width="2" marker-end="url(#ar)"/>
-      <rect x="398" y="354" width="150" height="22" rx="4" fill="var(--fig-surface)" stroke="var(--fig-line-amber)"/>
-      <text class="sm" x="473" y="369" text-anchor="middle">親が受け取り要約する</text>
-      <line x1="552" y1="365" x2="580" y2="365" stroke="var(--fig-muted)" stroke-width="2" marker-end="url(#ar)"/>
-      <rect x="586" y="354" width="142" height="22" rx="4" fill="var(--fig-surface)" stroke="var(--fig-line-blue)"/>
-      <text class="sm" x="657" y="369" text-anchor="middle">子Bへの指示に入れる</text></g>
-  </svg>
-  </div></div>
-  <div class="detail">
-    <h3>図の読み方</h3>
-    <ol class="ann">
-      <li><span class="n">1</span><span><b>親</b>は自分では調べません。仕事を持たない代わりに、<b>全体像を持つ唯一の場所</b>になります。子を増やしても、追う場所は1つで済みます。</span></li>
-      <li><span class="n">2</span><span>子ごとに<b>矢印が2本</b>あります。橙が行き、緑が帰り。1本の線で描くと、この2つが<b>別の内容</b>だという点が落ちます ── 行きは前提を渡し、帰りは要約だけが戻ります。</span></li>
-      <li><span class="n">3</span><span><b>別の窓</b>と書いてあるとおり、子がどれだけ読んでも親の窓は汚れません。ただし<b>短くなるのは待ち時間だけ</b>で、トークンの総量は減りません。</span></li>
-      <li><span class="n">4</span><span>赤い <b>✕</b> の意味は、下の帯の3手に出ています。<b>親を経由する以外に道がない</b>ので、渡し漏れは親の段取りを見れば必ず見つかります。</span></li>
-      <li><span class="n">5</span><span>遠回りに見えますが、これがあるから「なぜその結論になったか」を<b>親の段取りだけで追えます</b>。子どうしが勝手に話す形にすると、この追跡ができなくなります。</span></li>
-    </ol>
-    <p>この形の利点は、<b>全体像を持っている場所が親1点に決まる</b>ことです。子を増やしても、親の段取りだけ見れば全体を追えます。</p>
-    <div class="ex"><span class="exl">子Aの発見を子Bに伝えたいときは？</span>
-    直接渡せません。<b>親が受け取り、要約して、あらためて子Bへの指示に含める</b>という形になります。<br>
-    遠回りに見えますが、これがあるから「なぜその結論になったか」を親の段取りだけで追えます。</div>
-    <div class="myth">
-      <span class="t">誤解</span><span>「子は親の会話を引き継いでいる」</span>
-      <span class="t o">実際は</span><span>子は<b>まっさらな状態</b>で始まります。渡し忘れた前提は、そのまま誤った成果物になって返ってきます。ここが実務で最も多い失敗です。</span>
+<div class="figbox"><figure class="fig run">
+  <p class="fig-t">情報はすべて親を通る ─ 子どうしをつながせない</p>
+  <div class="fig-row s1" style="--cols:1">
+    <div class="fig-card key">
+      <b class="fig-h">親（コーディネータ）</b>
+      <span class="fig-note">自分では調べない。代わりに<b>全体像を持つ唯一の場所</b>になる。子を何体に増やしても、追う場所は1つで済む。</span>
     </div>
   </div>
-  <p class="point"><b>ポイント</b>この形の利点は「誰が全体を知っているか」が1点に決まること。子を増やしても、親の段取りだけ見れば全体が追える。</p>
+  <p class="fig-lbl s2">親と子のあいだは、行きと帰りで中身が違う</p>
+  <div class="fig-row s2" style="--cols:2">
+    <div class="fig-card">
+      <b class="fig-h">行き　親 → 子</b>
+      <span class="fig-note"><b>前提を渡す。</b>子はまっさらな状態で始まるので、渡し忘れた前提はそのまま誤った成果物になって返る。</span>
+    </div>
+    <div class="fig-card">
+      <b class="fig-h">帰り　子 → 親</b>
+      <span class="fig-note"><b>要約だけが戻る。</b>子がどれだけ読んでも、生の資料は親の窓に載らない。</span>
+    </div>
+  </div>
+  <div class="fig-row s3" style="--cols:3">
+    <div class="fig-card"><b class="fig-h">子A</b><span class="fig-note">別の窓</span></div>
+    <div class="fig-card"><b class="fig-h">子B</b><span class="fig-note">別の窓</span></div>
+    <div class="fig-card"><b class="fig-h">子C</b><span class="fig-note">別の窓</span></div>
+  </div>
+  <div class="fig-row s4" style="--cols:1">
+    <div class="fig-card red">
+      <b class="fig-h">✕　子A → 子B の直接のやり取りは、作らない</b>
+      <span class="fig-note">子Aの発見を子Bに伝えたいときは、<b>親が受け取り、要約して、あらためて子Bへの指示に含める</b>。この3手だけが道。</span>
+    </div>
+  </div>
+  <p class="fig-f">遠回りに見えるが、<b>親を経由する以外に道がない</b>から、渡し漏れは親の段取りを見れば必ず見つかる。「なぜその結論になったか」も親の段取りだけで追える。<br>
+  なお、子を分けても<b>短くなるのは待ち時間だけ</b>で、トークンの総量は減らない。</p>
+</figure></div>
+
+<p class="point"><b>ポイント</b>この形の利点は「誰が全体を知っているか」が1点に決まること。子を増やしても、親の段取りだけ見れば全体が追える。</p>
+
+<div class="detail">
+  <div class="myth">
+    <span class="t">誤解</span><span>「子は親の会話を引き継いでいる」</span>
+    <span class="t o">実際は</span><span>子は<b>まっさらな状態</b>で始まります。渡し忘れた前提は、そのまま誤った成果物になって返ってきます。ここが実務で最も多い失敗です。</span>
+  </div>
+</div>
 </section>
 <!-- ▲ 本文 -->
 <nav class="secpager">
-<a class="pgv prev" href="../01-agentic/09-split.html"><span class="pgv-l">前へ</span>1-9　1体か、分けるか</a>
+<a class="pgv prev" href="../01-agentic/09-split.html"><span class="pgv-l">前へ</span><span class="pgv-t">1-9　1体か、分けるか</span></a>
 <span class="pgv-n">Domain 1 10 / 18</span>
-<a class="pgv next" href="../01-agentic/11-chain.html"><span class="pgv-l">次へ</span>1-11　固定チェーンか、動的分解か</a>
+<a class="pgv next" href="../01-agentic/11-chain.html"><span class="pgv-l">次へ</span><span class="pgv-t">1-11　固定チェーンか、動的分解か</span></a>
 </nav>
 </main>
 </div>
@@ -154,6 +136,6 @@
   </div>
 </div>
 <script src="../assets/quiz-data.js?v=4385afea"></script>
-<script src="../assets/search-index.js?v=98a5172a"></script>
-<script src="../assets/app.js?v=1c7668ec"></script>
+<script src="../assets/search-index.js?v=de7413f7"></script>
+<script src="../assets/app.js?v=0564f87d"></script>
 </body></html>

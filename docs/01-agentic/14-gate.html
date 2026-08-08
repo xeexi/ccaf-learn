@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/style.css?v=acf8ceb2">
+<link rel="stylesheet" href="../assets/style.css?v=b611c55a">
 </head>
 <body data-page="gate">
 <script>(function(){var t=localStorage.getItem('ccarf-theme');if(t)document.documentElement.dataset.theme=t;})();</script>
@@ -46,7 +46,7 @@
 <div class="shell">
 <aside class="toc">
   <div class="toc-head">Domain 1</div>
-  <nav class="toc-list"><a class="toc-link" href="../01-agentic/01-d1about.html">1-1　1往復では終わらない仕事</a>
+  <nav class="toc-list"><a class="toc-link" href="../01-agentic/01-d1about.html">1-1　このドメインについて</a>
 <a class="toc-link" href="../01-agentic/02-tools.html">1-2　ツールを渡すとは、説明書を渡すこと</a>
 <a class="toc-link" href="../01-agentic/03-loop.html">1-3　エージェントループの1周</a>
 <a class="toc-link" href="../01-agentic/04-stop.html">1-4　stop_reason で分岐する</a>
@@ -66,93 +66,87 @@
 <a class="toc-link toc-quiz" href="../01-agentic/16-q3.html">1-16　理解度チェック ─ 起動と強制</a>
 <a class="toc-link" href="../01-agentic/17-session.html">1-17　セッションをまたぐ</a>
 <a class="toc-link toc-quiz" href="../01-agentic/18-q4.html">1-18　理解度チェック ─ セッション</a></nav>
+  <a class="toc-all" href="../index.html#all">全項目一覧（88項）</a>
 </aside>
 <main class="doc">
-<p class="crumb" data-domain="agentic"><b>Domain 1</b><span>エージェント設計とオーケストレーション</span><span class="w">出題比率 27%</span></p>
+<p class="crumb" data-domain="agentic"><b>Domain 1</b><span>エージェント設計とオーケストレーション</span><span class="w">出題比率 27%（約16問）</span></p>
 <!-- ▼ 本文 ─ ここだけを編集する。この前後は node tools/reindex.mjs が書き出す -->
 <section class="sec" id="gate">
 <header class="sec-head">
   <h2>1-14　前提は関門で、引き継ぎは欄で</h2>
 </header>
+
 <h3 class="sub" id="gate-1">お願いではなく、通れないようにする</h3>
 <p class="lead">「デプロイの前に必ずテストを通して」と文章で頼むと、急いだときに何回かは飛ばされます。順序を守らせたいなら、飛ばせない場所に置きます。</p>
 <p class="task"><span class="tn">BLUEPRINT 1.4</span><b>多段ワークフローの強制とハンドオフ</b></p>
 <p class="goal"><b>ゴール</b>お願いと関門の違いを説明できる。</p>
-  <div class="figbox"><div class="diagram run">
-  <svg viewBox="0 0 760 260">
-    <g class="s1"><rect x="16" y="52" width="150" height="58" rx="10" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
-      <text class="lbl" x="91" y="86" text-anchor="middle">変更する</text>
-      <line x1="172" y1="80" x2="204" y2="80" stroke="var(--fig-muted)" stroke-width="2" marker-end="url(#ar)"/></g>
-    <g class="s2"><rect x="210" y="52" width="164" height="58" rx="10" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
-      <text class="lbl" x="292" y="78" text-anchor="middle">検査</text>
-      <text class="sm" x="292" y="98" text-anchor="middle">テスト・型チェック</text>
-      <line x1="380" y1="80" x2="412" y2="80" stroke="var(--fig-muted)" stroke-width="2" marker-end="url(#ar)"/></g>
-    <g class="s3"><rect x="418" y="44" width="170" height="74" rx="10" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)" stroke-width="2"/>
-      <text class="lbl" x="503" y="72" text-anchor="middle" style="fill:var(--fig-green)">関門</text>
-      <text class="sm" x="503" y="94" text-anchor="middle">未通過なら通さない</text>
-      <line x1="594" y1="80" x2="626" y2="80" stroke="var(--fig-green)" stroke-width="2" marker-end="url(#arg)"/></g>
-    <g class="s4"><rect x="632" y="52" width="112" height="58" rx="10" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)"/>
-      <text class="lbl" x="688" y="86" text-anchor="middle" style="fill:var(--fig-green)">デプロイ</text></g>
-    <g class="s5"><path d="M503 124 L503 176 L91 176 L91 118" fill="none" stroke="var(--fig-red)" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#arr)"/>
-      <rect x="222" y="158" width="260" height="34" rx="6" fill="var(--fig-surface)" stroke="var(--fig-line-red)"/>
-      <text class="sm" x="352" y="180" text-anchor="middle" style="fill:var(--fig-red)">何が足りないかを返して直させる</text></g>
-    <text class="sm s6" x="380" y="230" text-anchor="middle">デプロイに届く経路は関門を通る1本だけ。「別の言い方で頼めば通る」余地を残さない</text>
-  </svg>
-  </div></div>
-  <div class="detail"><h3>図の読み方</h3>
-    <ol class="ann">
-      <li><span class="n">1</span><span><b>検査</b>はモデルがやる気になったときではなく、毎回同じ場所で走ります。順序が固定されるのはここです。</span></li>
-      <li><span class="n">2</span><span><b>関門</b>が見ているのは結果だけです。モデルの説明や自己申告は見ません。だから「通したつもり」が起こりません。</span></li>
-      <li><span class="n">3</span><span>赤い戻りが重要です。<b>ただ拒否すると、モデルは同じ手をもう一度試します。</b>足りないものを返すと、次の一手が変わります。</span></li>
-      <li><span class="n">4</span><span>Claude Code では、ツール実行の<b>前</b>に走らせる <code>PreToolUse</code> で判定して止め、実行の<b>後</b>に必ずやりたい処理は <code>PostToolUse</code> に置きます（フック＝ツール実行の前後で自動的に走る仕組み。Domain 3・5）。</span></li>
-    </ol>
+
+<div class="figbox"><figure class="fig run">
+  <p class="fig-t">同じ「テストを先に」を、2通りで実現したとき</p>
+  <div class="fig-row" style="--cols:2">
+    <div class="fig-card red s1">
+      <b class="fig-h">お願い　── プロンプトに書く</b>
+      <span class="fig-note">「デプロイの前に必ずテストを通して」</span>
+      <ul>
+        <li>守るかどうかは<b>モデルの判断</b></li>
+        <li>急いだとき・文脈が長いときに<b>飛ばされる</b></li>
+        <li>飛ばしたことに<b>誰も気づけない</b></li>
+      </ul>
+    </div>
+    <div class="fig-card green s2">
+      <b class="fig-h">関門　── 実行の手前に置く</b>
+      <span class="fig-note">デプロイのツールが呼ばれた瞬間に、毎回同じ場所で検査が走る</span>
+      <ul>
+        <li>順序が<b>固定される</b></li>
+        <li>見るのは<b>検査の結果だけ</b>。モデルの自己申告は見ない</li>
+        <li>だから「通したつもり」が<b>起こらない</b></li>
+      </ul>
+    </div>
   </div>
+  <div class="fig-row s3" style="--cols:1">
+    <div class="fig-card key">
+      <b class="fig-h">止めるときは、理由を返す</b>
+      <span class="fig-note">ただ拒否すると、<b>モデルは同じ手をもう一度試す。</b>「テストが3件失敗している」と足りないものを返すと、次の一手が変わる。</span>
+    </div>
+  </div>
+  <p class="fig-f">Claude Code では、ツール実行の<b>前</b>に走らせる <code>PreToolUse</code> で判定して止め、実行の<b>後</b>に必ずやりたい処理は <code>PostToolUse</code> に置く（フック＝ツール実行の前後で自動的に走る仕組み。Domain 3・5）。</p>
+</figure></div>
+
 <p class="point"><b>ポイント</b>順序を守らせたいなら、通れない場所を作る。拒否するときは理由を返す。</p>
 
 <h3 class="sub" id="gate-2">引き継ぎは自由文にしない</h3>
 <p class="lead">子から親へ、あるいは次の担当へ渡す要約を自由文にすると、何が書かれていないかに誰も気づけません。</p>
-  <div class="figbox"><div class="diagram run">
-  <svg viewBox="0 0 760 240">
-    <g class="s1"><rect x="16" y="60" width="170" height="66" rx="10" fill="var(--fig-fill-blue)" stroke="var(--fig-line-blue)"/>
-      <text class="lbl" x="101" y="88" text-anchor="middle" style="fill:var(--fig-blue)">終わった作業</text>
-      <text class="sm" x="101" y="110" text-anchor="middle">履歴はここで消える</text>
-      <line x1="192" y1="92" x2="226" y2="92" stroke="var(--fig-muted)" stroke-width="2" marker-end="url(#ar)"/></g>
-    <g class="s2"><rect x="232" y="30" width="286" height="150" rx="10" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)" stroke-width="2"/>
-      <text class="lbl" x="252" y="56" style="fill:var(--fig-green)">引き継ぎ票</text>
-      <rect x="252" y="68" width="246" height="24" rx="4" fill="var(--fig-surface)" stroke="var(--fig-line)"/>
-      <text class="sm" x="264" y="85">決まったこと</text>
-      <rect x="252" y="96" width="246" height="24" rx="4" fill="var(--fig-surface)" stroke="var(--fig-line)"/>
-      <text class="sm" x="264" y="113">制約</text>
-      <rect x="252" y="124" width="246" height="24" rx="4" fill="var(--fig-surface)" stroke="var(--fig-line)"/>
-      <text class="sm" x="264" y="141">未解決</text>
-      <rect x="252" y="152" width="246" height="20" rx="4" fill="var(--fig-surface)" stroke="var(--fig-line)"/>
-      <text class="sm" x="264" y="167">次の一手</text>
-      <line x1="524" y1="92" x2="558" y2="92" stroke="var(--fig-green)" stroke-width="2" marker-end="url(#arg)"/></g>
-    <g class="s3"><rect x="564" y="60" width="180" height="66" rx="10" fill="var(--fig-fill-blue)" stroke="var(--fig-line-blue)"/>
-      <text class="lbl" x="654" y="88" text-anchor="middle" style="fill:var(--fig-blue)">続きを始められる</text>
-      <text class="sm" x="654" y="110" text-anchor="middle">読むのは票だけ</text></g>
-    <text class="sm s4" x="380" y="212" text-anchor="middle">欄が決まっていれば、空欄をコードで検出できる</text>
-  </svg>
-  </div></div>
-  <div class="detail"><h3>図の読み方</h3>
-    <ol class="ann">
-      <li><span class="n">1</span><span>4つの欄は、<b>次に動く側が最初に必要とするもの</b>だけです。経過や試行錯誤は入れません。</span></li>
-      <li><span class="n">2</span><span>欄が固定なので<b>機械的に検査できます</b>。自由文だと、書かれていないことは誰の目にも留まりません。</span></li>
-      <li><span class="n">3</span><span><b>続きを始められる</b>側が読むのは票だけです。前の作業の履歴は残っていないので、<b>票に書かれていない前提は失われます</b>。</span></li>
-      <li><span class="n">4</span><span>同じ形にしておくと、前回の票と見比べるだけで<b>何が進んだかが分かります</b>。人が引き継ぐときにも同じ効き方をします。</span></li>
-    </ol>
-    <div class="myth">
-      <span class="t">誤解</span><span>「引き継ぎは詳しいほどよい」</span>
-      <span class="t o">実際は</span><span>長い引き継ぎは受け取る側の窓を埋め、しかも<b>どこが重要か分からなくなります</b>。欄を決めて短く書くほうが、渡し漏れも減ります。</span>
-    </div>
+<p class="goal"><b>ゴール</b>引き継ぎを欄で固定する理由を説明できる。</p>
+
+<div class="figbox"><figure class="fig run">
+  <p class="fig-t">引き継ぎ票 ─ 欄は「次に動く側が最初に必要とするもの」だけ</p>
+  <div class="fig-row" style="--cols:2">
+    <div class="fig-card s1"><b class="fig-h">やったこと</b>
+      <span class="fig-note">結論だけ。試行錯誤の経過は入れない</span></div>
+    <div class="fig-card s2"><b class="fig-h">決まったこと</b>
+      <span class="fig-note">採用した方針と、その理由1行</span></div>
+    <div class="fig-card s3"><b class="fig-h">未解決の点</b>
+      <span class="fig-note">分かっていないこと・判断待ちのこと</span></div>
+    <div class="fig-card s4"><b class="fig-h">次の手順</b>
+      <span class="fig-note">受け取った側が最初にやること</span></div>
   </div>
+  <p class="fig-f">欄が固定なので<b>機械的に検査できる</b>（自由文だと、書かれていないことは誰の目にも留まらない）。受け取る側に前の履歴は残っていないので、<b>票に書かれていない前提は失われる</b>。同じ形にしておけば、前回の票と見比べるだけで何が進んだかも分かる。</p>
+</figure></div>
+
 <p class="point"><b>ポイント</b>前提は文章で頼まず通れなくする。引き継ぎは自由文でなく欄を決める。どちらも「守られるか」をモデルの判断から外す手。</p>
+
+<div class="detail">
+  <div class="myth">
+    <span class="t">誤解</span><span>「引き継ぎは詳しいほどよい」</span>
+    <span class="t o">実際は</span><span>長い引き継ぎは受け取る側の窓を埋め、しかも<b>どこが重要か分からなくなります</b>。欄を決めて短く書くほうが、渡し漏れも減ります。</span>
+  </div>
+</div>
 </section>
 <!-- ▲ 本文 -->
 <nav class="secpager">
-<a class="pgv prev" href="../01-agentic/13-spawn.html"><span class="pgv-l">前へ</span>1-13　子はどう起こすのか</a>
+<a class="pgv prev" href="../01-agentic/13-spawn.html"><span class="pgv-l">前へ</span><span class="pgv-t">1-13　子はどう起こすのか</span></a>
 <span class="pgv-n">Domain 1 14 / 18</span>
-<a class="pgv next" href="../01-agentic/15-intercept.html"><span class="pgv-l">次へ</span>1-15　ツール呼び出しに割り込む</a>
+<a class="pgv next" href="../01-agentic/15-intercept.html"><span class="pgv-l">次へ</span><span class="pgv-t">1-15　ツール呼び出しに割り込む</span></a>
 </nav>
 </main>
 </div>
@@ -164,6 +158,6 @@
   </div>
 </div>
 <script src="../assets/quiz-data.js?v=4385afea"></script>
-<script src="../assets/search-index.js?v=98a5172a"></script>
-<script src="../assets/app.js?v=1c7668ec"></script>
+<script src="../assets/search-index.js?v=de7413f7"></script>
+<script src="../assets/app.js?v=0564f87d"></script>
 </body></html>

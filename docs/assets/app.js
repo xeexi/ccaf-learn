@@ -30,6 +30,48 @@
     ol.parentNode.insertBefore(h, ol);
   });
 
+  /* ---------- 上部ナビ：狭い画面では「いま居るドメイン」に畳む ----------
+     390px では 7ドメインが 518px 必要なのに可視幅が 116px しかなく、
+     淡い12pxの番号だけが横スクロールする状態だった（実測）。
+     畳んで、いま居る場所を名前で見せる。役割は「ドメイン間の移動」。
+     ドメイン内の移動は下の目次が受け持つ。
+     JS が動かなければ畳まれないだけで、ナビは今までどおり使える。 */
+  const navEl = document.querySelector('.domnav');
+  const navList = navEl && navEl.querySelector('.nav-list');
+  if (navEl && navList) {
+    const on = navList.querySelector('.nav-item.on');
+    const mqn = window.matchMedia('(max-width:1080px)');
+    const cur = document.createElement('button');
+    cur.className = 'nav-cur';
+    cur.setAttribute('aria-expanded', 'false');
+    cur.innerHTML = '<span class="nav-cur-num"></span><span class="nav-cur-t"></span>';
+    cur.querySelector('.nav-cur-num').textContent =
+      on ? on.querySelector('.nav-num').textContent : '目次';
+    cur.querySelector('.nav-cur-t').textContent =
+      on ? on.querySelector('.nav-title').textContent : 'トップ';
+    cur.onclick = () => {
+      const open = navEl.classList.toggle('nav-open');
+      cur.setAttribute('aria-expanded', open ? 'true' : 'false');
+    };
+    const applyNav = () => {
+      if (mqn.matches) {
+        if (!cur.isConnected) navList.parentNode.insertBefore(cur, navList);
+        navEl.classList.add('navfold');
+      } else {
+        navEl.classList.remove('navfold', 'nav-open');
+        if (cur.isConnected) cur.remove();
+      }
+    };
+    applyNav();
+    mqn.addEventListener('change', applyNav);
+    document.addEventListener('click', e => {
+      if (navEl.classList.contains('nav-open') && !navEl.contains(e.target)) {
+        navEl.classList.remove('nav-open');
+        cur.setAttribute('aria-expanded', 'false');
+      }
+    });
+  }
+
   /* ---------- 目次：いま読んでいる小見出しを光らせる ----------
      節そのものの選択状態は reindex.mjs が静的に書き出している（.toc-link.on）。
      ここでやるのは、その節の中の小見出しの追従だけ。 */
@@ -111,7 +153,7 @@
         io.unobserve(d);
       });
     }, { threshold: 0.16 });
-    document.querySelectorAll('.diagram').forEach(d => io.observe(d));
+    document.querySelectorAll('.diagram, .fig').forEach(d => io.observe(d));
   }
 
   /* ---------- 理解度チェック ---------- */
@@ -161,7 +203,7 @@
   const IX = {
     'p-cache': '並べ方のボタンを押して比べる',
     'p-token': '候補をクリックして文を伸ばす',
-    'p-loop': 'ボタンで1手ずつ進める',
+    'p-loop': 'ボタンで1つずつ進める',
     'p-stop': '値を選んで結果を見る',
   };
   Object.keys(IX).forEach(id => {
@@ -229,15 +271,15 @@
 
   // ③ エージェントループのステップ実行
   const LP = [
-    { n: 'n1', c: 'm1', r: 'Claude（考える）', t: '注文 A-12 の状況を調べる必要がある' },
+    { n: 'n1', c: 'm1', r: 'アプリ → API（system ＋ tools ＋ messages）', t: 'ユーザー：「注文 A-12 の状況は？」＋ 使えるツールの一覧' },
     { n: 'n2', c: 'm2', r: 'assistant　stop_reason = tool_use', t: 'search_orders(order_id:"A-12") を使いたい' },
     { n: 'n3', c: 'm3', r: 'アプリ（コード）', t: '実際に注文DBを検索した → 「配送中」' },
     { n: 'n4', c: 'm4', r: 'user（tool_result）', t: '{"order_id":"A-12","status":"配送中"}' },
-    { n: 'n1', c: 'm1', r: 'assistant　stop_reason = end_turn', t: 'A-12 は現在配送中です → ループ終了' }];
+    { n: 'n2', c: 'm2', r: 'assistant　stop_reason = end_turn', t: 'A-12 は現在配送中です → ループ終了' }];
   let lpI = 0;
   function lpDraw() {
     const log = document.getElementById('lp-log'); if (!log) return;
-    const dia = document.querySelector('[data-widget="p-loop"] .diagram');
+    const dia = document.querySelector('[data-widget="p-loop"] .fig, [data-widget="p-loop"] .diagram');
     if (dia) dia.classList.toggle('stepping', lpI > 0);
     document.querySelectorAll('[data-widget="p-loop"] .nd').forEach(g => g.classList.remove('on'));
     log.innerHTML = '';
@@ -248,7 +290,7 @@
     if (lpI > 0) { const g = document.getElementById(LP[lpI - 1].n); if (g) g.classList.add('on'); }
     const nb = document.getElementById('lp-next');
     nb.disabled = lpI >= LP.length;
-    nb.textContent = lpI >= LP.length ? '1周おわり' : '1手進める →';
+    nb.textContent = lpI >= LP.length ? '1周おわり' : '1つ進める →';
   }
   const lpn = document.getElementById('lp-next');
   if (lpn) {
@@ -265,9 +307,9 @@
     'b-ref': '<b>別の経路へ</b>　通常の完了として扱わず、案内やエスカレーションなど別の処理に回す。'
   };
   document.querySelectorAll('#sr-ctrl [data-sr]').forEach(b => b.onclick = () => {
-    const svg = document.getElementById('sr-svg');
+    const svg = document.getElementById('sr-fig');
     svg.classList.add('pick');
-    svg.querySelectorAll('g[id^="b-"]').forEach(g => g.classList.toggle('sel', g.id === b.dataset.sr));
+    svg.querySelectorAll('[id^="b-"]').forEach(g => g.classList.toggle('sel', g.id === b.dataset.sr));
     document.querySelectorAll('#sr-ctrl button').forEach(x => x.classList.toggle('go', x === b));
     const a = document.getElementById('sr-ans'); a.classList.add('show'); a.innerHTML = SR[b.dataset.sr];
   });
