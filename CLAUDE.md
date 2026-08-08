@@ -296,34 +296,47 @@ q4:[
 
 ## 9. git の現状
 
-**このフォルダの `.git` は壊れかけている。** Cowork のクラウドセッションからマウント越しに
-`git init` した際、lock ファイルを作成・削除できず（`Operation not permitted`）、
-`git branch -M main` が失敗した。コミット `5228bdc`（ブランチ `master`）と remote 設定は残っている。
+`.git` は Windows 側で作り直し済みで、**正常に動く**。ブランチ `main`、remote は
+`https://github.com/xeexi/ccaf-learn.git`。以前ここに「壊れかけている」と書いてあったが、それは誤りだった
+（実際の原因は下の lock ファイル）。
 
-**Windows 側で作り直すのが確実：**
+### セッションから commit するときの手順
+
+マウント越しの git には落とし穴が2つある。**どちらも実際に踏んでいる。**
+
+**1. `.git/*.lock` の残骸。** セッションが途中で切れると `.git/index.lock` が0バイトで残り、
+以後の `git add` / `commit` がすべて弾かれる。しかもマウント越しの `rm` は既定で
+`Operation not permitted` になる。**`mcp__cowork__allow_cowork_file_delete` で削除許可を取ってから消す。**
+「消せません」と報告して終わらせない。
+
+```bash
+rm -f .git/index.lock          # ← 許可を取ってから
+```
+
+**2. `user.name` / `user.email` が未設定。** サンドボックスに global の gitconfig がないため、
+`git config user.name` は空を返して **exit 1**。`&&` で繋いだコマンド列がここで黙って止まる。
+コミット前に設定する：
+
+```bash
+git config user.name xeexi
+git config user.email ki4shi.ito@gmail.com
+```
+
+### push はセッションからはできない ── Windows 側で叩く
+
+コミットまではセッションで作れる（実フォルダの `.git` にそのまま入る）。**push だけが通らない。**
+サンドボックスに GitHub の認証情報が一切ない ── `credential.helper` 未設定、`gh` なし、proxy 環境変数なし。
+出るエラーは `fatal: could not read Username for 'https://github.com'`。
+以前は git proxy が 403 を返していた（`... is not in this session's authorized repository set`）。
+**失敗の仕方は変わるが、結論は同じ。**
 
 ```
 cd C:\Users\guard\Documents\Claude作業用\ccaf-learn
-rmdir /s /q .git
-git init
-git add -A
-git commit -m "CCAR-F 学習ノート"
-git branch -M main
-git remote add origin https://github.com/xeexi/ccaf-learn.git
-git push -u origin main
+git push origin main
 ```
 
-**クラウドの Cowork セッションから push はできない。** 実際に試して 403：
-
-```
-remote: access denied by the git proxy: xeexi/ccaf-learn is not in this
-session's authorized repository set, so the proxy will not inject a credential for it.
-```
-
-デスクトップの 設定 → Cowork に「セッションのソース」を足す画面は**見つからなかった**
-（エラーメッセージの言う経路は確認できていない）。確実なのは**タスクを自分のコンピュータで実行すること**。
-設定 → Cowork の「クラウドで新しいタスクを実行する」をオフにすると、以後の新規タスクが手元で動く。
-**この切り替えは新規タスクにだけ効く。動いているクラウドセッションは移動できない。**
+設定 → Cowork の「クラウドで新しいタスクを実行する」をオフにすると、以後の**新規**タスクが手元で動く。
+**動いているセッションは移動できない。**
 
 ### GitHub Pages で公開する
 
@@ -338,8 +351,7 @@ session's authorized repository set, so the proxy will not inject a credential f
 
 ## 10. 引き継ぎ ─ 前のセッションが終わった時点の状態
 
-**このリポジトリは 2026-08-08 に大きく組み替えた。** クラウドの Cowork セッションからは push できないため、
-そのセッションは打ち切って**手元での実行に切り替えている**。以下は完了済みで、`docs/` に反映されている。
+**このリポジトリは 2026-08-08 に大きく組み替えた。** 以下は完了済みで、`docs/` に反映されている。
 
 - **`docs/` へ集約**し、**1ファイル＝1項＝1画面**の88ファイル構成にした（旧：1ドメイン1ファイル＋JSで1節ずつ表示）
 - **共通部を `reindex.mjs` のテンプレート1か所に集約**（§2）。節ファイルには本文だけが入る
@@ -351,8 +363,12 @@ session's authorized repository set, so the proxy will not inject a credential f
   カードと分量の数字は生成物
 - **狭い画面に対応**（§5・§7 #11）。390〜1024px で横溢れ0、図中の文字が11px未満のページ0
 
-**未 push。** クラウド側で3コミット積んだが push できていない。手元で `git log` を見て、
-必要なら作り直してから push すること（§9）。
+### git の状態（2026-08-08 時点）
+
+ブランチ `main`。**`f53de49`（組み替え前）までが push 済み**で、それ以降 ── `d022995`（docs/ へ集約・
+88ファイル構成）以降のコミットが**未 push**。正確な差分は `git log --oneline origin/main..main` で見ること。
+
+セッションからは push できないので、**Windows 側で `git push origin main`**（§9）。
 
 検証は Playwright で全89ページ実施済み（節1つ・ナビ・目次・パンくず・送り・リンク切れ・
 図のはみ出し・横スクロール・console エラー）。`node tools/check.mjs` も通っている。
