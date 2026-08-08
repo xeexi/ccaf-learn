@@ -170,25 +170,36 @@
       box.className = 'q';
       box.innerHTML = '<div class="qn">Q' + (qi + 1) + '</div><p class="qt"></p>';
       box.querySelector('.qt').textContent = item.q;
-      item.o.forEach((t, oi) => {
+      /* 選択肢は描画のたびに混ぜる。設問データ側の並びに正解が偏っていても
+         読み手には届かないし、解き直しで位置を覚えることもない（§7 #29）。
+         混ぜるのは組み立て時の1回だけなので、答えたあとに並びは動かない。
+         解説や選択肢に「上記」「前者」のような順序に依存する文言がないことは、
+         quiz-data.js を走査して確認済み。書き足すときも入れないこと。 */
+      const ord = item.o.map((_, i) => i);
+      for (let i = ord.length - 1; i > 0; i--) {             // Fisher–Yates
+        const j = Math.floor(Math.random() * (i + 1));
+        [ord[i], ord[j]] = [ord[j], ord[i]];
+      }
+      const ans = ord.indexOf(item.a);                        // 混ぜたあとの正解の位置
+      ord.forEach((src, oi) => {
         const b = document.createElement('button');
         b.className = 'opt';
         b.innerHTML = '<span class="ol"></span><span></span>';
         b.querySelector('.ol').textContent = String.fromCharCode(65 + oi);
-        b.querySelectorAll('span')[1].textContent = t;
+        b.querySelectorAll('span')[1].textContent = item.o[src];
         b.onclick = () => {
           if (box.dataset.done) return;
           box.dataset.done = '1';
           const opts = [...box.querySelectorAll('.opt')];
           opts.forEach(x => x.classList.add('done'));
-          opts[item.a].classList.add('ok');
-          if (oi !== item.a) b.classList.add('ng');
+          opts[ans].classList.add('ok');
+          if (oi !== ans) b.classList.add('ng');
           const e = box.querySelector('.exp');
           e.classList.add('show');
-          if (oi !== item.a) e.classList.add('wrong');
+          if (oi !== ans) e.classList.add('wrong');
           e.querySelector('span').textContent = item.e;
           e.querySelector('b').textContent =
-            (oi === item.a ? '正解' : '不正解 — 正解は ' + String.fromCharCode(65 + item.a)) + '　';
+            (oi === ans ? '正解' : '不正解 — 正解は ' + String.fromCharCode(65 + ans)) + '　';
         };
         box.appendChild(b);
       });

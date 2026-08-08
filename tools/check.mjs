@@ -291,27 +291,26 @@ FILES.forEach(f => {
 });
 if (!numNg) console.log(`  ✓ 印のある ${numOk} か所すべてで、コードの番号と注記が一致`);
 
-/* --- 5i. 正解の位置が偏っていないか ----------------------------------
-   設問を書くと、正解を自然と2番目に置いてしまう。実際 100問中76問が
-   2番目で、4番目は1問しかなかった（§7 #29）。「Bを選べば76%当たる」
-   状態では練習にならないので、位置の分布を機械で見る。
-   直すときは選択肢を**巡回**させる（相対順序が保たれる）。 */
-console.log('\n■ 正解の位置');
-const posAll = [0, 0, 0, 0];
-let posNg2 = 0;
-Object.entries(QUIZ).forEach(([k, v]) => {
-  const d = [0, 0, 0, 0];
-  v.forEach(x => { d[x.a]++; posAll[x.a]++; });
-  // 4問以上あるのに2種類以下に固まっていたら、その回答面は当てられる
-  if (v.length >= 4 && d.filter(Boolean).length <= 2) {
-    bad(`設問キー ${k}: ${v.length}問の正解が ${d.filter(Boolean).length} か所に固まっている（${d.join('/')}）`);
-    posNg2++;
-  }
-});
-const posN = posAll.reduce((a, b) => a + b, 0);
-const worst = Math.max(...posAll) / posN;
-if (worst > 0.4) { bad(`全体で正解の ${(worst * 100).toFixed(0)}% が同じ位置（${posAll.join(' / ')}）`); posNg2++; }
-if (!posNg2) console.log(`  ✓ ${posN}問の正解位置 ${posAll.join(' / ')}（最大 ${(worst * 100).toFixed(0)}%）`);
+/* --- 5i. 選択肢の順序に依存する文言がないか --------------------------
+   選択肢は app.js が**描画のたびに混ぜる**（§7 #29）。
+   だから「上記のすべて」「前者」「選択肢 B」のような順序に依存する書き方が
+   1つでも混ざると、その設問は解けなくなる。
+   以前ここは「正解の位置が偏っていないか」を数えていたが、
+   混ぜるようになった時点で**データ側の並びは読み手に届かなくなった**ので、
+   本当の前提条件であるこちらに置き換えた。 */
+console.log('\n■ 選択肢の順序への依存');
+const ORDER_WORDS = /(上記|下記|以上のすべて|すべて正しい|上の選択肢|[1-4]番目|前者|後者|選択肢\s*[ABCD]|[（(][ABCD][）)])/;
+let ordNg = 0, ordN = 0;
+Object.entries(QUIZ).forEach(([k, v]) => v.forEach((x, i) => {
+  ordN++;
+  const t = x.q + ' ' + x.o.join(' ') + ' ' + x.e;
+  const m = t.match(ORDER_WORDS);
+  if (m) { bad(`設問キー ${k} Q${i + 1}: 「${m[0]}」は選択肢の並びに依存する（混ぜると壊れる）`); ordNg++; }
+  if (new Set(x.o).size !== x.o.length) { bad(`設問キー ${k} Q${i + 1}: 選択肢に重複がある`); ordNg++; }
+  if (x.o.length !== 4) { bad(`設問キー ${k} Q${i + 1}: 選択肢が ${x.o.length} 個（4個にそろえる）`); ordNg++; }
+  if (!(x.a >= 0 && x.a < x.o.length)) { bad(`設問キー ${k} Q${i + 1}: a=${x.a} が選択肢の範囲外`); ordNg++; }
+}));
+if (!ordNg) console.log(`  ✓ ${ordN}問すべて、並びに依存する文言なし（4択・重複なし・a も範囲内）`);
 
 /* --- 5h. 本文のタグが釣り合っているか --------------------------------
    `</div>` が1つ多いと、ブラウザは**その節を早じまいして**
