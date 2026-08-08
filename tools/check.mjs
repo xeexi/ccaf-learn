@@ -262,6 +262,35 @@ order.forEach(s => {
 });
 if (!covNg) console.log(`  ✓ ${Object.keys(TASKS).length} タスクすべてに対応する節あり（ラベルも欠落なし）`);
 
+/* --- 5j. 丸番号が、指す先を持っているか ------------------------------
+   `pre.code` に打った <span class="n">N</span> は、直後の <ol class="ann"> の
+   同じ番号と対応していなければ、読み手はどこを見ればよいか分からない。
+   実際 3-3 で、図を比較表に差し替えたときに**番号だけが残った**（§7 #31）。
+   逆に、印の無い番号を注記側に足すのも同じ事故（1-6 の ⑥、4-5 の ④）。
+
+   .ann はコードの注記としてだけ残す方針（§4）なので、
+   ここでは「コードの印」と「その注記」の集合が一致するかだけを見る。
+   旧 SVG の図に付いた .ann は、印を持たないので対象外（Domain 4〜5 の変換で消える）。 */
+console.log('\n■ 丸番号の対応（コードの印 ⇄ 注記）');
+let numNg = 0, numOk = 0;
+FILES.forEach(f => {
+  const h = fs.readFileSync(path.join(ROOT, f), 'utf8');
+  const body = (h.match(/▼ 本文[^\n]*-->([\s\S]*?)<!-- ▲ 本文/) || [])[1];
+  if (!body) return;
+  // figbox 単位で見る ─ 1つの箱に複数の pre.code が入ることがある（1-6・4-5）
+  (body.match(/<div class="figbox"[\s\S]*?<\/div>\s*(?=<|$)/g) || []).forEach(box => {
+    if (!/<pre class="code"/.test(box)) return;
+    const ol = (box.match(/<ol class="ann">[\s\S]*?<\/ol>/) || [''])[0];
+    const marks = [...box.replace(ol, '').matchAll(/<span class="n">(\d+)<\/span>/g)].map(m => +m[1]).sort((a, b) => a - b);
+    const notes = [...ol.matchAll(/<span class="n">(\d+)<\/span>/g)].map(m => +m[1]).sort((a, b) => a - b);
+    if (marks.join() === notes.join()) { if (marks.length) numOk++; return; }
+    const id = (box.match(/codelabel">([^<]*)/) || [, '?'])[1];
+    bad(`${f}「${id}」: コードの印 [${marks.join(',') || 'なし'}] と注記 [${notes.join(',') || 'なし'}] が対応していない`);
+    numNg++;
+  });
+});
+if (!numNg) console.log(`  ✓ 印のある ${numOk} か所すべてで、コードの番号と注記が一致`);
+
 /* --- 5i. 正解の位置が偏っていないか ----------------------------------
    設問を書くと、正解を自然と2番目に置いてしまう。実際 100問中76問が
    2番目で、4番目は1問しかなかった（§7 #29）。「Bを選べば76%当たる」

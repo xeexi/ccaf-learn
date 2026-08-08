@@ -77,11 +77,14 @@
   <p class="codelabel">CLAUDE.md ─ 行頭に @パス と書くだけ</p>
   <pre class="code"><span class="c"># プロジェクトの規約</span>
 
-@docs/style.md<span class="n">1</span>
-@/etc/team/rules.md<span class="n">2</span>
-@~/.claude/my-rules.md<span class="n">3</span>
+@docs/style.md
+@/etc/team/rules.md
+@~/.claude/my-rules.md
 
-<span class="c">説明の中でファイル名に触れるときは</span> <span class="s">`@README`</span> <span class="c">と囲む</span><span class="n">4</span></pre>
+<span class="c">説明の中でファイル名に触れるときは</span> <span class="s">`@README`</span> <span class="c">と囲む</span><span class="n">1</span></pre>
+  <ol class="ann">
+    <li><span class="n">1</span><span>コードブロックやバッククォートの中の <code>@</code> は<b>展開されません</b>。手順書の中でファイル名に触れるときに効いてきます。</span></li>
+  </ol>
 </div>
 
 <table class="tbl">
@@ -107,8 +110,7 @@
   <b>減らない</b>：<b>窓を食う量。</b>展開されて全部つながるので、合計は分割前と同じです<br>
   窓を減らしたいなら <code>@import</code> ではなく、<b>パス固有ルール</b>（次節）で「読むときだけ載せる」形にします。</div>
   <div class="ex"><span class="exl">細かい仕様</span>
-  ・入れ子は<b>4段まで</b>。import した先がさらに import しても、そこで止まります<br>
-  ・<b>コードブロックやバッククォートの中では展開されません</b>（上のコードの <span class="n">4</span>）。手順書の中でファイル名に触れるときに効いてきます</div>
+  入れ子は<b>4段まで</b>。import した先がさらに import しても、そこで止まります。</div>
 </div>
 </section>
 <!-- ▲ 本文 -->
@@ -127,6 +129,6 @@
   </div>
 </div>
 <script src="../assets/quiz-data.js?v=47ac7a88"></script>
-<script src="../assets/search-index.js?v=89e0d7d7"></script>
+<script src="../assets/search-index.js?v=ea5cef59"></script>
 <script src="../assets/app.js?v=5bf1e1db"></script>
 </body></html>
