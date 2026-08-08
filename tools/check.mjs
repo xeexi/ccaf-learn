@@ -148,15 +148,13 @@ const qHeads = order.filter(s => s.quiz).map(s => ({
   dom: s.f.slice(0, 2),
   h2: ((s.body.match(/<h2>([\s\S]*?)<\/h2>/) || ['', ''])[1]).replace(/<[^>]*>/g, '').trim(),
 }));
-const perDom = {};
-qHeads.forEach(q => { perDom[q.dom] = (perDom[q.dom] || 0) + 1; });
 qHeads.forEach(q => {
   if (!/^\S+\s*理解度チェック/.test(q.h2)) {
     bad(`${q.f}: 設問の見出しが「理解度チェック」で始まっていない → ${q.h2}`); qhNg++;
-  } else if (perDom[q.dom] > 1 && !q.h2.includes('─')) {
-    bad(`${q.f}: 同じ区分に設問が ${perDom[q.dom]} つあるのに副題がない → ${q.h2}`); qhNg++;
-  } else if (perDom[q.dom] === 1 && q.h2.includes('─')) {
-    bad(`${q.f}: 同じ区分に設問が1つだけなので副題は不要 → ${q.h2}`); qhNg++;
+  } else if (!q.h2.includes('─')) {
+    // 以前は「その区分に1つだけなら副題は不要」としていたが、25件中2件だけが
+    // 副題なしになり、一覧で文が途切れて見えた（§7 #36）。数に関係なく必ず付ける。
+    bad(`${q.f}: 副題がない → ${q.h2}`); qhNg++;
   }
 });
 if (!qhNg) console.log(`  ✓ ${qHeads.length} 件すべて規約どおり`);
