@@ -76,33 +76,18 @@
   <li>繰り返す作業の置き場所</li>
   <li>CI で先に決めておくこと</li>
 </ul></div>
-  <div class="figbox"><div class="diagram run">
-  <svg viewBox="0 0 760 300">
-    <text class="ttl s1" x="380" y="26" text-anchor="middle">Domain 3（配点 20%）の6タスク</text>
-    <g class="s2"><rect x="16" y="46" width="358" height="52" rx="10" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
-      <text class="ttl" x="36" y="70">3.1</text><text class="lbl" x="76" y="70">CLAUDE.md の階層・スコープ・モジュール化</text>
-      <text class="sm" x="76" y="88">どこに置くと、いつ効くのか</text></g>
-    <g class="s3"><rect x="386" y="46" width="358" height="52" rx="10" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
-      <text class="ttl" x="406" y="70">3.2</text><text class="lbl" x="446" y="70">スラッシュコマンドとスキル</text>
-      <text class="sm" x="446" y="88">繰り返す作業を置く場所</text></g>
-    <g class="s4"><rect x="16" y="108" width="358" height="52" rx="10" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
-      <text class="ttl" x="36" y="132">3.3</text><text class="lbl" x="76" y="132">パス固有ルール</text>
-      <text class="sm" x="76" y="150">対象ファイルを開いたときだけ効く規約</text></g>
-    <g class="s5"><rect x="386" y="108" width="358" height="52" rx="10" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
-      <text class="ttl" x="406" y="132">3.4</text><text class="lbl" x="446" y="132">plan mode と直接実行</text>
-      <text class="sm" x="446" y="150">先に計画を承認させるかどうか</text></g>
-    <g class="s6"><rect x="16" y="170" width="358" height="52" rx="10" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
-      <text class="ttl" x="36" y="194">3.5</text><text class="lbl" x="76" y="194">反復的な改善</text>
-      <text class="sm" x="76" y="212">1回で当てず、回して寄せる</text></g>
-    <g class="s7"><rect x="386" y="170" width="358" height="52" rx="10" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
-      <text class="ttl" x="406" y="194">3.6</text><text class="lbl" x="446" y="194">CI/CD への組み込み</text>
-      <text class="sm" x="446" y="212">人がいない場所で走らせる</text></g>
-    <g class="s8"><rect x="16" y="234" width="728" height="52" rx="10" fill="var(--fig-fill-blue)" stroke="var(--fig-line-blue)"/>
-      <text class="lbl" x="36" y="258" style="fill:var(--fig-blue)">付録：settings.json と権限 ─ 上の6つすべての土台になる設定ファイル</text>
-      <text class="sm" x="36" y="276">どこに置くと優先されるか、allow / deny / ask の書式</text></g>
-  </svg>
-  </div></div>
-  <p class="point"><b>ポイント</b>6タスクすべてが「言わなくても守られる状態をどう作るか」に向いている。付録の設定ファイルはその土台。</p>
+<div class="detail">
+  <div class="ex"><span class="exl">設定には2種類ある ── これがこのドメインの背骨</span>
+  <b>読ませるもの</b>（<code>CLAUDE.md</code>・スラッシュコマンド・スキル・パス固有ルール）は、
+  窓に載って<b>プロンプトの一部</b>になります。守られる確率は高いが、確率です。<br>
+  <b>通さないもの</b>（<code>settings.json</code> の <code>permissions</code>・フック）は、<b>実行経路そのものを塞ぎます</b>。破りようがありません。<br>
+  Domain 2 の「弱い対策と強い対策」とまったく同じ線引きで、<b>設問はここを突いてきます</b>。</div>
+  <div class="myth">
+    <span class="t">誤解</span><span>「<code>CLAUDE.md</code> に書けば必ず守られる」</span>
+    <span class="t o">実際は</span><span><code>CLAUDE.md</code> は<b>プロンプトとして読まれるだけ</b>です。「本番には触らないで」を確実にしたいなら <code>deny</code> で通さないほうに書きます。<b>どちらに書くべきかを、要件の「確実さ」から選べるようにするのがこのドメインのゴール</b>です。</span>
+  </div>
+</div>
+<p class="point"><b>ポイント</b>置き場所の判断は2軸だけ ── <b>誰に効かせたいか</b>（範囲）と、<b>どれだけ確実に効かせたいか</b>（読ませる／通さない）。</p>
 </section>
 <!-- ▲ 本文 -->
 <nav class="secpager">
@@ -120,6 +105,6 @@
   </div>
 </div>
 <script src="../assets/quiz-data.js?v=47ac7a88"></script>
-<script src="../assets/search-index.js?v=66df1797"></script>
+<script src="../assets/search-index.js?v=89e0d7d7"></script>
 <script src="../assets/app.js?v=5bf1e1db"></script>
 </body></html>

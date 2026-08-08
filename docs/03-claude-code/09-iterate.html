@@ -72,40 +72,29 @@
 <p class="lead">出力が確率的である以上、一発勝負は分が悪い。小さく回して、そのつど基準を書き足していきます。</p>
 <p class="task"><span class="tn">BLUEPRINT 3.5</span><b>段階的改善のための反復手法</b></p>
 <p class="goal"><b>ゴール</b>改善をどこへ書き戻すか答えられる。</p>
-  <div class="figbox"><div class="diagram run">
-  <svg viewBox="0 0 760 270">
-    <g class="s1"><rect x="20" y="30" width="330" height="200" rx="12" fill="var(--fig-fill-red)" stroke="var(--fig-line-red)"/>
-      <text class="ttl" x="185" y="56" text-anchor="middle" style="fill:var(--fig-red)">一発で仕上げようとする</text>
-      <rect x="44" y="76" width="282" height="34" rx="6" fill="var(--fig-surface)" stroke="var(--fig-line)"/>
-      <text class="sm" x="185" y="98" text-anchor="middle">長い指示を1回で書く</text>
-      <line x1="185" y1="114" x2="185" y2="130" stroke="var(--fig-red)" stroke-width="2" marker-end="url(#arr)"/>
-      <rect x="44" y="134" width="282" height="34" rx="6" fill="var(--fig-surface)" stroke="var(--fig-line-red)"/>
-      <text class="sm" x="185" y="156" text-anchor="middle">大きな成果物が返る</text>
-      <text class="sm" x="185" y="192" text-anchor="middle">どこが違うのか特定しにくい</text>
-      <text class="sm" x="185" y="212" text-anchor="middle">直すと別の場所が崩れる</text></g>
-    <g class="s2"><rect x="410" y="30" width="330" height="200" rx="12" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)"/>
-      <text class="ttl" x="575" y="56" text-anchor="middle" style="fill:var(--fig-green)">小さく回す</text>
-      <rect x="434" y="76" width="130" height="30" rx="6" fill="var(--fig-surface)" stroke="var(--fig-line-green)"/>
-      <text class="sm" x="499" y="96" text-anchor="middle">小さく頼む</text>
-      <line x1="570" y1="91" x2="596" y2="91" stroke="var(--fig-green)" stroke-width="2" marker-end="url(#ar)"/>
-      <rect x="600" y="76" width="120" height="30" rx="6" fill="var(--fig-surface)" stroke="var(--fig-line-green)"/>
-      <text class="sm" x="660" y="96" text-anchor="middle">結果を見る</text>
-      <line x1="660" y1="110" x2="660" y2="130" stroke="var(--fig-green)" stroke-width="2" marker-end="url(#ar)"/>
-      <rect x="510" y="134" width="210" height="30" rx="6" fill="var(--fig-surface)" stroke="var(--fig-line-green)"/>
-      <text class="sm" x="615" y="154" text-anchor="middle">ずれた点を基準として書き足す</text>
-      <path d="M510 149 L470 149 L470 91 L430 91" fill="none" stroke="var(--fig-green)" stroke-width="2" marker-end="url(#ar)"/>
-      <text class="sm" x="575" y="192" text-anchor="middle">書き足した基準は CLAUDE.md や</text>
-      <text class="sm" x="575" y="212" text-anchor="middle">コマンドに残す ＝ 次回から効く</text></g>
-  </svg>
-  </div></div>
+<div class="figbox"><figure class="fig run">
+  <p class="fig-t">1回で当てにいくか、回して寄せるか</p>
+  <div class="fig-row s1" style="--cols:1">
+    <div class="fig-card red">
+      <b class="fig-h">✗ 一発で仕上げようとする</b>
+      <span class="fig-note">長い指示を1回で書く → 大きな成果物が返る → <b>どこがずれたのか切り分けられない</b>。直すと別の場所が崩れる</span>
+    </div>
+  </div>
+  <p class="fig-lbl s2">○ 小さく回す</p>
+  <div class="fig-row flow s2" style="--cols:3">
+    <div class="fig-card"><b class="fig-h">小さく頼む</b></div>
+    <div class="fig-card"><b class="fig-h">結果を見る</b></div>
+    <div class="fig-card"><b class="fig-h">ずれた点を<br>基準として書き足す</b></div>
+  </div>
+  <div class="fig-row s3" style="--cols:1">
+    <div class="fig-card key">
+      <b class="fig-h">書き足す先は、会話ではなく設定ファイル</b>
+      <span class="fig-note"><code>CLAUDE.md</code>・スラッシュコマンド・<code>.claude/rules/</code> に残して、はじめて<b>次回から自動で効く</b></span>
+    </div>
+  </div>
+  <p class="fig-f">その場で指摘し直すだけだと、<b>同じ指摘を毎回する</b>ことになる</p>
+</figure></div>
   <div class="detail">
-    <h3>図の読み方</h3>
-    <ol class="ann">
-      <li><span class="n">1</span><span>左は<b>長い指示を1回で書く</b>やり方。成果物が大きいので、<b>どこがずれたのか切り分けられません</b>。</span></li>
-      <li><span class="n">2</span><span>右は<b>小さく頼んで、結果を見て、ずれた点を基準として書き足す</b>ループです。</span></li>
-      <li><span class="n">3</span><span>肝は最後の矢印です。<b>気づいた基準をその場の会話で言うだけにせず、CLAUDE.md やコマンドに残す。</b>そうすると次回から自動で効きます。</span></li>
-      <li><span class="n">4</span><span>これは第4章（プロンプト）の「例を1つ見せる」とも繋がります。ずれた出力そのものが、次の基準の材料になります。</span></li>
-    </ol>
     <div class="ex"><span class="exl">設問での問われ方</span>
     「生成されるコードが毎回チームの規約から外れる。どうするか」<br>
     → <b>その場で指摘し直す</b>のではなく、<b>規約を CLAUDE.md に書いて次回以降に効かせる</b>。<br>
@@ -129,6 +118,6 @@
   </div>
 </div>
 <script src="../assets/quiz-data.js?v=47ac7a88"></script>
-<script src="../assets/search-index.js?v=66df1797"></script>
+<script src="../assets/search-index.js?v=89e0d7d7"></script>
 <script src="../assets/app.js?v=5bf1e1db"></script>
 </body></html>

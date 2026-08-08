@@ -69,50 +69,51 @@
 <header class="sec-head">
   <h2>3-7　パス固有ルール</h2>
 </header>
-<p class="lead"><code>.claude/rules/</code> に置き、frontmatter で対象パスを指定します。</p>
+<p class="lead"><code>.claude/rules/</code> に置き、frontmatter で対象パスを指定します。<b><code>CLAUDE.md</code> との違いは「いつ載るか」だけ</b>です。</p>
 <p class="task"><span class="tn">BLUEPRINT 3.3</span><b>条件付き規約読み込みのためのパス固有ルール</b></p>
 <p class="goal"><b>ゴール</b><code>paths</code> が何のスイッチか説明できる。</p>
-  <div class="figbox"><div class="diagram run">
-  <svg viewBox="0 0 760 280">
-    <g class="s1"><rect x="20" y="24" width="290" height="130" rx="10" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
-      <text class="sm" x="40" y="46">.claude/rules/frontend.md</text>
-      <rect x="40" y="56" width="250" height="84" rx="6" fill="var(--fig-surface)" stroke="var(--fig-line)"/>
-      <text class="mono" x="54" y="76">---</text>
-      <text class="mono" x="54" y="94">paths:</text>
-      <text class="mono" x="54" y="112">  - "src/**/*.tsx"</text>
-      <text class="mono" x="54" y="130">---</text></g>
-    <g class="s2"><line x1="320" y1="88" x2="370" y2="88" stroke="var(--fig-muted)" stroke-width="2" marker-end="url(#ar)"/>
-      <rect x="380" y="24" width="360" height="130" rx="10" fill="var(--fig-fill-blue)" stroke="var(--fig-line-blue)"/>
-      <text class="ttl" x="400" y="48" style="fill:var(--fig-blue)">いつ読まれるか</text>
-      <text class="lbl" x="400" y="78">paths あり → <tspan font-weight="700">対象ファイルを開いたときだけ</tspan></text>
-      <text class="lbl" x="400" y="104">paths なし → セッション開始時に読み込み</text>
-      <text class="sm" x="400" y="132">つまり paths は「オンデマンドにするスイッチ」</text></g>
-    <g class="s3"><rect x="20" y="172" width="350" height="94" rx="10" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)"/>
-      <text class="ttl" x="40" y="196" style="fill:var(--fig-green)">こう書ける</text>
-      <text class="mono" x="40" y="220">- "src/**/*.{ts,tsx}"</text>
-      <text class="mono" x="40" y="242">- "**/*.test.ts"</text>
-      <text class="sm" x="40" y="260">複数指定・ブレース展開が使える</text></g>
-    <g class="s4"><rect x="390" y="172" width="350" height="94" rx="10" fill="var(--fig-fill-amber)" stroke="var(--fig-line-amber)"/>
-      <text class="ttl" x="410" y="196" style="fill:var(--fig-amber)">サブディレクトリも掘れる</text>
-      <text class="mono" x="410" y="220">.claude/rules/frontend/react.md</text>
-      <text class="mono" x="410" y="242">.claude/rules/backend/api.md</text>
-      <text class="sm" x="410" y="260">自動で見つけてくれる</text></g>
-  </svg>
-  </div></div>
-  <div class="detail">
-    <h3>図の読み方</h3>
-    <ol class="ann">
-      <li><span class="n">1</span><span>左上が<b>ルールファイルの中身</b>。frontmatter の <code>paths:</code> にグロブを並べるだけです。</span></li>
-      <li><span class="n">2</span><span><b>「いつ読まれるか」</b> ── ここが CLAUDE.md との違いです。<code>paths</code> を書けば<b>そのファイルを扱うときだけ</b>、書かなければ<b>常に</b>窓に載ります。<b>関係ない規約でウィンドウを埋めない</b>ための仕掛けです。</span></li>
-      <li><span class="n">3</span><span><b>「こう書ける」</b> ── 複数パターンと <code>{ts,tsx}</code> のブレース展開。1ファイルで複数の拡張子をまとめられます。</span></li>
-      <li><span class="n">4</span><span><b>「サブディレクトリも掘れる」</b> ── 分けて置いても自動で拾われるので、<b>規約の種類が増えても1ファイルが肥大しません</b>。</span></li>
-    </ol>
-    <div class="ex"><span class="exl">CLAUDE.md との使い分け</span>
-    <b>常に効かせたい規約</b>（言語共通の方針）→ CLAUDE.md<br>
-    <b>特定の種類のファイルにだけ効かせたい規約</b>（Reactコンポーネントの書き方、テストの命名）→ <code>.claude/rules/</code> ＋ <code>paths</code><br>
-    後者を CLAUDE.md に全部書くと、<b>関係ない作業のときも窓を食い続けます。</b></div>
+
+<div class="figbox" style="padding:16px 18px">
+  <p class="codelabel">.claude/rules/frontend.md</p>
+  <pre class="code"><span class="c">---</span>
+<span class="k">paths</span>:
+  - <span class="s">"src/**/*.{ts,tsx}"</span><span class="n">1</span>
+  - <span class="s">"**/*.test.ts"</span><span class="n">2</span>
+<span class="c">---</span>
+
+コンポーネントは関数コンポーネントで書く。…</pre>
+  <ol class="ann">
+    <li><span class="n">1</span><span>グロブを並べるだけ。<code>{ts,tsx}</code> のような<b>ブレース展開</b>が使えるので、1ファイルで複数の拡張子をまとめられます。</span></li>
+    <li><span class="n">2</span><span><b>複数指定できます。</b>ファイルは <code>.claude/rules/frontend/react.md</code> のように掘っても自動で拾われるので、規約が増えても1ファイルが肥大しません。</span></li>
+  </ol>
+</div>
+
+<div class="figbox"><figure class="fig run">
+  <p class="fig-t"><code>paths</code> を書くかどうかで、<b>いつ窓に載るか</b>が変わる</p>
+  <div class="fig-row" style="--cols:2">
+    <div class="fig-card key s1">
+      <b class="fig-h"><code>paths</code> あり</b>
+      <span class="fig-note"><code>src/Button.tsx</code> を開いた<b>そのときだけ</b>載る</span>
+      <span class="fig-note">バックエンドを触っている間は、1トークンも食わない</span>
+    </div>
+    <div class="fig-card s2">
+      <b class="fig-h"><code>paths</code> なし</b>
+      <span class="fig-note"><b>セッション開始時に載る</b></span>
+      <span class="fig-note">＝ <code>CLAUDE.md</code> と同じ扱い。ずっと窓にいる</span>
+    </div>
   </div>
-  <p class="point"><b>ポイント</b><code>paths</code> は「いつ読ませるか」のスイッチ。規約が増えたときに、窓を守りながら増やせる仕組み。</p>
+  <p class="fig-f">つまり <code>paths</code> は<b>「オンデマンドにするスイッチ」</b>。規約を増やしても窓が膨らまない</p>
+</figure></div>
+
+<p class="point"><b>ポイント</b><code>paths</code> は「いつ読ませるか」のスイッチ。規約が増えたときに、<b>窓を守りながら増やせる</b>仕組み。</p>
+
+<div class="detail">
+  <div class="ex"><span class="exl"><code>CLAUDE.md</code> との使い分け</span>
+  <b>常に効かせたい規約</b>（言語共通の方針）→ <code>CLAUDE.md</code><br>
+  <b>特定の種類のファイルにだけ効かせたい規約</b>（React コンポーネントの書き方、テストの命名）→ <code>.claude/rules/</code> ＋ <code>paths</code><br>
+  後者を <code>CLAUDE.md</code> に全部書くと、<b>関係ない作業のときも窓を食い続けます。</b>
+  前節の <code>@import</code> は分割するだけで量は減りませんが、<b><code>paths</code> は実際に載る量を減らします</b>。</div>
+</div>
 </section>
 <!-- ▲ 本文 -->
 <nav class="secpager">
@@ -130,6 +131,6 @@
   </div>
 </div>
 <script src="../assets/quiz-data.js?v=47ac7a88"></script>
-<script src="../assets/search-index.js?v=66df1797"></script>
+<script src="../assets/search-index.js?v=89e0d7d7"></script>
 <script src="../assets/app.js?v=5bf1e1db"></script>
 </body></html>

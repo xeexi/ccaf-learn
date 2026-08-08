@@ -72,58 +72,31 @@
 <p class="lead">plan mode では、調べることはできますが<b>変更はできません</b>。まず計画を出させて、承認してから実行に移します。</p>
 <p class="task"><span class="tn">BLUEPRINT 3.4</span><b>plan mode と直接実行の使い分け</b></p>
 <p class="goal"><b>ゴール</b>plan mode が構造的に防ぐ事故を言える。</p>
-  <div class="figbox"><div class="diagram run">
-  <svg viewBox="0 0 760 336">
-    <text class="sm s1" x="16" y="22">承認が入る位置が違う</text>
-    <g class="s1"><text class="lbl" x="16" y="52" style="fill:var(--fig-blue)">plan mode</text>
-      <rect x="16" y="64" width="104" height="52" rx="8" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
-      <text class="sm" x="68" y="94" text-anchor="middle">依頼</text>
-      <line x1="126" y1="90" x2="152" y2="90" stroke="var(--fig-muted)" stroke-width="2" marker-end="url(#ar)"/>
-      <rect x="158" y="64" width="150" height="52" rx="8" fill="var(--fig-fill-blue)" stroke="var(--fig-line-blue)"/>
-      <text class="sm" x="233" y="86" text-anchor="middle" style="fill:var(--fig-blue)">読む・調べる</text>
-      <text class="sm" x="233" y="106" text-anchor="middle">変更はしない</text>
-      <line x1="314" y1="90" x2="340" y2="90" stroke="var(--fig-muted)" stroke-width="2" marker-end="url(#ar)"/>
-      <rect x="346" y="64" width="130" height="52" rx="8" fill="var(--fig-fill-blue)" stroke="var(--fig-line-blue)"/>
-      <text class="sm" x="411" y="94" text-anchor="middle" style="fill:var(--fig-blue)">計画を出す</text>
-      <line x1="482" y1="90" x2="508" y2="90" stroke="var(--fig-green)" stroke-width="2" marker-end="url(#arg)"/>
-      <rect x="514" y="58" width="104" height="64" rx="8" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)" stroke-width="2"/>
-      <text class="lbl" x="566" y="84" text-anchor="middle" style="fill:var(--fig-green)">承認</text>
-      <text class="sm" x="566" y="106" text-anchor="middle">1回だけ</text>
-      <line x1="624" y1="90" x2="650" y2="90" stroke="var(--fig-green)" stroke-width="2" marker-end="url(#arg)"/>
-      <rect x="656" y="64" width="88" height="52" rx="8" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
-      <text class="sm" x="700" y="94" text-anchor="middle">実行</text></g>
-
-    <g class="s2"><text class="lbl" x="16" y="182">直接実行</text>
-      <rect x="16" y="194" width="104" height="52" rx="8" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
-      <text class="sm" x="68" y="224" text-anchor="middle">依頼</text>
-      <line x1="126" y1="220" x2="148" y2="220" stroke="var(--fig-muted)" stroke-width="2" marker-end="url(#ar)"/>
-      <rect x="154" y="194" width="96" height="52" rx="8" fill="var(--fig-fill-amber)" stroke="var(--fig-line-amber)"/>
-      <text class="sm" x="202" y="216" text-anchor="middle" style="fill:var(--fig-amber)">編集</text>
-      <text class="sm" x="202" y="236" text-anchor="middle">＋承認</text>
-      <line x1="256" y1="220" x2="278" y2="220" stroke="var(--fig-muted)" stroke-width="2" marker-end="url(#ar)"/>
-      <rect x="284" y="194" width="96" height="52" rx="8" fill="var(--fig-fill-amber)" stroke="var(--fig-line-amber)"/>
-      <text class="sm" x="332" y="216" text-anchor="middle" style="fill:var(--fig-amber)">編集</text>
-      <text class="sm" x="332" y="236" text-anchor="middle">＋承認</text>
-      <line x1="386" y1="220" x2="408" y2="220" stroke="var(--fig-muted)" stroke-width="2" marker-end="url(#ar)"/>
-      <rect x="414" y="194" width="96" height="52" rx="8" fill="var(--fig-fill-amber)" stroke="var(--fig-line-amber)"/>
-      <text class="sm" x="462" y="216" text-anchor="middle" style="fill:var(--fig-amber)">編集</text>
-      <text class="sm" x="462" y="236" text-anchor="middle">＋承認</text>
-      <line x1="516" y1="220" x2="538" y2="220" stroke="var(--fig-muted)" stroke-width="2" marker-end="url(#ar)"/>
-      <text class="sm" x="562" y="226">…操作ごとに何度も</text></g>
-
-    <g class="s3"><rect x="16" y="272" width="728" height="46" rx="8" fill="var(--fig-fill-red)" stroke="var(--fig-line-red)"/>
-      <text class="sm" x="36" y="290" style="fill:var(--fig-red)">plan mode では編集そのものができない ── お願いではなく、できないようにしてある</text>
-      <text class="sm" x="36" y="310">だから「方針を誤ったまま手が動く」事故が起きない。速さを捨てて、引き返せる場所を作っている</text></g>
-  </svg>
-  </div></div>
+<div class="figbox"><figure class="fig run">
+  <p class="fig-t">承認が入る位置が違う</p>
+  <p class="fig-lbl s1">plan mode ─ 承認は<b>1回だけ</b></p>
+  <div class="fig-row flow s1" style="--cols:4">
+    <div class="fig-card"><b class="fig-h">依頼</b></div>
+    <div class="fig-card"><b class="fig-h">読む・調べる</b><span class="fig-note">変更はしない</span></div>
+    <div class="fig-card"><b class="fig-h">計画を出す</b></div>
+    <div class="fig-card key"><b class="fig-h">承認 → 実行</b><span class="fig-note">方針が固まってから手が動く</span></div>
+  </div>
+  <p class="fig-lbl s2">直接実行 ─ 承認は<b>操作ごとに何度も</b></p>
+  <div class="fig-row flow s2" style="--cols:4">
+    <div class="fig-card"><b class="fig-h">依頼</b></div>
+    <div class="fig-card"><b class="fig-h">編集＋承認</b></div>
+    <div class="fig-card"><b class="fig-h">編集＋承認</b></div>
+    <div class="fig-card"><b class="fig-h">編集＋承認…</b><span class="fig-note">判断できるのは目の前の1操作だけ</span></div>
+  </div>
+  <div class="fig-row s3" style="--cols:1">
+    <div class="fig-card red">
+      <b class="fig-h">plan mode には「編集」の段がない ─ お願いではなく、できないようにしてある</b>
+      <span class="fig-note">だから<b>「方針を誤ったまま手が動く」事故が構造的に起きない</b>。速さを捨てて、引き返せる場所を作っている</span>
+    </div>
+  </div>
+  <p class="fig-f">直接実行では、<b>方針の誤りに気づくのが実行後</b>になる</p>
+</figure></div>
   <div class="detail">
-    <h3>図の読み方</h3>
-    <ol class="ann">
-      <li><span class="n">1</span><span>上の帯で<b>承認</b>が入るのは1か所だけです。方針が固まってから手が動くので、途中で方向転換が起きません。</span></li>
-      <li><span class="n">2</span><span>上の帯に「編集」がないことが本質です。下の赤帯のとおり、<b>できないようにしてある</b> ── 指示の書き方で守らせているのではありません。</span></li>
-      <li><span class="n">3</span><span>下の帯では承認が<b>操作ごとに何度も</b>入りますが、そのつど判断できるのは目の前の1操作だけです。<b>方針の誤りに気づくのは実行後</b>になります。</span></li>
-      <li><span class="n">4</span><span>選ぶ基準は「先に方針を確かめたいか」。決まりきった小さな変更にまで plan mode を挟むのは<b>過剰</b>で、設問でもそちらが誤答になります。</span></li>
-    </ol>
     <div class="ex"><span class="exl">どちらを選ぶか</span>
     <b>plan mode 向き</b>：影響範囲が読めない変更、未知のコードベース、後戻りが高くつく作業、方針を人と合意したい場面<br>
     <b>直接実行 向き</b>：やることが決まっている小さな修正、間違えてもすぐ戻せる作業<br>
@@ -151,6 +124,6 @@
   </div>
 </div>
 <script src="../assets/quiz-data.js?v=47ac7a88"></script>
-<script src="../assets/search-index.js?v=66df1797"></script>
+<script src="../assets/search-index.js?v=89e0d7d7"></script>
 <script src="../assets/app.js?v=5bf1e1db"></script>
 </body></html>

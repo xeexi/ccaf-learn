@@ -76,81 +76,67 @@
 <p class="lead">対話せずに1発で実行し、結果を標準出力へ、合否を終了コードで返します。</p>
 <p class="task"><span class="tn">BLUEPRINT 3.6</span><b>CI/CD への統合</b></p>
 <p class="goal"><b>ゴール</b><code>-p</code> が何をやめる操作なのか言える。</p>
-  <div class="figbox"><div class="diagram run">
-  <svg viewBox="0 0 760 280">
-    <g class="s1"><rect x="20" y="24" width="720" height="44" rx="8" fill="var(--fig-code-bg)" stroke="var(--fig-line)"/>
-      <text class="mono" x="40" y="52">claude -p "差分をレビューして" --output-format json --allowedTools "Read,Grep"</text></g>
-    <g class="s2"><line x1="380" y1="72" x2="380" y2="94" stroke="var(--fig-muted)" stroke-width="2" marker-end="url(#ar)"/>
-      <rect x="20" y="100" width="230" height="70" rx="10" fill="var(--fig-fill-blue)" stroke="var(--fig-line-blue)"/>
-      <text class="ttl" x="135" y="126" text-anchor="middle" style="fill:var(--fig-blue)">標準出力</text>
-      <text class="sm" x="135" y="150" text-anchor="middle">結果の本文 / JSON</text></g>
-    <g class="s3"><rect x="265" y="100" width="230" height="70" rx="10" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)"/>
-      <text class="ttl" x="380" y="126" text-anchor="middle" style="fill:var(--fig-green)">終了コード</text>
-      <text class="sm" x="380" y="150" text-anchor="middle">0 = 成功 / 0以外 = 失敗</text></g>
-    <g class="s4"><rect x="510" y="100" width="230" height="70" rx="10" fill="var(--fig-fill-amber)" stroke="var(--fig-line-amber)"/>
-      <text class="ttl" x="625" y="126" text-anchor="middle" style="fill:var(--fig-amber)">標準入力も使える</text>
-      <text class="sm" x="625" y="150" text-anchor="middle">パイプで渡せる</text></g>
-    <g class="s5"><rect x="20" y="190" width="720" height="76" rx="10" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
-      <text class="ttl" x="40" y="214">--output-format の3つ</text>
-      <text class="mono" x="40" y="240">text（既定）… そのままの文章</text>
-      <text class="mono" x="330" y="240">json … 結果＋セッションID＋使用量</text>
-      <text class="mono" x="40" y="260">stream-json … 逐次、改行区切りで流れてくる</text>
-      <text class="sm" x="330" y="260">さらに --json-schema で形を指定できる</text></g>
-  </svg>
-  </div></div>
-  <div class="detail">
-    <h3>図の読み方</h3>
-    <ol class="ann">
-      <li><span class="n">1</span><span><code>-p</code>（<code>--print</code>）を付けると<b>非対話モード</b>。承認ダイアログが出ないので、そのままスクリプトに乗せられます。</span></li>
-      <li><span class="n">2</span><span>結果は<b>標準出力</b>へ。<b>合否は終了コード</b>で返るので、CI のステップの成否として扱えます。</span></li>
-      <li><span class="n">3</span><span><code>--output-format json</code> にすると、結果本文のほかに<b>セッションIDや使用量</b>が構造化されて返ります。後続処理で扱いやすくなります。</span></li>
-      <li><span class="n">4</span><span>さらに <code>--json-schema</code> で<b>出力の形そのものを指定</b>できます。Domain 4の「スキーマで受け取る」を、CLI の外側でやる形です。</span></li>
-    </ol>
-    <div class="myth">
-      <span class="t">つまずきやすい</span><span>非対話では<b>確認のダイアログを出せません</b>。「危なければ人が止める」という設計が成立しないので、<b>何を許すかを事前に決めておく</b>のが前提になります（後述の settings.json と permissions）。</span>
-    </div>
+<div class="figbox" style="padding:16px 18px">
+  <p class="codelabel">CI のステップに1行で乗る</p>
+  <pre class="code">claude <span class="hl">-p</span> <span class="s">"差分をレビューして"</span> <span class="hl">--output-format json</span> <span class="hl">--allowedTools</span> <span class="s">"Read,Grep"</span>
+
+<span class="c">標準出力 … 結果の本文 / JSON（標準入力からパイプで渡すこともできる）</span>
+<span class="c">終了コード … 0 = 成功 / 0以外 = 失敗 → CI のステップの成否になる</span></pre>
+</div>
+
+<table class="tbl">
+  <thead><tr><th><code>--output-format</code></th><th>返るもの</th><th>使いどころ</th></tr></thead>
+  <tbody>
+    <tr><td data-l="--output-format"><code>text</code>（既定）</td><td data-l="返るもの">そのままの文章</td>
+        <td data-l="使いどころ">ログに出すだけ</td></tr>
+    <tr><td data-l="--output-format"><code>json</code></td><td data-l="返るもの">結果本文 ＋ <b>セッションID・使用量</b></td>
+        <td data-l="使いどころ">後続のステップで機械的に扱う</td></tr>
+    <tr><td data-l="--output-format"><code>stream-json</code></td><td data-l="返るもの">逐次、改行区切りで流れてくる</td>
+        <td data-l="使いどころ">長い処理の途中経過を見る</td></tr>
+  </tbody>
+</table>
+
+<p class="point"><b>ポイント</b><code>-p</code> は「対話をやめる」だけでなく<b>「人の承認をやめる」</b>こと。権限設計とセットでなければ使えない。</p>
+
+<div class="detail">
+  <div class="ex"><span class="exl">さらに形を固めたいとき</span>
+  <code>--json-schema</code> で<b>出力の形そのものを指定</b>できます。Domain 4 の「スキーマで受け取る」を、CLI の外側でやる形です。</div>
+  <div class="myth">
+    <span class="t">つまずきやすい</span><span>非対話では<b>確認のダイアログを出せません</b>。「危なければ人が止める」という設計が成立しないので、<b>何を許すかを事前に決めておく</b>のが前提になります（後述の <code>settings.json</code> と <code>permissions</code>）。</span>
   </div>
-  <p class="point"><b>ポイント</b>-p は「対話をやめる」だけでなく「人の承認をやめる」こと。権限設計とセットでなければ使えない。</p>
+</div>
 
 <h3 class="sub" id="ci-2">承認できない場所では、事前に許可を決める</h3>
 <p class="lead">非対話実行では、許可の与え方が2通りあります。どちらを選ぶかが設問になります。</p>
-  <div class="figbox"><div class="diagram run">
-  <svg viewBox="0 0 760 290">
-    <g class="s1"><rect x="20" y="24" width="350" height="120" rx="10" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)"/>
-      <text class="ttl" x="195" y="50" text-anchor="middle" style="fill:var(--fig-green)">使うツールを列挙する</text>
-      <rect x="44" y="62" width="302" height="30" rx="6" fill="var(--fig-surface)" stroke="var(--fig-line-green)"/>
-      <text class="mono" x="58" y="82">--allowedTools "Read,Grep,Bash"</text>
-      <text class="sm" x="44" y="112">必要なものだけを明示的に開ける</text>
-      <text class="sm" x="44" y="132">＝ 想定外の操作は起きない</text></g>
-    <g class="s2"><rect x="390" y="24" width="350" height="120" rx="10" fill="var(--fig-fill-red)" stroke="var(--fig-line-red)"/>
-      <text class="ttl" x="565" y="50" text-anchor="middle" style="fill:var(--fig-red)">全部許可する</text>
-      <rect x="414" y="62" width="302" height="30" rx="6" fill="var(--fig-surface)" stroke="var(--fig-line-red)"/>
-      <text class="mono" x="428" y="82">--permission-mode bypassPermissions</text>
-      <text class="sm" x="414" y="112">確認を一切しない</text>
-      <text class="sm" x="414" y="132">＝ 事故が起きたときに止まらない</text></g>
-    <g class="s3"><rect x="20" y="160" width="720" height="46" rx="10" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
-      <text class="lbl" x="40" y="182">ほかに --permission-mode plan（計画のみ）／acceptEdits（編集は自動承認）</text>
-      <text class="sm" x="40" y="200">「どこまで自動でやらせるか」を段階で選べる</text></g>
-    <g class="s4"><rect x="20" y="220" width="720" height="60" rx="10" fill="var(--fig-fill-blue)" stroke="var(--fig-line-blue)"/>
-      <text class="ttl" x="40" y="244" style="fill:var(--fig-blue)">GitHub Actions</text>
-      <text class="mono" x="180" y="244">anthropics/claude-code-action@v1</text>
-      <text class="sm" x="40" y="268">認証は ANTHROPIC_API_KEY または CLAUDE_CODE_OAUTH_TOKEN をシークレットで渡す</text></g>
-  </svg>
-  </div></div>
-  <div class="detail">
-    <h3>図の読み方</h3>
-    <ol class="ann">
-      <li><span class="n">1</span><span><b>「使うツールを列挙する」</b>（左）── レビュー用途なら <code>Read,Grep</code> だけで足ります。<b>書き込み系を渡さなければ、壊しようがありません。</b></span></li>
-      <li><span class="n">2</span><span><b>「全部許可する」</b>（右）── 楽ですが、<b>CI は人が見ていない場所</b>なので、事故が起きても止まりません。<b>設問では基本的に誤答側</b>です。</span></li>
-      <li><span class="n">3</span><span>この2つの<b>中間</b>が <code>plan</code>（提案のみ）と <code>acceptEdits</code>（編集は自動、それ以外は確認）。<b>「全部か、なしか」ではなく段階で選べる</b>のが要点です。</span></li>
-      <li><span class="n">4</span><span><b>「GitHub Actions」</b>（下）── 公式アクションを使い、APIキーは<b>シークレット</b>として渡します。ワークフローのファイルに直接書いてはいけません。</span></li>
-    </ol>
-    <div class="ex"><span class="exl">設問での問われ方</span>
-    「CI で自動コードレビューを走らせたい。権限はどう設定するか」<br>
-    → <b>読み取り系のツールだけを allowedTools で開ける</b>。<code>bypassPermissions</code> は選ばない。<br>
-    考え方は Domain 2 と同じです。<b>やり直せる操作は自動、やり直せない操作は通さない。</b></div>
-  </div>
-  <p class="point"><b>ポイント</b>CI は「承認する人がいない」場所。だから権限は実行前にすべて決まっていなければならない。</p>
+<table class="tbl">
+  <thead><tr><th>許可の与え方</th><th>書き方</th><th>CI での評価</th></tr></thead>
+  <tbody>
+    <tr><td data-l="許可の与え方"><b>使うツールを列挙する</b></td>
+        <td data-l="書き方"><code>--allowedTools "Read,Grep"</code></td>
+        <td data-l="CI での評価"><span class="ok">これが正解側</span>　必要なものだけ開ける。<b>書き込み系を渡さなければ壊しようがない</b></td></tr>
+    <tr><td data-l="許可の与え方">編集だけ自動で通す</td>
+        <td data-l="書き方"><code>--permission-mode acceptEdits</code></td>
+        <td data-l="CI での評価">中間。編集は自動、それ以外は確認</td></tr>
+    <tr><td data-l="許可の与え方">提案だけさせる</td>
+        <td data-l="書き方"><code>--permission-mode plan</code></td>
+        <td data-l="CI での評価">中間。変更させずに計画だけ出させる</td></tr>
+    <tr><td data-l="許可の与え方"><b>全部許可する</b></td>
+        <td data-l="書き方"><code>--permission-mode bypassPermissions</code></td>
+        <td data-l="CI での評価"><span class="ng">設問では基本的に誤答</span>　<b>人が見ていない場所</b>なので、事故が起きても止まらない</td></tr>
+  </tbody>
+</table>
+
+<p class="point"><b>ポイント</b>CI は「承認する人がいない」場所。だから権限は<b>実行前にすべて決まっていなければならない</b>。「全部か、なしか」ではなく段階で選ぶ。</p>
+
+<div class="detail">
+  <div class="ex"><span class="exl">GitHub Actions で動かす</span>
+  公式アクション <code>anthropics/claude-code-action@v1</code> を使い、認証は <code>ANTHROPIC_API_KEY</code> または
+  <code>CLAUDE_CODE_OAUTH_TOKEN</code> を<b>シークレット</b>として渡します。<b>ワークフローのファイルに直接書いてはいけません。</b></div>
+  <div class="ex"><span class="exl">設問での問われ方</span>
+  「CI で自動コードレビューを走らせたい。権限はどう設定するか」<br>
+  → <b>読み取り系のツールだけを <code>allowedTools</code> で開ける</b>。<code>bypassPermissions</code> は選ばない。<br>
+  考え方は Domain 2 と同じです。<b>やり直せる操作は自動、やり直せない操作は通さない。</b></div>
+</div>
 </section>
 <!-- ▲ 本文 -->
 <nav class="secpager">
@@ -168,6 +154,6 @@
   </div>
 </div>
 <script src="../assets/quiz-data.js?v=47ac7a88"></script>
-<script src="../assets/search-index.js?v=66df1797"></script>
+<script src="../assets/search-index.js?v=89e0d7d7"></script>
 <script src="../assets/app.js?v=5bf1e1db"></script>
 </body></html>

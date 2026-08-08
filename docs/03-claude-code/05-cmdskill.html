@@ -77,129 +77,102 @@
 <p class="lead">よく使う手順を <code>.claude/commands/</code> に置くと、<code>/名前</code> で呼び出せます。</p>
 <p class="task"><span class="tn">BLUEPRINT 3.2</span><b>カスタムのスラッシュコマンドとスキル</b></p>
 <p class="goal"><b>ゴール</b>手順の置き場所を4択から選べる。</p>
-  <div class="figbox"><div class="diagram run">
-  <svg viewBox="0 0 760 280">
-    <g class="s1"><rect x="20" y="26" width="330" height="120" rx="10" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
-      <text class="sm" x="40" y="48">.claude/commands/deploy.md</text>
-      <rect x="40" y="58" width="290" height="76" rx="6" fill="var(--fig-surface)" stroke="var(--fig-line)"/>
-      <text class="mono" x="54" y="78">---</text>
-      <text class="mono" x="54" y="96">description: リリース前の確認</text>
-      <text class="mono" x="54" y="114">argument-hint: &lt;環境名&gt;</text>
-      <text class="mono" x="54" y="132">allowed-tools: Read,Bash</text></g>
-    <g class="s2"><line x1="360" y1="86" x2="410" y2="86" stroke="var(--fig-amber)" stroke-width="2" marker-end="url(#ara)"/>
-      <rect x="420" y="60" width="200" height="52" rx="10" fill="var(--fig-fill-amber)" stroke="var(--fig-line-amber)"/>
-      <text class="mono" x="520" y="92" text-anchor="middle" style="fill:var(--fig-amber)">/deploy staging</text>
-      <text class="sm" x="640" y="92">ファイル名がそのまま</text></g>
-    <g class="s3"><rect x="20" y="160" width="330" height="100" rx="10" fill="var(--fig-fill-blue)" stroke="var(--fig-line-blue)"/>
-      <text class="ttl" x="40" y="184" style="fill:var(--fig-blue)">引数の受け取り</text>
-      <text class="mono" x="40" y="210">$ARGUMENTS　… 全部（staging）</text>
-      <text class="mono" x="40" y="234">$1 $2 …　　 … 位置ごと</text>
-      <text class="sm" x="40" y="252">本文の中にそのまま書ける</text></g>
-    <g class="s4"><rect x="370" y="160" width="370" height="100" rx="10" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)"/>
-      <text class="ttl" x="390" y="184" style="fill:var(--fig-green)">frontmatter の3つ</text>
-      <text class="lbl" x="390" y="208">description ─ 何をするコマンドか</text>
-      <text class="lbl" x="390" y="230">argument-hint ─ 補完に出る引数の形</text>
-      <text class="lbl" x="390" y="252">allowed-tools ─ 実行中に使えるツールを限定</text></g>
-  </svg>
-  </div></div>
-  <div class="detail">
-    <h3>図の読み方</h3>
-    <ol class="ann">
-      <li><span class="n">1</span><span><b>ファイル名がコマンド名</b>になります。<code>deploy.md</code> なら <code>/deploy</code>。</span></li>
-      <li><span class="n">2</span><span>先頭の YAML frontmatter で3つ指定できます。<b><code>allowed-tools</code> はそのコマンド実行中だけツールを絞る</b>もので、権限設計としても使えます。</span></li>
-      <li><span class="n">3</span><span>本文の中に <code>$ARGUMENTS</code> や <code>$1</code> と書いておくと、呼び出し時の引数が入ります。</span></li>
-      <li><span class="n">4</span><span>置き場所は<b>プロジェクト（<code>.claude/commands/</code>）と個人（<code>~/.claude/commands/</code>）</b>の2通り。前者はチームで共有されます。</span></li>
-    </ol>
-    <div class="ex"><span class="exl">サブディレクトリで名前空間を作れる</span>
-    <code>.claude/commands/db/migrate.md</code> のように掘ると、コマンドが整理されます。数が増えたときに効きます。</div>
-  </div>
-  <p class="point"><b>ポイント</b>「毎回同じ順番でやってほしい手順」の置き場所。CLAUDE.md（常に効く）と違い、<b>呼んだときだけ</b>効く。</p>
+
+<div class="figbox" style="padding:16px 18px">
+  <p class="codelabel">.claude/commands/deploy.md　→　/deploy staging で呼べる</p>
+  <pre class="code"><span class="c">---</span>
+<span class="k">description</span>: <span class="s">リリース前の確認</span><span class="n">1</span>
+<span class="k">argument-hint</span>: <span class="s">&lt;環境名&gt;</span><span class="n">2</span>
+<span class="k">allowed-tools</span>: <span class="s">Read, Bash</span><span class="n">3</span>
+<span class="c">---</span>
+
+<span class="hl">$ARGUMENTS</span> 環境のリリース前チェックを行う。<span class="n">4</span>
+まず <span class="hl">$1</span> のテストを実行し、失敗があれば中止すること。</pre>
+  <ol class="ann">
+    <li><span class="n">1</span><span><code>description</code> ─ 何をするコマンドか。</span></li>
+    <li><span class="n">2</span><span><code>argument-hint</code> ─ 補完に出る引数の形。</span></li>
+    <li><span class="n">3</span><span><code>allowed-tools</code> ─ <b>そのコマンド実行中だけツールを絞る</b>。権限設計としても使えます。</span></li>
+    <li><span class="n">4</span><span>本文に <code>$ARGUMENTS</code>（全部）や <code>$1 $2</code>（位置ごと）と書くと、呼び出し時の引数が入ります。<b>ファイル名がそのままコマンド名</b>です。</span></li>
+  </ol>
+</div>
+
+<p class="point"><b>ポイント</b>「毎回同じ順番でやってほしい手順」の置き場所。<code>CLAUDE.md</code>（常に効く）と違い、<b>呼んだときだけ</b>効く。</p>
+
+<div class="detail">
+  <div class="ex"><span class="exl">置き場所と名前空間</span>
+  プロジェクト（<code>.claude/commands/</code>）と個人（<code>~/.claude/commands/</code>）の2通り。<b>前者はチームで共有されます。</b><br>
+  <code>.claude/commands/db/migrate.md</code> のように掘るとサブディレクトリが名前空間になり、数が増えても整理できます。</div>
+</div>
 
 <h3 class="sub" id="cmdskill-2">スキル ─ ディレクトリごと束ねる</h3>
 <p class="lead">補助ファイルを伴う手順や、別コンテキストで走らせたい作業はスキルにします。</p>
-  <div class="figbox"><div class="diagram run">
-  <svg viewBox="0 0 760 290">
-    <g class="s1"><rect x="20" y="26" width="300" height="130" rx="10" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
-      <text class="sm" x="40" y="48">.claude/skills/review/</text>
-      <text class="mono" x="52" y="74">SKILL.md　　← 本体</text>
-      <text class="mono" x="52" y="96">checklist.md　← 補助</text>
-      <text class="mono" x="52" y="118">examples/　　← 補助</text>
-      <text class="sm" x="40" y="144">1ファイルではなくディレクトリ</text></g>
-    <g class="s2"><rect x="340" y="26" width="400" height="130" rx="10" fill="var(--fig-fill-blue)" stroke="var(--fig-line-blue)"/>
-      <text class="ttl" x="360" y="50" style="fill:var(--fig-blue)">SKILL.md の frontmatter（主なもの）</text>
-      <text class="mono" x="360" y="76">description　　いつ使うか（自動起動の判断材料）</text>
-      <text class="mono" x="360" y="98">allowed-tools　実行中に使えるツール</text>
-      <text class="mono" x="360" y="120">argument-hint　引数の形</text>
-      <text class="mono" x="360" y="142">context: fork　別コンテキストで走らせる</text></g>
-    <g class="s3"><rect x="20" y="176" width="350" height="100" rx="10" fill="var(--fig-fill-amber)" stroke="var(--fig-line-amber)"/>
-      <text class="ttl" x="195" y="200" text-anchor="middle" style="fill:var(--fig-amber)">通常のスキル</text>
-      <text class="lbl" x="40" y="226">いまの会話の中で実行される</text>
-      <text class="sm" x="40" y="250">読んだ資料も、やり取りも、</text>
-      <text class="sm" x="40" y="268">そのまま履歴に残る</text></g>
-    <g class="s4"><rect x="390" y="176" width="350" height="100" rx="10" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)"/>
-      <text class="ttl" x="565" y="200" text-anchor="middle" style="fill:var(--fig-green)">context: fork</text>
-      <text class="lbl" x="410" y="226">別のコンテキストで実行される</text>
-      <text class="sm" x="410" y="250">親の会話履歴は見えない。</text>
-      <text class="sm" x="410" y="268">CLAUDE.md も引き継がれない</text></g>
-  </svg>
-  </div></div>
-  <div class="detail">
-    <h3>図の読み方</h3>
-    <ol class="ann">
-      <li><span class="n">1</span><span>スキルは<b>ディレクトリ</b>です。<code>SKILL.md</code> が本体で、チェックリストや例などの<b>補助ファイルを同梱できます</b>。ここがコマンドとの一番の違い。</span></li>
-      <li><span class="n">2</span><span><code>description</code> は<b>Claudeが自動で使うかどうかの判断材料</b>。ツールの description と同じ役割です。</span></li>
-      <li><span class="n">3</span><span><b><code>context: fork</code></b> を付けると、<b>別コンテキストのサブエージェント</b>として走ります。大量に読む作業を、親の窓を汚さずに任せられます。</span></li>
-      <li><span class="n">4</span><span>ただし fork した先は<b>親の会話も CLAUDE.md も引き継ぎません</b>。必要な前提は指示に書いて渡す必要があります。</span></li>
-    </ol>
-    <div class="myth">
-      <span class="t">誤解</span><span>「fork すれば速くなる・賢くなる」</span>
-      <span class="t o">実際は</span><span>目的は<b>コンテキストの隔離</b>です。引き継がれないことが利点であり、同時に渡し忘れの原因にもなります。</span>
+<p class="goal"><b>ゴール</b>スキルがコマンドと違う点を2つ挙げられる。</p>
+
+<div class="figbox" style="padding:16px 18px">
+  <p class="codelabel">スキルは1ファイルではなくディレクトリ</p>
+  <pre class="code">.claude/skills/review/
+  SKILL.md<span class="c">      ← 本体</span>
+  checklist.md<span class="c">  ← 補助</span>
+  examples/<span class="c">     ← 補助</span></pre>
+</div>
+
+<div class="figbox"><figure class="fig run">
+  <p class="fig-t"><code>SKILL.md</code> の <code>context: fork</code> を付けるかどうかで、走る場所が変わる</p>
+  <div class="fig-row" style="--cols:2">
+    <div class="fig-card s1">
+      <b class="fig-h">通常のスキル</b>
+      <span class="fig-note"><b>いまの会話の中で実行される</b></span>
+      <span class="fig-note">読んだ資料も、やり取りも、そのまま履歴に残る</span>
+    </div>
+    <div class="fig-card key s2">
+      <b class="fig-h"><code>context: fork</code></b>
+      <span class="fig-note"><b>別のコンテキストで実行される</b></span>
+      <span class="fig-note">親の会話履歴は見えない。<code>CLAUDE.md</code> も引き継がれない</span>
     </div>
   </div>
-  <p class="point"><b>ポイント</b>補助ファイルが要る、または別コンテキストで走らせたい → スキル。単発の手順書 → スラッシュコマンド。</p>
+  <p class="fig-f">目的は速さではなく<b>コンテキストの隔離</b>。大量に読む作業を、親の窓を汚さずに任せられる</p>
+</figure></div>
+
+<p class="point"><b>ポイント</b>補助ファイルが要る、または別コンテキストで走らせたい → スキル。単発の手順書 → スラッシュコマンド。</p>
+
+<div class="detail">
+  <div class="ex"><span class="exl"><code>SKILL.md</code> の frontmatter（主なもの）</span>
+  <code>description</code>　いつ使うか ── <b>Claude が自動で使うかどうかの判断材料</b>。ツールの <code>description</code> と同じ役割<br>
+  <code>allowed-tools</code>　実行中に使えるツール<br>
+  <code>argument-hint</code>　引数の形<br>
+  <code>context: fork</code>　別コンテキストで走らせる</div>
+  <div class="myth">
+    <span class="t">誤解</span><span>「fork すれば速くなる・賢くなる」</span>
+    <span class="t o">実際は</span><span>目的は<b>コンテキストの隔離</b>です。引き継がれないことが利点であり、同時に渡し忘れの原因にもなります。</span>
+  </div>
+</div>
 
 <h3 class="sub" id="cmdskill-3">CLAUDE.md / コマンド / スキル の使い分け</h3>
 <p class="lead">「何を繰り返したいか」で置き場所が決まります。設問はここを突いてきます。</p>
-  <div class="figbox"><div class="diagram run">
-  <svg viewBox="0 0 760 250">
-    <g class="s1"><rect x="16" y="26" width="230" height="200" rx="12" fill="var(--fig-fill-amber)" stroke="var(--fig-line-amber)"/>
-      <text class="sm" x="131" y="52" text-anchor="middle">繰り返すのが…</text>
-      <text class="ttl" x="131" y="80" text-anchor="middle" style="fill:var(--fig-amber)">決まりごと</text>
-      <text class="lbl" x="131" y="112" text-anchor="middle">「pnpm を使う」</text>
-      <text class="lbl" x="131" y="134" text-anchor="middle">「生成物は触らない」</text>
-      <rect x="40" y="154" width="182" height="34" rx="8" fill="var(--fig-surface)" stroke="var(--fig-line-amber)"/>
-      <text class="mono" x="131" y="176" text-anchor="middle">CLAUDE.md</text>
-      <text class="sm" x="131" y="208" text-anchor="middle">常に効く</text></g>
-    <g class="s2"><rect x="264" y="26" width="230" height="200" rx="12" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
-      <text class="sm" x="379" y="52" text-anchor="middle">繰り返すのが…</text>
-      <text class="ttl" x="379" y="80" text-anchor="middle">手順</text>
-      <text class="lbl" x="379" y="112" text-anchor="middle">「リリース前に</text>
-      <text class="lbl" x="379" y="134" text-anchor="middle">この順でやる」</text>
-      <rect x="288" y="154" width="182" height="34" rx="8" fill="var(--fig-surface)" stroke="var(--fig-line)"/>
-      <text class="mono" x="379" y="176" text-anchor="middle">スラッシュコマンド</text>
-      <text class="sm" x="379" y="208" text-anchor="middle">呼んだときだけ効く</text></g>
-    <g class="s3"><rect x="512" y="26" width="232" height="200" rx="12" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)"/>
-      <text class="sm" x="628" y="52" text-anchor="middle">繰り返すのが…</text>
-      <text class="ttl" x="628" y="80" text-anchor="middle" style="fill:var(--fig-green)">役割</text>
-      <text class="lbl" x="628" y="112" text-anchor="middle">「レビュー担当として</text>
-      <text class="lbl" x="628" y="134" text-anchor="middle">この観点で見る」</text>
-      <rect x="536" y="154" width="184" height="34" rx="8" fill="var(--fig-surface)" stroke="var(--fig-line-green)"/>
-      <text class="mono" x="628" y="176" text-anchor="middle">スキル</text>
-      <text class="sm" x="628" y="208" text-anchor="middle">資料を束ねられる</text></g>
-  </svg>
-  </div></div>
-  <div class="detail">
-    <h3>判断の順序</h3>
-    <ol class="ann">
-      <li><span class="n">1</span><span><b>いつも効いていてほしいか？</b> → はい なら CLAUDE.md。会話のたびに載るので、短く保つ。</span></li>
-      <li><span class="n">2</span><span><b>呼んだときだけでよいか？</b> → 単発の手順なら<b>スラッシュコマンド</b>。</span></li>
-      <li><span class="n">3</span><span><b>補助ファイルが要る／別コンテキストで走らせたいか？</b> → <b>スキル</b>。</span></li>
-      <li><span class="n">4</span><span><b>そもそもモデルの判断が要らないか？</b> → それは hooks の領域です（Domain 1）。「編集したら必ず整形」のような処理は、ここに書くべきではありません。</span></li>
-    </ol>
-    <div class="ex"><span class="exl">設問での問われ方</span>
-    「毎回同じ注意を書いている」→ <b>CLAUDE.md</b>／「リリース手順を毎回説明している」→ <b>スラッシュコマンド</b>／「レビュー観点と参考資料をセットで使い回したい」→ <b>スキル</b>／「編集後に必ずリンタを走らせたい」→ <b>hooks</b>。</div>
-  </div>
-  <p class="point"><b>ポイント</b>4つの選択肢を「常に効く／呼んだとき／束ねたい／判断不要」で切り分ける。この分類がそのまま設問の選択肢になる。</p>
+<p class="goal"><b>ゴール</b>4つの置き場所を、繰り返すものの種類で選び分けられる。</p>
+
+<div class="figbox"><figure class="fig run">
+  <p class="fig-t">上から順に当てはめる ─ 最初に「はい」になったところが置き場所</p>
+  <ol class="fig-steps">
+    <li class="s1"><span class="fig-who"><code>CLAUDE.md</code></span>
+      <span class="fig-do"><b>いつも効いていてほしいか？</b><br>「pnpm を使う」「生成物は触らない」── 会話のたびに載るので、<b>短く保つ</b></span></li>
+    <li class="s2"><span class="fig-who">コマンド</span>
+      <span class="fig-do"><b>呼んだときだけでよいか？</b><br>「リリース前にこの順でやる」── 単発の手順書</span></li>
+    <li class="s3"><span class="fig-who">スキル</span>
+      <span class="fig-do"><b>補助ファイルが要る／別コンテキストで走らせたいか？</b><br>「レビュー観点と参考資料をセットで使い回す」</span></li>
+    <li class="s4"><span class="fig-who">hooks</span>
+      <span class="fig-do"><b>そもそもモデルの判断が要らないか？</b><br>「編集したら必ず整形」── ここは Domain 1 の領域。<span class="key">上の3つに書くと、守られるかどうかが確率になる</span></span></li>
+  </ol>
+  <p class="fig-f">分かれ目は<b>「常に効く／呼んだとき／束ねたい／判断不要」</b>の4つ。この分類がそのまま設問の選択肢になる</p>
+</figure></div>
+
+<p class="point"><b>ポイント</b>繰り返すのが<b>決まりごと</b>なら <code>CLAUDE.md</code>、<b>手順</b>ならコマンド、<b>役割</b>ならスキル、<b>判断の要らない処理</b>なら hooks。</p>
+
+<div class="detail">
+  <div class="ex"><span class="exl">設問での問われ方</span>
+  「毎回同じ注意を書いている」→ <b><code>CLAUDE.md</code></b>／「リリース手順を毎回説明している」→ <b>スラッシュコマンド</b>／
+  「レビュー観点と参考資料をセットで使い回したい」→ <b>スキル</b>／「編集後に必ずリンタを走らせたい」→ <b>hooks</b>。</div>
+</div>
 </section>
 <!-- ▲ 本文 -->
 <nav class="secpager">
@@ -217,6 +190,6 @@
   </div>
 </div>
 <script src="../assets/quiz-data.js?v=47ac7a88"></script>
-<script src="../assets/search-index.js?v=66df1797"></script>
+<script src="../assets/search-index.js?v=89e0d7d7"></script>
 <script src="../assets/app.js?v=5bf1e1db"></script>
 </body></html>

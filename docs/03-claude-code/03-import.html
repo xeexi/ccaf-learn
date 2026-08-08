@@ -69,49 +69,47 @@
 <header class="sec-head">
   <h2>3-3　@import で分割する</h2>
 </header>
-<p class="lead">CLAUDE.md が長くなったら、テーマごとに分けて読み込みます。</p>
+<p class="lead"><code>CLAUDE.md</code> が長くなったら、テーマごとに分けて読み込みます。本体は目次だけにできます。</p>
 <p class="task"><span class="tn">BLUEPRINT 3.1</span><b>CLAUDE.md の階層・スコープ・モジュール化</b></p>
 <p class="goal"><b>ゴール</b><code>@import</code> で減るものと、減らないものを言える。</p>
-  <div class="figbox"><div class="diagram run">
-  <svg viewBox="0 0 760 270">
-    <g class="s1"><rect x="20" y="30" width="250" height="150" rx="10" fill="var(--fig-fill-amber)" stroke="var(--fig-line-amber)"/>
-      <text class="ttl" x="145" y="56" text-anchor="middle" style="fill:var(--fig-amber)">CLAUDE.md</text>
-      <text class="mono" x="40" y="84"># プロジェクトの規約</text>
-      <text class="mono" x="40" y="108">@docs/style.md</text>
-      <text class="mono" x="40" y="128">@docs/testing.md</text>
-      <text class="mono" x="40" y="148">@~/.claude/my-rules.md</text>
-      <text class="sm" x="40" y="170">本体は目次だけにできる</text></g>
-    <g class="s2"><line x1="280" y1="105" x2="330" y2="105" stroke="var(--fig-muted)" stroke-width="2" marker-end="url(#ar)"/>
-      <rect x="340" y="34" width="180" height="40" rx="8" fill="var(--fig-surface)" stroke="var(--fig-line)"/>
-      <text class="mono" x="430" y="59" text-anchor="middle">docs/style.md</text>
-      <rect x="340" y="84" width="180" height="40" rx="8" fill="var(--fig-surface)" stroke="var(--fig-line)"/>
-      <text class="mono" x="430" y="109" text-anchor="middle">docs/testing.md</text>
-      <rect x="340" y="134" width="180" height="40" rx="8" fill="var(--fig-surface)" stroke="var(--fig-line)"/>
-      <text class="mono" x="430" y="159" text-anchor="middle">~/.claude/my-rules.md</text></g>
-    <g class="s3"><rect x="550" y="34" width="190" height="140" rx="10" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
-      <text class="ttl" x="645" y="58" text-anchor="middle">書き方</text>
-      <text class="mono" x="566" y="84">@相対パス</text>
-      <text class="mono" x="566" y="106">@/絶対パス</text>
-      <text class="mono" x="566" y="128">@~/ホームから</text>
-      <text class="sm" x="566" y="156">入れ子は4段まで</text></g>
-    <g class="s4"><rect x="20" y="196" width="720" height="58" rx="10" fill="var(--fig-fill-blue)" stroke="var(--fig-line-blue)"/>
-      <text class="lbl" x="40" y="220" style="fill:var(--fig-blue)">コードブロックやバッククォートの中では展開されない</text>
-      <text class="sm" x="40" y="242">`@README` と書けばリテラル。手順書の中でファイル名に触れるときに効いてくる</text></g>
-  </svg>
-  </div></div>
-  <div class="detail">
-    <h3>図の読み方</h3>
-    <ol class="ann">
-      <li><span class="n">1</span><span>左が本体。<b>行頭に <code>@パス</code> と書くだけ</b>で、その中身がそこに展開されます。</span></li>
-      <li><span class="n">2</span><span>相対パス・絶対パス・<code>~/</code> の3通りが使えます。<b>相対パスは、その行を書いたファイルから見た位置</b>です。</span></li>
-      <li><span class="n">3</span><span><b>入れ子は4段まで</b>。import した先がさらに import しても、4ホップで止まります。</span></li>
-      <li><span class="n">4</span><span>コードスパン（バッククォート）やコードブロックの中の <code>@</code> は<b>展開されません</b>。</span></li>
-    </ol>
-    <div class="ex"><span class="exl">設問での問われ方</span>
-    「CLAUDE.md が肥大化して読みにくい。どう整理するか」→ <b>テーマごとにファイルを分け、@import で束ねる</b>。<br>
-    「個人の好みをチームに押し付けずに読み込みたい」→ <code>@~/.claude/my-rules.md</code> のようにホーム側を import する、または <code>CLAUDE.local.md</code> を使う。</div>
-  </div>
-  <p class="point"><b>ポイント</b>@import は「分割して見通しを良くする」ための道具。展開後は結局1つにつながるので、合計の量は減らない。</p>
+
+<div class="figbox" style="padding:16px 18px">
+  <p class="codelabel">CLAUDE.md ─ 行頭に @パス と書くだけ</p>
+  <pre class="code"><span class="c"># プロジェクトの規約</span>
+
+@docs/style.md<span class="n">1</span>
+@/etc/team/rules.md<span class="n">2</span>
+@~/.claude/my-rules.md<span class="n">3</span>
+
+<span class="c">説明の中でファイル名に触れるときは</span> <span class="s">`@README`</span> <span class="c">と囲む</span><span class="n">4</span></pre>
+</div>
+
+<table class="tbl">
+  <thead><tr><th>書き方</th><th>何を基準にした位置か</th><th>使いどころ</th></tr></thead>
+  <tbody>
+    <tr><td data-l="書き方"><code>@docs/style.md</code></td>
+        <td data-l="何を基準にした位置か"><b>その行を書いたファイル</b>から見た相対位置</td>
+        <td data-l="使いどころ">ふつうはこれ。リポジトリの中を指す</td></tr>
+    <tr><td data-l="書き方"><code>@/etc/team/rules.md</code></td>
+        <td data-l="何を基準にした位置か">ルートからの絶対パス</td>
+        <td data-l="使いどころ">環境の決まった場所に置いた規約を指す</td></tr>
+    <tr><td data-l="書き方"><code>@~/.claude/my-rules.md</code></td>
+        <td data-l="何を基準にした位置か">ホームディレクトリから</td>
+        <td data-l="使いどころ"><b>個人の好みを、チームのファイルに混ぜずに読み込む</b></td></tr>
+  </tbody>
+</table>
+
+<p class="point"><b>ポイント</b><code>@import</code> は「分割して見通しを良くする」ための道具。展開後は結局1つにつながるので、<b>合計の量は減らない</b>。</p>
+
+<div class="detail">
+  <div class="ex"><span class="exl">減るもの／減らないもの</span>
+  <b>減る</b>：1ファイルの長さ、探しにくさ、更新するときの衝突<br>
+  <b>減らない</b>：<b>窓を食う量。</b>展開されて全部つながるので、合計は分割前と同じです<br>
+  窓を減らしたいなら <code>@import</code> ではなく、<b>パス固有ルール</b>（次節）で「読むときだけ載せる」形にします。</div>
+  <div class="ex"><span class="exl">細かい仕様</span>
+  ・入れ子は<b>4段まで</b>。import した先がさらに import しても、そこで止まります<br>
+  ・<b>コードブロックやバッククォートの中では展開されません</b>（上のコードの <span class="n">4</span>）。手順書の中でファイル名に触れるときに効いてきます</div>
+</div>
 </section>
 <!-- ▲ 本文 -->
 <nav class="secpager">
@@ -129,6 +127,6 @@
   </div>
 </div>
 <script src="../assets/quiz-data.js?v=47ac7a88"></script>
-<script src="../assets/search-index.js?v=66df1797"></script>
+<script src="../assets/search-index.js?v=89e0d7d7"></script>
 <script src="../assets/app.js?v=5bf1e1db"></script>
 </body></html>
