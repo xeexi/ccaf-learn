@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="ja" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>4-5　thinking の実物 ─ 何を送り、何が届くか ─ Domain 4 ─ CCAR-F 学習ノート</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css?v=3c97e055">
+</head>
+<body data-page="thinkapi">
+<script>(function(){var t=localStorage.getItem('ccarf-theme');if(t)document.documentElement.dataset.theme=t;})();</script>
+<nav class="domnav">
+  <a class="brand" href="../index.html"><span class="brand-mark">CCAR-F</span><span class="brand-sub">学習ノート</span></a>
+  <div class="nav-list"><a class="nav-item" data-domain="basics" href="../00-basics/01-flow.html" title="会話の実体">
+       <span class="nav-num">前提</span><span class="nav-title">会話の実体</span></a>
+<a class="nav-item" data-domain="agentic" href="../01-agentic/01-d1about.html" title="エージェント設計とオーケストレーション">
+       <span class="nav-num">Domain 1</span><span class="nav-title">エージェント設計</span></a>
+<a class="nav-item" data-domain="tools" href="../02-tools/01-d2about.html" title="ツール設計と MCP 連携">
+       <span class="nav-num">Domain 2</span><span class="nav-title">ツールと MCP</span></a>
+<a class="nav-item" data-domain="code" href="../03-claude-code/01-about.html" title="Claude Code の設定とワークフロー">
+       <span class="nav-num">Domain 3</span><span class="nav-title">Claude Code</span></a>
+<a class="nav-item on" data-domain="prompt" href="../04-prompt/01-d4about.html" title="プロンプト設計と構造化出力">
+       <span class="nav-num">Domain 4</span><span class="nav-title">プロンプト設計</span></a>
+<a class="nav-item" data-domain="context" href="../05-context/01-d5about.html" title="コンテキスト管理と信頼性">
+       <span class="nav-num">Domain 5</span><span class="nav-title">コンテキスト管理</span></a>
+<a class="nav-item" data-domain="summary" href="../06-summary/01-all.html" title="全体をもう一度">
+       <span class="nav-num">まとめ</span><span class="nav-title">全体をもう一度</span></a></div>
+  <div class="search-wrap">
+  <button class="search-btn" id="openSearch" aria-label="検索"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span>検索</span><kbd>/</kbd></button>
+</div>
+</nav>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-muted)"/></marker>
+  <marker id="ara" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-amber)"/></marker>
+  <marker id="arb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-blue)"/></marker>
+  <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-red)"/></marker>
+  <marker id="arg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-green)"/></marker>
+</defs></svg>
+<div class="shell">
+<aside class="toc">
+  <div class="toc-head">Domain 4</div>
+  <nav class="toc-list"><a class="toc-link" href="../04-prompt/01-d4about.html">4-1　言い方で結果が変わる部分</a>
+<a class="toc-link" href="../04-prompt/02-roles.html">4-2　system / user / assistant</a>
+<a class="toc-link" href="../04-prompt/03-order.html">4-3　並べる順番</a>
+<a class="toc-link" href="../04-prompt/04-think.html">4-4　考えさせる ─ thinking</a>
+<a class="toc-link on" href="../04-prompt/05-thinkapi.html">4-5　thinking の実物 ─ 何を送り、何が届くか</a>
+<a class="toc-link toc-sub" href="#thinkapi-1">実物を見る ─ 拡張思考のリクエストと応答</a>
+<a class="toc-link toc-sub" href="#thinkapi-2">thinking の最中、アプリには何が届いているのか</a>
+<a class="toc-link toc-quiz" href="../04-prompt/06-q0.html">4-6　理解度チェック ─ 基本</a>
+<a class="toc-link" href="../04-prompt/07-criteria.html">4-7　基準を明示する / ゼロ件を許す</a>
+<a class="toc-link" href="../04-prompt/08-fewshot.html">4-8　few-shot ─ 例を見せる</a>
+<a class="toc-link toc-quiz" href="../04-prompt/09-q12.html">4-9　理解度チェック ─ タスク 4.1〜4.2</a>
+<a class="toc-link" href="../04-prompt/10-struct.html">4-10　構造化出力と tool_choice</a>
+<a class="toc-link" href="../04-prompt/11-verify.html">4-11　検証と再試行</a>
+<a class="toc-link toc-quiz" href="../04-prompt/12-q34.html">4-12　理解度チェック ─ タスク 4.3〜4.4</a>
+<a class="toc-link" href="../04-prompt/13-batch.html">4-13　バッチ処理</a>
+<a class="toc-link" href="../04-prompt/14-multi.html">4-14　多重レビュー</a>
+<a class="toc-link toc-quiz" href="../04-prompt/15-q56.html">4-15　理解度チェック ─ タスク 4.5〜4.6</a></nav>
+</aside>
+<main class="doc">
+<p class="crumb" data-domain="prompt"><b>Domain 4</b><span>プロンプト設計と構造化出力</span><span class="w">出題比率 20%</span></p>
+<!-- ▼ 本文 ─ ここだけを編集する。この前後は node tools/reindex.mjs が書き出す -->
+<section class="sec" id="thinkapi" data-widget="p-seq2">
+<header class="sec-head">
+  <h2>4-5　thinking の実物 ─ 何を送り、何が届くか</h2>
+</header>
+<p class="lead">前の節は「どこで考えさせるか」の判断でした。ここは API 側の仕様です。何を1つ足すと有効になり、応答と途中経過がどう変わるかを見ます。</p>
+<p class="task">ブループリント対応なし ── 各タスクの土台になる知識</p>
+<p class="goal"><b>ゴール</b><code>thinking</code> でリクエストと応答がどう変わるか言える。</p>
+
+<h3 class="sub" id="thinkapi-1">実物を見る ─ 拡張思考のリクエストと応答</h3>
+<p class="lead">前の節の②（API の <code>thinking</code>）を、実際の JSON で確認します。</p>
+  <div class="figbox" style="padding:16px 18px">
+    <p class="codelabel">リクエスト</p>
+    <pre class="code">{
+  <span class="hl"><span class="k">"thinking"</span>: { <span class="k">"type"</span>: <span class="s">"enabled"</span>, <span class="k">"budget_tokens"</span>: <span class="v">10000</span> },</span><span class="n">1</span>
+  <span class="k">"max_tokens"</span>: <span class="v">16000</span>,<span class="n">2</span>
+  <span class="k">"messages"</span>: [ … ]
+}</pre>
+    <p class="codelabel">応答</p>
+    <pre class="code"><span class="k">"content"</span>: [
+  <span class="hl">{ <span class="k">"type"</span>: <span class="s">"thinking"</span>, <span class="k">"thinking"</span>: <span class="s">"…条件を並べて順に確かめる…"</span> },</span><span class="n">3</span>
+  { <span class="k">"type"</span>: <span class="s">"text"</span>, <span class="k">"text"</span>: <span class="s">"結論は…"</span> }
+]</pre>
+    <ol class="ann">
+      <li><span class="n">1</span><span>付けるのはこれだけ。<b>「どう考えるか」を書く必要はありません</b>。予算の最小は1024トークン。</span></li>
+      <li><span class="n">2</span><span>思考は<b>出力の一部</b>なので、<code>budget_tokens</code> は <code>max_tokens</code> より小さくします。</span></li>
+      <li><span class="n">3</span><span><code>content</code> に <code>thinking</code> ブロックが増えます。中身は<b>要約された思考</b>で、内部の全文が出るわけではありません。</span></li>
+      <li><span class="n">4</span><span>この <code>thinking</code> ブロックの分も<b>出力トークンとして課金されます</b>。</span></li>
+    </ol>
+  </div>
+  <p class="point"><b>ポイント</b>付けるのは <code>thinking</code> フィールドだけ。応答に <code>thinking</code> ブロックが増え、そのぶん出力トークンを食う。</p>
+
+<h3 class="sub" id="thinkapi-2">thinking の最中、アプリには何が届いているのか</h3>
+<p class="lead">ストリーミングを使うかどうかで、答えが正反対になります。</p>
+  <div class="figbox"><div class="diagram run">
+  <svg viewBox="0 0 760 510">
+    <g class="s1">
+      <rect x="60" y="14" width="170" height="38" rx="8" fill="var(--fig-fill-blue)" stroke="var(--fig-line-blue)"/>
+      <text class="ttl" x="145" y="39" text-anchor="middle" style="fill:var(--fig-blue)">アプリ</text>
+      <rect x="340" y="14" width="190" height="38" rx="8" fill="var(--fig-fill-amber)" stroke="var(--fig-line-amber)"/>
+      <text class="ttl" x="435" y="39" text-anchor="middle" style="fill:var(--fig-amber)">Claude（モデル）</text>
+      <line x1="145" y1="52" x2="145" y2="436" stroke="var(--fig-dash)" stroke-width="1.5" stroke-dasharray="4 5"/>
+      <line x1="435" y1="52" x2="435" y2="436" stroke="var(--fig-dash)" stroke-width="1.5" stroke-dasharray="4 5"/>
+    </g>
+
+    <g class="s2">
+      <rect x="16" y="62" width="728" height="22" rx="6" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
+      <text class="lbl" x="28" y="78">① stream を使わない場合 ─ 完成するまで、何も届かない</text>
+      <text class="mono" x="290" y="100" text-anchor="middle" style="fill:var(--fig-blue)">messages ＋ thinking</text>
+      <line x1="145" y1="112" x2="429" y2="112" stroke="var(--fig-blue)" stroke-width="2" marker-end="url(#arb)"/>
+    </g>
+
+    <g class="s3">
+      <rect x="428" y="120" width="14" height="52" rx="3" fill="var(--fig-bar)" stroke="var(--fig-line)"/>
+      <text class="sm" x="466" y="140">thinking を生成中…</text>
+      <text class="sm" x="466" y="158">アプリには、まだ何も届いていない</text>
+    </g>
+
+    <g class="s4">
+      <text class="mono" x="290" y="192" text-anchor="middle" style="fill:var(--fig-amber)">content[ thinking , text ] ＋ stop_reason</text>
+      <text class="sm" x="290" y="207" text-anchor="middle">完成してから、まとめて1回だけ</text>
+      <line x1="435" y1="219" x2="151" y2="219" stroke="var(--fig-amber)" stroke-width="2" marker-end="url(#ara)"/>
+    </g>
+
+    <g class="s5">
+      <rect x="16" y="234" width="728" height="22" rx="6" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)"/>
+      <text class="lbl" x="28" y="250" style="fill:var(--fig-green)">② stream: true の場合 ─ 生成しながら、少しずつ届く</text>
+      <text class="mono" x="290" y="270" text-anchor="middle" style="fill:var(--fig-blue)">messages ＋ thinking ＋ stream: true</text>
+      <line x1="145" y1="281" x2="429" y2="281" stroke="var(--fig-blue)" stroke-width="2" marker-end="url(#arb)"/>
+    </g>
+
+    <g class="s6">
+      <text class="mono" x="290" y="299" text-anchor="middle" style="fill:var(--fig-amber)">message_start</text>
+      <line x1="435" y1="310" x2="151" y2="310" stroke="var(--fig-amber)" stroke-width="2" marker-end="url(#ara)"/>
+      <text class="mono" x="290" y="328" text-anchor="middle" style="fill:var(--fig-amber)">content_block_start { thinking }</text>
+      <line x1="435" y1="339" x2="151" y2="339" stroke="var(--fig-amber)" stroke-width="2" marker-end="url(#ara)"/>
+    </g>
+
+    <g class="s7">
+      <text class="mono" x="290" y="357" text-anchor="middle" style="fill:var(--fig-green)">thinking_delta ×N ─ 思考が少しずつ届く</text>
+      <line x1="435" y1="368" x2="151" y2="368" stroke="var(--fig-green)" stroke-width="2.5" marker-end="url(#arg)"/>
+      <text class="mono" x="290" y="386" text-anchor="middle" style="fill:var(--fig-amber)">content_block_start{text} → text_delta ×N</text>
+      <line x1="435" y1="397" x2="151" y2="397" stroke="var(--fig-amber)" stroke-width="2" marker-end="url(#ara)"/>
+    </g>
+
+    <g class="s8">
+      <text class="mono" x="290" y="415" text-anchor="middle" style="fill:var(--fig-red)">message_delta { stop_reason } → message_stop</text>
+      <line x1="435" y1="426" x2="151" y2="426" stroke="var(--fig-red)" stroke-width="2.5" marker-end="url(#arr)"/>
+      <rect x="16" y="446" width="728" height="54" rx="10" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
+      <text class="lbl" x="36" y="468">流れるのは一方向だけ。thinking 中にアプリから何かを返すことはなく、往復は1回のまま</text>
+      <text class="lbl" x="36" y="488" style="fill:var(--fig-red)">stop_reason は最後の message_delta で届く。分岐できるのは、そこから</text>
+    </g>
+  </svg>
+  </div></div>
+  <div class="detail"><h3>図の読み方</h3>
+    <ol class="ann">
+      <li><span class="n">1</span><span><b>①が stream なし</b>。リクエストを送ったあと、モデルが思考を書いている間、アプリには<b>何も届きません</b>。完成してから <code>content</code> も <code>stop_reason</code> もまとめて1回で返ります。</span></li>
+      <li><span class="n">2</span><span><b>②が <code>stream: true</code></b>。思考は <code>thinking_delta</code> として<b>少しずつ届きます</b>。アプリの画面で「考えています…」の中身が流れて見えるのは、これです。<b>ご想像のとおり、送られています</b>。</span></li>
+      <li><span class="n">3</span><span>ただし<b>流れるのは一方向だけ</b>です。アプリが途中で何かを返すことはありません。<b>往復は1回のまま</b>で、変わっているのは「届き方」だけ。1回の応答を細切れに受け取っているだけなので、<b>呼び出し回数もトークン数も変わりません</b>。</span></li>
+      <li><span class="n">4</span><span>順番は決まっています。<code>message_start</code> →（ブロックごとに）<code>content_block_start</code> → <code>delta</code> の繰り返し → <code>content_block_stop</code> → 最後に <code>message_delta</code> → <code>message_stop</code>。</span></li>
+      <li><span class="n">5</span><span>いちばん大事なのが<b><code>stop_reason</code> がどこで来るか</b>。<b>最後の <code>message_delta</code></b> です。つまりストリーミングでも、<b>アプリが分岐できるのは最後</b>。途中の delta を見て「もう答えが出た」と判断することはできません（Domain 1「stop_reason で分岐」）。</span></li>
+    </ol>
+  </div>
+  <p class="point"><b>ポイント</b>thinking 中に届くのは、<code>stream: true</code> のときだけ。しかも一方向で、往復は増えない。<code>stop_reason</code> が来るのは最後の <code>message_delta</code>。</p>
+  <p class="note">※ <code>thinking</code> ブロックの最後には <code>signature_delta</code>（署名）が届き、その直後に <code>content_block_stop</code> になります。この署名は、上で触れた「<code>thinking</code> ブロックをそのまま履歴に戻す」ときの検証に使われるものです。</p>
+</section>
+<!-- ▲ 本文 -->
+<nav class="secpager">
+<a class="pgv prev" href="../04-prompt/04-think.html"><span class="pgv-l">前へ</span>4-4　考えさせる ─ thinking</a>
+<span class="pgv-n">Domain 4 5 / 15</span>
+<a class="pgv next" href="../04-prompt/06-q0.html"><span class="pgv-l">次へ</span>4-6　理解度チェック ─ 基本</a>
+</nav>
+</main>
+</div>
+<div class="modal" id="searchModal" hidden>
+  <div class="modal-box">
+    <input id="searchInput" type="search" placeholder="用語・見出し・本文を検索（例: input_schema、キャッシュ）" autocomplete="off">
+    <div id="searchResults" class="results"></div>
+    <div class="modal-foot"><kbd>Esc</kbd> で閉じる</div>
+  </div>
+</div>
+<script src="../assets/quiz-data.js?v=4385afea"></script>
+<script src="../assets/search-index.js?v=98a5172a"></script>
+<script src="../assets/app.js?v=1c7668ec"></script>
+</body></html>

@@ -6,8 +6,14 @@
 import fs from 'fs';
 import path from 'path';
 
-const ROOT = path.resolve(new URL('..', import.meta.url).pathname);
-const FILES = fs.readdirSync(ROOT).filter(f => /^\d\d-.*\.html$/.test(f)).sort();
+/* 成果物（HTML と assets）は docs/ の下 ─ GitHub Pages がそのまま公開できる名前。tools/ と CLAUDE.md はリポジトリ直下 */
+const ROOT = path.join(path.resolve(new URL('..', import.meta.url).pathname), 'docs');
+/* 節ファイルの一覧。ドメインごとのディレクトリの下に 1節1ファイルで入っている */
+const FILES = fs.readdirSync(ROOT)
+  .filter(d => /^\d\d-/.test(d) && fs.statSync(path.join(ROOT, d)).isDirectory())
+  .sort()
+  .flatMap(d => fs.readdirSync(path.join(ROOT, d)).filter(f => f.endsWith('.html')).sort()
+    .map(f => d + '/' + f));
 let ng = 0;
 const bad = (msg) => { console.log('  ✗ ' + msg); ng++; };
 
@@ -47,12 +53,13 @@ FILES.forEach(f => {
 if (!posNg) console.log('  ✓ アンカー座標はすべて枠内（実際の描画幅はブラウザで要確認）');
 
 /* --- 3. 統合で意味を失った位置参照が残っていないか ----------------
-   「前ページ」「次ページ」はページ送り時代の遺物。 */
+   本文が位置（前ページ・次ページ）に依存すると、節を並べ替えたときに壊れる。
+   ページ送り UI そのものは1項ずつ表示として復活したので、"ページ送り" 等は検出対象から外した。 */
 console.log('\n■ 消えた概念への参照');
 let refNg = 0;
 [...FILES, 'index.html'].forEach(f => {
   const h = fs.readFileSync(path.join(ROOT, f), 'utf8');
-  (h.match(/前ページ|次ページ|前の章|次の章/g) || []).forEach(w => {
+  (h.match(/前ページ|次ページ|前の章|次の章|1ページ＝|☰/g) || []).forEach(w => {
     bad(`${f}: 「${w}」が残っている`); refNg++;
   });
 });
@@ -129,6 +136,103 @@ order.forEach((s, i) => {
   });
 });
 if (!scopeNg) console.log('  ✓ すべて既習範囲内');
+
+/* --- 5b. HTML から参照されていない設問キーが残っていないか ---------
+   セクションを作り直したときに、古い設問データが浮くことがある。
+   死んだデータは気づかないまま腐るので、ここで落とす。 */
+console.log('\n■ 設問データの参照');
+const usedKeys = new Set(order.map(s => s.quiz).filter(Boolean));
+const orphan = Object.keys(QUIZ).filter(k => !usedKeys.has(k));
+const missing = [...usedKeys].filter(k => !QUIZ[k]);
+orphan.forEach(k => bad(`設問キー ${k}（${QUIZ[k].length}問）が、どの HTML からも参照されていない`));
+missing.forEach(k => bad(`data-quiz="${k}" に対応する設問データがない`));
+if (!orphan.length && !missing.length) console.log(`  ✓ ${usedKeys.size} キーすべて対応（設問 ${Object.values(QUIZ).reduce((a, b) => a + b.length, 0)} 問）`);
+
+/* --- 5c. 本文セクションにゴール（.goal）があるか ---------------------
+   「この節を終えたら何が言えるか」がないと、読み手は止めどころが分からない。 */
+console.log('\n■ ゴール');
+let goalNg = 0;
+order.forEach(s => {
+  if (s.quiz) return;
+  if (/class="goal"/.test(s.body)) return;
+  bad(`${s.f} #${(s.body.match(/id="([^"]+)"/) || [])[1]}: ゴール（.goal）がない`);
+  goalNg++;
+});
+if (!goalNg) console.log(`  ✓ 本文 ${order.filter(s => !s.quiz).length} 節すべてにあり`);
+
+/* --- 5e. 本文セクションに出題タスクの表示（.task）があるか ------------
+   どの節がブループリントのどこに対応するかを、節ごとに明示しておく。 */
+console.log('\n■ 出題タスクの表示');
+let tlNg = 0;
+order.forEach(s => {
+  if (s.quiz || /class="task"/.test(s.body)) return;
+  bad(`${s.f} #${(s.body.match(/id="([^"]+)"/) || [])[1]}: 出題タスクの表示（.task）がない`);
+  tlNg++;
+});
+if (!tlNg) console.log('  ✓ 本文すべてに対応タスク（または土台・導入の明示）あり');
+
+/* --- 5d. 出題ブループリントのタスクに、対応する節があるか -------------
+   「網羅しているか」を主観で答えないための機械判定（§7 #9）。
+   タスク名は公式 Exam Guide（60問 / 合格 720 / 120分）の 5ドメイン30タスクに対応。
+   節が1つも無いタスクは、教材の穴として落とす。 */
+console.log(String.fromCharCode(10) + "■ 出題タスクの網羅（公式ブループリント 30タスク）");
+const TASKS = {
+  // Domain 1 — Agentic Architecture & Orchestration (27%)
+  "1.1 エージェントループの実装":            ["loop", "stop", "seq", "real", "broken"],
+  "1.2 コーディネータ／サブエージェント構成": ["split", "parent"],
+  "1.3 子の起動・文脈の受け渡し":            ["spawn"],
+  "1.4 多段の強制とハンドオフ":              ["gate"],
+  "1.5 hooks によるツール呼び出しの介入":     ["intercept", "hooks"],
+  "1.6 タスク分解の設計":                    ["chain"],
+  "1.7 セッションの状態・再開・分岐":         ["session"],
+  // Domain 2 — Tool Design & MCP Integration (18%)
+  "2.1 ツール定義と境界の設計":              ["anatomy", "grain"],
+  "2.2 構造化されたエラー応答":              ["error"],
+  "2.3 ツールの配り方と tool_choice":        ["distribute"],
+  "2.4 MCP サーバの統合":                    ["mcp"],
+  "2.5 組み込みツールの使い分け":            ["builtin"],
+  // Domain 3 — Claude Code Configuration & Workflows (20%)
+  "3.1 CLAUDE.md の階層・スコープ・分割":     ["claudemd", "import"],
+  "3.2 スラッシュコマンドとスキル":          ["cmdskill"],
+  "3.3 パス固有ルール":                      ["rules"],
+  "3.4 plan mode と直接実行":                ["plan"],
+  "3.5 反復的な改善":                        ["iterate"],
+  "3.6 CI/CD への組み込み":                  ["ci", "settings"],
+  // Domain 4 — Prompt Engineering & Structured Output (20%)
+  "4.1 明示的な基準による精度向上":          ["criteria"],
+  "4.2 few-shot":                            ["fewshot"],
+  "4.3 構造化出力の強制":                    ["struct"],
+  "4.4 検証・再試行・フィードバック":         ["verify"],
+  "4.5 バッチ処理":                          ["batch"],
+  "4.6 多重・多段レビュー構成":              ["multi"],
+  // Domain 5 — Context Management & Reliability (15%)
+  "5.1 長い対話での文脈の維持":              ["compact"],
+  "5.2 エスカレーションと曖昧さの解消":       ["confidence"],
+  "5.3 複数エージェント間のエラー伝播":       ["propagate"],
+  "5.4 大規模コードベース探索での文脈管理":   ["sub", "shape"],
+  "5.5 人のレビュー導線と確信度の校正":       ["confidence"],
+  "5.6 出典の保持と不確実性の扱い":          ["observe"],
+};
+const allIds = new Set(order.filter(s => !s.quiz).map(s => (s.body.match(/id="([^"]+)"/) || [])[1]));
+let covNg = 0;
+Object.entries(TASKS).forEach(([t, ids]) => {
+  if (!ids.some(i => allIds.has(i))) { bad(`タスク「${t}」に対応する節がない（想定 id: ${ids.join(" / ")}）`); covNg++; }
+});
+if (!covNg) console.log(`  ✓ ${Object.keys(TASKS).length} タスクすべてに対応する節あり`);
+
+/* --- 5f. 文字サイズが段階（--fs-*）で書かれているか -------------------
+   px を直接書くと段階が増えていき、「ばらつきが大きい」状態に戻る。
+   SVG の中だけは別系統（図の座標に合わせてあるため）。 */
+console.log('\n■ 文字サイズの段階');
+const cssTxt = fs.readFileSync(path.join(ROOT, 'assets/style.css'), 'utf8');
+let fsNg = 0;
+cssTxt.split('\n').forEach((l, i) => {
+  if (!/font-size:\s*[\d.]+px/.test(l)) return;
+  if (/\bsvg\b/.test(l) || /--fs-/.test(l)) return;   // SVG 用と、段階そのものの定義は対象外
+  bad(`style.css:${i + 1} 段階を使わず px 直書き → ${l.trim().slice(0, 60)}`);
+  fsNg++;
+});
+if (!fsNg) console.log('  ✓ SVG 以外はすべて --fs-* の7段階');
 
 /* --- 6. 検索インデックスが本文と同期しているか -------------------- */
 console.log('\n■ 検索インデックスの同期');

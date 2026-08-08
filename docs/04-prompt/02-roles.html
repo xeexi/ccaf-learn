@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="ja" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>4-2　system / user / assistant ─ Domain 4 ─ CCAR-F 学習ノート</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css?v=3c97e055">
+</head>
+<body data-page="roles">
+<script>(function(){var t=localStorage.getItem('ccarf-theme');if(t)document.documentElement.dataset.theme=t;})();</script>
+<nav class="domnav">
+  <a class="brand" href="../index.html"><span class="brand-mark">CCAR-F</span><span class="brand-sub">学習ノート</span></a>
+  <div class="nav-list"><a class="nav-item" data-domain="basics" href="../00-basics/01-flow.html" title="会話の実体">
+       <span class="nav-num">前提</span><span class="nav-title">会話の実体</span></a>
+<a class="nav-item" data-domain="agentic" href="../01-agentic/01-d1about.html" title="エージェント設計とオーケストレーション">
+       <span class="nav-num">Domain 1</span><span class="nav-title">エージェント設計</span></a>
+<a class="nav-item" data-domain="tools" href="../02-tools/01-d2about.html" title="ツール設計と MCP 連携">
+       <span class="nav-num">Domain 2</span><span class="nav-title">ツールと MCP</span></a>
+<a class="nav-item" data-domain="code" href="../03-claude-code/01-about.html" title="Claude Code の設定とワークフロー">
+       <span class="nav-num">Domain 3</span><span class="nav-title">Claude Code</span></a>
+<a class="nav-item on" data-domain="prompt" href="../04-prompt/01-d4about.html" title="プロンプト設計と構造化出力">
+       <span class="nav-num">Domain 4</span><span class="nav-title">プロンプト設計</span></a>
+<a class="nav-item" data-domain="context" href="../05-context/01-d5about.html" title="コンテキスト管理と信頼性">
+       <span class="nav-num">Domain 5</span><span class="nav-title">コンテキスト管理</span></a>
+<a class="nav-item" data-domain="summary" href="../06-summary/01-all.html" title="全体をもう一度">
+       <span class="nav-num">まとめ</span><span class="nav-title">全体をもう一度</span></a></div>
+  <div class="search-wrap">
+  <button class="search-btn" id="openSearch" aria-label="検索"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span>検索</span><kbd>/</kbd></button>
+</div>
+</nav>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-muted)"/></marker>
+  <marker id="ara" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-amber)"/></marker>
+  <marker id="arb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-blue)"/></marker>
+  <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-red)"/></marker>
+  <marker id="arg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-green)"/></marker>
+</defs></svg>
+<div class="shell">
+<aside class="toc">
+  <div class="toc-head">Domain 4</div>
+  <nav class="toc-list"><a class="toc-link" href="../04-prompt/01-d4about.html">4-1　言い方で結果が変わる部分</a>
+<a class="toc-link on" href="../04-prompt/02-roles.html">4-2　system / user / assistant</a>
+<a class="toc-link" href="../04-prompt/03-order.html">4-3　並べる順番</a>
+<a class="toc-link" href="../04-prompt/04-think.html">4-4　考えさせる ─ thinking</a>
+<a class="toc-link" href="../04-prompt/05-thinkapi.html">4-5　thinking の実物 ─ 何を送り、何が届くか</a>
+<a class="toc-link toc-quiz" href="../04-prompt/06-q0.html">4-6　理解度チェック ─ 基本</a>
+<a class="toc-link" href="../04-prompt/07-criteria.html">4-7　基準を明示する / ゼロ件を許す</a>
+<a class="toc-link" href="../04-prompt/08-fewshot.html">4-8　few-shot ─ 例を見せる</a>
+<a class="toc-link toc-quiz" href="../04-prompt/09-q12.html">4-9　理解度チェック ─ タスク 4.1〜4.2</a>
+<a class="toc-link" href="../04-prompt/10-struct.html">4-10　構造化出力と tool_choice</a>
+<a class="toc-link" href="../04-prompt/11-verify.html">4-11　検証と再試行</a>
+<a class="toc-link toc-quiz" href="../04-prompt/12-q34.html">4-12　理解度チェック ─ タスク 4.3〜4.4</a>
+<a class="toc-link" href="../04-prompt/13-batch.html">4-13　バッチ処理</a>
+<a class="toc-link" href="../04-prompt/14-multi.html">4-14　多重レビュー</a>
+<a class="toc-link toc-quiz" href="../04-prompt/15-q56.html">4-15　理解度チェック ─ タスク 4.5〜4.6</a></nav>
+</aside>
+<main class="doc">
+<p class="crumb" data-domain="prompt"><b>Domain 4</b><span>プロンプト設計と構造化出力</span><span class="w">出題比率 20%</span></p>
+<!-- ▼ 本文 ─ ここだけを編集する。この前後は node tools/reindex.mjs が書き出す -->
+<section class="sec" id="roles">
+<header class="sec-head">
+  <h2>4-2　system / user / assistant</h2>
+</header>
+<p class="lead">メッセージには役割があり、効き方が違います。system は会話の全期間にわたって効きます。</p>
+<p class="task">ブループリント対応なし ── 各タスクの土台になる知識</p>
+<p class="goal"><b>ゴール</b>恒久のルールと可変の入力を、書く場所で選び分けられる。</p>
+  <div class="figbox"><div class="diagram run">
+  <svg viewBox="0 0 760 260">
+    <g class="s1"><rect x="20" y="26" width="720" height="58" rx="10" fill="var(--fig-fill-amber)" stroke="var(--fig-line-amber)"/>
+      <text class="ttl" x="44" y="52" style="fill:var(--fig-amber)">system</text>
+      <text class="lbl" x="140" y="52">役割・守るべきルール・出力の形式 ─ 会話の間ずっと効く</text>
+      <text class="sm" x="140" y="72">「あなたはサポート担当。返金は承認なしに約束しない」</text></g>
+    <g class="s2"><rect x="20" y="96" width="350" height="58" rx="10" fill="var(--fig-fill-blue)" stroke="var(--fig-line-blue)"/>
+      <text class="ttl" x="44" y="122" style="fill:var(--fig-blue)">user</text>
+      <text class="lbl" x="110" y="122">その回の依頼・データ</text>
+      <text class="sm" x="44" y="142">毎ターン追加されていく</text></g>
+    <g class="s3"><rect x="390" y="96" width="350" height="58" rx="10" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)"/>
+      <text class="ttl" x="414" y="122" style="fill:var(--fig-green)">assistant</text>
+      <text class="lbl" x="500" y="122">Claudeの応答（履歴として残る）</text>
+      <text class="sm" x="414" y="142">先頭を書いておくと形式を誘導できる</text></g>
+    <g class="s4"><rect x="20" y="176" width="720" height="64" rx="10" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
+      <text class="lbl" x="44" y="202">ふるまいを直したいとき、まず触るのは system。user 側に毎回同じ注意書きを足すのは重複でありコスト増。</text>
+      <text class="sm" x="44" y="226">※ system は「書くのは一度でよい固定の指示」、user は「毎回変わる中身」（送信はどちらも毎回）</text></g>
+  </svg>
+  </div></div>
+  <div class="detail"><h3>図の読み方</h3>
+    <ol class="ann">
+      <li><span class="n">1</span><span>一番上の帯が <b>system</b>。<b>幅が全体に広がっている</b>のは、会話の間ずっと効き続けるという意味です。ただし<b>「1回送れば覚えている」のではありません</b>。毎回のリクエストに、そのまま入って送られています（前提編）。</span></li>
+      <li><span class="n">2</span><span>左下が <b>user</b>。その回の依頼やデータで、毎ターン追加されていきます。</span></li>
+      <li><span class="n">3</span><span>右下が <b>assistant</b>。Claude の応答で、これも履歴として残ります。</span></li>
+      <li><span class="n">4</span><span>一番下の帯が<b>使い分けの原則</b>。ふるまいを直したいときに触るのは system です。</span></li>
+    </ol>
+    </div>
+  <p class="point"><b>ポイント</b>役割の使い分けを誤ると、指示が薄まる。恒久ルールは system、可変の入力は user。</p>
+
+<h3 class="sub">system の値は変えられるのか</h3>
+<div class="detail"><h3>その前に ─ system は「messages の中の1つ」ではない</h3>
+    <p>リクエストの形を見ると分かります（Domain 1「実物を見る① 送るもの」）。<code>system</code> は <code>messages</code> 配列の<b>外側</b>にある、リクエストのトップレベルのフィールドです。<code>messages</code> に並ぶのは <code>user</code> と <code>assistant</code>。</p>
+    <p><b>同じ一文を「system に書くか、user の本文に混ぜるか」は選べます</b>が、<code>role</code> の値を書き換えて行き来させるようなものではありません。<b>入れ物が違う</b>、というのが正確なところです。</p>
+    <h3>system の値は変えられるのか</h3>
+    <p><b>変えられます。</b>system は毎回のリクエストに入れるフィールドなので、会話の途中で別の内容を送っても動きます。<b>ただし実務では固定して使うのが普通です。</b>理由は2つあります。</p>
+    <p>・<b>キャッシュが全部無効になる</b>　キャッシュは「ツール定義 → system → 会話」の順に積まれています。system を書き換えると、<b>その後ろの会話ぶんもまとめて作り直し</b>になります（前提編）。<br>
+    ・<b>前提が食い違う</b>　途中でルールが変わると、前半の応答と後半の応答が別の前提で書かれた状態になります。あとから読み返したときに、なぜその答えになったのか追えなくなります。</p>
+    <p>日付やユーザー名のように<b>毎回変わる情報は、system ではなく user 側（末尾）に置く</b>のが定石です。役割そのものを切り替えたいときは、system を書き換えるより<b>別のセッションや子エージェントに分ける</b>ほうが素直です（Domain 1）。</p>
+    <div class="ex"><span class="exl">同じ内容でも、置き場所で結果が変わる</span>
+    ✗ 毎ターンの末尾に「返金額は約束しないでください」→ 書き忘れた回に破られる。毎回トークンも食う<br>
+    ○ system に1回だけ書く → 全ターンに効く。会話が長くなっても消えない</div>
+    <div class="myth">
+      <span class="t">誤解</span><span>「system に書けば絶対に守られる」</span>
+      <span class="t o">実際は</span><span>強く効きますが、あくまで<b>確率的</b>です。絶対に守らせたいことは、権限設定やコードで塞ぎます（Domain 2・Domain 5）。</span>
+    </div>
+  </div>
+  <p class="point"><b>ポイント</b>役割の使い分けを誤ると、指示が薄まる。恒久ルールは system、可変の入力は user。</p>
+</section>
+<!-- ▲ 本文 -->
+<nav class="secpager">
+<a class="pgv prev" href="../04-prompt/01-d4about.html"><span class="pgv-l">前へ</span>4-1　言い方で結果が変わる部分</a>
+<span class="pgv-n">Domain 4 2 / 15</span>
+<a class="pgv next" href="../04-prompt/03-order.html"><span class="pgv-l">次へ</span>4-3　並べる順番</a>
+</nav>
+</main>
+</div>
+<div class="modal" id="searchModal" hidden>
+  <div class="modal-box">
+    <input id="searchInput" type="search" placeholder="用語・見出し・本文を検索（例: input_schema、キャッシュ）" autocomplete="off">
+    <div id="searchResults" class="results"></div>
+    <div class="modal-foot"><kbd>Esc</kbd> で閉じる</div>
+  </div>
+</div>
+<script src="../assets/quiz-data.js?v=4385afea"></script>
+<script src="../assets/search-index.js?v=98a5172a"></script>
+<script src="../assets/app.js?v=1c7668ec"></script>
+</body></html>

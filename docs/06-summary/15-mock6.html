@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="ja" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>6-15　300ファイルの一括移行 ─ まとめ ─ CCAR-F 学習ノート</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css?v=3c97e055">
+</head>
+<body data-page="mock6">
+<script>(function(){var t=localStorage.getItem('ccarf-theme');if(t)document.documentElement.dataset.theme=t;})();</script>
+<nav class="domnav">
+  <a class="brand" href="../index.html"><span class="brand-mark">CCAR-F</span><span class="brand-sub">学習ノート</span></a>
+  <div class="nav-list"><a class="nav-item" data-domain="basics" href="../00-basics/01-flow.html" title="会話の実体">
+       <span class="nav-num">前提</span><span class="nav-title">会話の実体</span></a>
+<a class="nav-item" data-domain="agentic" href="../01-agentic/01-d1about.html" title="エージェント設計とオーケストレーション">
+       <span class="nav-num">Domain 1</span><span class="nav-title">エージェント設計</span></a>
+<a class="nav-item" data-domain="tools" href="../02-tools/01-d2about.html" title="ツール設計と MCP 連携">
+       <span class="nav-num">Domain 2</span><span class="nav-title">ツールと MCP</span></a>
+<a class="nav-item" data-domain="code" href="../03-claude-code/01-about.html" title="Claude Code の設定とワークフロー">
+       <span class="nav-num">Domain 3</span><span class="nav-title">Claude Code</span></a>
+<a class="nav-item" data-domain="prompt" href="../04-prompt/01-d4about.html" title="プロンプト設計と構造化出力">
+       <span class="nav-num">Domain 4</span><span class="nav-title">プロンプト設計</span></a>
+<a class="nav-item" data-domain="context" href="../05-context/01-d5about.html" title="コンテキスト管理と信頼性">
+       <span class="nav-num">Domain 5</span><span class="nav-title">コンテキスト管理</span></a>
+<a class="nav-item on" data-domain="summary" href="../06-summary/01-all.html" title="全体をもう一度">
+       <span class="nav-num">まとめ</span><span class="nav-title">全体をもう一度</span></a></div>
+  <div class="search-wrap">
+  <button class="search-btn" id="openSearch" aria-label="検索"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span>検索</span><kbd>/</kbd></button>
+</div>
+</nav>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-muted)"/></marker>
+  <marker id="ara" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-amber)"/></marker>
+  <marker id="arb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-blue)"/></marker>
+  <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-red)"/></marker>
+  <marker id="arg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-green)"/></marker>
+</defs></svg>
+<div class="shell">
+<aside class="toc">
+  <div class="toc-head">まとめ</div>
+  <nav class="toc-list"><a class="toc-link" href="../06-summary/01-all.html">6-1　1枚で全体を見る</a>
+<a class="toc-link" href="../06-summary/02-weight.html">6-2　どこに時間を使うか</a>
+<a class="toc-link toc-quiz" href="../06-summary/03-q.html">6-3　総合チェック</a>
+<a class="toc-link" href="../06-summary/04-mockabout.html">6-4　シナリオで解く</a>
+<a class="toc-link" href="../06-summary/05-mock1.html">6-5　社内の問い合わせに答えるエージェント</a>
+<a class="toc-link toc-quiz" href="../06-summary/06-qm1.html">6-6　解いてみる</a>
+<a class="toc-link" href="../06-summary/07-mock2.html">6-7　未知のコードベースの不具合調査</a>
+<a class="toc-link toc-quiz" href="../06-summary/08-qm2.html">6-8　解いてみる</a>
+<a class="toc-link" href="../06-summary/09-mock3.html">6-9　5人のチームに導入する</a>
+<a class="toc-link toc-quiz" href="../06-summary/10-qm3.html">6-10　解いてみる</a>
+<a class="toc-link" href="../06-summary/11-mock4.html">6-11　請求書から項目を抜き出す</a>
+<a class="toc-link toc-quiz" href="../06-summary/12-qm4.html">6-12　解いてみる</a>
+<a class="toc-link" href="../06-summary/13-mock5.html">6-13　社外サービスを繋ぐ</a>
+<a class="toc-link toc-quiz" href="../06-summary/14-qm5.html">6-14　解いてみる</a>
+<a class="toc-link on" href="../06-summary/15-mock6.html">6-15　300ファイルの一括移行</a>
+<a class="toc-link toc-quiz" href="../06-summary/16-qm6.html">6-16　解いてみる</a></nav>
+</aside>
+<main class="doc">
+<p class="crumb" data-domain="summary"><b>まとめ</b><span>全体をもう一度</span></p>
+<!-- ▼ 本文 ─ ここだけを編集する。この前後は node tools/reindex.mjs が書き出す -->
+<section class="sec" id="mock6">
+<header class="sec-head">
+  <span class="sec-kicker">シナリオ ⑥</span>
+  <h2>6-15　300ファイルの一括移行</h2>
+</header>
+<p class="lead">命名規約の変更を300ファイルに適用します。手順は毎回同じで、1日では終わらず翌日に続けます。</p>
+<p class="task">ブループリント横断 ── 模擬試験</p>
+<p class="goal"><b>ゴール</b>手順が固定の仕事の組み方と、またぎ方・失敗の扱いを選べる。</p>
+  <div class="detail">
+    <h3>状況</h3>
+    <div class="ex"><span class="exl">条件</span>
+    ・1ファイルあたりの手順は完全に同じ（読む → 置換 → テスト）<br>
+    ・作業は翌日に続ける。前日に決めた例外ルールは引き継ぎたい<br>
+    ・終わってみると、300件のうち12件が失敗していた</div>
+  </div>
+</section>
+<!-- ▲ 本文 -->
+<nav class="secpager">
+<a class="pgv prev" href="../06-summary/14-qm5.html"><span class="pgv-l">前へ</span>6-14　解いてみる</a>
+<span class="pgv-n">まとめ 15 / 16</span>
+<a class="pgv next" href="../06-summary/16-qm6.html"><span class="pgv-l">次へ</span>6-16　解いてみる</a>
+</nav>
+</main>
+</div>
+<div class="modal" id="searchModal" hidden>
+  <div class="modal-box">
+    <input id="searchInput" type="search" placeholder="用語・見出し・本文を検索（例: input_schema、キャッシュ）" autocomplete="off">
+    <div id="searchResults" class="results"></div>
+    <div class="modal-foot"><kbd>Esc</kbd> で閉じる</div>
+  </div>
+</div>
+<script src="../assets/quiz-data.js?v=4385afea"></script>
+<script src="../assets/search-index.js?v=98a5172a"></script>
+<script src="../assets/app.js?v=1c7668ec"></script>
+</body></html>

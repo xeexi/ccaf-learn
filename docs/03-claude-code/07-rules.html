@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="ja" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>3-7　パス固有ルール ─ Domain 3 ─ CCAR-F 学習ノート</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css?v=3c97e055">
+</head>
+<body data-page="rules">
+<script>(function(){var t=localStorage.getItem('ccarf-theme');if(t)document.documentElement.dataset.theme=t;})();</script>
+<nav class="domnav">
+  <a class="brand" href="../index.html"><span class="brand-mark">CCAR-F</span><span class="brand-sub">学習ノート</span></a>
+  <div class="nav-list"><a class="nav-item" data-domain="basics" href="../00-basics/01-flow.html" title="会話の実体">
+       <span class="nav-num">前提</span><span class="nav-title">会話の実体</span></a>
+<a class="nav-item" data-domain="agentic" href="../01-agentic/01-d1about.html" title="エージェント設計とオーケストレーション">
+       <span class="nav-num">Domain 1</span><span class="nav-title">エージェント設計</span></a>
+<a class="nav-item" data-domain="tools" href="../02-tools/01-d2about.html" title="ツール設計と MCP 連携">
+       <span class="nav-num">Domain 2</span><span class="nav-title">ツールと MCP</span></a>
+<a class="nav-item on" data-domain="code" href="../03-claude-code/01-about.html" title="Claude Code の設定とワークフロー">
+       <span class="nav-num">Domain 3</span><span class="nav-title">Claude Code</span></a>
+<a class="nav-item" data-domain="prompt" href="../04-prompt/01-d4about.html" title="プロンプト設計と構造化出力">
+       <span class="nav-num">Domain 4</span><span class="nav-title">プロンプト設計</span></a>
+<a class="nav-item" data-domain="context" href="../05-context/01-d5about.html" title="コンテキスト管理と信頼性">
+       <span class="nav-num">Domain 5</span><span class="nav-title">コンテキスト管理</span></a>
+<a class="nav-item" data-domain="summary" href="../06-summary/01-all.html" title="全体をもう一度">
+       <span class="nav-num">まとめ</span><span class="nav-title">全体をもう一度</span></a></div>
+  <div class="search-wrap">
+  <button class="search-btn" id="openSearch" aria-label="検索"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span>検索</span><kbd>/</kbd></button>
+</div>
+</nav>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-muted)"/></marker>
+  <marker id="ara" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-amber)"/></marker>
+  <marker id="arb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-blue)"/></marker>
+  <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-red)"/></marker>
+  <marker id="arg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-green)"/></marker>
+</defs></svg>
+<div class="shell">
+<aside class="toc">
+  <div class="toc-head">Domain 3</div>
+  <nav class="toc-list"><a class="toc-link" href="../03-claude-code/01-about.html">3-1　このドメインについて</a>
+<a class="toc-link" href="../03-claude-code/02-claudemd.html">3-2　CLAUDE.md の階層と読み込まれ方</a>
+<a class="toc-link" href="../03-claude-code/03-import.html">3-3　@import で分割する</a>
+<a class="toc-link toc-quiz" href="../03-claude-code/04-q31.html">3-4　理解度チェック ─ タスク 3.1</a>
+<a class="toc-link" href="../03-claude-code/05-cmdskill.html">3-5　スラッシュコマンドとスキル</a>
+<a class="toc-link toc-quiz" href="../03-claude-code/06-q32.html">3-6　理解度チェック ─ タスク 3.2</a>
+<a class="toc-link on" href="../03-claude-code/07-rules.html">3-7　パス固有ルール</a>
+<a class="toc-link" href="../03-claude-code/08-plan.html">3-8　plan mode と直接実行</a>
+<a class="toc-link" href="../03-claude-code/09-iterate.html">3-9　反復的な改善</a>
+<a class="toc-link toc-quiz" href="../03-claude-code/10-q345.html">3-10　理解度チェック ─ タスク 3.3〜3.5</a>
+<a class="toc-link" href="../03-claude-code/11-ci.html">3-11　非対話実行と CI/CD</a>
+<a class="toc-link" href="../03-claude-code/12-settings.html">3-12　settings.json と permissions</a>
+<a class="toc-link toc-quiz" href="../03-claude-code/13-q36.html">3-13　理解度チェック ─ タスク 3.6・付録</a>
+<a class="toc-link toc-quiz" href="../03-claude-code/14-qall.html">3-14　Domain 3 総合チェック</a></nav>
+</aside>
+<main class="doc">
+<p class="crumb" data-domain="code"><b>Domain 3</b><span>Claude Code の設定とワークフロー</span><span class="w">出題比率 20%</span></p>
+<!-- ▼ 本文 ─ ここだけを編集する。この前後は node tools/reindex.mjs が書き出す -->
+<section class="sec" id="rules">
+<header class="sec-head">
+  <h2>3-7　パス固有ルール</h2>
+</header>
+<p class="lead"><code>.claude/rules/</code> に置き、frontmatter で対象パスを指定します。</p>
+<p class="task"><span class="tn">BLUEPRINT 3.3</span><b>条件付き規約読み込みのためのパス固有ルール</b></p>
+<p class="goal"><b>ゴール</b><code>paths</code> が何のスイッチか説明できる。</p>
+  <div class="figbox"><div class="diagram run">
+  <svg viewBox="0 0 760 280">
+    <g class="s1"><rect x="20" y="24" width="290" height="130" rx="10" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
+      <text class="sm" x="40" y="46">.claude/rules/frontend.md</text>
+      <rect x="40" y="56" width="250" height="84" rx="6" fill="var(--fig-surface)" stroke="var(--fig-line)"/>
+      <text class="mono" x="54" y="76">---</text>
+      <text class="mono" x="54" y="94">paths:</text>
+      <text class="mono" x="54" y="112">  - "src/**/*.tsx"</text>
+      <text class="mono" x="54" y="130">---</text></g>
+    <g class="s2"><line x1="320" y1="88" x2="370" y2="88" stroke="var(--fig-muted)" stroke-width="2" marker-end="url(#ar)"/>
+      <rect x="380" y="24" width="360" height="130" rx="10" fill="var(--fig-fill-blue)" stroke="var(--fig-line-blue)"/>
+      <text class="ttl" x="400" y="48" style="fill:var(--fig-blue)">いつ読まれるか</text>
+      <text class="lbl" x="400" y="78">paths あり → <tspan font-weight="700">対象ファイルを開いたときだけ</tspan></text>
+      <text class="lbl" x="400" y="104">paths なし → セッション開始時に読み込み</text>
+      <text class="sm" x="400" y="132">つまり paths は「オンデマンドにするスイッチ」</text></g>
+    <g class="s3"><rect x="20" y="172" width="350" height="94" rx="10" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)"/>
+      <text class="ttl" x="40" y="196" style="fill:var(--fig-green)">こう書ける</text>
+      <text class="mono" x="40" y="220">- "src/**/*.{ts,tsx}"</text>
+      <text class="mono" x="40" y="242">- "**/*.test.ts"</text>
+      <text class="sm" x="40" y="260">複数指定・ブレース展開が使える</text></g>
+    <g class="s4"><rect x="390" y="172" width="350" height="94" rx="10" fill="var(--fig-fill-amber)" stroke="var(--fig-line-amber)"/>
+      <text class="ttl" x="410" y="196" style="fill:var(--fig-amber)">サブディレクトリも掘れる</text>
+      <text class="mono" x="410" y="220">.claude/rules/frontend/react.md</text>
+      <text class="mono" x="410" y="242">.claude/rules/backend/api.md</text>
+      <text class="sm" x="410" y="260">自動で見つけてくれる</text></g>
+  </svg>
+  </div></div>
+  <div class="detail">
+    <h3>図の読み方</h3>
+    <ol class="ann">
+      <li><span class="n">1</span><span>左上が<b>ルールファイルの中身</b>。frontmatter の <code>paths:</code> にグロブを並べるだけです。</span></li>
+      <li><span class="n">2</span><span><b>「いつ読まれるか」</b> ── ここが CLAUDE.md との違いです。<code>paths</code> を書けば<b>そのファイルを扱うときだけ</b>、書かなければ<b>常に</b>窓に載ります。<b>関係ない規約でウィンドウを埋めない</b>ための仕掛けです。</span></li>
+      <li><span class="n">3</span><span><b>「こう書ける」</b> ── 複数パターンと <code>{ts,tsx}</code> のブレース展開。1ファイルで複数の拡張子をまとめられます。</span></li>
+      <li><span class="n">4</span><span><b>「サブディレクトリも掘れる」</b> ── 分けて置いても自動で拾われるので、<b>規約の種類が増えても1ファイルが肥大しません</b>。</span></li>
+    </ol>
+    <div class="ex"><span class="exl">CLAUDE.md との使い分け</span>
+    <b>常に効かせたい規約</b>（言語共通の方針）→ CLAUDE.md<br>
+    <b>特定の種類のファイルにだけ効かせたい規約</b>（Reactコンポーネントの書き方、テストの命名）→ <code>.claude/rules/</code> ＋ <code>paths</code><br>
+    後者を CLAUDE.md に全部書くと、<b>関係ない作業のときも窓を食い続けます。</b></div>
+  </div>
+  <p class="point"><b>ポイント</b><code>paths</code> は「いつ読ませるか」のスイッチ。規約が増えたときに、窓を守りながら増やせる仕組み。</p>
+</section>
+<!-- ▲ 本文 -->
+<nav class="secpager">
+<a class="pgv prev" href="../03-claude-code/06-q32.html"><span class="pgv-l">前へ</span>3-6　理解度チェック ─ タスク 3.2</a>
+<span class="pgv-n">Domain 3 7 / 14</span>
+<a class="pgv next" href="../03-claude-code/08-plan.html"><span class="pgv-l">次へ</span>3-8　plan mode と直接実行</a>
+</nav>
+</main>
+</div>
+<div class="modal" id="searchModal" hidden>
+  <div class="modal-box">
+    <input id="searchInput" type="search" placeholder="用語・見出し・本文を検索（例: input_schema、キャッシュ）" autocomplete="off">
+    <div id="searchResults" class="results"></div>
+    <div class="modal-foot"><kbd>Esc</kbd> で閉じる</div>
+  </div>
+</div>
+<script src="../assets/quiz-data.js?v=4385afea"></script>
+<script src="../assets/search-index.js?v=98a5172a"></script>
+<script src="../assets/app.js?v=1c7668ec"></script>
+</body></html>

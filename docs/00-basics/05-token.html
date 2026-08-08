@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="ja" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>0-5　確率で次の1トークンを選ぶ ─ 前提 ─ CCAR-F 学習ノート</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css?v=3c97e055">
+</head>
+<body data-page="token">
+<script>(function(){var t=localStorage.getItem('ccarf-theme');if(t)document.documentElement.dataset.theme=t;})();</script>
+<nav class="domnav">
+  <a class="brand" href="../index.html"><span class="brand-mark">CCAR-F</span><span class="brand-sub">学習ノート</span></a>
+  <div class="nav-list"><a class="nav-item on" data-domain="basics" href="../00-basics/01-flow.html" title="会話の実体">
+       <span class="nav-num">前提</span><span class="nav-title">会話の実体</span></a>
+<a class="nav-item" data-domain="agentic" href="../01-agentic/01-d1about.html" title="エージェント設計とオーケストレーション">
+       <span class="nav-num">Domain 1</span><span class="nav-title">エージェント設計</span></a>
+<a class="nav-item" data-domain="tools" href="../02-tools/01-d2about.html" title="ツール設計と MCP 連携">
+       <span class="nav-num">Domain 2</span><span class="nav-title">ツールと MCP</span></a>
+<a class="nav-item" data-domain="code" href="../03-claude-code/01-about.html" title="Claude Code の設定とワークフロー">
+       <span class="nav-num">Domain 3</span><span class="nav-title">Claude Code</span></a>
+<a class="nav-item" data-domain="prompt" href="../04-prompt/01-d4about.html" title="プロンプト設計と構造化出力">
+       <span class="nav-num">Domain 4</span><span class="nav-title">プロンプト設計</span></a>
+<a class="nav-item" data-domain="context" href="../05-context/01-d5about.html" title="コンテキスト管理と信頼性">
+       <span class="nav-num">Domain 5</span><span class="nav-title">コンテキスト管理</span></a>
+<a class="nav-item" data-domain="summary" href="../06-summary/01-all.html" title="全体をもう一度">
+       <span class="nav-num">まとめ</span><span class="nav-title">全体をもう一度</span></a></div>
+  <div class="search-wrap">
+  <button class="search-btn" id="openSearch" aria-label="検索"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span>検索</span><kbd>/</kbd></button>
+</div>
+</nav>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-muted)"/></marker>
+  <marker id="ara" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-amber)"/></marker>
+  <marker id="arb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-blue)"/></marker>
+  <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-red)"/></marker>
+  <marker id="arg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-green)"/></marker>
+</defs></svg>
+<div class="shell">
+<aside class="toc">
+  <div class="toc-head">前提</div>
+  <nav class="toc-list"><a class="toc-link" href="../00-basics/01-flow.html">0-1　まず、全体の流れ</a>
+<a class="toc-link" href="../00-basics/02-resend.html">0-2　会話は毎回、まるごと送り直している</a>
+<a class="toc-link" href="../00-basics/03-window.html">0-3　トークンとコンテキストウィンドウ</a>
+<a class="toc-link" href="../00-basics/04-cache.html">0-4　プロンプトキャッシュ</a>
+<a class="toc-link on" href="../00-basics/05-token.html">0-5　確率で次の1トークンを選ぶ</a>
+<a class="toc-link toc-sub" href="#token-1">Claudeは「次の1トークン」を確率で選び続けている</a>
+<a class="toc-link toc-sub" href="#token-2">では、どう付き合うか</a>
+<a class="toc-link toc-quiz" href="../00-basics/06-q.html">0-6　理解度チェック</a></nav>
+</aside>
+<main class="doc">
+<p class="crumb" data-domain="basics"><b>前提</b><span>会話の実体</span></p>
+<!-- ▼ 本文 ─ ここだけを編集する。この前後は node tools/reindex.mjs が書き出す -->
+<section class="sec" id="token" data-widget="p-token">
+<header class="sec-head">
+  <h2>0-5　確率で次の1トークンを選ぶ</h2>
+</header>
+
+<h3 class="sub" id="token-1">Claudeは「次の1トークン」を確率で選び続けている</h3>
+<p class="lead">文全体を先に決めているのではなく、1トークンずつ「次に来そうなもの」を選んでは繋げています。実際に選んでみてください。</p>
+<p class="task">ブループリント対応なし ── 各タスクの土台になる知識</p>
+<p class="goal"><b>ゴール</b>答えが毎回揺れる理由を説明できる。</p>
+  <div class="play">
+    <div class="head">▶ 候補をひとつ選ぶと、末尾に足されて次の候補が出ます（数値は説明用の例です）</div>
+    <div class="sent" id="tk-sent"></div>
+    <div class="cand" id="tk-cand"></div>
+    <div class="answer" id="tk-ans"></div>
+    <div class="ctrl"><button id="tk-reset">最初から</button></div>
+  </div>
+  <div class="detail"><h3>画面の読み方</h3>
+    <ol class="ann">
+      <li><span class="n">1</span><span>上の枠が<b>ここまでの文章</b>。最初は「今日の天気は」だけです。</span></li>
+      <li><span class="n">2</span><span>下の4行が<b>次に来る候補と、その「らしさ」の数値</b>。棒の長さがそのまま確率です。</span></li>
+      <li><span class="n">3</span><span>どれかを押すと、それが<b>末尾に足され</b>、その新しい文章をもとに<b>次の候補が計算し直されます</b>。候補は毎回変わります。</span></li>
+      <li><span class="n">4</span><span>3回選ぶと文が終わります。<b>文全体を先に決めたのではなく、3回の選択の結果としてその文になった</b> ─ これが生成の実体です。</span></li>
+    </ol>
+    <p>大事なのは、<b>Claude は「正しさ」ではなく「もっともらしさ」を最大化している</b>ということです。事実を照合してから答えているわけではありません。</p>
+    </div>
+  <p class="point"><b>ポイント</b>この選択の繰り返しが生成の実体。だから同じ質問でも答えは毎回わずかに揺れるし、もっともらしい嘘も起こりうる。確実性が要るところは、モデルの外側（コードによる検証など）で担保する。</p>
+
+<h3 class="sub" id="token-2">では、どう付き合うか</h3>
+<div class="detail"><div class="ex"><span class="exl">これで説明がつくこと</span>
+    ・同じ質問でも答えが毎回少し違う → 選択が確率的だから<br>
+    ・<b>存在しない関数名を、いかにも本物らしく作ってしまう</b> → 「それらしい並び」を選んだ結果であって、嘘をつく意図があるわけではない<br>
+    ・自信ありげな口調と正しさは無関係 → 口調もまた「もっともらしい」から選ばれている</div>
+    <h3>では、どう付き合うか</h3>
+    <p>この性質は消せません。消せない前提で、外側を設計します。<b>事実が要るなら道具で取りに行かせる</b>（Domain 1）、<b>形が要るならスキーマで受け取る</b>（Domain 4）、<b>絶対に守らせたいならコードで塞ぐ</b>（Domain 2・Domain 5）。この教材の残りは、ほぼこの1点への対処と言ってもかまいません。</p>
+  </div>
+  <p class="point"><b>ポイント</b>この選択の繰り返しが生成の実体。だから同じ質問でも答えは毎回わずかに揺れるし、もっともらしい嘘も起こりうる。確実性が要るところは、モデルの外側（コードによる検証など）で担保する。</p>
+</section>
+<!-- ▲ 本文 -->
+<nav class="secpager">
+<a class="pgv prev" href="../00-basics/04-cache.html"><span class="pgv-l">前へ</span>0-4　プロンプトキャッシュ</a>
+<span class="pgv-n">前提 5 / 6</span>
+<a class="pgv next" href="../00-basics/06-q.html"><span class="pgv-l">次へ</span>0-6　理解度チェック</a>
+</nav>
+</main>
+</div>
+<div class="modal" id="searchModal" hidden>
+  <div class="modal-box">
+    <input id="searchInput" type="search" placeholder="用語・見出し・本文を検索（例: input_schema、キャッシュ）" autocomplete="off">
+    <div id="searchResults" class="results"></div>
+    <div class="modal-foot"><kbd>Esc</kbd> で閉じる</div>
+  </div>
+</div>
+<script src="../assets/quiz-data.js?v=4385afea"></script>
+<script src="../assets/search-index.js?v=98a5172a"></script>
+<script src="../assets/app.js?v=1c7668ec"></script>
+</body></html>

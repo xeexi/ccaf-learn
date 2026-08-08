@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="ja" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>2-6　権限と副作用 ─ Domain 2 ─ CCAR-F 学習ノート</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css?v=3c97e055">
+</head>
+<body data-page="perm">
+<script>(function(){var t=localStorage.getItem('ccarf-theme');if(t)document.documentElement.dataset.theme=t;})();</script>
+<nav class="domnav">
+  <a class="brand" href="../index.html"><span class="brand-mark">CCAR-F</span><span class="brand-sub">学習ノート</span></a>
+  <div class="nav-list"><a class="nav-item" data-domain="basics" href="../00-basics/01-flow.html" title="会話の実体">
+       <span class="nav-num">前提</span><span class="nav-title">会話の実体</span></a>
+<a class="nav-item" data-domain="agentic" href="../01-agentic/01-d1about.html" title="エージェント設計とオーケストレーション">
+       <span class="nav-num">Domain 1</span><span class="nav-title">エージェント設計</span></a>
+<a class="nav-item on" data-domain="tools" href="../02-tools/01-d2about.html" title="ツール設計と MCP 連携">
+       <span class="nav-num">Domain 2</span><span class="nav-title">ツールと MCP</span></a>
+<a class="nav-item" data-domain="code" href="../03-claude-code/01-about.html" title="Claude Code の設定とワークフロー">
+       <span class="nav-num">Domain 3</span><span class="nav-title">Claude Code</span></a>
+<a class="nav-item" data-domain="prompt" href="../04-prompt/01-d4about.html" title="プロンプト設計と構造化出力">
+       <span class="nav-num">Domain 4</span><span class="nav-title">プロンプト設計</span></a>
+<a class="nav-item" data-domain="context" href="../05-context/01-d5about.html" title="コンテキスト管理と信頼性">
+       <span class="nav-num">Domain 5</span><span class="nav-title">コンテキスト管理</span></a>
+<a class="nav-item" data-domain="summary" href="../06-summary/01-all.html" title="全体をもう一度">
+       <span class="nav-num">まとめ</span><span class="nav-title">全体をもう一度</span></a></div>
+  <div class="search-wrap">
+  <button class="search-btn" id="openSearch" aria-label="検索"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span>検索</span><kbd>/</kbd></button>
+</div>
+</nav>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-muted)"/></marker>
+  <marker id="ara" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-amber)"/></marker>
+  <marker id="arb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-blue)"/></marker>
+  <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-red)"/></marker>
+  <marker id="arg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-green)"/></marker>
+</defs></svg>
+<div class="shell">
+<aside class="toc">
+  <div class="toc-head">Domain 2</div>
+  <nav class="toc-list"><a class="toc-link" href="../02-tools/01-d2about.html">2-1　道具そのものを設計する</a>
+<a class="toc-link" href="../02-tools/02-anatomy.html">2-2　ツール定義は3つの部品でできている</a>
+<a class="toc-link" href="../02-tools/03-grain.html">2-3　ツールの粒度</a>
+<a class="toc-link" href="../02-tools/04-error.html">2-4　失敗は読める形で返す</a>
+<a class="toc-link" href="../02-tools/05-mcp.html">2-5　MCP という差込口</a>
+<a class="toc-link on" href="../02-tools/06-perm.html">2-6　権限と副作用</a>
+<a class="toc-link" href="../02-tools/07-distribute.html">2-7　誰にどのツールを配るか</a>
+<a class="toc-link" href="../02-tools/08-builtin.html">2-8　組み込みのツールを選ぶ</a>
+<a class="toc-link toc-quiz" href="../02-tools/09-q.html">2-9　理解度チェック</a></nav>
+</aside>
+<main class="doc">
+<p class="crumb" data-domain="tools"><b>Domain 2</b><span>ツール設計と MCP 連携</span><span class="w">出題比率 18%</span></p>
+<!-- ▼ 本文 ─ ここだけを編集する。この前後は node tools/reindex.mjs が書き出す -->
+<section class="sec" id="perm">
+<header class="sec-head">
+  <h2>2-6　権限と副作用</h2>
+</header>
+<p class="lead">確率的に動くものに、取り消せない操作をそのまま任せない。ここが安全設計の中心です。</p>
+<p class="task">ブループリント対応なし ── 各タスクの土台になる知識</p>
+<p class="goal"><b>ゴール</b>弱い対策と強い対策を区別できる。</p>
+  <div class="figbox"><div class="diagram run">
+  <svg viewBox="0 0 760 250">
+    <g class="s1"><rect x="16" y="30" width="340" height="180" rx="12" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)"/>
+      <text class="ttl" x="186" y="60" text-anchor="middle" style="fill:var(--fig-green)">読む（副作用なし）</text>
+      <text class="lbl" x="46" y="94">検索する / 一覧を取る / 内容を読む</text>
+      <text class="lbl" x="46" y="124">→ 自動実行してよい</text>
+      <text class="sm" x="46" y="154">失敗してもやり直せる。</text>
+      <text class="sm" x="46" y="174">確認を挟むと、むしろ遅くなる</text></g>
+    <g class="s2"><rect x="404" y="30" width="340" height="180" rx="12" fill="var(--fig-fill-red)" stroke="var(--fig-line-red)"/>
+      <text class="ttl" x="574" y="60" text-anchor="middle" style="fill:var(--fig-red)">変える（副作用あり）</text>
+      <text class="lbl" x="434" y="94">返金する / 削除する / 送信する / デプロイ</text>
+      <text class="lbl" x="434" y="124">→ 前に「関門」を置く</text>
+      <text class="sm" x="434" y="154">人の承認、権限チェック、金額の上限、</text>
+      <text class="sm" x="434" y="174">ドライラン、実行ログ</text></g>
+    <g class="s3"><rect x="16" y="222" width="728" height="0" fill="none"/>
+      <text class="sm" x="380" y="240" text-anchor="middle">関門は「プロンプトでお願いする」のではなく、コードで通れなくするのが確実</text></g>
+  </svg>
+  </div></div>
+  <div class="detail">
+    <h3>図の読み方</h3>
+    <ol class="ann">
+      <li><span class="n">1</span><span>左（緑）が<b>読む操作</b>。検索・一覧・閲覧。<b>副作用がないので自動実行してよい</b>領域です。確認を挟むとむしろ邪魔になります。</span></li>
+      <li><span class="n">2</span><span>右（赤）が<b>変える操作</b>。返金・削除・送信・デプロイ。<b>前に関門を置きます</b>。</span></li>
+      <li><span class="n">3</span><span>境目は<b>「間違えたとき、やり直せるか」</b>です。やり直せるなら左、やり直せないなら右。</span></li>
+      <li><span class="n">4</span><span>下の一文が肝心なところ。<b>関門はプロンプトでお願いするのではなく、コードで通れなくします。</b></span></li>
+    </ol>
+    <h3>たとえるなら</h3>
+    <p><b>新人にどこまで鍵を渡すか</b>という話です。資料の閲覧は自由にさせてよい。しかし押印は上長の確認を挟み、金庫の鍵はそもそも渡さない。</p>
+    <div class="ex"><span class="exl">強い対策と弱い対策</span>
+    弱い：system に「10万円を超える返金は実行しないでください」と書く<br>
+    → 守られる<b>確率が高い</b>だけで、破られることがある<br><br>
+    強い：返金ツールの実行前に、コードで金額を検査して弾く<br>
+    → <b>通れないので、破りようがない</b></div>
+    <div class="myth">
+      <span class="t">誤解</span><span>「プロンプトで禁止しておけば安全」</span>
+      <span class="t o">実際は</span><span>プロンプトは<b>確率的な仕組み</b>です。取り返しのつかない操作は、実行経路そのものを塞ぎます。</span>
+    </div>
+  </div>
+  <p class="point"><b>ポイント</b>「system に "勝手に返金しないで" と書く」は弱い対策。実行経路そのものを塞ぐのが強い対策。</p>
+</section>
+<!-- ▲ 本文 -->
+<nav class="secpager">
+<a class="pgv prev" href="../02-tools/05-mcp.html"><span class="pgv-l">前へ</span>2-5　MCP という差込口</a>
+<span class="pgv-n">Domain 2 6 / 9</span>
+<a class="pgv next" href="../02-tools/07-distribute.html"><span class="pgv-l">次へ</span>2-7　誰にどのツールを配るか</a>
+</nav>
+</main>
+</div>
+<div class="modal" id="searchModal" hidden>
+  <div class="modal-box">
+    <input id="searchInput" type="search" placeholder="用語・見出し・本文を検索（例: input_schema、キャッシュ）" autocomplete="off">
+    <div id="searchResults" class="results"></div>
+    <div class="modal-foot"><kbd>Esc</kbd> で閉じる</div>
+  </div>
+</div>
+<script src="../assets/quiz-data.js?v=4385afea"></script>
+<script src="../assets/search-index.js?v=98a5172a"></script>
+<script src="../assets/app.js?v=1c7668ec"></script>
+</body></html>

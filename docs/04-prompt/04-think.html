@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="ja" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>4-4　考えさせる ─ thinking ─ Domain 4 ─ CCAR-F 学習ノート</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css?v=3c97e055">
+</head>
+<body data-page="think">
+<script>(function(){var t=localStorage.getItem('ccarf-theme');if(t)document.documentElement.dataset.theme=t;})();</script>
+<nav class="domnav">
+  <a class="brand" href="../index.html"><span class="brand-mark">CCAR-F</span><span class="brand-sub">学習ノート</span></a>
+  <div class="nav-list"><a class="nav-item" data-domain="basics" href="../00-basics/01-flow.html" title="会話の実体">
+       <span class="nav-num">前提</span><span class="nav-title">会話の実体</span></a>
+<a class="nav-item" data-domain="agentic" href="../01-agentic/01-d1about.html" title="エージェント設計とオーケストレーション">
+       <span class="nav-num">Domain 1</span><span class="nav-title">エージェント設計</span></a>
+<a class="nav-item" data-domain="tools" href="../02-tools/01-d2about.html" title="ツール設計と MCP 連携">
+       <span class="nav-num">Domain 2</span><span class="nav-title">ツールと MCP</span></a>
+<a class="nav-item" data-domain="code" href="../03-claude-code/01-about.html" title="Claude Code の設定とワークフロー">
+       <span class="nav-num">Domain 3</span><span class="nav-title">Claude Code</span></a>
+<a class="nav-item on" data-domain="prompt" href="../04-prompt/01-d4about.html" title="プロンプト設計と構造化出力">
+       <span class="nav-num">Domain 4</span><span class="nav-title">プロンプト設計</span></a>
+<a class="nav-item" data-domain="context" href="../05-context/01-d5about.html" title="コンテキスト管理と信頼性">
+       <span class="nav-num">Domain 5</span><span class="nav-title">コンテキスト管理</span></a>
+<a class="nav-item" data-domain="summary" href="../06-summary/01-all.html" title="全体をもう一度">
+       <span class="nav-num">まとめ</span><span class="nav-title">全体をもう一度</span></a></div>
+  <div class="search-wrap">
+  <button class="search-btn" id="openSearch" aria-label="検索"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span>検索</span><kbd>/</kbd></button>
+</div>
+</nav>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-muted)"/></marker>
+  <marker id="ara" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-amber)"/></marker>
+  <marker id="arb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-blue)"/></marker>
+  <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-red)"/></marker>
+  <marker id="arg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-green)"/></marker>
+</defs></svg>
+<div class="shell">
+<aside class="toc">
+  <div class="toc-head">Domain 4</div>
+  <nav class="toc-list"><a class="toc-link" href="../04-prompt/01-d4about.html">4-1　言い方で結果が変わる部分</a>
+<a class="toc-link" href="../04-prompt/02-roles.html">4-2　system / user / assistant</a>
+<a class="toc-link" href="../04-prompt/03-order.html">4-3　並べる順番</a>
+<a class="toc-link on" href="../04-prompt/04-think.html">4-4　考えさせる ─ thinking</a>
+<a class="toc-link toc-sub" href="#think-1">難しい問題は「考える場所」を与える</a>
+<a class="toc-link toc-sub" href="#think-2">「thinking」は2つの意味で使われる</a>
+<a class="toc-link" href="../04-prompt/05-thinkapi.html">4-5　thinking の実物 ─ 何を送り、何が届くか</a>
+<a class="toc-link toc-quiz" href="../04-prompt/06-q0.html">4-6　理解度チェック ─ 基本</a>
+<a class="toc-link" href="../04-prompt/07-criteria.html">4-7　基準を明示する / ゼロ件を許す</a>
+<a class="toc-link" href="../04-prompt/08-fewshot.html">4-8　few-shot ─ 例を見せる</a>
+<a class="toc-link toc-quiz" href="../04-prompt/09-q12.html">4-9　理解度チェック ─ タスク 4.1〜4.2</a>
+<a class="toc-link" href="../04-prompt/10-struct.html">4-10　構造化出力と tool_choice</a>
+<a class="toc-link" href="../04-prompt/11-verify.html">4-11　検証と再試行</a>
+<a class="toc-link toc-quiz" href="../04-prompt/12-q34.html">4-12　理解度チェック ─ タスク 4.3〜4.4</a>
+<a class="toc-link" href="../04-prompt/13-batch.html">4-13　バッチ処理</a>
+<a class="toc-link" href="../04-prompt/14-multi.html">4-14　多重レビュー</a>
+<a class="toc-link toc-quiz" href="../04-prompt/15-q56.html">4-15　理解度チェック ─ タスク 4.5〜4.6</a></nav>
+</aside>
+<main class="doc">
+<p class="crumb" data-domain="prompt"><b>Domain 4</b><span>プロンプト設計と構造化出力</span><span class="w">出題比率 20%</span></p>
+<!-- ▼ 本文 ─ ここだけを編集する。この前後は node tools/reindex.mjs が書き出す -->
+<section class="sec" id="think">
+<header class="sec-head">
+  <h2>4-4　考えさせる ─ thinking</h2>
+</header>
+
+<h3 class="sub" id="think-1">難しい問題は「考える場所」を与える</h3>
+<p class="lead">結論だけをいきなり出させると精度が落ちます。推論の過程を出力させると、そのトークン列自体が次の判断材料になります。</p>
+<p class="task">ブループリント対応なし ── 各タスクの土台になる知識</p>
+<p class="goal"><b>ゴール</b>考えさせる場面と、そうでない場面を分けられる。</p>
+  <div class="figbox"><div class="diagram run">
+  <svg viewBox="0 0 760 250">
+    <g class="s1"><rect x="16" y="30" width="340" height="86" rx="12" fill="var(--fig-fill-red)" stroke="var(--fig-line-red)"/>
+      <text class="ttl" x="40" y="60" style="fill:var(--fig-red)">いきなり結論</text>
+      <rect x="40" y="72" width="80" height="28" rx="6" fill="var(--fig-surface)" stroke="var(--fig-line)"/>
+      <text class="mono" x="80" y="91" text-anchor="middle">質問</text>
+      <line x1="126" y1="86" x2="176" y2="86" stroke="var(--fig-muted)" stroke-width="2" marker-end="url(#ar)"/>
+      <rect x="184" y="72" width="162" height="28" rx="6" fill="var(--fig-surface)" stroke="var(--fig-line-red)"/>
+      <text class="mono" x="265" y="91" text-anchor="middle">結論（当てずっぽう気味）</text></g>
+    <g class="s2"><rect x="16" y="132" width="728" height="96" rx="12" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)"/>
+      <text class="ttl" x="40" y="162" style="fill:var(--fig-green)">考える場所を与える</text>
+      <rect x="40" y="176" width="80" height="30" rx="6" fill="var(--fig-surface)" stroke="var(--fig-line)"/>
+      <text class="mono" x="80" y="196" text-anchor="middle">質問</text>
+      <line x1="126" y1="191" x2="176" y2="191" stroke="var(--fig-green)" stroke-width="2" marker-end="url(#ar)"/>
+      <rect x="184" y="176" width="330" height="30" rx="6" fill="var(--fig-surface)" stroke="var(--fig-line-green)"/>
+      <text class="mono" x="349" y="196" text-anchor="middle">thinking：条件を並べ、順に確かめる…</text>
+      <line x1="520" y1="191" x2="570" y2="191" stroke="var(--fig-green)" stroke-width="2" marker-end="url(#ar)"/>
+      <rect x="578" y="176" width="140" height="30" rx="6" fill="var(--fig-surface)" stroke="var(--fig-line-green)"/>
+      <text class="mono" x="648" y="196" text-anchor="middle">結論</text></g>
+    <text class="sm s3" x="380" y="248" text-anchor="middle">ただし思考も出力トークン＝コスト。単純な分類にまで付ける必要はない</text>
+  </svg>
+  </div></div>
+  <div class="detail">
+    <h3>図の読み方</h3>
+    <ol class="ann">
+      <li><span class="n">1</span><span>上（赤）が<b>いきなり結論</b>。質問と結論の間に何もありません。</span></li>
+      <li><span class="n">2</span><span>下（緑）は、質問と結論の間に <b>thinking の箱</b>があります。ここで条件を並べ、順に確かめています。</span></li>
+      <li><span class="n">3</span><span>効く理由は前提編にあります。出力は<b>直前までの文章</b>を手がかりに1トークンずつ選ばれるので、<b>途中の思考を書き出すこと自体が、次を選ぶ手がかりを増やします</b>。</span></li>
+      <li><span class="n">4</span><span>下の注記のとおり、<b>思考も出力トークン</b>です。そのぶん遅く、高くなります。</span></li>
+    </ol>
+    <div class="ex"><span class="exl">使いどころを分ける</span>
+    ○ 規約の条件を突き合わせて可否を決める、原因を切り分ける → <b>考えさせる</b><br>
+    ✗ 問い合わせを5種類に分類する、日付の書式を直す → <b>考えさせない</b>。思考も出力トークンなので、そのぶん遅く高くなるだけ</div>
+  </div>
+  <p class="point"><b>ポイント</b>「難しい判断＝考えさせる」「機械的な変換＝考えさせない」。使いどころを分けるのが設計。</p>
+
+<h3 class="sub" id="think-2">「thinking」は2つの意味で使われる</h3>
+<p class="lead">上の図にあった <code>thinking</code> を、もう少し正確に分けておきます。似ていますが、片方は<b>ただのプロンプト</b>、もう片方は<b>APIの機能</b>です。</p>
+  <div class="detail">
+    <div class="ex"><span class="exl">同じ「考えさせる」でも2種類ある</span>
+    <b>① プロンプトで考えさせる</b>（chain-of-thought）<br>
+    「順を追って考えてから答えて」と書くだけ。推論は<b>ふつうのテキスト出力の中に</b>混ざって出てきます。APIの機能ではありません。<br><br>
+    <b>② 拡張思考（extended thinking）</b><br>
+    リクエストに <code>thinking</code> フィールドを付けます。推論が<b>専用のブロックとして分かれて</b>返ってきます。</div>
+    <h3>効く理屈は、どちらも同じ</h3>
+    <p>出力は<b>直前までの文章を手がかりに1トークンずつ</b>選ばれます（前提編）。だから途中の推論を書き出すこと自体が、次を選ぶ手がかりを増やします。①と②の違いは<b>「どこに出るか」</b>であって、効き方の原理ではありません。</p>
+    <div class="myth">
+      <span class="t">誤解</span><span>「<code>thinking</code> を有効にすれば、タダで賢くなる」</span>
+      <span class="t o">実際は</span><span>①も②も、<b>思考ぶんが出力トークンとして課金されます</b>。遅くなり、高くなります。だから<b>使いどころを分ける</b>のが設計です。</span>
+    </div>
+  </div>
+  <p class="point"><b>ポイント</b>「考えさせる」には、プロンプトで書かせる方法とAPIの <code>thinking</code> を使う方法がある。効く理屈は同じで、どちらも出力トークンを食う。</p>
+
+</section>
+<!-- ▲ 本文 -->
+<nav class="secpager">
+<a class="pgv prev" href="../04-prompt/03-order.html"><span class="pgv-l">前へ</span>4-3　並べる順番</a>
+<span class="pgv-n">Domain 4 4 / 15</span>
+<a class="pgv next" href="../04-prompt/05-thinkapi.html"><span class="pgv-l">次へ</span>4-5　thinking の実物 ─ 何を送り、何が届くか</a>
+</nav>
+</main>
+</div>
+<div class="modal" id="searchModal" hidden>
+  <div class="modal-box">
+    <input id="searchInput" type="search" placeholder="用語・見出し・本文を検索（例: input_schema、キャッシュ）" autocomplete="off">
+    <div id="searchResults" class="results"></div>
+    <div class="modal-foot"><kbd>Esc</kbd> で閉じる</div>
+  </div>
+</div>
+<script src="../assets/quiz-data.js?v=4385afea"></script>
+<script src="../assets/search-index.js?v=98a5172a"></script>
+<script src="../assets/app.js?v=1c7668ec"></script>
+</body></html>

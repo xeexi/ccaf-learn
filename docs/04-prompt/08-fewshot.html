@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="ja" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>4-8　few-shot ─ 例を見せる ─ Domain 4 ─ CCAR-F 学習ノート</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css?v=3c97e055">
+</head>
+<body data-page="fewshot">
+<script>(function(){var t=localStorage.getItem('ccarf-theme');if(t)document.documentElement.dataset.theme=t;})();</script>
+<nav class="domnav">
+  <a class="brand" href="../index.html"><span class="brand-mark">CCAR-F</span><span class="brand-sub">学習ノート</span></a>
+  <div class="nav-list"><a class="nav-item" data-domain="basics" href="../00-basics/01-flow.html" title="会話の実体">
+       <span class="nav-num">前提</span><span class="nav-title">会話の実体</span></a>
+<a class="nav-item" data-domain="agentic" href="../01-agentic/01-d1about.html" title="エージェント設計とオーケストレーション">
+       <span class="nav-num">Domain 1</span><span class="nav-title">エージェント設計</span></a>
+<a class="nav-item" data-domain="tools" href="../02-tools/01-d2about.html" title="ツール設計と MCP 連携">
+       <span class="nav-num">Domain 2</span><span class="nav-title">ツールと MCP</span></a>
+<a class="nav-item" data-domain="code" href="../03-claude-code/01-about.html" title="Claude Code の設定とワークフロー">
+       <span class="nav-num">Domain 3</span><span class="nav-title">Claude Code</span></a>
+<a class="nav-item on" data-domain="prompt" href="../04-prompt/01-d4about.html" title="プロンプト設計と構造化出力">
+       <span class="nav-num">Domain 4</span><span class="nav-title">プロンプト設計</span></a>
+<a class="nav-item" data-domain="context" href="../05-context/01-d5about.html" title="コンテキスト管理と信頼性">
+       <span class="nav-num">Domain 5</span><span class="nav-title">コンテキスト管理</span></a>
+<a class="nav-item" data-domain="summary" href="../06-summary/01-all.html" title="全体をもう一度">
+       <span class="nav-num">まとめ</span><span class="nav-title">全体をもう一度</span></a></div>
+  <div class="search-wrap">
+  <button class="search-btn" id="openSearch" aria-label="検索"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span>検索</span><kbd>/</kbd></button>
+</div>
+</nav>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-muted)"/></marker>
+  <marker id="ara" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-amber)"/></marker>
+  <marker id="arb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-blue)"/></marker>
+  <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-red)"/></marker>
+  <marker id="arg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-green)"/></marker>
+</defs></svg>
+<div class="shell">
+<aside class="toc">
+  <div class="toc-head">Domain 4</div>
+  <nav class="toc-list"><a class="toc-link" href="../04-prompt/01-d4about.html">4-1　言い方で結果が変わる部分</a>
+<a class="toc-link" href="../04-prompt/02-roles.html">4-2　system / user / assistant</a>
+<a class="toc-link" href="../04-prompt/03-order.html">4-3　並べる順番</a>
+<a class="toc-link" href="../04-prompt/04-think.html">4-4　考えさせる ─ thinking</a>
+<a class="toc-link" href="../04-prompt/05-thinkapi.html">4-5　thinking の実物 ─ 何を送り、何が届くか</a>
+<a class="toc-link toc-quiz" href="../04-prompt/06-q0.html">4-6　理解度チェック ─ 基本</a>
+<a class="toc-link" href="../04-prompt/07-criteria.html">4-7　基準を明示する / ゼロ件を許す</a>
+<a class="toc-link on" href="../04-prompt/08-fewshot.html">4-8　few-shot ─ 例を見せる</a>
+<a class="toc-link toc-sub" href="#fewshot-1">説明を増やすより、例を1つ見せる</a>
+<a class="toc-link toc-sub" href="#fewshot-2">例は「難しいところ」から選ぶ</a>
+<a class="toc-link toc-quiz" href="../04-prompt/09-q12.html">4-9　理解度チェック ─ タスク 4.1〜4.2</a>
+<a class="toc-link" href="../04-prompt/10-struct.html">4-10　構造化出力と tool_choice</a>
+<a class="toc-link" href="../04-prompt/11-verify.html">4-11　検証と再試行</a>
+<a class="toc-link toc-quiz" href="../04-prompt/12-q34.html">4-12　理解度チェック ─ タスク 4.3〜4.4</a>
+<a class="toc-link" href="../04-prompt/13-batch.html">4-13　バッチ処理</a>
+<a class="toc-link" href="../04-prompt/14-multi.html">4-14　多重レビュー</a>
+<a class="toc-link toc-quiz" href="../04-prompt/15-q56.html">4-15　理解度チェック ─ タスク 4.5〜4.6</a></nav>
+</aside>
+<main class="doc">
+<p class="crumb" data-domain="prompt"><b>Domain 4</b><span>プロンプト設計と構造化出力</span><span class="w">出題比率 20%</span></p>
+<!-- ▼ 本文 ─ ここだけを編集する。この前後は node tools/reindex.mjs が書き出す -->
+<section class="sec" id="fewshot">
+<header class="sec-head">
+  <h2>4-8　few-shot ─ 例を見せる</h2>
+</header>
+
+<h3 class="sub" id="fewshot-1">説明を増やすより、例を1つ見せる</h3>
+<p class="lead">出力の形や粒度は、言葉で説明するより<b>実物を見せたほうが速く伝わります</b>。</p>
+<p class="task"><span class="tn">BLUEPRINT 4.2</span><b>出力の一貫性を高める few-shot</b></p>
+<p class="goal"><b>ゴール</b>例をどこから選ぶべきか答えられる。</p>
+  <div class="figbox"><div class="diagram run">
+  <svg viewBox="0 0 760 260">
+    <g class="s1"><rect x="16" y="24" width="350" height="100" rx="10" fill="var(--fig-fill-red)" stroke="var(--fig-line-red)"/>
+      <text class="ttl" x="191" y="50" text-anchor="middle" style="fill:var(--fig-red)">説明を厚くする</text>
+      <text class="sm" x="40" y="76">「簡潔に、箇条書きで、専門用語は避けて、</text>
+      <text class="sm" x="40" y="96">1項目は40字以内で、語尾は統一して…」</text>
+      <text class="sm" x="40" y="116" style="fill:var(--fig-red)">条件が増えるほど、どれかが抜ける</text></g>
+    <g class="s2"><rect x="394" y="24" width="350" height="100" rx="10" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)"/>
+      <text class="ttl" x="569" y="50" text-anchor="middle" style="fill:var(--fig-green)">例を1つ見せる</text>
+      <rect x="418" y="62" width="302" height="50" rx="6" fill="var(--fig-surface)" stroke="var(--fig-line-green)"/>
+      <text class="mono" x="432" y="82">入力: 「この関数は何をする？」</text>
+      <text class="mono" x="432" y="102">出力: 「役割 / 引数 / 戻り値 を1行ずつ」</text></g>
+    <g class="s3"><rect x="16" y="140" width="728" height="102" rx="10" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
+      <text class="ttl" x="40" y="164">例が伝えるもの</text>
+      <text class="lbl" x="40" y="192">形式（項目の並び・記号・長さ）</text>
+      <text class="lbl" x="290" y="192">粒度（どこまで細かく書くか）</text>
+      <text class="lbl" x="540" y="192">語調（です・ます／体言止め）</text>
+      <text class="sm" x="40" y="222">これらを言葉で全部指定するのは難しい。1つの実物が、まとめて伝える</text></g>
+  </svg>
+  </div></div>
+  <div class="detail">
+    <h3>図の読み方</h3>
+    <ol class="ann">
+      <li><span class="n">1</span><span><b>「説明を厚くする」</b>（左・赤）── 条件を言葉で積み上げるやり方。指定が増えるほど、どれかが抜けます。しかも<b>どれが抜けたかは、出力を見るまで分かりません</b>。</span></li>
+      <li><span class="n">2</span><span><b>「例を1つ見せる」</b>（右・緑）── 入力と出力を<b>対で</b>1つ置くだけ。左のような条件はひとつも書いていません。</span></li>
+      <li><span class="n">3</span><span><b>「例が伝えるもの」</b>（下）── その1つが<b>同時に伝えている中身</b>の内訳です。形式・粒度・語調。これらを言葉で全部書き出そうとすると、左の問題が起きます。</span></li>
+      <li><span class="n">4</span><span>例は<b>入力とセット</b>で示すのが要点です。出力だけ見せても「どんなときにその形にするのか」が伝わりません。</span></li>
+    </ol>
+    <div class="myth">
+      <span class="t">誤解</span><span>「例は多いほどよい」</span>
+      <span class="t o">実際は</span><span>例もコンテキストを消費します。<b>効くのは最初の1〜3個</b>で、そこから先は伸びが鈍ります。数より、下で扱う<b>選び方</b>です。</span>
+    </div>
+  </div>
+  <p class="point"><b>ポイント</b>曖昧な依頼を長文で補うより、<b>実物を1つ</b>。ただし入力と出力を対で示す。</p>
+
+<h3 class="sub" id="fewshot-2">例は「難しいところ」から選ぶ</h3>
+<p class="lead">いちばん典型的な例を並べても、判断に迷う場面では効きません。</p>
+  <div class="figbox"><div class="diagram run">
+  <svg viewBox="0 0 760 260">
+    <g class="s1"><rect x="16" y="24" width="230" height="100" rx="10" fill="var(--fig-fill-red)" stroke="var(--fig-line-red)"/>
+      <text class="ttl" x="131" y="50" text-anchor="middle" style="fill:var(--fig-red)">典型例ばかり</text>
+      <text class="sm" x="40" y="78">誰が見ても明らかな例を3つ</text>
+      <text class="sm" x="40" y="100">→ 迷う場面の助けにならない</text></g>
+    <g class="s2"><rect x="264" y="24" width="230" height="100" rx="10" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)"/>
+      <text class="ttl" x="379" y="50" text-anchor="middle" style="fill:var(--fig-green)">境界の例</text>
+      <text class="sm" x="288" y="78">「これは該当する／しない」の</text>
+      <text class="sm" x="288" y="100">きわどい例を選ぶ</text></g>
+    <g class="s3"><rect x="512" y="24" width="232" height="100" rx="10" fill="var(--fig-fill-blue)" stroke="var(--fig-line-blue)"/>
+      <text class="ttl" x="628" y="50" text-anchor="middle" style="fill:var(--fig-blue)">誤りの例</text>
+      <text class="sm" x="536" y="78">「こう答えたのは誤り。理由は…」</text>
+      <text class="sm" x="536" y="100">を対で示す</text></g>
+    <g class="s4"><rect x="16" y="140" width="728" height="102" rx="10" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
+      <text class="ttl" x="40" y="164">例を作るときの3つの決まりごと</text>
+      <text class="lbl" x="40" y="192">① 形式を完全に揃える（例どうしがずれていると、そのずれごと学ぶ）</text>
+      <text class="lbl" x="40" y="216">② 出現しうる分類を偏りなく含める（片寄ると、その分類に引っぱられる）</text>
+      <text class="lbl" x="40" y="240">③ 実際に間違えた出力を、次の例として足していく</text></g>
+  </svg>
+  </div></div>
+  <div class="detail">
+    <h3>図の読み方</h3>
+    <ol class="ann">
+      <li><span class="n">1</span><span><b>「典型例ばかり」</b>（左）── もともと迷わない場面にしか効きません。<b>例を足したのに精度が上がらない</b>ときは、たいていこれです。</span></li>
+      <li><span class="n">2</span><span><b>「境界の例」</b>（中央）── 「ここまでは該当、ここからは該当しない」という<b>線を、例で引きます</b>。言葉で線を引くより速く伝わります。</span></li>
+      <li><span class="n">3</span><span><b>「誤りの例」</b>（右）── 理由と対で示すと、避けるべき方向が伝わります。</span></li>
+      <li><span class="n">4</span><span><b>「3つの決まりごと」</b>（下）── とくに③。<b>実際に間違えた出力を例に昇格させる</b>のが、いちばん効率のよい増やし方です。探す手間がなく、必ず境界の例になっているからです。</span></li>
+    </ol>
+    <div class="ex"><span class="exl">Domain 3 とのつながり</span>
+    ③は、Domain 3 の「反復的な改善」と同じ考え方です。<b>気づいた基準を会話で終わらせず、例として書き戻す。</b>次回から自動で効きます。</div>
+  </div>
+  <p class="point"><b>ポイント</b>例の価値は数ではなく<b>どこを示すか</b>。境界と誤りを見せると、判断が安定する。</p>
+</section>
+<!-- ▲ 本文 -->
+<nav class="secpager">
+<a class="pgv prev" href="../04-prompt/07-criteria.html"><span class="pgv-l">前へ</span>4-7　基準を明示する / ゼロ件を許す</a>
+<span class="pgv-n">Domain 4 8 / 15</span>
+<a class="pgv next" href="../04-prompt/09-q12.html"><span class="pgv-l">次へ</span>4-9　理解度チェック ─ タスク 4.1〜4.2</a>
+</nav>
+</main>
+</div>
+<div class="modal" id="searchModal" hidden>
+  <div class="modal-box">
+    <input id="searchInput" type="search" placeholder="用語・見出し・本文を検索（例: input_schema、キャッシュ）" autocomplete="off">
+    <div id="searchResults" class="results"></div>
+    <div class="modal-foot"><kbd>Esc</kbd> で閉じる</div>
+  </div>
+</div>
+<script src="../assets/quiz-data.js?v=4385afea"></script>
+<script src="../assets/search-index.js?v=98a5172a"></script>
+<script src="../assets/app.js?v=1c7668ec"></script>
+</body></html>

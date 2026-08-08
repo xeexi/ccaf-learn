@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="ja" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>4-14　多重レビュー ─ Domain 4 ─ CCAR-F 学習ノート</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css?v=3c97e055">
+</head>
+<body data-page="multi">
+<script>(function(){var t=localStorage.getItem('ccarf-theme');if(t)document.documentElement.dataset.theme=t;})();</script>
+<nav class="domnav">
+  <a class="brand" href="../index.html"><span class="brand-mark">CCAR-F</span><span class="brand-sub">学習ノート</span></a>
+  <div class="nav-list"><a class="nav-item" data-domain="basics" href="../00-basics/01-flow.html" title="会話の実体">
+       <span class="nav-num">前提</span><span class="nav-title">会話の実体</span></a>
+<a class="nav-item" data-domain="agentic" href="../01-agentic/01-d1about.html" title="エージェント設計とオーケストレーション">
+       <span class="nav-num">Domain 1</span><span class="nav-title">エージェント設計</span></a>
+<a class="nav-item" data-domain="tools" href="../02-tools/01-d2about.html" title="ツール設計と MCP 連携">
+       <span class="nav-num">Domain 2</span><span class="nav-title">ツールと MCP</span></a>
+<a class="nav-item" data-domain="code" href="../03-claude-code/01-about.html" title="Claude Code の設定とワークフロー">
+       <span class="nav-num">Domain 3</span><span class="nav-title">Claude Code</span></a>
+<a class="nav-item on" data-domain="prompt" href="../04-prompt/01-d4about.html" title="プロンプト設計と構造化出力">
+       <span class="nav-num">Domain 4</span><span class="nav-title">プロンプト設計</span></a>
+<a class="nav-item" data-domain="context" href="../05-context/01-d5about.html" title="コンテキスト管理と信頼性">
+       <span class="nav-num">Domain 5</span><span class="nav-title">コンテキスト管理</span></a>
+<a class="nav-item" data-domain="summary" href="../06-summary/01-all.html" title="全体をもう一度">
+       <span class="nav-num">まとめ</span><span class="nav-title">全体をもう一度</span></a></div>
+  <div class="search-wrap">
+  <button class="search-btn" id="openSearch" aria-label="検索"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span>検索</span><kbd>/</kbd></button>
+</div>
+</nav>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-muted)"/></marker>
+  <marker id="ara" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-amber)"/></marker>
+  <marker id="arb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-blue)"/></marker>
+  <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-red)"/></marker>
+  <marker id="arg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-green)"/></marker>
+</defs></svg>
+<div class="shell">
+<aside class="toc">
+  <div class="toc-head">Domain 4</div>
+  <nav class="toc-list"><a class="toc-link" href="../04-prompt/01-d4about.html">4-1　言い方で結果が変わる部分</a>
+<a class="toc-link" href="../04-prompt/02-roles.html">4-2　system / user / assistant</a>
+<a class="toc-link" href="../04-prompt/03-order.html">4-3　並べる順番</a>
+<a class="toc-link" href="../04-prompt/04-think.html">4-4　考えさせる ─ thinking</a>
+<a class="toc-link" href="../04-prompt/05-thinkapi.html">4-5　thinking の実物 ─ 何を送り、何が届くか</a>
+<a class="toc-link toc-quiz" href="../04-prompt/06-q0.html">4-6　理解度チェック ─ 基本</a>
+<a class="toc-link" href="../04-prompt/07-criteria.html">4-7　基準を明示する / ゼロ件を許す</a>
+<a class="toc-link" href="../04-prompt/08-fewshot.html">4-8　few-shot ─ 例を見せる</a>
+<a class="toc-link toc-quiz" href="../04-prompt/09-q12.html">4-9　理解度チェック ─ タスク 4.1〜4.2</a>
+<a class="toc-link" href="../04-prompt/10-struct.html">4-10　構造化出力と tool_choice</a>
+<a class="toc-link" href="../04-prompt/11-verify.html">4-11　検証と再試行</a>
+<a class="toc-link toc-quiz" href="../04-prompt/12-q34.html">4-12　理解度チェック ─ タスク 4.3〜4.4</a>
+<a class="toc-link" href="../04-prompt/13-batch.html">4-13　バッチ処理</a>
+<a class="toc-link on" href="../04-prompt/14-multi.html">4-14　多重レビュー</a>
+<a class="toc-link toc-sub" href="#multi-1">1回の判定を信じない構成</a>
+<a class="toc-link toc-sub" href="#multi-2">倍のコストを払う価値があるか</a>
+<a class="toc-link toc-quiz" href="../04-prompt/15-q56.html">4-15　理解度チェック ─ タスク 4.5〜4.6</a></nav>
+</aside>
+<main class="doc">
+<p class="crumb" data-domain="prompt"><b>Domain 4</b><span>プロンプト設計と構造化出力</span><span class="w">出題比率 20%</span></p>
+<!-- ▼ 本文 ─ ここだけを編集する。この前後は node tools/reindex.mjs が書き出す -->
+<section class="sec" id="multi">
+<header class="sec-head">
+  <h2>4-14　多重レビュー</h2>
+</header>
+
+<h3 class="sub" id="multi-1">1回の判定を信じない構成</h3>
+<p class="lead">見落としが致命的な場面では、<b>同じ入力を複数回・複数の観点で通します</b>。</p>
+<p class="task"><span class="tn">BLUEPRINT 4.6</span><b>多重・多段レビュー構成</b></p>
+<p class="goal"><b>ゴール</b>多重化の是非をコストで判断できる。</p>
+  <div class="figbox"><div class="diagram run">
+  <svg viewBox="0 0 760 260">
+    <g class="s1"><rect x="16" y="24" width="350" height="212" rx="12" fill="var(--fig-fill-blue)" stroke="var(--fig-line-blue)"/>
+      <text class="ttl" x="191" y="50" text-anchor="middle" style="fill:var(--fig-blue)">multi-instance（横に並べる）</text>
+      <rect x="40" y="66" width="302" height="28" rx="6" fill="var(--fig-surface)" stroke="var(--fig-line-blue)"/>
+      <text class="sm" x="191" y="85" text-anchor="middle">同じ入力</text>
+      <line x1="120" y1="98" x2="90" y2="118" stroke="var(--fig-muted)" stroke-width="1.5" marker-end="url(#ar)"/>
+      <line x1="191" y1="98" x2="191" y2="118" stroke="var(--fig-muted)" stroke-width="1.5" marker-end="url(#ar)"/>
+      <line x1="262" y1="98" x2="292" y2="118" stroke="var(--fig-muted)" stroke-width="1.5" marker-end="url(#ar)"/>
+      <rect x="40" y="122" width="90" height="46" rx="6" fill="var(--fig-surface)" stroke="var(--fig-line)"/><text class="sm" x="85" y="150" text-anchor="middle">安全性の観点</text>
+      <rect x="146" y="122" width="90" height="46" rx="6" fill="var(--fig-surface)" stroke="var(--fig-line)"/><text class="sm" x="191" y="150" text-anchor="middle">性能の観点</text>
+      <rect x="252" y="122" width="90" height="46" rx="6" fill="var(--fig-surface)" stroke="var(--fig-line)"/><text class="sm" x="297" y="150" text-anchor="middle">仕様の観点</text>
+      <rect x="90" y="184" width="202" height="34" rx="6" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)"/>
+      <text class="sm" x="191" y="206" text-anchor="middle" style="fill:var(--fig-green)">結果を突き合わせる</text></g>
+    <g class="s2"><rect x="394" y="24" width="350" height="212" rx="12" fill="var(--fig-fill-amber)" stroke="var(--fig-line-amber)"/>
+      <text class="ttl" x="569" y="50" text-anchor="middle" style="fill:var(--fig-amber)">multi-pass（縦に重ねる）</text>
+      <rect x="418" y="70" width="302" height="34" rx="6" fill="var(--fig-surface)" stroke="var(--fig-line-amber)"/>
+      <text class="sm" x="569" y="92" text-anchor="middle">1回目：候補を広く挙げる</text>
+      <line x1="569" y1="108" x2="569" y2="122" stroke="var(--fig-amber)" stroke-width="2" marker-end="url(#ara)"/>
+      <rect x="418" y="126" width="302" height="34" rx="6" fill="var(--fig-surface)" stroke="var(--fig-line-amber)"/>
+      <text class="sm" x="569" y="148" text-anchor="middle">2回目：1件ずつ本当かを検証する</text>
+      <line x1="569" y1="164" x2="569" y2="178" stroke="var(--fig-amber)" stroke-width="2" marker-end="url(#ara)"/>
+      <rect x="418" y="182" width="302" height="34" rx="6" fill="var(--fig-surface)" stroke="var(--fig-line-amber)"/>
+      <text class="sm" x="569" y="204" text-anchor="middle">3回目：残ったものをまとめる</text></g>
+  </svg>
+  </div></div>
+  <div class="detail">
+    <h3>図の読み方</h3>
+    <ol class="ann">
+      <li><span class="n">1</span><span>左が<b>multi-instance</b>。同じ入力を<b>別々の観点</b>で並行して見せ、結果を突き合わせます。</span></li>
+      <li><span class="n">2</span><span>観点を変えるのが要点です。<b>同じ指示を3回投げても、同じ見落としをします。</b>安全性・性能・仕様のように<b>違う目</b>を当てます。</span></li>
+      <li><span class="n">3</span><span>右が<b>multi-pass</b>。<b>段階で役割を変えます</b>。1回目は広く拾い、2回目で1件ずつ潰す。</span></li>
+      <li><span class="n">4</span><span>この分業が効くのは、<b>「広く挙げる」と「厳しく絞る」を同時にやらせると両方中途半端になる</b>からです。Task 4.1 の基準の話と裏表です。</span></li>
+    </ol>
+    <div class="ex"><span class="exl">組み合わせる</span>
+    1回目で候補を広く挙げ（再現率を優先）、2回目で<b>1件ずつ「本当に該当するか」を検証</b>する（適合率を優先）。<br>
+    2回目は1件が1リクエストになるので、<b>件数が多いならバッチ処理と相性が良い</b>です（Task 4.5）。</div>
+  </div>
+  <p class="point"><b>ポイント</b><b>横に並べる＝観点を変える。縦に重ねる＝役割を変える。</b>どちらも「1回の判定を信じない」ための構成。</p>
+
+<h3 class="sub" id="multi-2">倍のコストを払う価値があるか</h3>
+<p class="lead">多重レビューは<b>回数ぶん確実に高くなります</b>。使いどころを絞る必要があります。</p>
+  <div class="figbox"><div class="diagram run">
+  <svg viewBox="0 0 760 260">
+    <g class="s1"><rect x="16" y="24" width="350" height="100" rx="10" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)"/>
+      <text class="ttl" x="191" y="50" text-anchor="middle" style="fill:var(--fig-green)">多重にする価値がある</text>
+      <text class="sm" x="40" y="76">見落とすと取り返しがつかない（安全性・法務・課金）</text>
+      <text class="sm" x="40" y="98">件数が少なく、1件の重みが大きい</text>
+      <text class="sm" x="40" y="118">人が全部見るには多すぎる</text></g>
+    <g class="s2"><rect x="394" y="24" width="350" height="100" rx="10" fill="var(--fig-fill-red)" stroke="var(--fig-line-red)"/>
+      <text class="ttl" x="569" y="50" text-anchor="middle" style="fill:var(--fig-red)">やりすぎ</text>
+      <text class="sm" x="418" y="76">1回で十分な単純な分類にまで重ねる</text>
+      <text class="sm" x="418" y="98">同じ指示をただ3回繰り返す</text>
+      <text class="sm" x="418" y="118">検証で落ちても結局そのまま採用する</text></g>
+    <g class="s3"><rect x="16" y="140" width="728" height="106" rx="10" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
+      <text class="ttl" x="40" y="164">安く重ねる工夫</text>
+      <text class="lbl" x="40" y="192">・2回目以降は<tspan font-weight="700">対象を絞る</tspan>（1回目で候補になったものだけ検証する）</text>
+      <text class="lbl" x="40" y="216">・急がない検証は<tspan font-weight="700">バッチに回す</tspan>（半額・Task 4.5）</text>
+      <text class="lbl" x="40" y="240">・共通の長いプロンプトは<tspan font-weight="700">前に置いてキャッシュを効かせる</tspan>（前提編）</text></g>
+  </svg>
+  </div></div>
+  <div class="detail">
+    <h3>図の読み方</h3>
+    <ol class="ann">
+      <li><span class="n">1</span><span><b>「多重にする価値がある」</b>（左）── 共通するのは<b>見落としのコストが、追加の実行コストより大きい</b>ことです。この一文が判断基準になります。</span></li>
+      <li><span class="n">2</span><span><b>「やりすぎ」</b>（右）── とくに「同じ指示をただ繰り返す」は効果が薄い ── <b>同じ見落としが3回起きるだけ</b>です。観点を変えなければ重ねる意味がありません。</span></li>
+      <li><span class="n">3</span><span><b>「安く重ねる工夫」</b>（下）── <b>2回目以降の対象を絞る</b>のが最も効きます。全件を2回通す必要はありません。</span></li>
+      <li><span class="n">4</span><span>急がない検証パスは<b>バッチに回せば半額</b>です。多重レビューとバッチは組み合わせやすい。</span></li>
+    </ol>
+    <div class="myth">
+      <span class="t">誤解</span><span>「多重にすれば精度が上がる」</span>
+      <span class="t o">実際は</span><span>上がるのは<b>観点や役割を変えたとき</b>だけ。同じ指示の繰り返しは、<b>コストだけが倍になります</b>。</span>
+    </div>
+  </div>
+  <p class="point"><b>ポイント</b>多重化の判断は「精度が上がるか」ではなく<b>「見落としのコストが実行コストを上回るか」</b>。</p>
+</section>
+<!-- ▲ 本文 -->
+<nav class="secpager">
+<a class="pgv prev" href="../04-prompt/13-batch.html"><span class="pgv-l">前へ</span>4-13　バッチ処理</a>
+<span class="pgv-n">Domain 4 14 / 15</span>
+<a class="pgv next" href="../04-prompt/15-q56.html"><span class="pgv-l">次へ</span>4-15　理解度チェック ─ タスク 4.5〜4.6</a>
+</nav>
+</main>
+</div>
+<div class="modal" id="searchModal" hidden>
+  <div class="modal-box">
+    <input id="searchInput" type="search" placeholder="用語・見出し・本文を検索（例: input_schema、キャッシュ）" autocomplete="off">
+    <div id="searchResults" class="results"></div>
+    <div class="modal-foot"><kbd>Esc</kbd> で閉じる</div>
+  </div>
+</div>
+<script src="../assets/quiz-data.js?v=4385afea"></script>
+<script src="../assets/search-index.js?v=98a5172a"></script>
+<script src="../assets/app.js?v=1c7668ec"></script>
+</body></html>

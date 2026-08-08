@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="ja" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>5-8　失敗を親まで届ける ─ Domain 5 ─ CCAR-F 学習ノート</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css?v=3c97e055">
+</head>
+<body data-page="propagate">
+<script>(function(){var t=localStorage.getItem('ccarf-theme');if(t)document.documentElement.dataset.theme=t;})();</script>
+<nav class="domnav">
+  <a class="brand" href="../index.html"><span class="brand-mark">CCAR-F</span><span class="brand-sub">学習ノート</span></a>
+  <div class="nav-list"><a class="nav-item" data-domain="basics" href="../00-basics/01-flow.html" title="会話の実体">
+       <span class="nav-num">前提</span><span class="nav-title">会話の実体</span></a>
+<a class="nav-item" data-domain="agentic" href="../01-agentic/01-d1about.html" title="エージェント設計とオーケストレーション">
+       <span class="nav-num">Domain 1</span><span class="nav-title">エージェント設計</span></a>
+<a class="nav-item" data-domain="tools" href="../02-tools/01-d2about.html" title="ツール設計と MCP 連携">
+       <span class="nav-num">Domain 2</span><span class="nav-title">ツールと MCP</span></a>
+<a class="nav-item" data-domain="code" href="../03-claude-code/01-about.html" title="Claude Code の設定とワークフロー">
+       <span class="nav-num">Domain 3</span><span class="nav-title">Claude Code</span></a>
+<a class="nav-item" data-domain="prompt" href="../04-prompt/01-d4about.html" title="プロンプト設計と構造化出力">
+       <span class="nav-num">Domain 4</span><span class="nav-title">プロンプト設計</span></a>
+<a class="nav-item on" data-domain="context" href="../05-context/01-d5about.html" title="コンテキスト管理と信頼性">
+       <span class="nav-num">Domain 5</span><span class="nav-title">コンテキスト管理</span></a>
+<a class="nav-item" data-domain="summary" href="../06-summary/01-all.html" title="全体をもう一度">
+       <span class="nav-num">まとめ</span><span class="nav-title">全体をもう一度</span></a></div>
+  <div class="search-wrap">
+  <button class="search-btn" id="openSearch" aria-label="検索"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span>検索</span><kbd>/</kbd></button>
+</div>
+</nav>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-muted)"/></marker>
+  <marker id="ara" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-amber)"/></marker>
+  <marker id="arb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-blue)"/></marker>
+  <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-red)"/></marker>
+  <marker id="arg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-green)"/></marker>
+</defs></svg>
+<div class="shell">
+<aside class="toc">
+  <div class="toc-head">Domain 5</div>
+  <nav class="toc-list"><a class="toc-link" href="../05-context/01-d5about.html">5-1　長く動かすと必ず崩れる</a>
+<a class="toc-link" href="../05-context/02-compact.html">5-2　窓が埋まったら</a>
+<a class="toc-link" href="../05-context/03-sub.html">5-3　サブエージェント</a>
+<a class="toc-link" href="../05-context/04-hooks.html">5-4　確実にしたいことは仕組み側へ</a>
+<a class="toc-link" href="../05-context/05-shape.html">5-5　返す量を設計する</a>
+<a class="toc-link" href="../05-context/06-confidence.html">5-6　確信が持てないときに止める</a>
+<a class="toc-link" href="../05-context/07-observe.html">5-7　壊れたことに気づける</a>
+<a class="toc-link on" href="../05-context/08-propagate.html">5-8　失敗を親まで届ける</a>
+<a class="toc-link toc-quiz" href="../05-context/09-q.html">5-9　理解度チェック</a>
+<a class="toc-link toc-quiz" href="../05-context/10-q2.html">5-10　理解度チェック ─ 信頼性</a></nav>
+</aside>
+<main class="doc">
+<p class="crumb" data-domain="context"><b>Domain 5</b><span>コンテキスト管理と信頼性</span><span class="w">出題比率 15%</span></p>
+<!-- ▼ 本文 ─ ここだけを編集する。この前後は node tools/reindex.mjs が書き出す -->
+<section class="sec" id="propagate">
+<header class="sec-head">
+  <h2>5-8　失敗を親まで届ける</h2>
+</header>
+<p class="lead">子の失敗は要約に紛れて消えます。何体か走らせたときに<b>「全部うまくいった」ように見えるのが最も危険</b>です。</p>
+<p class="task"><span class="tn">BLUEPRINT 5.3</span><b>複数エージェント間のエラー伝播</b></p>
+<p class="goal"><b>ゴール</b>部分的な失敗を落とさない返し方を設計できる。</p>
+  <div class="figbox"><div class="diagram run">
+  <svg viewBox="0 0 760 356">
+    <g class="s1"><rect x="16" y="30" width="150" height="44" rx="8" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)"/>
+      <text class="sm" x="91" y="58" text-anchor="middle" style="fill:var(--fig-green)">子A 成功</text>
+      <rect x="16" y="86" width="150" height="44" rx="8" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)"/>
+      <text class="sm" x="91" y="114" text-anchor="middle" style="fill:var(--fig-green)">子B 成功</text>
+      <rect x="16" y="142" width="150" height="44" rx="8" fill="var(--fig-fill-red)" stroke="var(--fig-line-red)"/>
+      <text class="sm" x="91" y="170" text-anchor="middle" style="fill:var(--fig-red)">子C 失敗</text>
+      <path d="M172 52 L200 52 L200 108 L216 108" fill="none" stroke="var(--fig-muted)" stroke-width="2"/>
+      <path d="M172 108 L216 108" fill="none" stroke="var(--fig-muted)" stroke-width="2"/>
+      <path d="M172 164 L200 164 L200 108 L216 108" fill="none" stroke="var(--fig-red)" stroke-width="2"/></g>
+
+    <g class="s2"><rect x="222" y="30" width="250" height="112" rx="10" fill="var(--fig-fill-red)" stroke="var(--fig-line-red)"/>
+      <text class="lbl" x="242" y="56" style="fill:var(--fig-red)">要約だけを返す</text>
+      <text class="sm" x="242" y="80">「調査しました。結論は…」</text>
+      <text class="sm" x="242" y="104">失敗した1体の分が言及されない</text>
+      <text class="sm" x="242" y="128">＝ 3分の2の材料で結論が出る</text>
+      <path d="M478 86 L510 86" fill="none" stroke="var(--fig-red)" stroke-width="2" marker-end="url(#arr)"/>
+      <rect x="516" y="58" width="228" height="56" rx="10" fill="var(--fig-fill-red)" stroke="var(--fig-line-red)"/>
+      <text class="sm" x="630" y="82" text-anchor="middle" style="fill:var(--fig-red)">親は全部揃ったと思う</text>
+      <text class="sm" x="630" y="102" text-anchor="middle">欠けに気づけない</text></g>
+
+    <g class="s3"><rect x="222" y="176" width="250" height="136" rx="10" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)" stroke-width="2"/>
+      <text class="lbl" x="242" y="202" style="fill:var(--fig-green)">成否の欄を持たせる</text>
+      <rect x="242" y="214" width="210" height="24" rx="4" fill="var(--fig-surface)" stroke="var(--fig-line)"/>
+      <text class="sm" x="254" y="231">できたこと</text>
+      <rect x="242" y="242" width="210" height="24" rx="4" fill="var(--fig-surface)" stroke="var(--fig-line-red)"/>
+      <text class="sm" x="254" y="259">できなかったこと・その理由</text>
+      <rect x="242" y="270" width="210" height="24" rx="4" fill="var(--fig-surface)" stroke="var(--fig-line)"/>
+      <text class="sm" x="254" y="287">結論の確かさ（何が欠けているか）</text>
+      <path d="M478 244 L510 244" fill="none" stroke="var(--fig-green)" stroke-width="2" marker-end="url(#arg)"/></g>
+    <g class="s4"><rect x="516" y="200" width="228" height="88" rx="10" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)"/>
+      <text class="sm" x="630" y="228" text-anchor="middle" style="fill:var(--fig-green)">親が判断できる</text>
+      <text class="sm" x="630" y="250" text-anchor="middle">やり直す／このまま進める</text>
+      <text class="sm" x="630" y="272" text-anchor="middle">／人に渡す</text></g>
+    <text class="sm s5" x="380" y="340" text-anchor="middle">1体の失敗で全部やめるのか、残りで進めるのか ── 決めるのは親。子は事実を返すだけ</text>
+  </svg>
+  </div></div>
+  <div class="detail"><h3>図の読み方</h3>
+    <ol class="ann">
+      <li><span class="n">1</span><span>左の3体のうち1体だけが失敗しています。この形が<b>いちばん見つけにくい失敗</b>です ── 全滅なら誰でも気づきます。</span></li>
+      <li><span class="n">2</span><span>上（赤）が危ういのは、嘘をついていないところです。<b>書かれていることは正しく、書かれていないことがある</b>だけ。だから読んでも違和感が出ません。</span></li>
+      <li><span class="n">3</span><span>下（緑）の2つ目の欄が要点です。<b>できなかったことを書く場所を先に作る</b>と、空欄かどうかで機械的に判定できます（引き継ぎ票と同じ考え方）。</span></li>
+      <li><span class="n">4</span><span>いちばん下の一文が役割分担です。<b>打ち切るかどうかを子に決めさせない</b> ── 子は自分の範囲しか見えていないので、全体の判断ができません。</span></li>
+    </ol>
+    <div class="myth">
+      <span class="t">誤解</span><span>「子が失敗したら、例外や異常終了で親に伝わる」</span>
+      <span class="t o">実際は</span><span>子は自分の中で失敗を処理して、<b>要約だけを返します</b>。返す形に欄を作っていなければ、失敗は要約から抜け落ちたまま親に届きます。</span>
+    </div>
+  </div>
+<p class="point"><b>ポイント</b>部分的な失敗がいちばん危ない。返す形に「できなかったこと」の欄を作り、続行の判断は親が持つ。</p>
+</section>
+<!-- ▲ 本文 -->
+<nav class="secpager">
+<a class="pgv prev" href="../05-context/07-observe.html"><span class="pgv-l">前へ</span>5-7　壊れたことに気づける</a>
+<span class="pgv-n">Domain 5 8 / 10</span>
+<a class="pgv next" href="../05-context/09-q.html"><span class="pgv-l">次へ</span>5-9　理解度チェック</a>
+</nav>
+</main>
+</div>
+<div class="modal" id="searchModal" hidden>
+  <div class="modal-box">
+    <input id="searchInput" type="search" placeholder="用語・見出し・本文を検索（例: input_schema、キャッシュ）" autocomplete="off">
+    <div id="searchResults" class="results"></div>
+    <div class="modal-foot"><kbd>Esc</kbd> で閉じる</div>
+  </div>
+</div>
+<script src="../assets/quiz-data.js?v=4385afea"></script>
+<script src="../assets/search-index.js?v=98a5172a"></script>
+<script src="../assets/app.js?v=1c7668ec"></script>
+</body></html>

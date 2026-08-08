@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="ja" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>4-7　基準を明示する / ゼロ件を許す ─ Domain 4 ─ CCAR-F 学習ノート</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css?v=3c97e055">
+</head>
+<body data-page="criteria">
+<script>(function(){var t=localStorage.getItem('ccarf-theme');if(t)document.documentElement.dataset.theme=t;})();</script>
+<nav class="domnav">
+  <a class="brand" href="../index.html"><span class="brand-mark">CCAR-F</span><span class="brand-sub">学習ノート</span></a>
+  <div class="nav-list"><a class="nav-item" data-domain="basics" href="../00-basics/01-flow.html" title="会話の実体">
+       <span class="nav-num">前提</span><span class="nav-title">会話の実体</span></a>
+<a class="nav-item" data-domain="agentic" href="../01-agentic/01-d1about.html" title="エージェント設計とオーケストレーション">
+       <span class="nav-num">Domain 1</span><span class="nav-title">エージェント設計</span></a>
+<a class="nav-item" data-domain="tools" href="../02-tools/01-d2about.html" title="ツール設計と MCP 連携">
+       <span class="nav-num">Domain 2</span><span class="nav-title">ツールと MCP</span></a>
+<a class="nav-item" data-domain="code" href="../03-claude-code/01-about.html" title="Claude Code の設定とワークフロー">
+       <span class="nav-num">Domain 3</span><span class="nav-title">Claude Code</span></a>
+<a class="nav-item on" data-domain="prompt" href="../04-prompt/01-d4about.html" title="プロンプト設計と構造化出力">
+       <span class="nav-num">Domain 4</span><span class="nav-title">プロンプト設計</span></a>
+<a class="nav-item" data-domain="context" href="../05-context/01-d5about.html" title="コンテキスト管理と信頼性">
+       <span class="nav-num">Domain 5</span><span class="nav-title">コンテキスト管理</span></a>
+<a class="nav-item" data-domain="summary" href="../06-summary/01-all.html" title="全体をもう一度">
+       <span class="nav-num">まとめ</span><span class="nav-title">全体をもう一度</span></a></div>
+  <div class="search-wrap">
+  <button class="search-btn" id="openSearch" aria-label="検索"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span>検索</span><kbd>/</kbd></button>
+</div>
+</nav>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-muted)"/></marker>
+  <marker id="ara" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-amber)"/></marker>
+  <marker id="arb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-blue)"/></marker>
+  <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-red)"/></marker>
+  <marker id="arg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-green)"/></marker>
+</defs></svg>
+<div class="shell">
+<aside class="toc">
+  <div class="toc-head">Domain 4</div>
+  <nav class="toc-list"><a class="toc-link" href="../04-prompt/01-d4about.html">4-1　言い方で結果が変わる部分</a>
+<a class="toc-link" href="../04-prompt/02-roles.html">4-2　system / user / assistant</a>
+<a class="toc-link" href="../04-prompt/03-order.html">4-3　並べる順番</a>
+<a class="toc-link" href="../04-prompt/04-think.html">4-4　考えさせる ─ thinking</a>
+<a class="toc-link" href="../04-prompt/05-thinkapi.html">4-5　thinking の実物 ─ 何を送り、何が届くか</a>
+<a class="toc-link toc-quiz" href="../04-prompt/06-q0.html">4-6　理解度チェック ─ 基本</a>
+<a class="toc-link on" href="../04-prompt/07-criteria.html">4-7　基準を明示する / ゼロ件を許す</a>
+<a class="toc-link toc-sub" href="#criteria-1">「探して」ではなく「これに該当するものだけ」</a>
+<a class="toc-link toc-sub" href="#criteria-2">ゼロ件を返せるようにする</a>
+<a class="toc-link" href="../04-prompt/08-fewshot.html">4-8　few-shot ─ 例を見せる</a>
+<a class="toc-link toc-quiz" href="../04-prompt/09-q12.html">4-9　理解度チェック ─ タスク 4.1〜4.2</a>
+<a class="toc-link" href="../04-prompt/10-struct.html">4-10　構造化出力と tool_choice</a>
+<a class="toc-link" href="../04-prompt/11-verify.html">4-11　検証と再試行</a>
+<a class="toc-link toc-quiz" href="../04-prompt/12-q34.html">4-12　理解度チェック ─ タスク 4.3〜4.4</a>
+<a class="toc-link" href="../04-prompt/13-batch.html">4-13　バッチ処理</a>
+<a class="toc-link" href="../04-prompt/14-multi.html">4-14　多重レビュー</a>
+<a class="toc-link toc-quiz" href="../04-prompt/15-q56.html">4-15　理解度チェック ─ タスク 4.5〜4.6</a></nav>
+</aside>
+<main class="doc">
+<p class="crumb" data-domain="prompt"><b>Domain 4</b><span>プロンプト設計と構造化出力</span><span class="w">出題比率 20%</span></p>
+<!-- ▼ 本文 ─ ここだけを編集する。この前後は node tools/reindex.mjs が書き出す -->
+<section class="sec" id="criteria">
+<header class="sec-head">
+  <h2>4-7　基準を明示する / ゼロ件を許す</h2>
+</header>
+
+<h3 class="sub" id="criteria-1">「探して」ではなく「これに該当するものだけ」</h3>
+<p class="lead">基準を書かないと、モデルは広く拾います。増えるのは<b>誤検知</b>です。</p>
+<p class="task"><span class="tn">BLUEPRINT 4.1</span><b>精度を上げ誤検知を減らす明示的な基準</b></p>
+<p class="goal"><b>ゴール</b>「見つけて」が基準になっていない理由を説明できる。</p>
+  <div class="figbox"><div class="diagram run">
+  <svg viewBox="0 0 760 260">
+    <g class="s1"><rect x="16" y="24" width="350" height="210" rx="12" fill="var(--fig-fill-red)" stroke="var(--fig-line-red)"/>
+      <text class="ttl" x="191" y="50" text-anchor="middle" style="fill:var(--fig-red)">基準なし</text>
+      <rect x="40" y="66" width="302" height="30" rx="6" fill="var(--fig-surface)" stroke="var(--fig-line)"/>
+      <text class="mono" x="54" y="86">「このコードのバグを探して」</text>
+      <line x1="191" y1="102" x2="191" y2="118" stroke="var(--fig-red)" stroke-width="2" marker-end="url(#arr)"/>
+      <rect x="40" y="122" width="302" height="94" rx="6" fill="var(--fig-surface)" stroke="var(--fig-line-red)"/>
+      <text class="sm" x="54" y="144">・変数名が分かりにくい</text>
+      <text class="sm" x="54" y="164">・コメントが少ない</text>
+      <text class="sm" x="54" y="184">・ここは実際に落ちる ←本命</text>
+      <text class="sm" x="54" y="206" style="fill:var(--fig-red)">指摘は多いが、ほとんどが誤検知</text></g>
+    <g class="s2"><rect x="394" y="24" width="350" height="210" rx="12" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)"/>
+      <text class="ttl" x="569" y="50" text-anchor="middle" style="fill:var(--fig-green)">基準あり</text>
+      <rect x="418" y="66" width="302" height="66" rx="6" fill="var(--fig-surface)" stroke="var(--fig-line)"/>
+      <text class="mono" x="432" y="86">次のいずれかに該当するものだけを</text>
+      <text class="mono" x="432" y="104">バグとする。①実行時に例外 ②誤った値</text>
+      <text class="mono" x="432" y="122">③データ喪失。該当なしなら「なし」</text>
+      <line x1="569" y1="138" x2="569" y2="154" stroke="var(--fig-green)" stroke-width="2" marker-end="url(#ar)"/>
+      <rect x="418" y="158" width="302" height="58" rx="6" fill="var(--fig-surface)" stroke="var(--fig-line-green)"/>
+      <text class="sm" x="432" y="180">・ここは実際に落ちる（①に該当）</text>
+      <text class="sm" x="432" y="206" style="fill:var(--fig-green)">1件。ただし確度が高い</text></g>
+  </svg>
+  </div></div>
+  <div class="detail">
+    <h3>図の読み方</h3>
+    <ol class="ann">
+      <li><span class="n">1</span><span>左は基準を書いていない場合。<b>「バグ」の範囲が決まっていない</b>ので、気になった点をすべて拾ってきます。</span></li>
+      <li><span class="n">2</span><span>結果として<b>誤検知（false positive）が増えます</b>。件数は多いのに、確認の手間ばかりかかる状態です。</span></li>
+      <li><span class="n">3</span><span>右は<b>該当条件を列挙</b>したもの。①②③のどれかに当てはまるものだけを拾わせます。</span></li>
+      <li><span class="n">4</span><span>さらに<b>「該当なしなら『なし』と答える」</b>と書いてあるのが効きます。このすぐ下で扱います。</span></li>
+    </ol>
+    <div class="ex"><span class="exl">基準の書き方の型</span>
+    ・<b>該当するもの</b>を列挙する（できれば3つ以内）<br>
+    ・<b>該当しないもの</b>も書く（「読みにくさ・命名は対象外」）<br>
+    ・<b>境界を示す</b>（「テストコード内は対象外」）<br>
+    「よくない例を挙げるな」ではなく「<b>これに当てはまるものを挙げよ</b>」と書くのが要点です。</div>
+    <div class="myth">
+      <span class="t">誤解</span><span>「たくさん見つけてくれるほうが安全」</span>
+      <span class="t o">実際は</span><span>誤検知が多いと<b>人が確認しなくなり、結果として本物も見逃されます</b>。精度が落ちれば、その仕組み自体が使われなくなります。</span>
+    </div>
+  </div>
+  <p class="point"><b>ポイント</b>「見つけて」は基準ではない。<b>何を該当とし、何を対象外とするか</b>を書いて初めて、出力が絞れる。</p>
+
+<h3 class="sub" id="criteria-2">ゼロ件を返せるようにする</h3>
+<p class="lead">モデルは<b>何かを答えようとします</b>。空を返してよいと明示しないと、無理に何かを作ります。</p>
+  <div class="figbox"><div class="diagram run">
+  <svg viewBox="0 0 760 260">
+    <g class="s1"><rect x="16" y="26" width="350" height="90" rx="10" fill="var(--fig-fill-red)" stroke="var(--fig-line-red)"/>
+      <text class="ttl" x="40" y="52" style="fill:var(--fig-red)">「該当なし」を書かないと</text>
+      <text class="lbl" x="40" y="78">問題のないコードにも、無理に指摘を作る</text>
+      <text class="sm" x="40" y="100">＝ 出力が空になることを避けようとする</text></g>
+    <g class="s2"><rect x="394" y="26" width="350" height="90" rx="10" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)"/>
+      <text class="ttl" x="418" y="52" style="fill:var(--fig-green)">明示すると</text>
+      <text class="lbl" x="418" y="78">「該当なし」と答えられるようになる</text>
+      <text class="sm" x="418" y="100">＝ 0件が正しい答えになりうる</text></g>
+    <g class="s3"><rect x="16" y="132" width="728" height="110" rx="10" fill="var(--fig-code-bg)" stroke="var(--fig-line)"/>
+      <text class="ttl" x="40" y="156">スキーマで受け取るなら、こう表す</text>
+      <text class="mono" x="40" y="182">findings: []　　　　　　　… 空配列を許す</text>
+      <text class="mono" x="40" y="204">confidence: "high" | "low"　… 確度を返させる</text>
+      <text class="mono" x="40" y="226">category: "その他" ＋ detail　… 分類に当てはまらない場合の逃げ道</text></g>
+  </svg>
+  </div></div>
+  <div class="detail">
+    <h3>3つの受け皿は、それぞれ何を防ぐか</h3>
+    <ol class="ann">
+      <li><span class="n">1</span><span><code>findings: []</code> ── <b>0件を0件として受け取れる</b>ようにします。これがないと、モデルは空の出力を避けようとして、問題のないコードにも指摘を作ります（図の左）。</span></li>
+      <li><span class="n">2</span><span><code>confidence</code> ── 確度を一緒に返させると、<b>低いものだけ人が見る</b>という運用ができます。全件を人が確認する必要がなくなります（Domain 5 の人間レビュー設計）。</span></li>
+      <li><span class="n">3</span><span><code>category: "その他"</code> ＋ <code>detail</code> ── <b>3つのうち、いちばん効きます</b>。用意した分類に収まらない入力が来たとき、逃げ道がないと<b>必ずどこかに誤分類されます</b>。自由記述の <code>detail</code> をセットにするのは、あとで「その他」の中身を見直せるようにするためです。</span></li>
+    </ol>
+    <p>3つに共通しているのは、<b>「答えられない」を答えとして表せる形にしてある</b>ことです。表せない受け皿を渡すと、モデルは無理にでも埋めます。</p>
+    <div class="ex"><span class="exl">設問での問われ方</span>
+    「分類させると、どれにも当てはまらないものが無理に分類される」<br>
+    → <b>enum に「その他」を加え、detail の自由記述をセットにする</b>。<br>
+    「確認の手間を減らしたい」→ <b>確度を返させ、低いものだけ人が見る</b>（Domain 5 の人間レビュー設計につながります）。</div>
+  </div>
+  <p class="point"><b>ポイント</b>ゼロ件・分類不能・確信が持てない ── <b>これらを表現できる受け皿</b>を先に用意する。</p>
+</section>
+<!-- ▲ 本文 -->
+<nav class="secpager">
+<a class="pgv prev" href="../04-prompt/06-q0.html"><span class="pgv-l">前へ</span>4-6　理解度チェック ─ 基本</a>
+<span class="pgv-n">Domain 4 7 / 15</span>
+<a class="pgv next" href="../04-prompt/08-fewshot.html"><span class="pgv-l">次へ</span>4-8　few-shot ─ 例を見せる</a>
+</nav>
+</main>
+</div>
+<div class="modal" id="searchModal" hidden>
+  <div class="modal-box">
+    <input id="searchInput" type="search" placeholder="用語・見出し・本文を検索（例: input_schema、キャッシュ）" autocomplete="off">
+    <div id="searchResults" class="results"></div>
+    <div class="modal-foot"><kbd>Esc</kbd> で閉じる</div>
+  </div>
+</div>
+<script src="../assets/quiz-data.js?v=4385afea"></script>
+<script src="../assets/search-index.js?v=98a5172a"></script>
+<script src="../assets/app.js?v=1c7668ec"></script>
+</body></html>

@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="ja" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>4-10　構造化出力と tool_choice ─ Domain 4 ─ CCAR-F 学習ノート</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css?v=3c97e055">
+</head>
+<body data-page="struct">
+<script>(function(){var t=localStorage.getItem('ccarf-theme');if(t)document.documentElement.dataset.theme=t;})();</script>
+<nav class="domnav">
+  <a class="brand" href="../index.html"><span class="brand-mark">CCAR-F</span><span class="brand-sub">学習ノート</span></a>
+  <div class="nav-list"><a class="nav-item" data-domain="basics" href="../00-basics/01-flow.html" title="会話の実体">
+       <span class="nav-num">前提</span><span class="nav-title">会話の実体</span></a>
+<a class="nav-item" data-domain="agentic" href="../01-agentic/01-d1about.html" title="エージェント設計とオーケストレーション">
+       <span class="nav-num">Domain 1</span><span class="nav-title">エージェント設計</span></a>
+<a class="nav-item" data-domain="tools" href="../02-tools/01-d2about.html" title="ツール設計と MCP 連携">
+       <span class="nav-num">Domain 2</span><span class="nav-title">ツールと MCP</span></a>
+<a class="nav-item" data-domain="code" href="../03-claude-code/01-about.html" title="Claude Code の設定とワークフロー">
+       <span class="nav-num">Domain 3</span><span class="nav-title">Claude Code</span></a>
+<a class="nav-item on" data-domain="prompt" href="../04-prompt/01-d4about.html" title="プロンプト設計と構造化出力">
+       <span class="nav-num">Domain 4</span><span class="nav-title">プロンプト設計</span></a>
+<a class="nav-item" data-domain="context" href="../05-context/01-d5about.html" title="コンテキスト管理と信頼性">
+       <span class="nav-num">Domain 5</span><span class="nav-title">コンテキスト管理</span></a>
+<a class="nav-item" data-domain="summary" href="../06-summary/01-all.html" title="全体をもう一度">
+       <span class="nav-num">まとめ</span><span class="nav-title">全体をもう一度</span></a></div>
+  <div class="search-wrap">
+  <button class="search-btn" id="openSearch" aria-label="検索"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span>検索</span><kbd>/</kbd></button>
+</div>
+</nav>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-muted)"/></marker>
+  <marker id="ara" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-amber)"/></marker>
+  <marker id="arb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-blue)"/></marker>
+  <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-red)"/></marker>
+  <marker id="arg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-green)"/></marker>
+</defs></svg>
+<div class="shell">
+<aside class="toc">
+  <div class="toc-head">Domain 4</div>
+  <nav class="toc-list"><a class="toc-link" href="../04-prompt/01-d4about.html">4-1　言い方で結果が変わる部分</a>
+<a class="toc-link" href="../04-prompt/02-roles.html">4-2　system / user / assistant</a>
+<a class="toc-link" href="../04-prompt/03-order.html">4-3　並べる順番</a>
+<a class="toc-link" href="../04-prompt/04-think.html">4-4　考えさせる ─ thinking</a>
+<a class="toc-link" href="../04-prompt/05-thinkapi.html">4-5　thinking の実物 ─ 何を送り、何が届くか</a>
+<a class="toc-link toc-quiz" href="../04-prompt/06-q0.html">4-6　理解度チェック ─ 基本</a>
+<a class="toc-link" href="../04-prompt/07-criteria.html">4-7　基準を明示する / ゼロ件を許す</a>
+<a class="toc-link" href="../04-prompt/08-fewshot.html">4-8　few-shot ─ 例を見せる</a>
+<a class="toc-link toc-quiz" href="../04-prompt/09-q12.html">4-9　理解度チェック ─ タスク 4.1〜4.2</a>
+<a class="toc-link on" href="../04-prompt/10-struct.html">4-10　構造化出力と tool_choice</a>
+<a class="toc-link toc-sub" href="#struct-1">JSONは「お願い」ではなく「型」で受け取る</a>
+<a class="toc-link toc-sub" href="#struct-2">ツールを「使わせる」4つの指定</a>
+<a class="toc-link toc-sub" href="#struct-3">受け皿の形で、揺れを潰す</a>
+<a class="toc-link" href="../04-prompt/11-verify.html">4-11　検証と再試行</a>
+<a class="toc-link toc-quiz" href="../04-prompt/12-q34.html">4-12　理解度チェック ─ タスク 4.3〜4.4</a>
+<a class="toc-link" href="../04-prompt/13-batch.html">4-13　バッチ処理</a>
+<a class="toc-link" href="../04-prompt/14-multi.html">4-14　多重レビュー</a>
+<a class="toc-link toc-quiz" href="../04-prompt/15-q56.html">4-15　理解度チェック ─ タスク 4.5〜4.6</a></nav>
+</aside>
+<main class="doc">
+<p class="crumb" data-domain="prompt"><b>Domain 4</b><span>プロンプト設計と構造化出力</span><span class="w">出題比率 20%</span></p>
+<!-- ▼ 本文 ─ ここだけを編集する。この前後は node tools/reindex.mjs が書き出す -->
+<section class="sec" id="struct">
+<header class="sec-head">
+  <h2>4-10　構造化出力と tool_choice</h2>
+</header>
+
+<h3 class="sub" id="struct-1">JSONは「お願い」ではなく「型」で受け取る</h3>
+<p class="lead">文章で「JSONで返して」と頼むと、前置きや揺れが混ざります。スキーマ（ツール定義）で受け取れば、形が保証されます。</p>
+<p class="task"><span class="tn">BLUEPRINT 4.3</span><b>ツール利用と JSON スキーマによる構造化出力の強制</b></p>
+<p class="goal"><b>ゴール</b>出力の形を保証する手段を選べる。</p>
+  <div class="figbox"><div class="diagram run">
+  <svg viewBox="0 0 760 300">
+    <g class="s1"><rect x="16" y="24" width="350" height="242" rx="12" fill="var(--fig-fill-red)" stroke="var(--fig-line-red)"/>
+      <text class="ttl" x="191" y="54" text-anchor="middle" style="fill:var(--fig-red)">✗ 文章でお願いする</text>
+      <rect x="40" y="72" width="302" height="34" rx="8" fill="var(--fig-surface)" stroke="var(--fig-line)"/>
+      <text class="mono" x="191" y="94" text-anchor="middle">「JSON形式で出力してください」</text>
+      <line x1="191" y1="110" x2="191" y2="136" stroke="var(--fig-red)" stroke-width="2" marker-end="url(#arr)"/>
+      <rect x="40" y="142" width="302" height="106" rx="8" fill="var(--fig-surface)" stroke="var(--fig-line-red)"/>
+      <text class="mono" x="56" y="166">はい、こちらが結果です:</text>
+      <text class="mono" x="56" y="188">```json</text>
+      <text class="mono" x="56" y="210">{ "name": "田中", "amount": "1,200円" }</text>
+      <text class="sm" x="56" y="234" style="fill:var(--fig-red)">前置き・囲み・型の揺れが混ざる</text></g>
+    <g class="s2"><rect x="394" y="24" width="350" height="242" rx="12" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)"/>
+      <text class="ttl" x="569" y="54" text-anchor="middle" style="fill:var(--fig-green)">○ スキーマで受け取る</text>
+      <rect x="418" y="72" width="302" height="70" rx="8" fill="var(--fig-surface)" stroke="var(--fig-line)"/>
+      <text class="mono" x="434" y="94">input_schema: {</text>
+      <text class="mono" x="434" y="114">  name: string, amount: integer</text>
+      <text class="mono" x="434" y="134">}  required: [name, amount]</text>
+      <line x1="569" y1="146" x2="569" y2="170" stroke="var(--fig-green)" stroke-width="2" marker-end="url(#arg)"/>
+      <rect x="418" y="176" width="302" height="72" rx="8" fill="var(--fig-surface)" stroke="var(--fig-line-green)"/>
+      <text class="mono" x="434" y="200">{ "name": "田中",</text>
+      <text class="mono" x="434" y="220">  "amount": 1200 }</text>
+      <text class="sm" x="434" y="240" style="fill:var(--fig-green)">型と必須項目が守られる</text></g>
+    <text class="sm s3" x="380" y="290" text-anchor="middle">抽出タスクでは「モデルに整形させる」のではなく「受け皿の形を先に決める」</text>
+  </svg>
+  </div></div>
+  <div class="detail">
+    <h3>図の読み方</h3>
+    <ol class="ann">
+      <li><span class="n">1</span><span>左（赤）が<b>文章でお願いした場合</b>。上が指示、下が返ってきたものです。</span></li>
+      <li><span class="n">2</span><span>返ってきたほうをよく見てください。<b>前置きの一文、コードブロックの囲み、そして "1,200円" という文字列</b>が混ざっています。数値として扱えません。</span></li>
+      <li><span class="n">3</span><span>右（緑）が<b>スキーマで受け取った場合</b>。上が定義、下が結果です。</span></li>
+      <li><span class="n">4</span><span>こちらは<b>型と必須項目が守られ、金額が整数で返っています</b>。囲みも前置きもありません。</span></li>
+    </ol>
+    <p>スキーマで受け取るというのは、<b>記入欄の形を先に決めておく</b>ということです。書き方が割れる余地をなくします。ここでいうスキーマは、ツール定義の <code>input_schema</code> そのものです（Domain 2「ツール定義の解剖」）。<b>抽出したい形をツールの引数として定義し、そのツールを呼ばせる</b>ことで、受け皿を先に用意します。</p>
+    <div class="ex"><span class="exl">決めておくべきこと</span>
+    ・型（金額は文字列か整数か）<br>
+    ・必須かどうか（<code>required</code>）<br>
+    ・<b>値が見つからなかったときどう書くか</b>（null を許すのか、空文字か、そもそも項目を出さないのか）<br>
+    最後のひとつを決め忘れると、実運用でいちばん揉めます。</div>
+    <div class="myth">
+      <span class="t">誤解</span><span>「うまく指示すればきれいな JSON が返る」</span>
+      <span class="t o">実際は</span><span>返ることも多いですが、<b>保証されません</b>。前置き、コードブロックの囲み、全角記号。構造化抽出はプロンプトの問題ではなく<b>スキーマ設計の問題</b>です。</span>
+    </div>
+  </div>
+  <p class="point"><b>ポイント</b>構造化データ抽出は、プロンプトを工夫する問題ではなく、スキーマを設計する問題。値が無い場合の表現（null を許すか）まで決めておく。</p>
+
+<h3 class="sub" id="struct-2">ツールを「使わせる」4つの指定</h3>
+<p class="lead"><code>tool_choice</code> は、道具を使うかどうかの判断を<b>こちらが決める</b>ためのものです。</p>
+  <div class="figbox"><div class="diagram run">
+  <svg viewBox="0 0 760 260">
+    <g class="s1"><rect x="16" y="24" width="176" height="96" rx="10" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
+      <text class="mono" x="104" y="52" text-anchor="middle">auto</text>
+      <text class="sm" x="104" y="76" text-anchor="middle">使うかどうかは</text>
+      <text class="sm" x="104" y="94" text-anchor="middle">モデルが決める</text>
+      <text class="sm" x="104" y="112" text-anchor="middle" style="fill:var(--fig-amber)">既定値</text></g>
+    <g class="s2"><rect x="200" y="24" width="176" height="96" rx="10" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)"/>
+      <text class="mono" x="288" y="52" text-anchor="middle" style="fill:var(--fig-green)">any</text>
+      <text class="sm" x="288" y="76" text-anchor="middle">どれかは必ず使う</text>
+      <text class="sm" x="288" y="94" text-anchor="middle">どれかは選ばせる</text></g>
+    <g class="s3"><rect x="384" y="24" width="176" height="96" rx="10" fill="var(--fig-fill-blue)" stroke="var(--fig-line-blue)"/>
+      <text class="mono" x="472" y="52" text-anchor="middle" style="fill:var(--fig-blue)">tool</text>
+      <text class="sm" x="472" y="76" text-anchor="middle">この道具を必ず使う</text>
+      <text class="sm" x="472" y="94" text-anchor="middle">名前を指定する</text></g>
+    <g class="s4"><rect x="568" y="24" width="176" height="96" rx="10" fill="var(--fig-fill-red)" stroke="var(--fig-line-red)"/>
+      <text class="mono" x="656" y="52" text-anchor="middle" style="fill:var(--fig-red)">none</text>
+      <text class="sm" x="656" y="76" text-anchor="middle">道具を使わせない</text>
+      <text class="sm" x="656" y="94" text-anchor="middle">文章だけ返させる</text></g>
+    <g class="s5"><rect x="16" y="136" width="728" height="52" rx="10" fill="var(--fig-code-bg)" stroke="var(--fig-line)"/>
+      <text class="mono" x="40" y="160">"tool_choice": { "type": "tool", "name": "extract_invoice" }</text>
+      <text class="sm" x="40" y="180">これで、必ず extract_invoice の形で返ってくる ＝ 構造化出力の強制</text></g>
+    <g class="s6"><rect x="16" y="200" width="728" height="46" rx="10" fill="var(--fig-fill-red)" stroke="var(--fig-line-red)"/>
+      <text class="lbl" x="40" y="222" style="fill:var(--fig-red)">any / tool を指定すると、前置きの文章は出なくなる</text>
+      <text class="sm" x="40" y="240">「説明してから使って」と書いても効かない。説明も欲しいなら auto ＋ 指示文にする</text></g>
+  </svg>
+  </div></div>
+  <div class="detail">
+    <h3>図の読み方</h3>
+    <ol class="ann">
+      <li><span class="n">1</span><span><b><code>auto</code></b> ─ 既定値。使うかどうかをモデルが判断します。ふつうの道具はこれ。</span></li>
+      <li><span class="n">2</span><span><b><code>any</code></b> ─ <b>どれかは必ず使う</b>。ただしどれを使うかはモデルが選びます。</span></li>
+      <li><span class="n">3</span><span><b><code>tool</code></b> ─ <b>この道具を必ず使う</b>。名前で指定します。<b>構造化出力を強制したいときはこれ</b>です。</span></li>
+      <li><span class="n">4</span><span><b><code>none</code></b> ─ 道具を使わせません。道具を渡したまま、今回だけ文章で答えさせたいときに使います。</span></li>
+      <li><span class="n">5</span><span>下の注意が実務で効きます。<b><code>any</code> や <code>tool</code> を指定すると、前置きの文章が出なくなります。</b>「先に説明してから」と書いても効きません。</span></li>
+    </ol>
+    <div class="ex"><span class="exl">設問での問われ方</span>
+    「請求書から項目を抽出したい。必ずJSONで受け取りたい」→ <b><code>tool_choice</code> を <code>tool</code> にして抽出用ツールを指定</b>。<br>
+    「道具は渡しておくが、今回は使わせたくない」→ <b><code>none</code></b>。ツール定義を外す必要はありません。</div>
+  </div>
+  <p class="point"><b>ポイント</b>「JSONで返して」と頼むのではなく、<b>ツールを使わざるを得なくする</b>。これが構造化出力の強制。</p>
+
+<h3 class="sub" id="struct-3">受け皿の形で、揺れを潰す</h3>
+<p class="lead">スキーマは「形を決める」だけでなく、<b>迷ったときの逃げ道</b>まで決めるものです。</p>
+  <div class="figbox"><div class="diagram run">
+  <svg viewBox="0 0 760 260">
+    <g class="s1"><rect x="16" y="24" width="440" height="220" rx="10" fill="var(--fig-code-bg)" stroke="var(--fig-line)"/>
+      <text class="mono" x="36" y="48">"properties": {</text>
+      <text class="mono" x="52" y="70">"amount":   { "type": "integer" },</text>
+      <text class="mono" x="52" y="92">"currency": { "type": "string",</text>
+      <text class="mono" x="70" y="114">"enum": ["JPY","USD"] },</text>
+      <text class="mono" x="52" y="136">"due_date": { "type": ["string","null"] },</text>
+      <text class="mono" x="52" y="158">"category": { "type": "string",</text>
+      <text class="mono" x="70" y="180">"enum": ["物品","役務","その他"] },</text>
+      <text class="mono" x="52" y="202">"detail":   { "type": "string" }</text>
+      <text class="mono" x="36" y="224">}, "required": ["amount","currency","category"]</text></g>
+    <g class="s2"><rect x="476" y="24" width="268" height="52" rx="10" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)"/>
+      <text class="lbl" x="496" y="46" style="fill:var(--fig-green)">integer にする</text>
+      <text class="sm" x="496" y="66">"1,200円" のような文字列を防ぐ</text></g>
+    <g class="s3"><rect x="476" y="86" width="268" height="52" rx="10" fill="var(--fig-fill-blue)" stroke="var(--fig-line-blue)"/>
+      <text class="lbl" x="496" y="108" style="fill:var(--fig-blue)">enum で選択肢を閉じる</text>
+      <text class="sm" x="496" y="128">表記ゆれ（円 / JPY / 日本円）を防ぐ</text></g>
+    <g class="s4"><rect x="476" y="148" width="268" height="44" rx="10" fill="var(--fig-fill-amber)" stroke="var(--fig-line-amber)"/>
+      <text class="lbl" x="496" y="170" style="fill:var(--fig-amber)">null を許す</text>
+      <text class="sm" x="496" y="188">「値がない」を表せるようにする</text></g>
+    <g class="s5"><rect x="476" y="202" width="268" height="42" rx="10" fill="var(--fig-fill-red)" stroke="var(--fig-line-red)"/>
+      <text class="lbl" x="496" y="222" style="fill:var(--fig-red)">「その他」＋ detail</text>
+      <text class="sm" x="496" y="240">分類に収まらない入力の逃げ道</text></g>
+  </svg>
+  </div></div>
+  <div class="detail">
+    <h3>図の読み方</h3>
+    <ol class="ann">
+      <li><span class="n">1</span><span><b>型を絞る</b>。金額を <code>integer</code> にすれば、<code>"1,200円"</code> のような文字列は入りません。</span></li>
+      <li><span class="n">2</span><span><b><code>enum</code> で選択肢を閉じる</b>。自由記述にすると「円 / JPY / 日本円」のように表記が割れます。</span></li>
+      <li><span class="n">3</span><span><b><code>null</code> を許す</b>。読み取れなかった項目を「無い」と表せないと、<b>それらしい値を作られます</b>。</span></li>
+      <li><span class="n">4</span><span><b>「その他」＋ <code>detail</code></b>。用意した分類に収まらない入力の逃げ道です。これが無いと、近い分類へ無理に押し込まれます。</span></li>
+      <li><span class="n">5</span><span><code>required</code> で<b>必ず埋まるべき項目</b>を宣言します。逆に言えば、埋まらないことがある項目は required に入れません。</span></li>
+    </ol>
+    <div class="ex"><span class="exl">さらに厳密にしたいとき</span>
+    ツール定義に <b><code>strict: true</code></b> を付けると、入力がスキーマに厳密に従うことを保証できます。<br>
+    <code>tool_choice: any</code> と組み合わせると、<b>「どれかのツールが必ず呼ばれ、かつ入力がスキーマどおり」</b>という状態を作れます。</div>
+  </div>
+  <p class="point"><b>ポイント</b>スキーマ設計とは、<b>正常系の形</b>と<b>異常系の逃げ道</b>を両方決めること。後者を忘れると運用で破綻する。</p>
+</section>
+<!-- ▲ 本文 -->
+<nav class="secpager">
+<a class="pgv prev" href="../04-prompt/09-q12.html"><span class="pgv-l">前へ</span>4-9　理解度チェック ─ タスク 4.1〜4.2</a>
+<span class="pgv-n">Domain 4 10 / 15</span>
+<a class="pgv next" href="../04-prompt/11-verify.html"><span class="pgv-l">次へ</span>4-11　検証と再試行</a>
+</nav>
+</main>
+</div>
+<div class="modal" id="searchModal" hidden>
+  <div class="modal-box">
+    <input id="searchInput" type="search" placeholder="用語・見出し・本文を検索（例: input_schema、キャッシュ）" autocomplete="off">
+    <div id="searchResults" class="results"></div>
+    <div class="modal-foot"><kbd>Esc</kbd> で閉じる</div>
+  </div>
+</div>
+<script src="../assets/quiz-data.js?v=4385afea"></script>
+<script src="../assets/search-index.js?v=98a5172a"></script>
+<script src="../assets/app.js?v=1c7668ec"></script>
+</body></html>

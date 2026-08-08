@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="ja" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>5-7　壊れたことに気づける ─ Domain 5 ─ CCAR-F 学習ノート</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css?v=3c97e055">
+</head>
+<body data-page="observe">
+<script>(function(){var t=localStorage.getItem('ccarf-theme');if(t)document.documentElement.dataset.theme=t;})();</script>
+<nav class="domnav">
+  <a class="brand" href="../index.html"><span class="brand-mark">CCAR-F</span><span class="brand-sub">学習ノート</span></a>
+  <div class="nav-list"><a class="nav-item" data-domain="basics" href="../00-basics/01-flow.html" title="会話の実体">
+       <span class="nav-num">前提</span><span class="nav-title">会話の実体</span></a>
+<a class="nav-item" data-domain="agentic" href="../01-agentic/01-d1about.html" title="エージェント設計とオーケストレーション">
+       <span class="nav-num">Domain 1</span><span class="nav-title">エージェント設計</span></a>
+<a class="nav-item" data-domain="tools" href="../02-tools/01-d2about.html" title="ツール設計と MCP 連携">
+       <span class="nav-num">Domain 2</span><span class="nav-title">ツールと MCP</span></a>
+<a class="nav-item" data-domain="code" href="../03-claude-code/01-about.html" title="Claude Code の設定とワークフロー">
+       <span class="nav-num">Domain 3</span><span class="nav-title">Claude Code</span></a>
+<a class="nav-item" data-domain="prompt" href="../04-prompt/01-d4about.html" title="プロンプト設計と構造化出力">
+       <span class="nav-num">Domain 4</span><span class="nav-title">プロンプト設計</span></a>
+<a class="nav-item on" data-domain="context" href="../05-context/01-d5about.html" title="コンテキスト管理と信頼性">
+       <span class="nav-num">Domain 5</span><span class="nav-title">コンテキスト管理</span></a>
+<a class="nav-item" data-domain="summary" href="../06-summary/01-all.html" title="全体をもう一度">
+       <span class="nav-num">まとめ</span><span class="nav-title">全体をもう一度</span></a></div>
+  <div class="search-wrap">
+  <button class="search-btn" id="openSearch" aria-label="検索"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span>検索</span><kbd>/</kbd></button>
+</div>
+</nav>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-muted)"/></marker>
+  <marker id="ara" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-amber)"/></marker>
+  <marker id="arb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-blue)"/></marker>
+  <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-red)"/></marker>
+  <marker id="arg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-green)"/></marker>
+</defs></svg>
+<div class="shell">
+<aside class="toc">
+  <div class="toc-head">Domain 5</div>
+  <nav class="toc-list"><a class="toc-link" href="../05-context/01-d5about.html">5-1　長く動かすと必ず崩れる</a>
+<a class="toc-link" href="../05-context/02-compact.html">5-2　窓が埋まったら</a>
+<a class="toc-link" href="../05-context/03-sub.html">5-3　サブエージェント</a>
+<a class="toc-link" href="../05-context/04-hooks.html">5-4　確実にしたいことは仕組み側へ</a>
+<a class="toc-link" href="../05-context/05-shape.html">5-5　返す量を設計する</a>
+<a class="toc-link" href="../05-context/06-confidence.html">5-6　確信が持てないときに止める</a>
+<a class="toc-link on" href="../05-context/07-observe.html">5-7　壊れたことに気づける</a>
+<a class="toc-link" href="../05-context/08-propagate.html">5-8　失敗を親まで届ける</a>
+<a class="toc-link toc-quiz" href="../05-context/09-q.html">5-9　理解度チェック</a>
+<a class="toc-link toc-quiz" href="../05-context/10-q2.html">5-10　理解度チェック ─ 信頼性</a></nav>
+</aside>
+<main class="doc">
+<p class="crumb" data-domain="context"><b>Domain 5</b><span>コンテキスト管理と信頼性</span><span class="w">出題比率 15%</span></p>
+<!-- ▼ 本文 ─ ここだけを編集する。この前後は node tools/reindex.mjs が書き出す -->
+<section class="sec" id="observe">
+<header class="sec-head">
+  <h2>5-7　壊れたことに気づける</h2>
+</header>
+<p class="lead">確率的に動くものは、静かに間違えます。<b>間違えたことが後から分かる形</b>で動かしていないと、直す手がかりが残りません。</p>
+<p class="task"><span class="tn">BLUEPRINT 5.6</span><b>出典の保持と多源統合での不確実性の扱い</b></p>
+<p class="goal"><b>ゴール</b>後から追えるようにするために何を残すか挙げられる。</p>
+  <div class="figbox"><div class="diagram run">
+  <svg viewBox="0 0 760 306">
+    <g class="s1"><rect x="16" y="36" width="160" height="62" rx="10" fill="var(--fig-fill-blue)" stroke="var(--fig-line-blue)"/>
+      <text class="lbl" x="96" y="62" text-anchor="middle" style="fill:var(--fig-blue)">1周ぶんの実行</text>
+      <text class="sm" x="96" y="84" text-anchor="middle">判断と、その結果</text>
+      <line x1="182" y1="66" x2="216" y2="66" stroke="var(--fig-muted)" stroke-width="2" marker-end="url(#ar)"/></g>
+    <g class="s2"><rect x="222" y="26" width="300" height="82" rx="10" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)" stroke-width="2"/>
+      <text class="lbl" x="242" y="52" style="fill:var(--fig-green)">残すもの</text>
+      <text class="sm" x="242" y="74">どのツールを・どんな引数で呼び、何が返ったか</text>
+      <text class="sm" x="242" y="96">結論の出典（どの資料の、どこから）</text>
+      <line x1="528" y1="66" x2="562" y2="66" stroke="var(--fig-green)" stroke-width="2" marker-end="url(#arg)"/></g>
+    <g class="s3"><rect x="568" y="36" width="176" height="62" rx="10" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)"/>
+      <text class="lbl" x="656" y="62" text-anchor="middle" style="fill:var(--fig-green)">後から追える</text>
+      <text class="sm" x="656" y="84" text-anchor="middle">どこで曲がったか分かる</text></g>
+
+    <g class="s4"><rect x="222" y="140" width="300" height="82" rx="10" fill="var(--fig-fill-red)" stroke="var(--fig-line-red)"/>
+      <text class="lbl" x="242" y="166" style="fill:var(--fig-red)">残していないと</text>
+      <text class="sm" x="242" y="188">結論だけが残る</text>
+      <text class="sm" x="242" y="210">＝ 合っているかも、どこで曲がったかも分からない</text>
+      <line x1="528" y1="180" x2="562" y2="180" stroke="var(--fig-red)" stroke-width="2" marker-end="url(#arr)"/>
+      <rect x="568" y="150" width="176" height="62" rx="10" fill="var(--fig-fill-red)" stroke="var(--fig-line-red)"/>
+      <text class="sm" x="656" y="176" text-anchor="middle" style="fill:var(--fig-red)">やり直すしかない</text>
+      <text class="sm" x="656" y="198" text-anchor="middle">同じ失敗を繰り返す</text>
+      <path d="M96 104 L96 180 L216 180" fill="none" stroke="var(--fig-red)" stroke-width="2" stroke-dasharray="4 3" marker-end="url(#arr)"/></g>
+    <text class="sm s5" x="380" y="266" text-anchor="middle">記録は判断の要らない処理。だから仕組み側（フック等）に置ける</text>
+    <text class="sm s6" x="380" y="292" text-anchor="middle">同じ操作を2回走らせても壊れない形にしておくと、記録を見て安全にやり直せる</text>
+  </svg>
+  </div></div>
+  <div class="detail"><h3>図の読み方</h3>
+    <ol class="ann">
+      <li><span class="n">1</span><span><b>残すもの</b>の1行目は引数まで含めます。「検索した」だけでは再現できず、<b>同じ条件で試せません</b>。</span></li>
+      <li><span class="n">2</span><span>2行目の<b>出典</b>（provenance）が抜けると、結論が正しいかを人が確かめられません。あとで裏取りするための唯一の手がかりです。</span></li>
+      <li><span class="n">3</span><span>赤の側で残っているのは<b>結論だけ</b>です。もっともらしく見えるので、間違いに気づく契機そのものがなくなります。</span></li>
+      <li><span class="n">4</span><span>下の注記のとおり、記録は<b>判断が要らない処理</b>です。だから前節の線引きに従って、モデルに頼まず仕組み側に置けます。</span></li>
+    </ol>
+    <div class="ex"><span class="exl">やり直しを安全にする</span>
+    同じ操作を2回走らせても結果が変わらない形（同じ ID で登録し直すと上書きになる、など）にしておくと、途中で失敗しても<b>記録を見て途中から再実行できます</b>。<br>
+    逆に「呼ぶたびに1件増える」形だと、再実行が二重登録になり、記録があっても直せません。</div>
+  </div>
+<p class="point"><b>ポイント</b>結論だけを残すと直せない。呼んだ内容と出典を残し、やり直しても壊れない形にしておく。</p>
+</section>
+<!-- ▲ 本文 -->
+<nav class="secpager">
+<a class="pgv prev" href="../05-context/06-confidence.html"><span class="pgv-l">前へ</span>5-6　確信が持てないときに止める</a>
+<span class="pgv-n">Domain 5 7 / 10</span>
+<a class="pgv next" href="../05-context/08-propagate.html"><span class="pgv-l">次へ</span>5-8　失敗を親まで届ける</a>
+</nav>
+</main>
+</div>
+<div class="modal" id="searchModal" hidden>
+  <div class="modal-box">
+    <input id="searchInput" type="search" placeholder="用語・見出し・本文を検索（例: input_schema、キャッシュ）" autocomplete="off">
+    <div id="searchResults" class="results"></div>
+    <div class="modal-foot"><kbd>Esc</kbd> で閉じる</div>
+  </div>
+</div>
+<script src="../assets/quiz-data.js?v=4385afea"></script>
+<script src="../assets/search-index.js?v=98a5172a"></script>
+<script src="../assets/app.js?v=1c7668ec"></script>
+</body></html>

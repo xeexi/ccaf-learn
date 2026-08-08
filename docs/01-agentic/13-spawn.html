@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="ja" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>1-13　子はどう起こすのか ─ Domain 1 ─ CCAR-F 学習ノート</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css?v=3c97e055">
+</head>
+<body data-page="spawn">
+<script>(function(){var t=localStorage.getItem('ccarf-theme');if(t)document.documentElement.dataset.theme=t;})();</script>
+<nav class="domnav">
+  <a class="brand" href="../index.html"><span class="brand-mark">CCAR-F</span><span class="brand-sub">学習ノート</span></a>
+  <div class="nav-list"><a class="nav-item" data-domain="basics" href="../00-basics/01-flow.html" title="会話の実体">
+       <span class="nav-num">前提</span><span class="nav-title">会話の実体</span></a>
+<a class="nav-item on" data-domain="agentic" href="../01-agentic/01-d1about.html" title="エージェント設計とオーケストレーション">
+       <span class="nav-num">Domain 1</span><span class="nav-title">エージェント設計</span></a>
+<a class="nav-item" data-domain="tools" href="../02-tools/01-d2about.html" title="ツール設計と MCP 連携">
+       <span class="nav-num">Domain 2</span><span class="nav-title">ツールと MCP</span></a>
+<a class="nav-item" data-domain="code" href="../03-claude-code/01-about.html" title="Claude Code の設定とワークフロー">
+       <span class="nav-num">Domain 3</span><span class="nav-title">Claude Code</span></a>
+<a class="nav-item" data-domain="prompt" href="../04-prompt/01-d4about.html" title="プロンプト設計と構造化出力">
+       <span class="nav-num">Domain 4</span><span class="nav-title">プロンプト設計</span></a>
+<a class="nav-item" data-domain="context" href="../05-context/01-d5about.html" title="コンテキスト管理と信頼性">
+       <span class="nav-num">Domain 5</span><span class="nav-title">コンテキスト管理</span></a>
+<a class="nav-item" data-domain="summary" href="../06-summary/01-all.html" title="全体をもう一度">
+       <span class="nav-num">まとめ</span><span class="nav-title">全体をもう一度</span></a></div>
+  <div class="search-wrap">
+  <button class="search-btn" id="openSearch" aria-label="検索"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span>検索</span><kbd>/</kbd></button>
+</div>
+</nav>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-muted)"/></marker>
+  <marker id="ara" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-amber)"/></marker>
+  <marker id="arb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-blue)"/></marker>
+  <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-red)"/></marker>
+  <marker id="arg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-green)"/></marker>
+</defs></svg>
+<div class="shell">
+<aside class="toc">
+  <div class="toc-head">Domain 1</div>
+  <nav class="toc-list"><a class="toc-link" href="../01-agentic/01-d1about.html">1-1　1往復では終わらない仕事</a>
+<a class="toc-link" href="../01-agentic/02-tools.html">1-2　ツールを渡すとは、説明書を渡すこと</a>
+<a class="toc-link" href="../01-agentic/03-loop.html">1-3　エージェントループの1周</a>
+<a class="toc-link" href="../01-agentic/04-stop.html">1-4　stop_reason で分岐する</a>
+<a class="toc-link" href="../01-agentic/05-seq.html">1-5　誰が、何を送っているのか</a>
+<a class="toc-link" href="../01-agentic/06-real.html">1-6　実物を見る ─ 往復のJSON</a>
+<a class="toc-link" href="../01-agentic/07-broken.html">1-7　ループが壊れるとき</a>
+<a class="toc-link toc-quiz" href="../01-agentic/08-q1.html">1-8　理解度チェック ─ ループ</a>
+<a class="toc-link" href="../01-agentic/09-split.html">1-9　1体か、分けるか</a>
+<a class="toc-link" href="../01-agentic/10-parent.html">1-10　親子の形</a>
+<a class="toc-link" href="../01-agentic/11-chain.html">1-11　固定チェーンか、動的分解か</a>
+<a class="toc-link toc-quiz" href="../01-agentic/12-q2.html">1-12　理解度チェック ─ 複数エージェント</a>
+<a class="toc-link on" href="../01-agentic/13-spawn.html">1-13　子はどう起こすのか</a>
+<a class="toc-link" href="../01-agentic/14-gate.html">1-14　前提は関門で、引き継ぎは欄で</a>
+<a class="toc-link" href="../01-agentic/15-intercept.html">1-15　ツール呼び出しに割り込む</a>
+<a class="toc-link toc-quiz" href="../01-agentic/16-q3.html">1-16　理解度チェック ─ 起動と強制</a>
+<a class="toc-link" href="../01-agentic/17-session.html">1-17　セッションをまたぐ</a>
+<a class="toc-link toc-quiz" href="../01-agentic/18-q4.html">1-18　理解度チェック ─ セッション</a></nav>
+</aside>
+<main class="doc">
+<p class="crumb" data-domain="agentic"><b>Domain 1</b><span>エージェント設計とオーケストレーション</span><span class="w">出題比率 27%</span></p>
+<!-- ▼ 本文 ─ ここだけを編集する。この前後は node tools/reindex.mjs が書き出す -->
+<section class="sec" id="spawn">
+<header class="sec-head">
+  <h2>1-13　子はどう起こすのか</h2>
+</header>
+<p class="lead">起動そのものはツールを1回呼ぶだけです。設計の勘所は、起動の仕方ではなく<b>子の最初の状態に何が載るか</b>にあります。</p>
+<p class="task"><span class="tn">BLUEPRINT 1.3</span><b>サブエージェントの起動・文脈の受け渡し</b></p>
+<p class="goal"><b>ゴール</b>子に載るものと載らないものを言い分けられる。</p>
+  <div class="figbox"><div class="diagram run">
+  <svg viewBox="0 0 760 350">
+    <g class="s1"><rect x="16" y="34" width="176" height="72" rx="10" fill="var(--fig-fill-amber)" stroke="var(--fig-line-amber)" stroke-width="2"/>
+      <text class="lbl" x="104" y="62" text-anchor="middle" style="fill:var(--fig-amber)">親</text>
+      <text class="sm" x="104" y="84" text-anchor="middle">どの型の子か／何をしてほしいか</text>
+      <line x1="198" y1="70" x2="240" y2="70" stroke="var(--fig-amber)" stroke-width="2" marker-end="url(#ara)"/></g>
+    <g class="s2"><rect x="246" y="34" width="212" height="72" rx="10" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
+      <text class="sm" x="262" y="56">定義ファイル</text>
+      <text class="mono" x="262" y="78">.claude/agents/*.md</text>
+      <text class="sm" x="262" y="96">name / description は必須</text>
+      <line x1="464" y1="70" x2="506" y2="70" stroke="var(--fig-muted)" stroke-width="2" marker-end="url(#ar)"/></g>
+    <g class="s3"><rect x="512" y="34" width="232" height="72" rx="10" fill="var(--fig-fill-blue)" stroke="var(--fig-line-blue)" stroke-width="2"/>
+      <text class="lbl" x="628" y="62" text-anchor="middle" style="fill:var(--fig-blue)">子が立つ</text>
+      <text class="sm" x="628" y="84" text-anchor="middle">自分だけの窓・自分だけの権限</text></g>
+
+    <text class="sm s4" x="16" y="146">子の最初の状態に…</text>
+    <g class="s4"><rect x="16" y="158" width="360" height="132" rx="10" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)"/>
+      <text class="lbl" x="36" y="184" style="fill:var(--fig-green)">載るもの</text>
+      <text class="sm" x="36" y="210">・定義ファイルの本文（子の指示書）</text>
+      <text class="sm" x="36" y="232">・親が書いた委任メッセージ</text>
+      <text class="sm" x="36" y="254">・CLAUDE.md（プロジェクトの決まり）</text>
+      <text class="sm" x="36" y="276">・作業ディレクトリなどの環境情報</text></g>
+    <g class="s5"><rect x="392" y="158" width="352" height="132" rx="10" fill="var(--fig-fill-red)" stroke="var(--fig-line-red)"/>
+      <text class="lbl" x="412" y="184" style="fill:var(--fig-red)">載らないもの</text>
+      <text class="sm" x="412" y="210">・親の会話履歴</text>
+      <text class="sm" x="412" y="232">・親が読んだファイルの中身</text>
+      <text class="sm" x="412" y="254">・親が呼んだツールの結果</text>
+      <text class="sm" x="412" y="276">・その場かぎりの取り決め</text></g>
+    <text class="sm s6" x="380" y="318" text-anchor="middle">同時に走らせられる数には上限がある。分ける理由は「速さ」ではなく「親の窓を汚さずに済むか」</text>
+  </svg>
+  </div></div>
+  <div class="detail"><h3>図の読み方</h3>
+    <ol class="ann">
+      <li><span class="n">1</span><span><b>親</b>が渡すのは2つだけです。型を指定しなければ汎用の子が立ちます。凝った受け渡しの仕組みは要りません。</span></li>
+      <li><span class="n">2</span><span><b>定義ファイル</b>の <code>description</code> は自分用のメモではありません。<b>親がどの子に任せるかを決める材料</b>がこれなので、用途が書かれていないと呼ばれません。ファイル名は <code>name</code> と一致していなくてよい。</span></li>
+      <li><span class="n">3</span><span><b>載らないもの</b>（赤）が実務でいちばん事故ります。渡し忘れた前提は、子がそれを知らないまま作業して、<b>もっともらしい誤答として返ってきます</b>。</span></li>
+      <li><span class="n">4</span><span><b>載るもの</b>（緑）に CLAUDE.md が入っているので、プロジェクト共通の決まりは書き直さなくても届きます。逆に「この調査では vendor/ を見ない」のような<b>その場かぎりの条件は指示に書く必要があります</b>。</span></li>
+    </ol>
+    <div class="myth">
+      <span class="t">誤解</span><span>「子を並列に立てれば、そのぶん速く安く終わる」</span>
+      <span class="t o">実際は</span><span>短くなるのは<b>待ち時間だけ</b>で、トークンの総量は減りません。同時に走らせる数にも上限があり、超えた起動は失敗します。</span>
+    </div>
+  </div>
+<p class="point"><b>ポイント</b>起動は簡単。難しいのは「子の最初の状態に何を載せるか」を親が決めきること。</p>
+<p class="note">※ 子を起こすツールの名前は、公式ドキュメントでは <code>Agent</code>。出題ガイドや古い資料では <code>Task</code> と表記される場合があります（<code>TaskCreate</code> などの <code>Task…</code> 系はタスク一覧の操作で、別物）。</p>
+</section>
+<!-- ▲ 本文 -->
+<nav class="secpager">
+<a class="pgv prev" href="../01-agentic/12-q2.html"><span class="pgv-l">前へ</span>1-12　理解度チェック ─ 複数エージェント</a>
+<span class="pgv-n">Domain 1 13 / 18</span>
+<a class="pgv next" href="../01-agentic/14-gate.html"><span class="pgv-l">次へ</span>1-14　前提は関門で、引き継ぎは欄で</a>
+</nav>
+</main>
+</div>
+<div class="modal" id="searchModal" hidden>
+  <div class="modal-box">
+    <input id="searchInput" type="search" placeholder="用語・見出し・本文を検索（例: input_schema、キャッシュ）" autocomplete="off">
+    <div id="searchResults" class="results"></div>
+    <div class="modal-foot"><kbd>Esc</kbd> で閉じる</div>
+  </div>
+</div>
+<script src="../assets/quiz-data.js?v=4385afea"></script>
+<script src="../assets/search-index.js?v=98a5172a"></script>
+<script src="../assets/app.js?v=1c7668ec"></script>
+</body></html>

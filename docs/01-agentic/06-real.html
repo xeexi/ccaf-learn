@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="ja" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>1-6　実物を見る ─ 往復のJSON ─ Domain 1 ─ CCAR-F 学習ノート</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css?v=3c97e055">
+</head>
+<body data-page="real">
+<script>(function(){var t=localStorage.getItem('ccarf-theme');if(t)document.documentElement.dataset.theme=t;})();</script>
+<nav class="domnav">
+  <a class="brand" href="../index.html"><span class="brand-mark">CCAR-F</span><span class="brand-sub">学習ノート</span></a>
+  <div class="nav-list"><a class="nav-item" data-domain="basics" href="../00-basics/01-flow.html" title="会話の実体">
+       <span class="nav-num">前提</span><span class="nav-title">会話の実体</span></a>
+<a class="nav-item on" data-domain="agentic" href="../01-agentic/01-d1about.html" title="エージェント設計とオーケストレーション">
+       <span class="nav-num">Domain 1</span><span class="nav-title">エージェント設計</span></a>
+<a class="nav-item" data-domain="tools" href="../02-tools/01-d2about.html" title="ツール設計と MCP 連携">
+       <span class="nav-num">Domain 2</span><span class="nav-title">ツールと MCP</span></a>
+<a class="nav-item" data-domain="code" href="../03-claude-code/01-about.html" title="Claude Code の設定とワークフロー">
+       <span class="nav-num">Domain 3</span><span class="nav-title">Claude Code</span></a>
+<a class="nav-item" data-domain="prompt" href="../04-prompt/01-d4about.html" title="プロンプト設計と構造化出力">
+       <span class="nav-num">Domain 4</span><span class="nav-title">プロンプト設計</span></a>
+<a class="nav-item" data-domain="context" href="../05-context/01-d5about.html" title="コンテキスト管理と信頼性">
+       <span class="nav-num">Domain 5</span><span class="nav-title">コンテキスト管理</span></a>
+<a class="nav-item" data-domain="summary" href="../06-summary/01-all.html" title="全体をもう一度">
+       <span class="nav-num">まとめ</span><span class="nav-title">全体をもう一度</span></a></div>
+  <div class="search-wrap">
+  <button class="search-btn" id="openSearch" aria-label="検索"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span>検索</span><kbd>/</kbd></button>
+</div>
+</nav>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-muted)"/></marker>
+  <marker id="ara" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-amber)"/></marker>
+  <marker id="arb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-blue)"/></marker>
+  <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-red)"/></marker>
+  <marker id="arg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-green)"/></marker>
+</defs></svg>
+<div class="shell">
+<aside class="toc">
+  <div class="toc-head">Domain 1</div>
+  <nav class="toc-list"><a class="toc-link" href="../01-agentic/01-d1about.html">1-1　1往復では終わらない仕事</a>
+<a class="toc-link" href="../01-agentic/02-tools.html">1-2　ツールを渡すとは、説明書を渡すこと</a>
+<a class="toc-link" href="../01-agentic/03-loop.html">1-3　エージェントループの1周</a>
+<a class="toc-link" href="../01-agentic/04-stop.html">1-4　stop_reason で分岐する</a>
+<a class="toc-link" href="../01-agentic/05-seq.html">1-5　誰が、何を送っているのか</a>
+<a class="toc-link on" href="../01-agentic/06-real.html">1-6　実物を見る ─ 往復のJSON</a>
+<a class="toc-link toc-sub" href="#real-1">実物を見る ① こちらから送るもの</a>
+<a class="toc-link toc-sub" href="#real-2">綴りが決まっているもの／自分で決めるもの</a>
+<a class="toc-link toc-sub" href="#real-3">実物を見る ② 返ってくるもの</a>
+<a class="toc-link toc-sub" href="#real-4">実物を見る ③ 返し直すもの</a>
+<a class="toc-link" href="../01-agentic/07-broken.html">1-7　ループが壊れるとき</a>
+<a class="toc-link toc-quiz" href="../01-agentic/08-q1.html">1-8　理解度チェック ─ ループ</a>
+<a class="toc-link" href="../01-agentic/09-split.html">1-9　1体か、分けるか</a>
+<a class="toc-link" href="../01-agentic/10-parent.html">1-10　親子の形</a>
+<a class="toc-link" href="../01-agentic/11-chain.html">1-11　固定チェーンか、動的分解か</a>
+<a class="toc-link toc-quiz" href="../01-agentic/12-q2.html">1-12　理解度チェック ─ 複数エージェント</a>
+<a class="toc-link" href="../01-agentic/13-spawn.html">1-13　子はどう起こすのか</a>
+<a class="toc-link" href="../01-agentic/14-gate.html">1-14　前提は関門で、引き継ぎは欄で</a>
+<a class="toc-link" href="../01-agentic/15-intercept.html">1-15　ツール呼び出しに割り込む</a>
+<a class="toc-link toc-quiz" href="../01-agentic/16-q3.html">1-16　理解度チェック ─ 起動と強制</a>
+<a class="toc-link" href="../01-agentic/17-session.html">1-17　セッションをまたぐ</a>
+<a class="toc-link toc-quiz" href="../01-agentic/18-q4.html">1-18　理解度チェック ─ セッション</a></nav>
+</aside>
+<main class="doc">
+<p class="crumb" data-domain="agentic"><b>Domain 1</b><span>エージェント設計とオーケストレーション</span><span class="w">出題比率 27%</span></p>
+<!-- ▼ 本文 ─ ここだけを編集する。この前後は node tools/reindex.mjs が書き出す -->
+<section class="sec" id="real">
+<header class="sec-head">
+  <h2>1-6　実物を見る ─ 往復のJSON</h2>
+</header>
+
+<h3 class="sub" id="real-1">実物を見る ① こちらから送るもの</h3>
+<p class="lead">前の「誰が、何を送っているのか」のシーケンス図で、<b>①（アプリ → Claude の青い矢印）</b>にあたる中身です。細かく覚える必要はありません。</p>
+<p class="task"><span class="tn">BLUEPRINT 1.1</span><b>エージェントループの設計と実装</b></p>
+<p class="goal"><b>ゴール</b>1回のリクエストに何が入っているかを挙げられる。</p>
+  <div class="figbox" style="padding:16px 18px">
+    <p class="codelabel">1回目のリクエスト</p>
+    <pre class="code">{
+  <span class="rng"><span class="k">"model"</span>: <span class="s">"claude-opus-5"</span>,</span><span class="n">1</span>
+  <span class="rng"><span class="k">"max_tokens"</span>: <span class="v">1024</span>,</span><span class="n">2</span>
+  <span class="rng"><span class="k">"system"</span>: <span class="s">"あなたはこのリポジトリの案内役です。"</span>,</span><span class="n">3</span>
+  <span class="rng"><span class="k">"tools"</span>: [</span><span class="n">4</span>
+    <span class="rng">{</span>
+      <span class="rng"><span class="k">"name"</span>: <span class="s">"search_files"</span>,</span>
+      <span class="rng"><span class="k">"description"</span>: <span class="s">"ファイルの中身を検索する。答える前に必ず呼ぶ"</span>,</span>
+      <span class="rng"><span class="k">"input_schema"</span>: { <span class="k">"type"</span>: <span class="s">"object"</span>,</span>
+        <span class="rng"><span class="k">"properties"</span>: { <span class="k">"pattern"</span>: { <span class="k">"type"</span>: <span class="s">"string"</span> } },</span>
+        <span class="rng"><span class="k">"required"</span>: [<span class="s">"pattern"</span>] } }</span>
+  <span class="rng">],</span>   <span class="c">← 変えなければ、ここまでは毎回同じ</span>
+  <span class="k">"messages"</span>: [<span class="n">5</span>
+    { <span class="k">"role"</span>: <span class="s">"user"</span>, <span class="k">"content"</span>: <span class="s">"TODO はどこに残ってる？"</span> }
+  ]
+}</pre>
+    <ol class="ann">
+      <li><span class="n">1</span><span>どのモデルに聞くか。</span></li>
+      <li><span class="n">2</span><span>返事の長さの上限。達すると <code>stop_reason</code> が <code>max_tokens</code> になります。</span></li>
+      <li><span class="n">3</span><span><b>システム指示</b>。会話の間ずっと効きます。</span></li>
+      <li><span class="n">4</span><span><b>ツールの定義</b>。使わなくても窓を食うのがこれ。道具の数だけ毎回送られます。</span></li>
+      <li><span class="n">5</span><span><b>会話履歴</b>。往復のたびに伸びるのは<b>ここだけ</b>です。</span></li>
+      <li><span class="n">6</span><span><span class="rng">緑がかった色を付けた部分</span>は、<b>こちらが変えない限り</b>毎回そっくり同じになります。だから<b>プロンプトキャッシュが効くのはそこまで</b>（前提編「同じ前半は使い回せる」）。<b>逆に言えば、ここは固定ではありません。</b><code>tools</code> を1つ足す、MCPサーバを繋ぐ、<code>system</code> を書き換える ── どれをやっても、<b>そこから後ろは全部作り直し</b>になります。</span></li>
+    </ol>
+  </div>
+  <div class="detail"><h3>綴りが決まっているもの／自分で決めるもの</h3>
+    <p>紛らわしいので分けておきます。<b><code>model</code> <code>system</code> <code>messages</code> <code>tools</code> <code>name</code> <code>description</code> <code>input_schema</code> <code>role</code> <code>content</code> は API が決めた綴り</b>で、変えられません。</p>
+    <p>一方 <code>search_files</code> という名前、その説明文、<code>pattern</code> という引数名は<b>すべて自分で決めるもの</b>です。この教材に出てくる道具の名前は、説明のために私が作った架空のものです。</p>
+    </div>
+  <p class="point"><b>ポイント</b>1回のリクエストに、指示・道具・会話が全部入っている。この全部が同じコンテキストウィンドウに載る。</p>
+
+<h3 class="sub" id="real-2">綴りが決まっているもの／自分で決めるもの</h3>
+<div class="detail"><div class="myth">
+      <span class="t">誤解</span><span>「JSON を書けるようにならないと理解できない」</span>
+      <span class="t o">実際は</span><span>試験でコードは書きません。必要なのは<b>どのフィールドが何を意味するか</b>だけです。設問はこの語彙で書かれます。</span>
+    </div>
+  </div>
+  <p class="point"><b>ポイント</b>1回のリクエストに、指示・道具・会話が全部入っている。この全部が同じコンテキストウィンドウに載る。</p>
+
+<h3 class="sub" id="real-3">実物を見る ② 返ってくるもの</h3>
+<p class="lead">シーケンス図の <b>②（Claude → アプリ の橙の矢印）</b> の中身です。</p>
+  <div class="figbox" style="padding:12px 16px">
+    <pre class="code">{
+  <span class="k">"role"</span>: <span class="s">"assistant"</span>,
+  <span class="k">"content"</span>: [<span class="n">1</span>
+    { <span class="k">"type"</span>: <span class="s">"text"</span>, <span class="k">"text"</span>: <span class="s">"確認しますね。"</span> },
+    <span class="hl">{ <span class="k">"type"</span>: <span class="s">"tool_use"</span>,</span><span class="n">2</span>
+      <span class="k">"id"</span>: <span class="s">"toolu_01A..."</span>,
+      <span class="k">"name"</span>: <span class="s">"search_files"</span>,
+      <span class="k">"input"</span>: { <span class="k">"pattern"</span>: <span class="s">"TODO"</span> } }
+  ],
+  <span class="hl"><span class="k">"stop_reason"</span>: <span class="s">"tool_use"</span>,</span><span class="n">3</span>
+  <span class="k">"usage"</span>: { <span class="k">"input_tokens"</span>: <span class="v">412</span>, <span class="k">"output_tokens"</span>: <span class="v">68</span> }<span class="n">4</span>
+}</pre>
+    <ol class="ann">
+      <li><span class="n">1</span><span>応答は文字列ではなく<b>ブロックの配列</b>。<code>text</code> と <code>tool_use</code> が同時に入ります。</span></li>
+      <li><span class="n">2</span><span>「この道具を、この引数で使いたい」という<b>要求</b>。検索はまだ走っていません。</span></li>
+      <li><span class="n">3</span><span>アプリが分岐に使うのは<b>この値だけ</b>。上の文章では判断しません。</span></li>
+      <li><span class="n">4</span><span>使ったトークン数。キャッシュが効いた分も別項目で分かります。</span></li>
+    </ol>
+  </div>
+  <p class="point"><b>ポイント</b>応答は「文章」ではなくブロックの集まり。その外側に stop_reason が付いている。</p>
+
+<h3 class="sub" id="real-4">実物を見る ③ 返し直すもの</h3>
+<p class="lead">シーケンス図の <b>④と⑤</b> にあたります。ここでループが閉じます。</p>
+  <div class="figbox" style="padding:12px 16px">
+    <p class="codelabel">2回目のリクエスト</p>
+    <pre class="code"><span class="k">"messages"</span>: [
+  { <span class="k">"role"</span>: <span class="s">"user"</span>, <span class="k">"content"</span>: <span class="s">"TODO はどこに残ってる？"</span> },
+  { <span class="k">"role"</span>: <span class="s">"assistant"</span>, <span class="k">"content"</span>: [ <span class="c">…さっきの tool_use をそのまま…</span> ] },<span class="n">1</span>
+  { <span class="k">"role"</span>: <span class="s">"user"</span>, <span class="k">"content"</span>: [
+      <span class="hl">{ <span class="k">"type"</span>: <span class="s">"tool_result"</span>,</span>
+        <span class="k">"tool_use_id"</span>: <span class="s">"toolu_01A..."</span>,<span class="n">2</span>
+        <span class="k">"content"</span>: <span class="s">"{\"hits\":3}"</span> } ] }
+]</pre>
+    <p class="codelabel">最終の応答</p>
+    <pre class="code">{ <span class="k">"content"</span>: [ { <span class="k">"type"</span>: <span class="s">"text"</span>, <span class="k">"text"</span>: <span class="s">"TODO は3か所に残っています。"</span> } ],
+  <span class="hl"><span class="k">"stop_reason"</span>: <span class="s">"end_turn"</span></span><span class="n">3</span> }</pre>
+    <ol class="ann">
+      <li><span class="n">1</span><span><b>前回の応答も、そのまま履歴に入れて送り返します。</b>省くと、Claude は自分が何を頼んだのか分からなくなります。</span></li>
+      <li><span class="n">2</span><span><b>どの要求に対する結果か</b>を id で対応づけます。ここがずれると会話が壊れます。</span></li>
+      <li><span class="n">3</span><span>言い切ったので <code>end_turn</code>。アプリはここでループを抜けます。</span></li>
+    </ol>
+  </div>
+  <div class="detail">
+    <h3>ここで気づいてほしいこと</h3>
+    <p><b>2回目のリクエストには、1回目の中身が丸ごと含まれています。</b>前提編の「毎回まるごと送り直す」が、ここで実物として確認できます。往復が増えるほど <code>messages</code> は長くなり、<code>input_tokens</code> も増えます。</p>
+    <div class="ex"><span class="exl">図との対応</span>
+    ① モデルが考える → 応答が生成される<br>
+    ② tool_use を返す → <code>stop_reason: "tool_use"</code><br>
+    ③ アプリが実行する → <b>JSON には現れない</b>。あなたのコードの中の出来事<br>
+    ④ tool_result を返す → 2回目のリクエストの末尾<br>
+    ⑤ 答える → <code>stop_reason: "end_turn"</code></div>
+  </div>
+  <p class="point"><b>ポイント</b>ループとは、この配列に1往復ぶん追記しては投げ直すこと。それ以上でも以下でもない。</p>
+</section>
+<!-- ▲ 本文 -->
+<nav class="secpager">
+<a class="pgv prev" href="../01-agentic/05-seq.html"><span class="pgv-l">前へ</span>1-5　誰が、何を送っているのか</a>
+<span class="pgv-n">Domain 1 6 / 18</span>
+<a class="pgv next" href="../01-agentic/07-broken.html"><span class="pgv-l">次へ</span>1-7　ループが壊れるとき</a>
+</nav>
+</main>
+</div>
+<div class="modal" id="searchModal" hidden>
+  <div class="modal-box">
+    <input id="searchInput" type="search" placeholder="用語・見出し・本文を検索（例: input_schema、キャッシュ）" autocomplete="off">
+    <div id="searchResults" class="results"></div>
+    <div class="modal-foot"><kbd>Esc</kbd> で閉じる</div>
+  </div>
+</div>
+<script src="../assets/quiz-data.js?v=4385afea"></script>
+<script src="../assets/search-index.js?v=98a5172a"></script>
+<script src="../assets/app.js?v=1c7668ec"></script>
+</body></html>

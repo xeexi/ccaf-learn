@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="ja" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>1-4　stop_reason で分岐する ─ Domain 1 ─ CCAR-F 学習ノート</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css?v=3c97e055">
+</head>
+<body data-page="stop">
+<script>(function(){var t=localStorage.getItem('ccarf-theme');if(t)document.documentElement.dataset.theme=t;})();</script>
+<nav class="domnav">
+  <a class="brand" href="../index.html"><span class="brand-mark">CCAR-F</span><span class="brand-sub">学習ノート</span></a>
+  <div class="nav-list"><a class="nav-item" data-domain="basics" href="../00-basics/01-flow.html" title="会話の実体">
+       <span class="nav-num">前提</span><span class="nav-title">会話の実体</span></a>
+<a class="nav-item on" data-domain="agentic" href="../01-agentic/01-d1about.html" title="エージェント設計とオーケストレーション">
+       <span class="nav-num">Domain 1</span><span class="nav-title">エージェント設計</span></a>
+<a class="nav-item" data-domain="tools" href="../02-tools/01-d2about.html" title="ツール設計と MCP 連携">
+       <span class="nav-num">Domain 2</span><span class="nav-title">ツールと MCP</span></a>
+<a class="nav-item" data-domain="code" href="../03-claude-code/01-about.html" title="Claude Code の設定とワークフロー">
+       <span class="nav-num">Domain 3</span><span class="nav-title">Claude Code</span></a>
+<a class="nav-item" data-domain="prompt" href="../04-prompt/01-d4about.html" title="プロンプト設計と構造化出力">
+       <span class="nav-num">Domain 4</span><span class="nav-title">プロンプト設計</span></a>
+<a class="nav-item" data-domain="context" href="../05-context/01-d5about.html" title="コンテキスト管理と信頼性">
+       <span class="nav-num">Domain 5</span><span class="nav-title">コンテキスト管理</span></a>
+<a class="nav-item" data-domain="summary" href="../06-summary/01-all.html" title="全体をもう一度">
+       <span class="nav-num">まとめ</span><span class="nav-title">全体をもう一度</span></a></div>
+  <div class="search-wrap">
+  <button class="search-btn" id="openSearch" aria-label="検索"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span>検索</span><kbd>/</kbd></button>
+</div>
+</nav>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-muted)"/></marker>
+  <marker id="ara" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-amber)"/></marker>
+  <marker id="arb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-blue)"/></marker>
+  <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-red)"/></marker>
+  <marker id="arg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-green)"/></marker>
+</defs></svg>
+<div class="shell">
+<aside class="toc">
+  <div class="toc-head">Domain 1</div>
+  <nav class="toc-list"><a class="toc-link" href="../01-agentic/01-d1about.html">1-1　1往復では終わらない仕事</a>
+<a class="toc-link" href="../01-agentic/02-tools.html">1-2　ツールを渡すとは、説明書を渡すこと</a>
+<a class="toc-link" href="../01-agentic/03-loop.html">1-3　エージェントループの1周</a>
+<a class="toc-link on" href="../01-agentic/04-stop.html">1-4　stop_reason で分岐する</a>
+<a class="toc-link toc-sub" href="#stop-1">ループを回すか止めるかは stop_reason が決める</a>
+<a class="toc-link toc-sub" href="#stop-2">値ごとの扱いと、よくある誤解</a>
+<a class="toc-link" href="../01-agentic/05-seq.html">1-5　誰が、何を送っているのか</a>
+<a class="toc-link" href="../01-agentic/06-real.html">1-6　実物を見る ─ 往復のJSON</a>
+<a class="toc-link" href="../01-agentic/07-broken.html">1-7　ループが壊れるとき</a>
+<a class="toc-link toc-quiz" href="../01-agentic/08-q1.html">1-8　理解度チェック ─ ループ</a>
+<a class="toc-link" href="../01-agentic/09-split.html">1-9　1体か、分けるか</a>
+<a class="toc-link" href="../01-agentic/10-parent.html">1-10　親子の形</a>
+<a class="toc-link" href="../01-agentic/11-chain.html">1-11　固定チェーンか、動的分解か</a>
+<a class="toc-link toc-quiz" href="../01-agentic/12-q2.html">1-12　理解度チェック ─ 複数エージェント</a>
+<a class="toc-link" href="../01-agentic/13-spawn.html">1-13　子はどう起こすのか</a>
+<a class="toc-link" href="../01-agentic/14-gate.html">1-14　前提は関門で、引き継ぎは欄で</a>
+<a class="toc-link" href="../01-agentic/15-intercept.html">1-15　ツール呼び出しに割り込む</a>
+<a class="toc-link toc-quiz" href="../01-agentic/16-q3.html">1-16　理解度チェック ─ 起動と強制</a>
+<a class="toc-link" href="../01-agentic/17-session.html">1-17　セッションをまたぐ</a>
+<a class="toc-link toc-quiz" href="../01-agentic/18-q4.html">1-18　理解度チェック ─ セッション</a></nav>
+</aside>
+<main class="doc">
+<p class="crumb" data-domain="agentic"><b>Domain 1</b><span>エージェント設計とオーケストレーション</span><span class="w">出題比率 27%</span></p>
+<!-- ▼ 本文 ─ ここだけを編集する。この前後は node tools/reindex.mjs が書き出す -->
+<section class="sec" id="stop" data-widget="p-stop">
+<header class="sec-head">
+  <h2>1-4　stop_reason で分岐する</h2>
+</header>
+
+<h3 class="sub" id="stop-1">ループを回すか止めるかは stop_reason が決める</h3>
+<p class="lead">応答には「なぜ止まったか」が必ず付いてきます。値を選んで、アプリが次に何をすべきかを確かめてください。</p>
+<p class="task"><span class="tn">BLUEPRINT 1.1</span><b>エージェントループの設計と実装</b></p>
+<p class="goal"><b>ゴール</b>分岐を <code>stop_reason</code> で書く理由を説明できる。</p>
+  <div class="figbox"><div class="diagram">
+  <svg viewBox="0 0 760 200" class="svgdim" id="sr-svg">
+    <rect x="280" y="10" width="200" height="44" rx="10" fill="var(--fig-fill-amber)" stroke="var(--fig-line-amber)"/>
+    <text class="ttl" x="380" y="38" text-anchor="middle" style="fill:var(--fig-amber)">応答 stop_reason</text>
+    <g id="b-end"><line x1="380" y1="58" x2="110" y2="88" stroke="var(--fig-muted)" stroke-width="1.5" marker-end="url(#ar)"/>
+      <rect x="14" y="94" width="180" height="62" rx="10" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)"/>
+      <text class="mono" x="104" y="118" text-anchor="middle" style="fill:var(--fig-green)">end_turn</text>
+      <text class="sm" x="104" y="140" text-anchor="middle">言い切った</text></g>
+    <g id="b-tool"><line x1="380" y1="58" x2="300" y2="88" stroke="var(--fig-amber)" stroke-width="1.5" marker-end="url(#ara)"/>
+      <rect x="204" y="94" width="180" height="62" rx="10" fill="var(--fig-fill-amber)" stroke="var(--fig-line-amber)"/>
+      <text class="mono" x="294" y="118" text-anchor="middle" style="fill:var(--fig-amber)">tool_use</text>
+      <text class="sm" x="294" y="140" text-anchor="middle">道具を使いたい</text></g>
+    <g id="b-max"><line x1="380" y1="58" x2="484" y2="88" stroke="var(--fig-muted)" stroke-width="1.5" marker-end="url(#ar)"/>
+      <rect x="394" y="94" width="180" height="62" rx="10" fill="var(--fig-fill-red)" stroke="var(--fig-line-red)"/>
+      <text class="mono" x="484" y="118" text-anchor="middle" style="fill:var(--fig-red)">max_tokens</text>
+      <text class="sm" x="484" y="140" text-anchor="middle">途中で切れた</text></g>
+    <g id="b-ref"><line x1="380" y1="58" x2="674" y2="88" stroke="var(--fig-muted)" stroke-width="1.5" marker-end="url(#ar)"/>
+      <rect x="584" y="94" width="162" height="62" rx="10" fill="var(--fig-surface)" stroke="var(--fig-line)"/>
+      <text class="mono" x="665" y="118" text-anchor="middle">refusal ほか</text>
+      <text class="sm" x="665" y="140" text-anchor="middle">別の扱いへ</text></g>
+  </svg>
+  </div></div>
+  <div class="play" style="margin-top:12px">
+    <div class="head">▶ 返ってきた値を選ぶ</div>
+    <div class="ctrl" id="sr-ctrl">
+      <button data-sr="b-end">end_turn</button>
+      <button data-sr="b-tool">tool_use</button>
+      <button data-sr="b-max">max_tokens</button>
+      <button data-sr="b-ref">refusal</button>
+    </div>
+    <div class="answer" id="sr-ans"></div>
+  </div>
+  <div class="detail"><h3>図の読み方</h3>
+    <ol class="ann">
+      <li><span class="n">1</span><span>上の箱が<b>1回ぶんの応答</b>。応答には <code>stop_reason</code> が<b>必ず1つ</b>付いてきます。付かないことはありません。</span></li>
+      <li><span class="n">2</span><span>下に伸びる4本が<b>取りうる値</b>。アプリは値を見て、対応する枝の処理をするだけです。</span></li>
+      <li><span class="n">3</span><span>このうち<b>ループに戻るのは <code>tool_use</code> の枝だけ</b>。ほかの3本はループから抜けます。ループの図が繰り返されるかどうかは、ここで決まります。</span></li>
+      <li><span class="n">4</span><span>値は応答の決まった場所に入っています（「実物を見る②」で現物を見ます）。<b>本文を読んで判断する必要はありません。</b></span></li>
+    </ol>
+    <p>とくに <code>max_tokens</code> は見落とされがちです。<b>これは「答え終わった」ではなく「途中で切れた」</b>を意味します。<code>end_turn</code> と同じ扱いにすると、尻切れの文章をそのままユーザーに見せてしまいます。</p>
+    </div>
+  <p class="point"><b>ポイント</b>「Claudeの返事を文字列で判定して分岐」はアンチパターン。分岐はこの構造化された値だけで決める ─ ここは確率ではなく、決定的に書ける部分。</p>
+
+<h3 class="sub" id="stop-2">値ごとの扱いと、よくある誤解</h3>
+<div class="detail"><div class="ex"><span class="exl">アプリ側の分岐は、これだけで書ける</span>
+    <code>if stop_reason == "tool_use": ツールを実行して結果を返す</code><br>
+    <code>elif stop_reason == "end_turn": 画面に表示して終わり</code><br>
+    <code>elif stop_reason == "max_tokens": 途中で切れている。続きを促す</code></div>
+    <div class="myth">
+      <span class="t">誤解</span><span>「返事に『検索します』と書いてあったら検索すればいい」</span>
+      <span class="t o">実際は</span><span>言い回しは毎回揺れます（「調べますね」「確認いたします」「Let me search」…）。<b>揺れない値で分岐する</b>のが鉄則です。</span>
+    </div>
+  </div>
+  <p class="point"><b>ポイント</b>「Claudeの返事を文字列で判定して分岐」はアンチパターン。分岐はこの構造化された値だけで決める ─ ここは確率ではなく、決定的に書ける部分。</p>
+</section>
+<!-- ▲ 本文 -->
+<nav class="secpager">
+<a class="pgv prev" href="../01-agentic/03-loop.html"><span class="pgv-l">前へ</span>1-3　エージェントループの1周</a>
+<span class="pgv-n">Domain 1 4 / 18</span>
+<a class="pgv next" href="../01-agentic/05-seq.html"><span class="pgv-l">次へ</span>1-5　誰が、何を送っているのか</a>
+</nav>
+</main>
+</div>
+<div class="modal" id="searchModal" hidden>
+  <div class="modal-box">
+    <input id="searchInput" type="search" placeholder="用語・見出し・本文を検索（例: input_schema、キャッシュ）" autocomplete="off">
+    <div id="searchResults" class="results"></div>
+    <div class="modal-foot"><kbd>Esc</kbd> で閉じる</div>
+  </div>
+</div>
+<script src="../assets/quiz-data.js?v=4385afea"></script>
+<script src="../assets/search-index.js?v=98a5172a"></script>
+<script src="../assets/app.js?v=1c7668ec"></script>
+</body></html>
