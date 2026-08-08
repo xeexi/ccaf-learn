@@ -72,63 +72,53 @@
 <p class="lead">アプリごとに個別実装していた接続を、共通の規格にまとめたものです。作る量が「掛け算」から「足し算」になります。</p>
 <p class="task"><span class="tn">BLUEPRINT 2.4</span><b>MCP サーバの統合</b></p>
 <p class="goal"><b>ゴール</b>MCP が何を解決する仕組みか説明できる。</p>
-  <div class="figbox"><div class="diagram run">
-  <svg viewBox="0 0 760 270">
-    <g class="s1"><text class="ttl" x="150" y="30" text-anchor="middle" style="fill:var(--fig-red)">MCPなし：N × M 本</text>
-      <g fill="var(--fig-surface)" stroke="var(--fig-line)">
-        <rect x="36" y="52" width="80" height="30" rx="6"/><rect x="36" y="96" width="80" height="30" rx="6"/><rect x="36" y="140" width="80" height="30" rx="6"/></g>
-      <g fill="var(--fig-surface)" stroke="var(--fig-line)">
-        <rect x="188" y="52" width="80" height="30" rx="6"/><rect x="188" y="96" width="80" height="30" rx="6"/><rect x="188" y="140" width="80" height="30" rx="6"/></g>
-      <text class="sm" x="76" y="72" text-anchor="middle">アプリA</text>
-      <text class="sm" x="76" y="116" text-anchor="middle">アプリB</text>
-      <text class="sm" x="76" y="160" text-anchor="middle">アプリC</text>
-      <text class="sm" x="228" y="72" text-anchor="middle">Slack</text>
-      <text class="sm" x="228" y="116" text-anchor="middle">GitHub</text>
-      <text class="sm" x="228" y="160" text-anchor="middle">DB</text>
-      <g stroke="var(--fig-line-red)" stroke-width="1.2">
-        <line x1="116" y1="67" x2="188" y2="67"/><line x1="116" y1="67" x2="188" y2="111"/><line x1="116" y1="67" x2="188" y2="155"/>
-        <line x1="116" y1="111" x2="188" y2="67"/><line x1="116" y1="111" x2="188" y2="111"/><line x1="116" y1="111" x2="188" y2="155"/>
-        <line x1="116" y1="155" x2="188" y2="67"/><line x1="116" y1="155" x2="188" y2="111"/><line x1="116" y1="155" x2="188" y2="155"/></g>
-      <text class="sm" x="76" y="196" text-anchor="middle">アプリ</text>
-      <text class="sm" x="228" y="196" text-anchor="middle">外部サービス</text></g>
-    <g class="s2"><text class="ttl" x="540" y="30" text-anchor="middle" style="fill:var(--fig-green)">MCPあり：N ＋ M 本</text>
-      <g fill="var(--fig-surface)" stroke="var(--fig-line)">
-        <rect x="356" y="52" width="80" height="30" rx="6"/><rect x="356" y="96" width="80" height="30" rx="6"/><rect x="356" y="140" width="80" height="30" rx="6"/></g>
-      <rect x="486" y="76" width="108" height="70" rx="10" fill="var(--fig-fill-amber)" stroke="var(--fig-line-amber)"/>
-      <text class="ttl" x="540" y="106" text-anchor="middle" style="fill:var(--fig-amber)">MCP</text>
-      <text class="sm" x="540" y="126" text-anchor="middle">共通の規格</text>
-      <g fill="var(--fig-surface)" stroke="var(--fig-line)">
-        <rect x="644" y="52" width="90" height="30" rx="6"/><rect x="644" y="96" width="90" height="30" rx="6"/><rect x="644" y="140" width="90" height="30" rx="6"/></g>
-      <text class="sm" x="396" y="72" text-anchor="middle">アプリA</text>
-      <text class="sm" x="396" y="116" text-anchor="middle">アプリB</text>
-      <text class="sm" x="396" y="160" text-anchor="middle">アプリC</text>
-      <text class="sm" x="689" y="72" text-anchor="middle">Slack</text>
-      <text class="sm" x="689" y="116" text-anchor="middle">GitHub</text>
-      <text class="sm" x="689" y="160" text-anchor="middle">DB</text>
-      <g stroke="var(--fig-line-green)" stroke-width="1.4">
-        <line x1="436" y1="67" x2="486" y2="96"/><line x1="436" y1="111" x2="486" y2="111"/><line x1="436" y1="155" x2="486" y2="126"/>
-        <line x1="594" y1="96" x2="644" y2="67"/><line x1="594" y1="111" x2="644" y2="111"/><line x1="594" y1="126" x2="644" y2="155"/></g></g>
-    <g class="s3"><rect x="16" y="216" width="728" height="46" rx="10" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
-      <text class="lbl" x="40" y="236">ホスト（Claude Code など） ─ クライアント ─ サーバ（Slack, GitHub, DB …）の3層。</text>
-      <text class="sm" x="40" y="254">サーバは tools のほか、resources（読める資料）や prompts（定型手順）も提供できる</text></g>
-  </svg>
-  </div></div>
-  <div class="detail"><h3>図の読み方</h3>
-    <ol class="ann">
-      <li><span class="n">1</span><span><b>「MCPなし：N × M 本」</b>（左）── アプリ3つ×サービス3つで<b>線が9本</b>。すべて個別に実装したものです。</span></li>
-      <li><span class="n">2</span><span><b>「MCPあり：N ＋ M 本」</b>（右）── 中央の規格を経由するので<b>3＋3 の6本</b>。効き目が出るのは<b>増やすとき</b>です。アプリを1つ足すと、左では3本増え、右では<b>1本</b>しか増えません。</span></li>
-      <li><span class="n">3</span><span>下の帯が<b>3層の呼び名</b>。設問はこの語彙で書かれるので、どれがどれかだけ押さえます ── 動かす側がホスト、つながれる側がサーバです。</span></li>
-    </ol>
+<div class="figbox"><figure class="fig run">
+  <p class="fig-t">つなぐ手間が「掛け算」から「足し算」になる</p>
+  <div class="fig-row" style="--cols:2">
+    <div class="fig-card red s1">
+      <b class="fig-h">MCP なし ─ N × M</b>
+      <span class="fig-note">アプリごと・サービスごとに個別実装。アプリ3つ × サービス3つで <b>9本</b></span>
+      <span class="fig-note"><b>アプリを1つ足すと ＋3本</b></span>
     </div>
+    <div class="fig-card green s2">
+      <b class="fig-h">MCP あり ─ N ＋ M</b>
+      <span class="fig-note">共通の規格に1回ずつ合わせるだけ。3 ＋ 3 で <b>6本</b></span>
+      <span class="fig-note"><b>アプリを1つ足すと ＋1本</b></span>
+    </div>
+  </div>
+  <p class="fig-lbl s3">効き目が出るのは、増やしたとき</p>
+  <div class="fig-bars s3">
+    <div class="fig-bar"><span class="b-name">3 × 3</span>
+      <span class="b-track"><span class="b-fill" style="width:9%;background:var(--fig-red)"></span></span>
+      <span class="b-val">9本 ⇄ <b>6本</b></span></div>
+    <div class="fig-bar"><span class="b-name">5 × 5</span>
+      <span class="b-track"><span class="b-fill" style="width:25%;background:var(--fig-red)"></span></span>
+      <span class="b-val">25本 ⇄ <b>10本</b></span></div>
+    <div class="fig-bar"><span class="b-name">10 × 10</span>
+      <span class="b-track"><span class="b-fill" style="width:100%;background:var(--fig-red)"></span></span>
+      <span class="b-val">100本 ⇄ <b>20本</b></span></div>
+  </div>
+  <p class="fig-f">帯は <b>MCP なしの本数</b>。増えるほど差が開く ── だから「繋ぎたい」要件では既存の MCP サーバが素直な答えになる</p>
+</figure></div>
 
 <h3 class="sub" id="mcp-2">3層の関係と、よくある誤解</h3>
-<div class="detail"><h3>たとえるなら</h3>
-    <p><b>USB</b>です。規格が決まる前は機器ごとに専用ケーブルが必要でしたが、差込口の形を決めたことで、作る量が<b>掛け算から足し算</b>になりました。賢さが変わるのではなく、つなぐ手間が変わります。</p>
-    <div class="ex"><span class="exl">3層の関係</span>
-    <b>ホスト</b>（Claude Code など、実際に動かすアプリ）<br>
-    ─ <b>クライアント</b>（つなぐ側の口）<br>
-    ─ <b>サーバ</b>（Slack、GitHub、DB など、つながれる側）<br>
-    サーバが提供できるのは <code>tools</code> だけではありません。<code>resources</code>（読める資料）や <code>prompts</code>（定型の手順）も渡せます。</div>
+<div class="figbox"><figure class="fig run">
+  <p class="fig-t">3層の呼び名 ─ 設問はこの語彙で書かれる</p>
+  <div class="fig-row flow" style="--cols:3">
+    <div class="fig-card s1"><b class="fig-h">ホスト</b>
+      <span class="fig-note">実際に動かすアプリ<br>Claude Code など</span></div>
+    <div class="fig-card s2"><b class="fig-h">クライアント</b>
+      <span class="fig-note">つなぐ側の口<br>ホストの中にある</span></div>
+    <div class="fig-card s3"><b class="fig-h">サーバ</b>
+      <span class="fig-note">つながれる側<br>Slack・GitHub・DB など</span></div>
+  </div>
+  <p class="fig-f">サーバが渡せるのは <code>tools</code> だけではない ── <code>resources</code>（読める資料）と <code>prompts</code>（定型の手順）もある</p>
+</figure></div>
+
+<div class="detail">
+    <div class="ex"><span class="exl">たとえるなら USB</span>
+    規格が決まる前は機器ごとに専用ケーブルが要りましたが、<b>差込口の形を決めた</b>ことで、作る量が掛け算から足し算になりました。
+    賢さが変わるのではなく、つなぐ手間が変わります。</div>
     <div class="myth">
       <span class="t">誤解</span><span>「MCP を使うとモデルが賢くなる／速くなる」</span>
       <span class="t o">実際は</span><span>賢さは変わりません。変わるのは<b>つなぐ手間</b>だけです。「新しいサービスと連携したい」という要件で、自前実装より既存の MCP サーバを選ぶのはそのためです。</span>
@@ -186,6 +176,6 @@
   </div>
 </div>
 <script src="../assets/quiz-data.js?v=305bd836"></script>
-<script src="../assets/search-index.js?v=672b94c4"></script>
+<script src="../assets/search-index.js?v=66df1797"></script>
 <script src="../assets/app.js?v=5bf1e1db"></script>
 </body></html>

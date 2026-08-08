@@ -67,43 +67,49 @@
 <p class="lead">全員に全部渡すのがいちばん簡単ですが、選択肢が増えるほど選び間違いが増え、事故が届く範囲も広がります。<b>配る範囲そのものが設計です。</b></p>
 <p class="task"><span class="tn">BLUEPRINT 2.3</span><b>エージェント間へのツール配分と tool choice の設定</b></p>
 <p class="goal"><b>ゴール</b>配る範囲を決める基準を言える。</p>
-  <div class="figbox"><div class="diagram run">
-  <svg viewBox="0 0 760 346">
-    <g class="s1"><rect x="16" y="120" width="150" height="66" rx="10" fill="var(--fig-fill-amber)" stroke="var(--fig-line-amber)" stroke-width="2"/>
-      <text class="lbl" x="91" y="148" text-anchor="middle" style="fill:var(--fig-amber)">親</text>
-      <text class="sm" x="91" y="170" text-anchor="middle">段取りと統合</text>
-      <path d="M172 152 L196 152 L196 62 L214 62" fill="none" stroke="var(--fig-amber)" stroke-width="2" marker-end="url(#ara)"/>
-      <path d="M172 152 L196 152 L214 152" fill="none" stroke="var(--fig-amber)" stroke-width="2" marker-end="url(#ara)"/>
-      <path d="M172 152 L196 152 L196 244 L214 244" fill="none" stroke="var(--fig-amber)" stroke-width="2" marker-end="url(#ara)"/></g>
-    <g class="s2"><rect x="220" y="30" width="524" height="64" rx="10" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)"/>
-      <text class="lbl" x="240" y="56" style="fill:var(--fig-green)">調べる子</text>
-      <text class="sm" x="240" y="80">読む・探すだけ　── 変更できないので、誤りが残らない</text></g>
-    <g class="s3"><rect x="220" y="120" width="524" height="64" rx="10" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
-      <text class="lbl" x="240" y="146">直す子</text>
-      <text class="sm" x="240" y="170">読む・探す・変える　── デプロイや外部送信は持たせない</text></g>
-    <g class="s4"><rect x="220" y="212" width="524" height="64" rx="10" fill="var(--fig-fill-red)" stroke="var(--fig-line-red)"/>
-      <text class="lbl" x="240" y="238" style="fill:var(--fig-red)">全部渡した子</text>
-      <text class="sm" x="240" y="262">読む・探す・変える・消す・外に出す　── 事故の範囲＝渡した範囲</text></g>
-    <text class="sm s5" x="380" y="322" text-anchor="middle">配る範囲は、その子が失敗したときに壊せる範囲と同じ</text>
-  </svg>
-  </div></div>
-  <div class="detail"><h3>図の読み方</h3>
-    <ol class="ann">
-      <li><span class="n">1</span><span><b>調べる子</b>が読み取りだけなのは、権限を惜しんでいるからではありません。<b>間違えても何も残らない</b>状態を作るためです。調査は間違えるものだという前提の設計です。</span></li>
-      <li><span class="n">2</span><span><b>直す子</b>の線引きは「取り消せるか」です。ファイル編集は戻せますが、デプロイや外部への送信は戻せません。<b>戻せない操作だけを外す</b>のがいちばん単純な基準になります。</span></li>
-      <li><span class="n">3</span><span><b>全部渡した子</b>が危ういのは、ツールが多いこと自体でもあります。似た道具が並ぶと選び間違いが増えます（ツールの粒度）。</span></li>
-      <li><span class="n">4</span><span>子に渡すツールは、その子の定義ファイルで指定します。<b>渡していないツールは、指示で頼まれても使えません</b> ── ここが「お願い」ではなく決定的に効く部分です。</span></li>
-    </ol>
-    <div class="ex"><span class="exl">本数の目安は<b>1体あたり4〜5個</b></span>
-    厳密な上限ではなく、<b>役割がひとつに絞れているかの目安</b>です。10個を超えたら、たいてい2つの役割が1体に混ざっています ──
-    そのときは道具を減らすのではなく、<b>子を分けます</b>。「調べる子」「直す子」と分ければ、どちらも自然に4〜5個に収まります。</div>
-    <div class="myth">
-      <span class="t">誤解</span><span>「必要になるかもしれないので、ツールは多めに渡しておく」</span>
-      <span class="t o">実際は</span><span>渡した範囲が<b>そのまま事故の範囲</b>です。しかも選択肢が増えるほど選び間違いも増えるので、多めに渡すことは二重に不利になります。</span>
+
+<div class="figbox"><figure class="fig run">
+  <p class="fig-t">配る範囲は、その子が失敗したときに<b>壊せる範囲</b>と同じ</p>
+  <div class="fig-row s1" style="--cols:1">
+    <div class="fig-card amber">
+      <b class="fig-h">親（コーディネータ）</b>
+      <span class="fig-note">段取りと統合だけ。自分では調べない</span>
     </div>
   </div>
+  <p class="fig-lbl s2">親が配るツール ─ 下にいくほど、壊せる範囲が広がる</p>
+  <div class="fig-row" style="--cols:1">
+    <div class="fig-card green s2">
+      <b class="fig-h">調べる子</b>
+      <span class="fig-note"><code>Read</code>　<code>Grep</code>　<code>Glob</code></span>
+      <span class="fig-note">変更できないので、<b>間違えても何も残らない</b>。調査は間違えるものだという前提の設計</span>
+    </div>
+    <div class="fig-card s3">
+      <b class="fig-h">直す子</b>
+      <span class="fig-note">上の3つ ＋ <code>Edit</code>　<code>Write</code></span>
+      <span class="fig-note">ファイル編集は<b>戻せる</b>。デプロイや外部への送信は<b>戻せない</b>ので持たせない</span>
+    </div>
+    <div class="fig-card red s4">
+      <b class="fig-h">全部渡した子</b>
+      <span class="fig-note">上の全部 ＋ 削除・外部送信・デプロイ</span>
+      <span class="fig-note"><b>事故の範囲＝渡した範囲。</b>しかも似た道具が並ぶぶん、選び間違いも増える</span>
+    </div>
+  </div>
+  <p class="fig-f">線引きは<b>「取り消せるか」</b>の一点。渡していないツールは、指示で頼まれても<b>使えない</b></p>
+</figure></div>
+
 <p class="point"><b>ポイント</b>配る範囲＝壊せる範囲。基準は「取り消せない操作を持たせない」。<b>1体あたり4〜5個</b>を超えたら、役割が混ざっていないか疑う。</p>
-<p class="note">※ 渡したうえで「必ず使わせる／使わせない」を指定する方法（<code>tool_choice</code>）は Domain 4 の〈構造化出力と tool_choice〉にあります。ここは<b>誰に渡すか</b>の話です。</p>
+
+<div class="detail">
+  <div class="ex"><span class="exl">本数の目安は<b>1体あたり4〜5個</b></span>
+  厳密な上限ではなく、<b>役割がひとつに絞れているかの目安</b>です。10個を超えたら、たいてい2つの役割が1体に混ざっています ──
+  そのときは道具を減らすのではなく、<b>子を分けます</b>。「調べる子」「直す子」と分ければ、どちらも自然に4〜5個に収まります。</div>
+  <div class="myth">
+    <span class="t">誤解</span><span>「必要になるかもしれないので、ツールは多めに渡しておく」</span>
+    <span class="t o">実際は</span><span>渡した範囲が<b>そのまま事故の範囲</b>です。しかも選択肢が増えるほど選び間違いも増えるので、多めに渡すことは二重に不利になります。</span>
+  </div>
+</div>
+<p class="note">※ 子に渡すツールは、その子の定義ファイルで指定します。ここが「お願い」ではなく決定的に効く部分です。<br>
+※ 渡したうえで「必ず使わせる／使わせない」を指定する方法（<code>tool_choice</code>）は Domain 4 の〈構造化出力と tool_choice〉にあります。ここは<b>誰に渡すか</b>の話です。</p>
 </section>
 <!-- ▲ 本文 -->
 <nav class="secpager">
@@ -121,6 +127,6 @@
   </div>
 </div>
 <script src="../assets/quiz-data.js?v=305bd836"></script>
-<script src="../assets/search-index.js?v=672b94c4"></script>
+<script src="../assets/search-index.js?v=66df1797"></script>
 <script src="../assets/app.js?v=5bf1e1db"></script>
 </body></html>

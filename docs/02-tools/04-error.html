@@ -71,44 +71,33 @@
 <p class="lead">例外で止めるとループが死にます。何が起きたかを言葉で返せば、Claudeは自分で直して再試行できます。</p>
 <p class="task"><span class="tn">BLUEPRINT 2.2</span><b>MCP ツールの構造化エラー応答</b></p>
 <p class="goal"><b>ゴール</b>失敗をどう返すと再試行につながるか説明できる。</p>
-  <div class="figbox"><div class="diagram run">
-  <svg viewBox="0 0 760 250">
-    <g class="s1"><rect x="16" y="24" width="350" height="200" rx="12" fill="var(--fig-fill-red)" stroke="var(--fig-line-red)"/>
-      <text class="ttl" x="191" y="52" text-anchor="middle" style="fill:var(--fig-red)">✗ 落とす・黙る</text>
-      <rect x="40" y="70" width="302" height="34" rx="8" fill="var(--fig-surface)" stroke="var(--fig-line)"/>
-      <text class="mono" x="56" y="92">throw / "エラー" / ""</text>
-      <line x1="191" y1="110" x2="191" y2="132" stroke="var(--fig-red)" stroke-width="2" marker-end="url(#arr)"/>
-      <rect x="40" y="138" width="302" height="34" rx="8" fill="var(--fig-surface)" stroke="var(--fig-line-red)"/>
-      <text class="lbl" x="56" y="160">ループが止まる／同じ失敗を繰り返す</text>
-      <text class="sm" x="56" y="200">モデルには「何が悪かったか」が伝わらない</text></g>
-    <g class="s2"><rect x="394" y="24" width="350" height="200" rx="12" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)"/>
-      <text class="ttl" x="569" y="52" text-anchor="middle" style="fill:var(--fig-green)">○ 読める形で返す</text>
-      <rect x="418" y="70" width="302" height="52" rx="8" fill="var(--fig-surface)" stroke="var(--fig-line)"/>
-      <text class="mono" x="434" y="90">tool_result:</text>
-      <text class="mono" x="434" y="110">"A12 は見つかりません。IDは A-数字 の形式"</text>
-      <line x1="569" y1="128" x2="569" y2="146" stroke="var(--fig-green)" stroke-width="2" marker-end="url(#ar)"/>
-      <rect x="418" y="152" width="302" height="34" rx="8" fill="var(--fig-surface)" stroke="var(--fig-line-green)"/>
-      <text class="lbl" x="434" y="174">引数を直して、もう一度呼ぶ</text>
-      <text class="sm" x="434" y="208">エラー文そのものが、自己修復のための入力になる</text></g>
-  </svg>
-  </div></div>
-  <div class="detail">
-    <h3>図の読み方</h3>
-    <ol class="ann">
-      <li><span class="n">1</span><span>左（赤）が<b>落とす・黙る</b>場合。例外を投げる、「エラー」とだけ返す、空文字を返す。</span></li>
-      <li><span class="n">2</span><span>その下がどうなるか。<b>どちらに転んでも、モデルは同じ引数でもう一度呼びます</b>。何が悪かったかを渡していないので、直しようがないからです。</span></li>
-      <li><span class="n">3</span><span>右（緑）が<b>読める形で返す</b>場合。何が起きたかを、そのまま文章で <code>tool_result</code> に入れます。</span></li>
-      <li><span class="n">4</span><span>その下では、引数を直して呼び直せています。つまり<b>返す文の質が、そのまま再試行の質になります</b>。「エラーが発生しました」では、何も直せません。</span></li>
-    </ol>
-    <div class="ex"><span class="exl">返す文に入れる2つ</span>
-    ① <b>何が起きたか</b>：「pattern '[' は正規表現として解釈できません」<br>
-    ② <b>どう直せるか</b>：「文字として探すなら '\[' のようにエスケープしてください」<br>
-    ①だけだと、同じ間違いを繰り返すことがあります。</div>
-    <div class="myth">
-      <span class="t">誤解</span><span>「親切にエラーを返せば、あとは勝手に直してくれる」</span>
-      <span class="t o">実際は</span><span>直せないまま無限に再試行することがあります。<b>再試行の上限は外側で持つ</b>（Domain 1の反復上限）ことをセットで用意します。</span>
+<div class="figbox"><figure class="fig run">
+  <p class="fig-t">同じ失敗を、2通りの返し方で</p>
+  <div class="fig-row" style="--cols:2">
+    <div class="fig-card red s1">
+      <b class="fig-h">✗ 落とす・黙る</b>
+      <span class="fig-note"><code>throw new Error(...)</code><br><code>return "エラー"</code><br><code>return ""</code></span>
+      <span class="fig-note"><b>ループが止まる。止まらなければ、同じ引数でもう一度呼ぶ。</b>何が悪かったかを渡していないので、直しようがない</span>
+    </div>
+    <div class="fig-card green s2">
+      <b class="fig-h">○ 読める文章で返す</b>
+      <span class="fig-note"><code>"A12 は見つかりません。ID は A-数字 の形式です"</code></span>
+      <span class="fig-note"><b>引数を直して、もう一度呼べる。</b>エラー文そのものが、自己修復のための入力になる</span>
     </div>
   </div>
+  <p class="fig-f">返す文の質が、そのまま<b>再試行の質</b>になる。「エラーが発生しました」では何も直せない</p>
+</figure></div>
+
+<div class="detail">
+  <div class="ex"><span class="exl">返す文に入れる2つ</span>
+  ① <b>何が起きたか</b>：「pattern '[' は正規表現として解釈できません」<br>
+  ② <b>どう直せるか</b>：「文字として探すなら '\[' のようにエスケープしてください」<br>
+  ①だけだと、同じ間違いを繰り返すことがあります。</div>
+  <div class="myth">
+    <span class="t">誤解</span><span>「親切にエラーを返せば、あとは勝手に直してくれる」</span>
+    <span class="t o">実際は</span><span>直せないまま無限に再試行することがあります。<b>再試行の上限は外側で持つ</b>（Domain 1の反復上限）ことをセットで用意します。</span>
+  </div>
+</div>
   <p class="point"><b>ポイント</b>返す文には「何が起きたか」と「どう直せるか」を両方入れる。ただし無限に再試行させないよう、回数の上限は外側で持つ。</p>
 
 <h3 class="sub" id="error-2">実物を見る ─ 失敗を返す <code>tool_result</code></h3>
@@ -146,6 +135,6 @@
   </div>
 </div>
 <script src="../assets/quiz-data.js?v=305bd836"></script>
-<script src="../assets/search-index.js?v=672b94c4"></script>
+<script src="../assets/search-index.js?v=66df1797"></script>
 <script src="../assets/app.js?v=5bf1e1db"></script>
 </body></html>

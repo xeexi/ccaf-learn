@@ -64,50 +64,45 @@
 <header class="sec-head">
   <h2>2-2　ツール定義は3つの部品でできている</h2>
 </header>
-<p class="lead">name（呼び名）、description（いつ使うか）、input_schema（何を渡すか）。判断に効くのは description です。</p>
+<p class="lead"><code>name</code>（呼び名）、<code>description</code>（いつ使うか）、<code>input_schema</code>（何を渡すか）。判断に効くのは <code>description</code> です。</p>
 <p class="task"><span class="tn">BLUEPRINT 2.1</span><b>明確な説明と境界を持つツール設計</b></p>
 <p class="goal"><b>ゴール</b>3つの部品が何を決めているか言える。</p>
-  <div class="figbox"><div class="diagram run">
-  <svg viewBox="0 0 760 260">
-    <g class="s1"><rect x="180" y="26" width="400" height="200" rx="12" fill="var(--fig-surface)" stroke="var(--fig-line)"/></g>
-    <g class="s2"><rect x="200" y="46" width="360" height="40" rx="8" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
-      <text class="mono" x="216" y="71">name: "get_code_style"</text>
-      <line x1="176" y1="66" x2="120" y2="66" stroke="var(--fig-muted)" stroke-width="1.5" marker-end="url(#ar)"/>
-      <text class="sm" x="112" y="62" text-anchor="end">短く一意に</text></g>
-    <g class="s3"><rect x="200" y="96" width="360" height="66" rx="8" fill="var(--fig-fill-amber)" stroke="var(--fig-line-amber)"/>
-      <text class="mono" x="216" y="120">description: "コーディング規約を取得する。</text>
-      <text class="mono" x="216" y="140">  命名や書式を答える前に必ず呼ぶこと"</text>
-      <line x1="584" y1="128" x2="650" y2="128" stroke="var(--fig-amber)" stroke-width="1.5" marker-end="url(#ara)"/>
-      <text class="sm" x="656" y="118" style="fill:var(--fig-amber)">ここだけが</text>
-      <text class="sm" x="656" y="134" style="fill:var(--fig-amber)">「いつ使うか」の</text>
-      <text class="sm" x="656" y="150" style="fill:var(--fig-amber)">判断材料になる</text></g>
-    <g class="s4"><rect x="200" y="172" width="360" height="40" rx="8" fill="var(--fig-fill-blue)" stroke="var(--fig-line-blue)"/>
-      <text class="mono" x="216" y="197">input_schema: { language: string }</text>
-      <line x1="176" y1="192" x2="120" y2="192" stroke="var(--fig-muted)" stroke-width="1.5" marker-end="url(#ar)"/>
-      <text class="sm" x="112" y="188" text-anchor="end">型・必須・列挙で</text>
-      <text class="sm" x="112" y="204" text-anchor="end">誤用を防ぐ</text></g>
-    <text class="sm s5" x="380" y="248" text-anchor="middle">道具が呼ばれないときは、まず description を「いつ使うか」の記述に書き直す</text>
-  </svg>
-  </div></div>
-  <div class="detail">
-    <h3>図の読み方</h3>
-    <ol class="ann">
-      <li><span class="n">1</span><span>中央の枠が<b>1つの道具ぶんの定義</b>。3段に分かれています。</span></li>
-      <li><span class="n">2</span><span><b>name</b> ─ 呼び名。短く一意に。</span></li>
-      <li><span class="n">3</span><span><b>description</b> ─ 右の注記のとおり、<b>Claude が「使うかどうか」を判断する材料はここだけ</b>です。コードの中身も実際の挙動も見ていません。</span></li>
-      <li><span class="n">4</span><span><b>input_schema</b> ─ 渡す引数の型・必須・選べる値。誤用を防ぐ枠です。</span></li>
-    </ol>
-    <p>だから<b>道具が呼ばれないときに直すのは、まず description</b>です。しかも「何をするか」ではなく<b>「いつ使うか」</b>を書きます。</p>
-    <div class="ex"><span class="exl">書き直しの型</span>
-    ✗ 何をするかだけ：<code>"コーディング規約を取得する"</code><br>
-    ○ 何をするか＋<b>いつ呼ぶか</b>＋<b>いつ呼ばないか</b>：<br>
-    <code>"コーディング規約を取得する。命名やフォーマットに触れる前に必ず呼ぶ。一般的な設計方針の質問には使わない"</code></div>
-    <div class="myth">
-      <span class="t">誤解</span><span>「description はコードのコメントのようなもの。人間が読む用」</span>
-      <span class="t o">実際は</span><span><b>プロンプトの一部</b>です。しかも常にコンテキストを消費しています（前提編）。丁寧に、しかし冗長にならないよう書きます。</span>
+
+<div class="figbox"><figure class="fig run">
+  <p class="fig-t">1つの道具の定義 ─ 3段が、それぞれ別のことを決めている</p>
+  <div class="fig-row" style="--cols:1">
+    <div class="fig-card s1">
+      <b class="fig-h"><code>name</code>　呼び名</b>
+      <span class="fig-note"><code>"get_code_style"</code></span>
+      <span class="fig-note">短く一意に。<b>権限の設定・子への配布・フックの <code>matcher</code> でも同じ文字列を使う</b></span>
+    </div>
+    <div class="fig-card key s2">
+      <b class="fig-h"><code>description</code>　いつ使うか</b>
+      <span class="fig-note"><code>"コーディング規約を取得する。命名や書式を答える前に必ず呼ぶこと"</code></span>
+      <span class="fig-note"><b>使うかどうかを決める材料はここだけ。</b>コードの中身も、実際の挙動も見ていない</span>
+    </div>
+    <div class="fig-card s3">
+      <b class="fig-h"><code>input_schema</code>　何を渡すか</b>
+      <span class="fig-note"><code>{ language: string }</code></span>
+      <span class="fig-note">型・必須・列挙で誤用を防ぐ枠</span>
     </div>
   </div>
-  <p class="point"><b>ポイント</b>description に書くべきは「何をするか」より「どんなときに使うか」。判断の条件を言語化する。</p>
+  <p class="fig-f">道具が呼ばれないときに直すのは、実装ではなく<b>まん中の1段</b></p>
+</figure></div>
+
+<p class="point"><b>ポイント</b><code>description</code> に書くべきは「何をするか」より「どんなときに使うか」。判断の条件を言語化する。</p>
+
+<div class="detail">
+  <div class="ex"><span class="exl">書き直しの型</span>
+  ✗ 何をするかだけ：<code>"コーディング規約を取得する"</code><br>
+  ○ 何をするか＋<b>いつ呼ぶか</b>＋<b>いつ呼ばないか</b>：<br>
+  <code>"コーディング規約を取得する。命名やフォーマットに触れる前に必ず呼ぶ。一般的な設計方針の質問には使わない"</code><br>
+  3つ目の「いつ呼ばないか」が<b>境界</b>です。これがないと、近い話題のたびに呼ばれます。</div>
+  <div class="myth">
+    <span class="t">誤解</span><span>「<code>description</code> はコードのコメントのようなもの。人間が読む用」</span>
+    <span class="t o">実際は</span><span><b>プロンプトの一部</b>です。しかも常にコンテキストを消費しています（前提編）。丁寧に、しかし冗長にならないよう書きます。</span>
+  </div>
+</div>
 </section>
 <!-- ▲ 本文 -->
 <nav class="secpager">
@@ -125,6 +120,6 @@
   </div>
 </div>
 <script src="../assets/quiz-data.js?v=305bd836"></script>
-<script src="../assets/search-index.js?v=672b94c4"></script>
+<script src="../assets/search-index.js?v=66df1797"></script>
 <script src="../assets/app.js?v=5bf1e1db"></script>
 </body></html>

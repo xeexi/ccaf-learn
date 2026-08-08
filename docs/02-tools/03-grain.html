@@ -64,52 +64,37 @@
 <header class="sec-head">
   <h2>2-3　ツールの粒度</h2>
 </header>
-<p class="lead">数が多いと選べなくなり、1つに詰め込みすぎると引数が複雑になって間違えます。</p>
+<p class="lead">数が多いと選べなくなり、1つに詰め込みすぎると引数が複雑になって間違えます。<b>どちらも「間違える」ですが、間違える場所が違います。</b></p>
 <p class="task"><span class="tn">BLUEPRINT 2.1</span><b>明確な説明と境界を持つツール設計</b></p>
 <p class="goal"><b>ゴール</b>細かすぎ・大きすぎで何が起きるか言える。</p>
-  <div class="figbox"><div class="diagram run">
-  <svg viewBox="0 0 760 250">
-    <g class="s1"><rect x="16" y="24" width="230" height="200" rx="12" fill="var(--fig-fill-red)" stroke="var(--fig-line-red)"/>
-      <text class="ttl" x="131" y="52" text-anchor="middle" style="fill:var(--fig-red)">細かすぎる</text>
-      <g fill="var(--fig-surface)" stroke="var(--fig-line)">
-        <rect x="36" y="70" width="90" height="24" rx="5"/><rect x="136" y="70" width="90" height="24" rx="5"/>
-        <rect x="36" y="100" width="90" height="24" rx="5"/><rect x="136" y="100" width="90" height="24" rx="5"/>
-        <rect x="36" y="130" width="90" height="24" rx="5"/><rect x="136" y="130" width="90" height="24" rx="5"/>
-        <rect x="36" y="160" width="90" height="24" rx="5"/><rect x="136" y="160" width="90" height="24" rx="5"/></g>
-      <text class="sm" x="131" y="206" text-anchor="middle">似た道具が並び、選択を誤る</text></g>
-    <g class="s2"><rect x="264" y="24" width="230" height="200" rx="12" fill="var(--fig-fill-red)" stroke="var(--fig-line-red)"/>
-      <text class="ttl" x="379" y="52" text-anchor="middle" style="fill:var(--fig-red)">大きすぎる</text>
-      <rect x="290" y="70" width="180" height="114" rx="8" fill="var(--fig-surface)" stroke="var(--fig-line-red)"/>
-      <text class="mono" x="304" y="94">do_everything(</text>
-      <text class="mono" x="304" y="114">  action, mode, target,</text>
-      <text class="mono" x="304" y="134">  format, filter, dryrun,</text>
-      <text class="mono" x="304" y="154">  ... )</text>
-      <text class="sm" x="379" y="206" text-anchor="middle">引数の組合せを間違える</text></g>
-    <g class="s3"><rect x="512" y="24" width="232" height="200" rx="12" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)"/>
-      <text class="ttl" x="628" y="52" text-anchor="middle" style="fill:var(--fig-green)">ちょうどよい</text>
-      <rect x="540" y="76" width="176" height="30" rx="6" fill="var(--fig-surface)" stroke="var(--fig-line-green)"/>
-      <text class="mono" x="628" y="96" text-anchor="middle">search_files</text>
-      <rect x="540" y="114" width="176" height="30" rx="6" fill="var(--fig-surface)" stroke="var(--fig-line-green)"/>
-      <text class="mono" x="628" y="134" text-anchor="middle">get_order_detail</text>
-      <rect x="540" y="152" width="176" height="30" rx="6" fill="var(--fig-surface)" stroke="var(--fig-line-green)"/>
-      <text class="mono" x="628" y="172" text-anchor="middle">issue_refund</text>
-      <text class="sm" x="628" y="206" text-anchor="middle">業務の1動作＝1ツール</text></g>
-  </svg>
-  </div></div>
-  <div class="detail">
-    <h3>図の読み方</h3>
-    <ol class="ann">
-      <li><span class="n">1</span><span>左が<b>細かすぎる例</b>。似た道具が8個並んでいて、どれを選べばよいか判断できません。</span></li>
-      <li><span class="n">2</span><span>中央が<b>大きすぎる例</b>。道具は1個ですが、引数が6つあります。</span></li>
-      <li><span class="n">3</span><span>引数が増えると、<b>正しい組み合わせは限られるのに、選べる組み合わせは膨大</b>になります。「delete なのに dryrun を付け忘れた」のような事故が起きます。</span></li>
-      <li><span class="n">4</span><span>右が<b>ちょうどよい例</b>。業務の1動作＝1ツールです。</span></li>
-    </ol>
-    <div class="ex"><span class="exl">大きすぎる道具が壊れる理由</span>
-    <code>do_everything(action, mode, target, format, dryrun, …)</code><br>
-    引数が6つあれば、正しい組み合わせは限られるのに、選べる組み合わせは膨大です。<b>「action=delete なのに dryrun を付け忘れた」</b>のような事故が起きます。</div>
-    <p>目安は<b>「人間の担当者が1回でやる仕事の単位」</b>。ファイルを探す、中身を読む、書き換える ─ これくらいの粒度です。</p>
+
+<table class="tbl">
+  <thead><tr><th>粒度</th><th>渡した道具</th><th>どこで間違えるか</th></tr></thead>
+  <tbody>
+    <tr><td data-l="粒度"><span class="ng">細かすぎる</span></td>
+        <td data-l="渡した道具"><code>list_files</code> <code>find_file</code> <code>search_name</code> <code>search_body</code> <code>grep_dir</code> …<br>似た道具が8個</td>
+        <td data-l="どこで間違えるか"><b>選ぶところ。</b>説明文が似通って境界が引けないので、毎回どれかを取り違える</td></tr>
+    <tr><td data-l="粒度"><span class="ng">大きすぎる</span></td>
+        <td data-l="渡した道具"><code>do_everything(action, mode, target, format, filter, dryrun)</code><br>道具は1個</td>
+        <td data-l="どこで間違えるか"><b>引数を埋めるところ。</b>正しい組み合わせは限られるのに選べる組み合わせは膨大 ── 「<code>action=delete</code> なのに <code>dryrun</code> を付け忘れた」</td></tr>
+    <tr><td data-l="粒度"><span class="ok">ちょうどよい</span></td>
+        <td data-l="渡した道具"><code>search_files</code> <code>get_order_detail</code> <code>issue_refund</code><br>業務の1動作＝1ツール</td>
+        <td data-l="どこで間違えるか">1動作なので、<b>選択も引数も1通りに近い</b></td></tr>
+  </tbody>
+</table>
+
+<p class="point"><b>ポイント</b>目安は「人間の担当者が1回でやる仕事の単位」。細かすぎれば選べず、大きすぎれば引数を間違える。</p>
+
+<div class="detail">
+  <div class="ex"><span class="exl">どちらに寄っているかの見分けかた</span>
+  ・<b>説明文を書き分けられない</b>ものが並んでいる → 細かすぎ。まとめる<br>
+  ・<b>引数の値によって、やることが変わる</b>（<code>action</code> のような切り替え引数がある）→ 大きすぎ。分ける<br>
+  切り替え引数は「1つの道具に複数の仕事が入っている」印です。</div>
+  <div class="myth">
+    <span class="t">誤解</span><span>「道具を減らせば減らすほど、選び間違いは減る」</span>
+    <span class="t o">実際は</span><span>減らしすぎると、こんどは<b>引数の中で選ばせている</b>だけになります。選択がなくなったのではなく、<b>説明文で守られない場所へ移った</b>のが悪いところです。<code>input_schema</code> は型と列挙で縛れますが、どの組み合わせが正しいかまでは書けません。</span>
   </div>
-  <p class="point"><b>ポイント</b>目安は「人間の担当者が1回でやる仕事の単位」。細かすぎれば選べず、大きすぎれば引数を間違える。</p>
+</div>
 </section>
 <!-- ▲ 本文 -->
 <nav class="secpager">
@@ -127,6 +112,6 @@
   </div>
 </div>
 <script src="../assets/quiz-data.js?v=305bd836"></script>
-<script src="../assets/search-index.js?v=672b94c4"></script>
+<script src="../assets/search-index.js?v=66df1797"></script>
 <script src="../assets/app.js?v=5bf1e1db"></script>
 </body></html>
