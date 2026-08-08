@@ -366,9 +366,10 @@ q4:[
 `https://github.com/xeexi/ccaf-learn.git`。以前ここに「壊れかけている」と書いてあったが、それは誤りだった
 （実際の原因は下の lock ファイル）。
 
-### セッションから commit するときの手順
+### Cowork セッションから commit するときの手順
 
 マウント越しの git には落とし穴が2つある。**どちらも実際に踏んでいる。**
+（Code タブの Local セッションではどちらも起きない ── 下の「push は Code タブの…」を見ること）
 
 **1. `.git/*.lock` の残骸。** セッションが途中で切れると `.git/index.lock` が0バイトで残り、
 以後の `git add` / `commit` がすべて弾かれる。しかもマウント越しの `rm` は既定で
@@ -388,16 +389,53 @@ git config user.name xeexi
 git config user.email ki4shi.ito@gmail.com
 ```
 
-### push はセッションからはできない ── Windows 側で叩く
+### push は Code タブの Local セッションから通る ── 2026-08-08 検証済み
 
-コミットまではセッションで作れる（実フォルダの `.git` にそのまま入る）。**push だけが通らない。**
+**デスクトップアプリの Code タブで Local セッションを開けば、Claude 自身が push まで実行できる。**
+実際に `git push origin main` が通り、`c09d286..ab94762` が remote に入った。
+以後は「作業 → コミット → push」を1回の指示で完結できる。
+
+Code タブは、セッションの実行環境を**ドロップダウンで選べる**。
+
+| 環境 | どこで動くか | push |
+|---|---|---|
+| **Local** | 利用者の Windows 上。ユーザー環境変数とシステム環境変数を継承する | **通る（検証済み）** |
+| Cloud | Anthropic の管理インフラ | 下の表のとおり git proxy が 403 |
+| WSL | PC 内の WSL 2 | WSL 側の認証次第 |
+| SSH | 指定したリモートマシン | そのマシンの認証次第 |
+
+Local で実際にどうだったか：
+
+- 認証は Windows の **Git Credential Manager**（`credential.helper=manager`）がそのまま使われる。
+  資格情報はキャッシュ済みで、**プロンプトは出ない**
+- `user.name` / `user.email` も Windows 側の設定を継承する（`xeexi` / `ki4shi.ito@gmail.com`。設定不要）
+- `.git/index.lock` の残骸も出ない（マウント越しではないため）
+- **worktree は切られなかった。** 作業ディレクトリは実フォルダそのままで、コミットも push も `main` に直接入った
+
+`GIT_TERMINAL_PROMPT=0` を付けて実行するとよい。資格情報が切れていた場合に、
+入力待ちで固まる代わりにその場で失敗する。
+
+**worktree を切ったときは話が変わる。** Code タブは並行セッションのために **git worktree** を切ることがある。
+1つのリポジトリを複数フォルダで同時に開く仕組みで、`.git` は共有される。その場合：
+
+- 作業は `main` ではなく**セッション用のブランチ**に積まれる。`main` に入れるには merge が要る
+- push 自体は worktree からでも普通に通る（remote 設定が同じため）
+- **追跡外のファイルは新しい worktree に付いてこない。** このリポジトリは外部依存が
+  Google Fonts だけでビルドも不要なので影響はないが、`.worktreeinclude` で補える
+- 置き場所は `<プロジェクト直下>/.claude/worktrees/`。Settings → Claude Code の
+  「Worktree location」で変更でき、セッションを archive すると片付く
+
+参照：[Desktop application](https://code.claude.com/docs/en/desktop)
+
+### Cowork（マウント越し）からは push できない ── 調べ直さないこと
+
+Cowork のセッションでも commit までは作れる（実フォルダの `.git` にそのまま入る）。**push だけが通らない。**
+**設定を探しても解決しない。** 2026-08-08 に裏取り済み。この経路で作業したときは Windows 側で叩く：
 
 ```
 cd C:\Users\guard\Documents\Claude作業用\ccaf-learn
 git push origin main
 ```
-
-**設定を探しても解決しない。調べ直さないこと。** 2026-08-08 に裏取り済み。
 
 | 実行のしかた | 失敗の理由 |
 |---|---|
@@ -410,42 +448,6 @@ git push origin main
 **GitHub コネクタでも代替できない。** あれはリポジトリを読み取ってコンテキストに入れるための機能で、
 同期されるのは「特定ブランチのファイル名と内容」だけ。commit も push も扱わない
 （[公式ヘルプ](https://support.claude.com/en/articles/10167454-use-the-github-integration) の FAQ）。
-
-Cowork から自動化するなら Windows 側（タスクスケジューラ等）でやるしかない。利用者は**手動 push を選択**した。
-
-### Code タブの Local セッションなら押せるはず ── ただし未検証
-
-**これは 2026-08-08 時点で公式ドキュメントを読んだだけの結論で、実際には試していない。**
-次のセッションで確かめて、この節を「検証済み」か「駄目だった」に書き換えること。
-
-デスクトップアプリの **Code タブ**は、セッションの実行環境を**ドロップダウンで選べる**。
-
-| 環境 | どこで動くか | push |
-|---|---|---|
-| **Local** | 利用者の Windows 上。ユーザー環境変数とシステム環境変数を継承する | **通るはず** |
-| Cloud | Anthropic の管理インフラ | 上表のとおり git proxy が 403 |
-| WSL | PC 内の WSL 2 | WSL 側の認証次第 |
-| SSH | 指定したリモートマシン | そのマシンの認証次第 |
-
-Local が利用者のマシンの道具と認証をそのまま使うことは、ドキュメントの別の記述から裏が取れる ──
-PR 作成機能は「`gh` が**利用者のマシンに**インストールされ認証済みであること」を要求し、
-Claude Code on the Web への引き継ぎ機能は「**Desktop がブランチを push する**」と書かれている。
-つまり Windows の Git Credential Manager をそのまま使えるので、**Claude 自身が push まで実行できる**はず。
-
-**検証手順**：Code タブで Local セッションを開き、`git push origin main` を実行する。
-通れば、以後は「作業 → コミット → push」を1回の指示で完結できる。
-
-**worktree に注意。** Code タブは並行セッションのために **git worktree** を切る。
-1つのリポジトリを複数フォルダで同時に開く仕組みで、`.git` は共有される。つまり：
-
-- 作業は `main` ではなく**セッション用のブランチ**に積まれる。`main` に入れるには merge が要る
-- push 自体は worktree からでも普通に通る（remote 設定が同じため）
-- **追跡外のファイルは新しい worktree に付いてこない。** このリポジトリは外部依存が
-  Google Fonts だけでビルドも不要なので影響はないが、`.worktreeinclude` で補える
-- 置き場所は `<プロジェクト直下>/.claude/worktrees/`。Settings → Claude Code の
-  「Worktree location」で変更でき、セッションを archive すると片付く
-
-参照：[Desktop application](https://code.claude.com/docs/en/desktop)
 
 ### GitHub Pages で公開する
 
@@ -476,10 +478,10 @@ Claude Code on the Web への引き継ぎ機能は「**Desktop がブランチ�
 
 ### git の状態（2026-08-08 時点）
 
-ブランチ `main`。**`f53de49`（組み替え前）までが push 済み**で、それ以降 ── `d022995`（docs/ へ集約・
-88ファイル構成）以降のコミットが**未 push**。正確な差分は `git log --oneline origin/main..main` で見ること。
+ブランチ `main`。**`ab94762` まで push 済み**（組み替え後のコミット ── `d022995` 以降も含めてすべて
+remote に入っている）。未 push のコミットがあるかは `git log --oneline origin/main..main` で見ること。
 
-セッションからは push できないので、**Windows 側で `git push origin main`**（§9）。
+Code タブの Local セッションなら、そのまま `git push origin main` が通る（§9）。
 
 検証は Playwright で全89ページ実施済み（節1つ・ナビ・目次・パンくず・送り・リンク切れ・
 図のはみ出し・横スクロール・console エラー）。`node tools/check.mjs` も通っている。
@@ -509,7 +511,6 @@ Claude Code on the Web への引き継ぎ機能は「**Desktop がブランチ�
   16px 太字＋青い左罫＋上余白44px で見出しらしさを出している。
   弱いと言われたら、`.sec-head h2` を 32px に上げて `h3.sub` を 26px に戻す手がある
   （ただし `.hero h1` と `.sec-head h2` が同じ 32px になる）
-- **Code タブの Local セッションで push できるかの検証**（§9）。通れば手動 push が不要になる
 - 公式タスク名の英語原文を併記する案（未着手。日本語訳のみ）
 - `check.mjs` の「番号説明と図の重複」が △7件。図の語句を引用して指しているだけかの目視確認が要る
 
