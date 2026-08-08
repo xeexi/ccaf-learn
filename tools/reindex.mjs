@@ -166,12 +166,12 @@ const toc = (cur) => {
     }
     return s;
   });
-  // 目次はいま居るドメインの中だけを並べる。ドメインをまたいで探したいときのために、
-  // 全88項を並べた一覧（トップページ）への導線をここに置く。
+  // 目次はいま居るドメインの中だけを並べる。
+  // 全項目一覧への導線はここに置かない ── ブランド（左上）がすでに index.html を指しており、
+  // 同じページへのリンクが1ページに2本並んでいた（§7 #32）。
   return `<aside class="toc">
   <div class="toc-head">${esc(cur.dom.num)}</div>
   <nav class="toc-list">${items.join('\n')}</nav>
-  <a class="toc-all" href="../index.html#all">全項目一覧（${pages.length}項）</a>
 </aside>`;
 };
 
@@ -182,23 +182,19 @@ const toc = (cur) => {
 const crumb = (cur) => `<p class="crumb" data-domain="${cur.dom.key}"><b>${esc(cur.dom.num)}</b><span>${esc(cur.dom.h1)}</span></p>`;
 
 /** 前後の送り。ドメインの境目も越えて、本全体で1本につながる */
-const pager = (i) => {
-  const cur = pages[i], prev = pages[i - 1], next = pages[i + 1];
-  const lab = p => (p.num ? p.num + '　' : '') + p.title;
-  const inDom = pages.filter(p => p.dom.dir === cur.dom.dir);
-  const pos = inDom.findIndex(p => p.rel === cur.rel) + 1;
-  // 節名は span で包む。狭い画面で1行省略（text-overflow）を効かせるために要る
+/** 前後の送り。本文の上と下、2か所に同じものを出す。
+ *  節名と「4 / 18」の位置表示は出さない ── どちらも左の目次が同じことを
+ *  （しかも現在地を太字で）示していて、1ページに同じ情報が3つあった（§7 #33）。 */
+const pager = (i, where) => {
+  const prev = pages[i - 1], next = pages[i + 1];
+  // 見えるのは矢印だけ。文字は clip-path で視覚的に隠すが、読み上げには残す
   const pv = prev
-    ? `<a class="pgv prev" href="../${prev.rel}"><span class="pgv-l">前へ</span><span class="pgv-t">${esc(lab(prev))}</span></a>`
-    : `<a class="pgv prev" href="../index.html"><span class="pgv-l">前へ</span><span class="pgv-t">目次</span></a>`;
+    ? `<a class="pgv prev" href="../${prev.rel}"><span class="vh">前へ</span></a>`
+    : `<a class="pgv prev" href="../index.html"><span class="vh">トップへ</span></a>`;
   const nx = next
-    ? `<a class="pgv next" href="../${next.rel}"><span class="pgv-l">次へ</span><span class="pgv-t">${esc(lab(next))}</span></a>`
-    : `<span class="pgv next end"><span class="pgv-l">ここで終わり</span><span class="pgv-t">おつかれさまでした</span></span>`;
-  return `<nav class="secpager">
-${pv}
-<span class="pgv-n">${cur.dom.num} ${pos} / ${inDom.length}</span>
-${nx}
-</nav>`;
+    ? `<a class="pgv next" href="../${next.rel}"><span class="vh">次へ</span></a>`
+    : `<span class="pgv next end"><span class="vh">ここで終わり</span></span>`;
+  return `<nav class="secpager ${where}">${pv}${nx}</nav>`;
 };
 
 /* ---------- 3. 節ファイルを書き出す ---------- */
@@ -221,10 +217,11 @@ ${MARKERS}
 ${toc(p)}
 <main class="doc">
 ${crumb(p)}
+${pager(i, 'top')}
 ${OPEN}
 ${p.body}
 ${CLOSE}
-${pager(i)}
+${pager(i, 'btm')}
 </main>
 </div>
 ${MODAL}

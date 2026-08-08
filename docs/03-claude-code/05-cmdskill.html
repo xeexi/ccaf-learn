@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/style.css?v=3d41cca7">
+<link rel="stylesheet" href="../assets/style.css?v=b6b099de">
 </head>
 <body data-page="cmdskill">
 <script>(function(){var t=localStorage.getItem('ccarf-theme');if(t)document.documentElement.dataset.theme=t;})();</script>
@@ -63,10 +63,10 @@
 <a class="itm toc-link" href="../03-claude-code/12-settings.html"><span class="itm-n">3-12</span><span class="itm-t">settings.json と permissions</span></a>
 <a class="itm toc-link itm-quiz" href="../03-claude-code/13-q36.html"><span class="itm-n">3-13</span><span class="itm-t">理解度チェック ─ CI と設定ファイル</span></a>
 <a class="itm toc-link itm-quiz" href="../03-claude-code/14-qall.html"><span class="itm-n">3-14</span><span class="itm-t">理解度チェック ─ Domain 3 総合</span></a></nav>
-  <a class="toc-all" href="../index.html#all">全項目一覧（90項）</a>
 </aside>
 <main class="doc">
 <p class="crumb" data-domain="code"><b>Domain 3</b><span>Claude Code の設定とワークフロー</span></p>
+<nav class="secpager top"><a class="pgv prev" href="../03-claude-code/04-q31.html"><span class="vh">前へ</span></a><a class="pgv next" href="../03-claude-code/06-q32.html"><span class="vh">次へ</span></a></nav>
 <!-- ▼ 本文 ─ ここだけを編集する。この前後は node tools/reindex.mjs が書き出す -->
 <section class="sec" id="cmdskill">
 <header class="sec-head">
@@ -79,7 +79,7 @@
 <p class="goal"><b>ゴール</b>手順の置き場所を4択から選べる。</p>
 
 <div class="figbox" style="padding:16px 18px">
-  <p class="codelabel">.claude/commands/deploy.md　→　/deploy staging で呼べる</p>
+  <p class="codelabel">.claude/commands/deploy.md　─　先頭の <code>---</code> で囲むのが YAML frontmatter</p>
   <pre class="code"><span class="c">---</span>
 <span class="k">description</span>: <span class="s">リリース前の確認</span><span class="n">1</span>
 <span class="k">argument-hint</span>: <span class="s">&lt;環境名&gt;</span><span class="n">2</span>
@@ -91,7 +91,7 @@
   <ol class="ann">
     <li><span class="n">1</span><span><code>description</code> ─ 何をするコマンドか。</span></li>
     <li><span class="n">2</span><span><code>argument-hint</code> ─ 補完に出る引数の形。</span></li>
-    <li><span class="n">3</span><span><code>allowed-tools</code> ─ <b>そのコマンド実行中だけツールを絞る</b>。権限設計としても使えます。</span></li>
+    <li><span class="n">3</span><span><code>allowed-tools</code> ─ <b>そのコマンド実行中だけツールを絞る</b>。権限設計としても使えます。<b>キー名のハイフンは YAML の書き方</b>で、JSON ではありません。</span></li>
     <li><span class="n">4</span><span>本文に <code>$ARGUMENTS</code>（全部）や <code>$1 $2</code>（位置ごと）と書くと、呼び出し時の引数が入ります。<b>ファイル名がそのままコマンド名</b>です。</span></li>
   </ol>
 </div>
@@ -136,7 +136,7 @@
 <p class="point"><b>ポイント</b>補助ファイルが要る、または別コンテキストで走らせたい → スキル。単発の手順書 → スラッシュコマンド。</p>
 
 <div class="detail">
-  <div class="ex"><span class="exl"><code>SKILL.md</code> の frontmatter（主なもの）</span>
+  <div class="ex"><span class="exl"><code>SKILL.md</code> の YAML frontmatter（主なもの）</span>
   <code>description</code>　いつ使うか ── <b>Claude が自動で使うかどうかの判断材料</b>。ツールの <code>description</code> と同じ役割<br>
   <code>allowed-tools</code>　実行中に使えるツール<br>
   <code>argument-hint</code>　引数の形<br>
@@ -173,13 +173,13 @@
   「毎回同じ注意を書いている」→ <b><code>CLAUDE.md</code></b>／「リリース手順を毎回説明している」→ <b>スラッシュコマンド</b>／
   「レビュー観点と参考資料をセットで使い回したい」→ <b>スキル</b>／「編集後に必ずリンタを走らせたい」→ <b>hooks</b>。</div>
 </div>
+<p class="note">※ <b>カスタムコマンドはスキルに統合されました。</b><code>.claude/commands/deploy.md</code> と
+<code>.claude/skills/deploy/SKILL.md</code> は、どちらも <code>/deploy</code> になり同じように動きます。
+既存の <code>.claude/commands/</code> はそのまま使えます。<b>スキルのほうができることが多い</b>
+（補助ファイルを束ねる・自動起動を止める・別コンテキストで走らせる）ので、上の切り分けはそのまま使えます。</p>
 </section>
 <!-- ▲ 本文 -->
-<nav class="secpager">
-<a class="pgv prev" href="../03-claude-code/04-q31.html"><span class="pgv-l">前へ</span><span class="pgv-t">3-4　理解度チェック ─ CLAUDE.md の階層</span></a>
-<span class="pgv-n">Domain 3 5 / 14</span>
-<a class="pgv next" href="../03-claude-code/06-q32.html"><span class="pgv-l">次へ</span><span class="pgv-t">3-6　理解度チェック ─ コマンドとスキル</span></a>
-</nav>
+<nav class="secpager btm"><a class="pgv prev" href="../03-claude-code/04-q31.html"><span class="vh">前へ</span></a><a class="pgv next" href="../03-claude-code/06-q32.html"><span class="vh">次へ</span></a></nav>
 </main>
 </div>
 <div class="modal" id="searchModal" hidden>
@@ -190,6 +190,6 @@
   </div>
 </div>
 <script src="../assets/quiz-data.js?v=47ac7a88"></script>
-<script src="../assets/search-index.js?v=ea5cef59"></script>
+<script src="../assets/search-index.js?v=efd896c3"></script>
 <script src="../assets/app.js?v=5bf1e1db"></script>
 </body></html>

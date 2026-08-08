@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/style.css?v=3d41cca7">
+<link rel="stylesheet" href="../assets/style.css?v=b6b099de">
 </head>
 <body data-page="rules">
 <script>(function(){var t=localStorage.getItem('ccarf-theme');if(t)document.documentElement.dataset.theme=t;})();</script>
@@ -60,21 +60,21 @@
 <a class="itm toc-link" href="../03-claude-code/12-settings.html"><span class="itm-n">3-12</span><span class="itm-t">settings.json と permissions</span></a>
 <a class="itm toc-link itm-quiz" href="../03-claude-code/13-q36.html"><span class="itm-n">3-13</span><span class="itm-t">理解度チェック ─ CI と設定ファイル</span></a>
 <a class="itm toc-link itm-quiz" href="../03-claude-code/14-qall.html"><span class="itm-n">3-14</span><span class="itm-t">理解度チェック ─ Domain 3 総合</span></a></nav>
-  <a class="toc-all" href="../index.html#all">全項目一覧（90項）</a>
 </aside>
 <main class="doc">
 <p class="crumb" data-domain="code"><b>Domain 3</b><span>Claude Code の設定とワークフロー</span></p>
+<nav class="secpager top"><a class="pgv prev" href="../03-claude-code/06-q32.html"><span class="vh">前へ</span></a><a class="pgv next" href="../03-claude-code/08-plan.html"><span class="vh">次へ</span></a></nav>
 <!-- ▼ 本文 ─ ここだけを編集する。この前後は node tools/reindex.mjs が書き出す -->
 <section class="sec" id="rules">
 <header class="sec-head">
   <h2>3-7　パス固有ルール</h2>
 </header>
-<p class="lead"><code>.claude/rules/</code> に置き、frontmatter で対象パスを指定します。<b><code>CLAUDE.md</code> との違いは「いつ載るか」だけ</b>です。</p>
+<p class="lead"><code>.claude/rules/</code> に置き、先頭の YAML frontmatter で対象パスを指定します。<b><code>CLAUDE.md</code> との違いは「いつ載るか」だけ</b>です。</p>
 <p class="task"><span class="tn">BLUEPRINT 3.3</span><b>条件付き規約読み込みのためのパス固有ルール</b></p>
 <p class="goal"><b>ゴール</b><code>paths</code> が何のスイッチか説明できる。</p>
 
 <div class="figbox" style="padding:16px 18px">
-  <p class="codelabel">.claude/rules/frontend.md</p>
+  <p class="codelabel">.claude/rules/frontend.md　─　<code>---</code> で囲んだ中が YAML frontmatter</p>
   <pre class="code"><span class="c">---</span>
 <span class="k">paths</span>:
   - <span class="s">"src/**/*.{ts,tsx}"</span><span class="n">1</span>
@@ -116,11 +116,7 @@
 </div>
 </section>
 <!-- ▲ 本文 -->
-<nav class="secpager">
-<a class="pgv prev" href="../03-claude-code/06-q32.html"><span class="pgv-l">前へ</span><span class="pgv-t">3-6　理解度チェック ─ コマンドとスキル</span></a>
-<span class="pgv-n">Domain 3 7 / 14</span>
-<a class="pgv next" href="../03-claude-code/08-plan.html"><span class="pgv-l">次へ</span><span class="pgv-t">3-8　plan mode と直接実行</span></a>
-</nav>
+<nav class="secpager btm"><a class="pgv prev" href="../03-claude-code/06-q32.html"><span class="vh">前へ</span></a><a class="pgv next" href="../03-claude-code/08-plan.html"><span class="vh">次へ</span></a></nav>
 </main>
 </div>
 <div class="modal" id="searchModal" hidden>
@@ -131,6 +127,6 @@
   </div>
 </div>
 <script src="../assets/quiz-data.js?v=47ac7a88"></script>
-<script src="../assets/search-index.js?v=ea5cef59"></script>
+<script src="../assets/search-index.js?v=efd896c3"></script>
 <script src="../assets/app.js?v=5bf1e1db"></script>
 </body></html>

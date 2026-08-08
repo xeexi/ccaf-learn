@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/style.css?v=3d41cca7">
+<link rel="stylesheet" href="../assets/style.css?v=b6b099de">
 </head>
 <body data-page="cache">
 <script>(function(){var t=localStorage.getItem('ccarf-theme');if(t)document.documentElement.dataset.theme=t;})();</script>
@@ -55,10 +55,10 @@
 <a class="toc-link toc-sub" href="#cache-3">実物を見る ─ cache_control で区切りを打つ</a>
 <a class="itm toc-link" href="../00-basics/05-token.html"><span class="itm-n">0-5</span><span class="itm-t">確率で次の1トークンを選ぶ</span></a>
 <a class="itm toc-link itm-quiz" href="../00-basics/06-q.html"><span class="itm-n">0-6</span><span class="itm-t">理解度チェック</span></a></nav>
-  <a class="toc-all" href="../index.html#all">全項目一覧（90項）</a>
 </aside>
 <main class="doc">
 <p class="crumb" data-domain="basics"><b>前提</b><span>会話の実体</span></p>
+<nav class="secpager top"><a class="pgv prev" href="../00-basics/03-window.html"><span class="vh">前へ</span></a><a class="pgv next" href="../00-basics/05-token.html"><span class="vh">次へ</span></a></nav>
 <!-- ▼ 本文 ─ ここだけを編集する。この前後は node tools/reindex.mjs が書き出す -->
 <section class="sec" id="cache" data-widget="p-cache">
 <header class="sec-head">
@@ -128,11 +128,7 @@
   <p class="note">※ 有効期限は<b>既定で5分</b>。<code>"ttl": "1h"</code> を足せば1時間保ちますが、そのぶん単価が上がります。<br>※ 短いプロンプトはそもそもキャッシュされません（モデルごとに最小トークン数が決まっています）。また、会話をふつうに続けている場合は明示しなくても自動で効きます。<code>cache_control</code> を自分で打つのは、<b>同じ長い前半に対して1回きりのリクエストを何本も投げる</b>ときです。</p>
 </section>
 <!-- ▲ 本文 -->
-<nav class="secpager">
-<a class="pgv prev" href="../00-basics/03-window.html"><span class="pgv-l">前へ</span><span class="pgv-t">0-3　トークンとコンテキストウィンドウ</span></a>
-<span class="pgv-n">前提 4 / 6</span>
-<a class="pgv next" href="../00-basics/05-token.html"><span class="pgv-l">次へ</span><span class="pgv-t">0-5　確率で次の1トークンを選ぶ</span></a>
-</nav>
+<nav class="secpager btm"><a class="pgv prev" href="../00-basics/03-window.html"><span class="vh">前へ</span></a><a class="pgv next" href="../00-basics/05-token.html"><span class="vh">次へ</span></a></nav>
 </main>
 </div>
 <div class="modal" id="searchModal" hidden>
@@ -143,6 +139,6 @@
   </div>
 </div>
 <script src="../assets/quiz-data.js?v=47ac7a88"></script>
-<script src="../assets/search-index.js?v=ea5cef59"></script>
+<script src="../assets/search-index.js?v=efd896c3"></script>
 <script src="../assets/app.js?v=5bf1e1db"></script>
 </body></html>

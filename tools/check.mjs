@@ -369,7 +369,8 @@ const VOCAB = {
     'web_fetch', 'code_execution', 'text_editor', 'memory'],
   // Domain 3
   '3.1 CLAUDE.md':           ['CLAUDE.md', 'CLAUDE.local.md'],
-  '3.2 コマンドとスキル':    ['SKILL.md', 'allowed-tools', '$ARGUMENTS', 'context: fork'],
+  '3.2 コマンドとスキル':    ['SKILL.md', 'allowed-tools', 'argument-hint', '$ARGUMENTS', 'context: fork',
+    'YAML frontmatter'],   // ← JSON と見分けがつかないと「キーにハイフン？」になる（§7 #34）
   '3.3 パス固有ルール':      ['.claude/rules', 'paths'],
   '3.4 plan mode':           ['plan mode', '--permission-mode'],
   '3.6 CI/CD':               ['--output-format', '--allowedTools', 'bypassPermissions',
