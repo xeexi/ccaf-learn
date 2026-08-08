@@ -157,7 +157,11 @@ import sp from '@sparticuz/chromium';          // CommonJS 経由なら (sp.defa
 const browser = await chromium.launch({ executablePath: await sp.executablePath(), args: sp.args });
 ```
 
-ブラウザ拡張（Claude in Chrome）からは `file://` を開けないので、この経路は使えない。
+このビルドは `--single-process` で動くため、**`newContext()` を2回目に作ると落ちる**
+（`Target page, context or browser has been closed`）。条件を変えて測り直すときは `launch` からやり直す。
+
+ブラウザ拡張（Claude in Chrome）からは `file://` を開けないので、この経路は使えない
+（`navigate` が `https://file///…` に書き換えてしまい、拡張にファイル URL の許可も要る）。
 
 測る項目は、①`getComputedStyle` の `fontSize` を全要素で集計して**種類を数える**
 ②`getBoundingClientRect().right` で**右端が揃っているか**
@@ -295,6 +299,11 @@ q4:[
 - `a` は**0始まり**の正解インデックス
 - HTML 側は `<section class="sec sec-quiz" data-quiz="q4">` ＋ `<div class="qwrap"></div>` だけ置けばよい。描画は `app.js` がやる
 
+**設問数を数えるときは正規表現で切り出さない。** `quiz-data.js` を実際に読み込んで数える。
+今日、キーの範囲を正規表現で切り出して数えたら **92問を350問と誤った**（キーの終わりを取り違えて
+後続のキーまで飲み込んでいた）。`node -e` で `global.window={}` を用意して読み込み、
+各ページの `data-quiz="…"` からキーを引いて配列の長さを足すのが確実。
+
 **設問はそのセクションまでに説明した範囲だけで解けること。**
 先取りは学習の妨げになる。`node tools/check.mjs` が自動判定する。
 誤答の選択肢に未説明の用語（`temperature` など）が出るのは問題ない — 正解を選ぶのに知識が要らないため。
@@ -402,7 +411,41 @@ git push origin main
 同期されるのは「特定ブランチのファイル名と内容」だけ。commit も push も扱わない
 （[公式ヘルプ](https://support.claude.com/en/articles/10167454-use-the-github-integration) の FAQ）。
 
-自動化するなら Windows 側（タスクスケジューラ等）でやるしかない。利用者は**手動 push を選択**した。
+Cowork から自動化するなら Windows 側（タスクスケジューラ等）でやるしかない。利用者は**手動 push を選択**した。
+
+### Code タブの Local セッションなら押せるはず ── ただし未検証
+
+**これは 2026-08-08 時点で公式ドキュメントを読んだだけの結論で、実際には試していない。**
+次のセッションで確かめて、この節を「検証済み」か「駄目だった」に書き換えること。
+
+デスクトップアプリの **Code タブ**は、セッションの実行環境を**ドロップダウンで選べる**。
+
+| 環境 | どこで動くか | push |
+|---|---|---|
+| **Local** | 利用者の Windows 上。ユーザー環境変数とシステム環境変数を継承する | **通るはず** |
+| Cloud | Anthropic の管理インフラ | 上表のとおり git proxy が 403 |
+| WSL | PC 内の WSL 2 | WSL 側の認証次第 |
+| SSH | 指定したリモートマシン | そのマシンの認証次第 |
+
+Local が利用者のマシンの道具と認証をそのまま使うことは、ドキュメントの別の記述から裏が取れる ──
+PR 作成機能は「`gh` が**利用者のマシンに**インストールされ認証済みであること」を要求し、
+Claude Code on the Web への引き継ぎ機能は「**Desktop がブランチを push する**」と書かれている。
+つまり Windows の Git Credential Manager をそのまま使えるので、**Claude 自身が push まで実行できる**はず。
+
+**検証手順**：Code タブで Local セッションを開き、`git push origin main` を実行する。
+通れば、以後は「作業 → コミット → push」を1回の指示で完結できる。
+
+**worktree に注意。** Code タブは並行セッションのために **git worktree** を切る。
+1つのリポジトリを複数フォルダで同時に開く仕組みで、`.git` は共有される。つまり：
+
+- 作業は `main` ではなく**セッション用のブランチ**に積まれる。`main` に入れるには merge が要る
+- push 自体は worktree からでも普通に通る（remote 設定が同じため）
+- **追跡外のファイルは新しい worktree に付いてこない。** このリポジトリは外部依存が
+  Google Fonts だけでビルドも不要なので影響はないが、`.worktreeinclude` で補える
+- 置き場所は `<プロジェクト直下>/.claude/worktrees/`。Settings → Claude Code の
+  「Worktree location」で変更でき、セッションを archive すると片付く
+
+参照：[Desktop application](https://code.claude.com/docs/en/desktop)
 
 ### GitHub Pages で公開する
 
@@ -461,6 +504,12 @@ git push origin main
   | 5 コンテキスト管理 | 15% | 8 | 10 | −2 |
 
   ほかに前提4問・まとめ22問（模擬試験を含む）で全92問。**Domain 2 を厚くするのが最優先。**
+- **`h3.sub`（小見出し・56か所）を 16px にしたのが弱くないか、利用者の判断待ち。**
+  段階を5つに減らしたときに 22px を廃止した。26px にすると `.sec-head h2` と同格になってしまうため、
+  16px 太字＋青い左罫＋上余白44px で見出しらしさを出している。
+  弱いと言われたら、`.sec-head h2` を 32px に上げて `h3.sub` を 26px に戻す手がある
+  （ただし `.hero h1` と `.sec-head h2` が同じ 32px になる）
+- **Code タブの Local セッションで push できるかの検証**（§9）。通れば手動 push が不要になる
 - 公式タスク名の英語原文を併記する案（未着手。日本語訳のみ）
 - `check.mjs` の「番号説明と図の重複」が △7件。図の語句を引用して指しているだけかの目視確認が要る
 
