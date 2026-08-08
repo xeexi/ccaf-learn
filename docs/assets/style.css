@@ -201,16 +201,27 @@ kbd{
   padding:0 12px 12px; text-transform:uppercase;
 }
 .toc-list{ display:flex; flex-direction:column; gap:1px; border-left:1px solid var(--line-soft) }
+/* ---------- 項へのリンク（目次・全項目一覧で共通） ----------
+   「番号 ／ 題名」の2列。◇ は「理解度チェックである」印なので、
+   番号ではなく題名に付ける（ひとつなぎにすると番号の左に出てしまう）。 */
+.itm{
+  display:grid; grid-template-columns:3.2em minmax(0,1fr); gap:9px; align-items:baseline;
+  text-decoration:none; transition:.15s;
+}
+.itm-n{ font-family:var(--mono); font-size:var(--fs-xs); color:var(--muted); white-space:nowrap }
+.itm:hover .itm-n{ color:inherit }
+.itm-quiz .itm-t::before{ content:"◇ " }
+
+/* 以下は「どこに置かれるか」の違いだけ */
 .toc-link{
-  padding:7px 14px; font-size:var(--fs-base); color:var(--muted); text-decoration:none;
-  border-left:2px solid transparent; margin-left:-1px; transition:.15s; line-height:1.6;
+  padding:7px 14px; font-size:var(--fs-base); color:var(--muted); line-height:1.6;
+  border-left:2px solid transparent; margin-left:-1px;
 }
 .toc-link:hover{ color:var(--ink) }
-.toc-quiz::before{ content:"◇ "; color:var(--muted) }
 .toc-link.on{ color:var(--ink); border-left-color:var(--accent); font-weight:600 }
-.toc-link.is-quiz::before{ content:"◇ "; color:var(--accent) }
+.toc-link.on .itm-n{ color:var(--accent) }
 /* 小見出しの目次。いま読んでいる節の下だけ開く（app.js が .show を付ける） */
-.toc-sub{ padding:5px 14px 5px 28px; font-size:var(--fs-sm); line-height:1.5 }
+.toc-sub{ display:block; padding:5px 14px 5px 28px; font-size:var(--fs-sm); line-height:1.5 }
 .toc-sub::before{ content:"− "; color:var(--line) }
 .toc-link.on-p{ color:var(--ink-2) }
 
@@ -959,16 +970,12 @@ html[data-theme="light"] .opt:hover:not(.done) .ol{ color:#fff }
 }
 .al-list li{ margin:0 }
 .al-link{
-  display:grid; grid-template-columns:3.4em minmax(0,1fr); gap:10px; align-items:baseline;
   padding:8px 2px; min-height:38px;
-  font-size:var(--fs-sm); line-height:1.6; color:var(--ink-2); text-decoration:none;
+  font-size:var(--fs-sm); line-height:1.6; color:var(--ink-2);
   border-bottom:1px solid var(--line-soft);
 }
-.al-link .al-n{ font-family:var(--mono); font-size:var(--fs-xs); color:var(--muted); white-space:nowrap }
 .al-link:hover{ color:var(--accent) }
-.al-link:hover .al-n{ color:var(--accent) }
-.al-quiz{ color:var(--muted) }
-.al-quiz .al-t::before{ content:"◇ " }
+.al-link.itm-quiz{ color:var(--muted) }
 
 /* 節ページの目次から、全項目一覧へ戻る導線 */
 .toc-all{
@@ -1037,6 +1044,7 @@ html[data-theme="light"] .opt:hover:not(.done) .ol{ color:#fff }
     border:1px solid var(--line); border-radius:99px; padding:6px 13px;
     font-size:var(--fs-sm); margin:0;
   }
+  .toc-link.itm{ display:flex; gap:7px }
   .toc-link.on{ border-color:var(--accent) }
   .toc-sub{ display:none !important }
 }

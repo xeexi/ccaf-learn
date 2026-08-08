@@ -108,6 +108,13 @@ const MODAL = `<div class="modal" id="searchModal" hidden>
 
 const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
+/** 項へのリンク1本。目次（節ページの左）と全項目一覧（トップ）で同じ形を使う。
+ *  番号と題名を別の列に出す ── ひとつなぎにすると ◇ が番号の左に出てしまい、
+ *  題名の頭も揃わない。◇ は「理解度チェックである」印なので題名側に付く。 */
+const itemLink = (p, { href, cls = '', on = false }) =>
+  `<a class="itm ${cls}${on ? ' on' : ''}${p.quiz ? ' itm-quiz' : ''}" href="${href}">`
+  + `<span class="itm-n">${esc(p.num || '─')}</span><span class="itm-t">${esc(p.title)}</span></a>`;
+
 /** 配点の図。トップと「6-2 どこに時間を使うか」の2か所に同じものが要るので、ここで1回だけ作る。
  *  帯の全長＝60問。以前は帯の枠と Domain 1 のバーが同じ長さで、27% が満杯に見えていた。 */
 const weightFig = () => {
@@ -156,8 +163,7 @@ const toc = (cur) => {
   const list = pages.filter(p => p.dom.dir === cur.dom.dir);
   const items = list.map(p => {
     const on = p.rel === cur.rel;
-    const label = (p.num ? p.num + '　' : '') + p.title;
-    let s = `<a class="toc-link${on ? ' on' : ''}${p.quiz ? ' toc-quiz' : ''}" href="../${p.rel}">${esc(label)}</a>`;
+    let s = itemLink(p, { href: `../${p.rel}`, cls: 'toc-link', on });
     if (on && p.subs.length) {
       s += '\n' + p.subs.map(x => `<a class="toc-link toc-sub" href="#${x.id}">${esc(x.t)}</a>`).join('\n');
     }
@@ -248,10 +254,8 @@ if (fs.existsSync(idxPath)) {
   // カードは各ドメインの入口（5項＋「ほか N 項」）なので、全体を見渡せる場所がここにしかない。
   const allList = DOMAINS.map(d => {
     const list = pages.filter(p => p.dom.dir === d.dir);
-    // 番号と題名を別の列に出す。混ぜて1行にすると、目で追う手がかりがなくなる
     const items = list.map(p =>
-      `<li><a class="al-link${p.quiz ? ' al-quiz' : ''}" href="${p.rel}">` +
-      `<span class="al-n">${esc(p.num || '─')}</span><span class="al-t">${esc(p.title)}</span></a></li>`).join('');
+      `<li>${itemLink(p, { href: p.rel, cls: 'al-link' })}</li>`).join('');
     return `<section class="al-dom" data-domain="${d.key}">
   <h3><span class="al-num">${esc(d.num)}</span><a href="${entry[d.dir]}">${esc(d.h1)}</a><span class="al-c">${list.length}項</span></h3>
   <ul class="al-list">${items}</ul>

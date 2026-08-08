@@ -137,6 +137,30 @@ order.forEach((s, i) => {
 });
 if (!scopeNg) console.log('  ✓ すべて既習範囲内');
 
+/* --- 5a2. 設問の見出しの規約 --------------------------------------
+   同じ ◇ に「理解度チェック」「総合チェック」「解いてみる」の3通りの名前が
+   混在し、一覧で区別できなくなったことがある。名前は1つに固定する。
+   同じドメインに2つ以上あるときは、副題で中身を書き分ける。 */
+console.log('\n■ 設問の見出し');
+let qhNg = 0;
+const qHeads = order.filter(s => s.quiz).map(s => ({
+  f: s.f,
+  dom: s.f.slice(0, 2),
+  h2: ((s.body.match(/<h2>([\s\S]*?)<\/h2>/) || ['', ''])[1]).replace(/<[^>]*>/g, '').trim(),
+}));
+const perDom = {};
+qHeads.forEach(q => { perDom[q.dom] = (perDom[q.dom] || 0) + 1; });
+qHeads.forEach(q => {
+  if (!/^\S+\s*理解度チェック/.test(q.h2)) {
+    bad(`${q.f}: 設問の見出しが「理解度チェック」で始まっていない → ${q.h2}`); qhNg++;
+  } else if (perDom[q.dom] > 1 && !q.h2.includes('─')) {
+    bad(`${q.f}: 同じ区分に設問が ${perDom[q.dom]} つあるのに副題がない → ${q.h2}`); qhNg++;
+  } else if (perDom[q.dom] === 1 && q.h2.includes('─')) {
+    bad(`${q.f}: 同じ区分に設問が1つだけなので副題は不要 → ${q.h2}`); qhNg++;
+  }
+});
+if (!qhNg) console.log(`  ✓ ${qHeads.length} 件すべて規約どおり`);
+
 /* --- 5b. HTML から参照されていない設問キーが残っていないか ---------
    セクションを作り直したときに、古い設問データが浮くことがある。
    死んだデータは気づかないまま腐るので、ここで落とす。 */
