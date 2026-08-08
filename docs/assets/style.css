@@ -1029,7 +1029,33 @@ html[data-theme="light"] .opt:hover:not(.done) .ol{ color:#fff }
   .navfold.nav-open .nav-cur{ border-color:var(--accent); color:var(--accent) }
 
   .shell{ grid-template-columns:1fr; gap:0 }
-  .toc{ position:static; max-height:none; padding:20px 0 0 }
+  .toc{ position:static; max-height:none; padding:10px 0 0 }
+
+  /* パンくずは出さない ── すぐ上の .nav-cur が同じ「Domain 1 …」を出しており、
+     節見出しに届くまでに画面の38%を使っていた（§7 #35）。 */
+  .crumb{ display:none }
+
+  /* ← 目次 → を1行にまとめる。目次ボタンの左右に的のぶんを空け、
+     上の送りをその行に重ねる（流れからは抜くので、高さは1段ぶんで済む）。
+     ヘッダー・目次・送りで3段あったのを2段にした（§7 #35）。 */
+  .shell{ position:relative }
+  /* 左右を矢印の的（48px）＋隙間ぶん空ける。足りないと矢印がボタンの右端に
+     重なり、「18 項 ▼」が見えなくなる（実測で判明）。
+     開いた一覧は負のマージンで全幅に戻す ── .toc ごと詰めると一覧まで
+     内側に押し込まれる（これも実測で判明） */
+  .toc{ padding:10px 58px 0 }
+  .toc-list{ margin:0 -58px }
+  .toc-toggle{ margin:0; padding:0 13px; min-height:44px }
+  .toc-toggle i{ display:none }            /* 「18 項」は幅が足りないので出さない */
+  .secpager.top .pgv{ min-width:48px; padding:0 11px }
+  /* 重ねる帯そのものは当たり判定を持たない ── 持たせると、
+     下の目次ボタンが押せなくなる（実測で判明） */
+  .secpager.top{
+    position:absolute; top:10px; z-index:5; margin:0; pointer-events:none;
+    left:26px; right:26px;                 /* .shell の左右余白にそろえる（640px 以下は 16px） */
+  }
+  .secpager.top .pgv{ pointer-events:auto }
+  .doc{ padding-top:14px }
   .toc-list{ flex-direction:row; flex-wrap:wrap; border-left:0; gap:6px }
   .toc-link{
     border:1px solid var(--line); border-radius:99px; padding:6px 13px;
@@ -1055,8 +1081,9 @@ html[data-theme="light"] .opt:hover:not(.done) .ol{ color:#fff }
   /* 見出しだけを個別に縮めるのではなく、段階の定義そのものを差し替える */
   html{ --fs-xl:26px; --fs-lg:22px }
   /* ドメイン名を出す幅を稼ぐ（既定の gap:20px・padding:22px だと 116px しか残らない） */
-  .domnav{ gap:10px; padding:0 14px }
+  .domnav{ gap:10px; padding:0 14px; height:52px }
   .shell{ padding:0 16px 70px }
+  .secpager.top{ left:16px; right:16px }
   .hero,.cards{ padding-left:16px; padding-right:16px }
   .hero{ padding-top:44px }
   .figbox{ padding:12px }
