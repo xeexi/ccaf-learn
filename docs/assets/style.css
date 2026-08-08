@@ -104,13 +104,10 @@ html[data-theme="light"]{
    SVG の中だけは別系統（図の座標に合わせてあるため svg text / .ttl / .lbl / .sm / .mono を使う）。 */
 :root{
   --fs-xs:   12px;   /* ラベル・チップ・キャプション（字間を広げて本文と区別する） */
-  --fs-sm:   14px;   /* 補助テキスト・注記・小項目 */
-  --fs-base: 16px;   /* 基準 ─ ヘッダー・目次・本文・箱の中・ボタン・入力 */
-  --fs-md:   19px;   /* リード文・設問文 */
-  --fs-lg:   22px;   /* 小見出し・カード見出し */
-  --fs-xl:   26px;   /* セクション見出し */
-  --fs-2xl:  32px;   /* ページ見出し */
-  --fs-mono: 14.5px; /* コードブロック（等幅は同じ px でも大きく見えるため一段下げる） */
+  --fs-sm:   14px;   /* 補助テキスト・注記・小項目・コードブロック */
+  --fs-base: 16px;   /* 基準 ─ ヘッダー・目次・本文・小見出し・箱の中・ボタン・入力 */
+  --fs-lg:   26px;   /* セクション見出し */
+  --fs-xl:   32px;   /* ページ見出し */
 }
 
 *,*::before,*::after{ box-sizing:border-box }
@@ -220,10 +217,10 @@ kbd{
   text-transform:uppercase;
 }
 .sec-head h2{
-  margin:6px 0 0; font-size:var(--fs-xl); line-height:1.42; letter-spacing:-.01em; font-weight:700;
+  margin:6px 0 0; font-size:var(--fs-lg); line-height:1.42; letter-spacing:-.01em; font-weight:700;
 }
 .sec h3.sub{
-  margin:44px 0 14px; font-size:var(--fs-lg); font-weight:700; line-height:1.5;
+  margin:44px 0 14px; font-size:var(--fs-base); font-weight:700; line-height:1.5;
   padding-left:14px; border-left:3px solid var(--accent);
 }
 .sec h3{ margin:30px 0 10px; font-size:var(--fs-base); font-weight:700; color:var(--ink) }
@@ -232,11 +229,13 @@ kbd{
   margin:26px 0 10px; font-weight:700;
 }
 .detail h3:first-child{ margin-top:0 }
-.lead{ margin:0 0 22px; font-size:var(--fs-md); line-height:1.9; color:var(--ink-2); text-wrap:pretty }
+.lead{ margin:0 0 22px; font-size:var(--fs-base); line-height:1.9; color:var(--ink-2); text-wrap:pretty }
 .sec p{ margin:0 0 14px; text-wrap:pretty }
 .sec p:last-child{ margin-bottom:0 }
 code{
-  font-family:var(--mono); font-size:.86em; padding:1.5px 5px; border-radius:5px;
+  /* em にすると親のサイズぶんだけ段階外の値ができる（実測で 12.04px と 13.76px が出ていた）。
+     等幅は同じ px でも大きく見えるので、本文16pxに対して一段下の14pxを直に当てる。 */
+  font-family:var(--mono); font-size:var(--fs-sm); padding:1.5px 5px; border-radius:5px;
   background:var(--surface-3); color:var(--ink); border:1px solid var(--line-soft);
 }
 b,strong{ font-weight:700; color:var(--ink) }
@@ -348,7 +347,7 @@ html[data-theme="light"] .ann .n{ color:#fff }
 .codelabel:first-child{ margin-top:0 }
 pre.code{
   margin:0 0 4px; padding:16px 18px; background:var(--fig-code-bg); border:1px solid var(--line);
-  border-radius:var(--radius-sm); font-family:var(--mono); font-size:var(--fs-mono); line-height:1.85;
+  border-radius:var(--radius-sm); font-family:var(--mono); font-size:var(--fs-sm); line-height:1.85;
   overflow-x:auto; max-height:none; color:var(--ink);
 }
 .code .k{ color:var(--blue) }
@@ -448,7 +447,7 @@ html[data-theme="light"] .ctrl button.go{ color:#fff }
 .q .qn{
   font-size:var(--fs-xs); letter-spacing:.14em; font-weight:700; color:var(--accent); margin-bottom:9px;
 }
-.q .qt{ margin:0 0 16px; font-size:var(--fs-md); font-weight:600; line-height:1.75 }
+.q .qt{ margin:0 0 16px; font-size:var(--fs-base); font-weight:600; line-height:1.75 }
 .opt{
   display:grid; grid-template-columns:26px minmax(0,1fr); gap:13px; align-items:start;
   width:100%; text-align:left; font-family:inherit; font-size:var(--fs-base); line-height:1.75;
@@ -505,7 +504,7 @@ html[data-theme="light"] .opt:hover:not(.done) .ol{ color:#fff }
   border-radius:16px; box-shadow:0 24px 70px -20px rgba(0,0,0,.7); overflow:hidden;
 }
 #searchInput{
-  width:100%; font-family:inherit; font-size:var(--fs-md); padding:19px 22px;
+  width:100%; font-family:inherit; font-size:var(--fs-base); padding:19px 22px;
   border:0; border-bottom:1px solid var(--line); background:transparent; color:var(--ink); outline:none;
 }
 #searchInput::placeholder{ color:var(--muted) }
@@ -523,11 +522,13 @@ html[data-theme="light"] .opt:hover:not(.done) .ol{ color:#fff }
 .modal-foot{ padding:11px 22px; font-size:var(--fs-xs); color:var(--muted); border-top:1px solid var(--line-soft) }
 
 /* ---------- トップページ ---------- */
-.hero{ max-width:1360px; margin:0 auto; padding:74px 26px 30px }
-.hero h1{ margin:0; font-size:clamp(var(--fs-xl),4.4vw,var(--fs-2xl)); line-height:1.22; letter-spacing:-.025em; font-weight:700 }
+/* トップの読み幅は節ページの本文幅に合わせる ─ 1000px ＋ 左右の余白26px。
+   節ページ側は .shell 1360 − 余白52 − 目次264 − 隙間44 ＝ 1000px。
+   段落だけ max-width で狭めると、下の比較表や図と右端がずれて改行位置が中途半端に見える。 */
+.hero{ max-width:1052px; margin:0 auto; padding:74px 26px 30px }
+.hero h1{ margin:0; font-size:var(--fs-xl); line-height:1.22; letter-spacing:-.025em; font-weight:700 }
 .hero h2{ margin:0 0 8px; font-size:var(--fs-lg); font-weight:700; line-height:1.45 }
-.hero p{ margin:18px 0 0; max-width:48em; font-size:var(--fs-md); line-height:1.9; color:var(--ink-2) }
-.hero .ex{ max-width:48em }   /* 段落と同じ読み幅に揃える（図は全幅のまま） */
+.hero p{ margin:18px 0 0; font-size:var(--fs-base); line-height:1.9; color:var(--ink-2) }
 .hero .tag{
   display:inline-block; font-size:var(--fs-xs); font-weight:700; letter-spacing:.16em;
   color:var(--accent); margin-bottom:16px;
@@ -558,7 +559,7 @@ html[data-theme="light"] .opt:hover:not(.done) .ol{ color:#fff }
 
 /* ---------- 一覧カード ---------- */
 .cards{
-  max-width:1360px; margin:0 auto; padding:30px 26px 100px;
+  max-width:1052px; margin:0 auto; padding:30px 26px 100px;
   display:grid; grid-template-columns:repeat(auto-fill,minmax(310px,1fr)); gap:18px;
 }
 .card{
@@ -637,7 +638,7 @@ html[data-theme="light"] .opt:hover:not(.done) .ol{ color:#fff }
 
 @media (max-width:640px){
   /* 見出しだけを個別に縮めるのではなく、段階の定義そのものを差し替える */
-  html{ --fs-2xl:26px; --fs-xl:22px; --fs-lg:19px; --fs-md:17px }
+  html{ --fs-xl:26px; --fs-lg:22px }
   .shell{ padding:0 16px 70px }
   .hero,.cards{ padding-left:16px; padding-right:16px }
   .hero{ padding-top:44px }

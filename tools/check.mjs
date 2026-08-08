@@ -222,17 +222,42 @@ if (!covNg) console.log(`  ✓ ${Object.keys(TASKS).length} タスクすべて�
 
 /* --- 5f. 文字サイズが段階（--fs-*）で書かれているか -------------------
    px を直接書くと段階が増えていき、「ばらつきが大きい」状態に戻る。
+   段階そのものが増えるのも同じことなので、名前の集合ごと固定する。
+   clamp() も中間の任意サイズを作るため禁止。
    SVG の中だけは別系統（図の座標に合わせてあるため）。 */
 console.log('\n■ 文字サイズの段階');
+const FS_STEPS = ['xs', 'sm', 'base', 'lg', 'xl'];   // これ以外を増やさない
 const cssTxt = fs.readFileSync(path.join(ROOT, 'assets/style.css'), 'utf8');
 let fsNg = 0;
+
 cssTxt.split('\n').forEach((l, i) => {
-  if (!/font-size:\s*[\d.]+px/.test(l)) return;
-  if (/\bsvg\b/.test(l) || /--fs-/.test(l)) return;   // SVG 用と、段階そのものの定義は対象外
-  bad(`style.css:${i + 1} 段階を使わず px 直書き → ${l.trim().slice(0, 60)}`);
-  fsNg++;
+  if (/font-size:\s*[\d.]+px/.test(l) && !/\bsvg\b/.test(l) && !/--fs-/.test(l)) {
+    bad(`style.css:${i + 1} 段階を使わず px 直書き → ${l.trim().slice(0, 60)}`);
+    fsNg++;
+  }
+  if (/font-size:\s*clamp\(/.test(l)) {
+    bad(`style.css:${i + 1} clamp() は段階外の中間サイズを作る → ${l.trim().slice(0, 60)}`);
+    fsNg++;
+  }
+  // em / rem / % は親のサイズぶんだけ段階外の値を生む。code{font-size:.86em} が
+  // 12.04px と 13.76px を作っていて、--fs-* を数えるだけでは見つからなかった。
+  if (/font-size:\s*[\d.]+(em|rem|%)/.test(l)) {
+    bad(`style.css:${i + 1} 相対指定は段階外のサイズを生む → ${l.trim().slice(0, 60)}`);
+    fsNg++;
+  }
 });
-if (!fsNg) console.log('  ✓ SVG 以外はすべて --fs-* の7段階');
+
+// 定義されている段階名と、参照されている段階名の両方を集合として突き合わせる
+const defined = [...new Set([...cssTxt.matchAll(/--fs-([\w-]+)\s*:/g)].map(m => m[1]))];
+const used    = [...new Set([...cssTxt.matchAll(/var\(--fs-([\w-]+)\)/g)].map(m => m[1]))];
+defined.filter(s => !FS_STEPS.includes(s)).forEach(s => {
+  bad(`--fs-${s} は許可された段階にない（許可：${FS_STEPS.join(' / ')}）`); fsNg++;
+});
+used.filter(s => !defined.includes(s)).forEach(s => {
+  bad(`var(--fs-${s}) を使っているが定義がない`); fsNg++;
+});
+
+if (!fsNg) console.log(`  ✓ SVG 以外はすべて --fs-* の${FS_STEPS.length}段階（${FS_STEPS.join(' / ')}）`);
 
 /* --- 6. 検索インデックスが本文と同期しているか -------------------- */
 console.log('\n■ 検索インデックスの同期');
