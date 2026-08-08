@@ -255,7 +255,6 @@ kbd{
   font-size:var(--fs-sm); color:var(--ink-2);
 }
 .crumb b{ font-size:var(--fs-xs); letter-spacing:.16em; font-weight:700; color:var(--accent) }
-.crumb .w{ font-family:var(--mono); font-size:var(--fs-xs); color:var(--muted) }
 
 /* ---------- セクション ---------- */
 .sec{ padding:0 0 8px; scroll-margin-top:80px }

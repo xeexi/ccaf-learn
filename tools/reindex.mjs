@@ -36,9 +36,6 @@ const DOMAINS = [
   { dir: '05-context',     key: 'context', num: 'Domain 5', h1: 'コンテキスト管理と信頼性',               nav: 'コンテキスト管理', w: '15%', q: 9,  sub: '長く動かすための備え' },
   { dir: '06-summary',     key: 'summary', num: 'まとめ',   h1: '全体をもう一度',                        nav: '全体をもう一度',   w: '',    q: 0,  sub: '総合チェック・模擬試験' },
 ];
-/** 「出題比率 27%（約16問）」の形。比率のないドメインは空文字 */
-const weightLabel = d => d.w ? `出題比率 ${d.w}（約${d.q}問）` : '';
-
 const OPEN = '<!-- ▼ 本文 ─ ここだけを編集する。この前後は node tools/reindex.mjs が書き出す -->';
 const CLOSE = '<!-- ▲ 本文 -->';
 
@@ -179,7 +176,10 @@ const toc = (cur) => {
 };
 
 /** パンくず（ドメインの見出しを1行に畳んだもの） */
-const crumb = (cur) => `<p class="crumb" data-domain="${cur.dom.key}"><b>${esc(cur.dom.num)}</b><span>${esc(cur.dom.h1)}</span>${cur.dom.w ? `<span class="w">${weightLabel(cur.dom)}</span>` : ''}</p>`;
+/* 出題比率は節ページには出さない。読む順番を決めるときに1回使う数字で、
+   節を読んでいる最中には要らない ── 66ページに同じ数字が出ていた（§7 #30）。
+   配点はトップページと 6-2 の図（<!--#weightfig-->）が唯一の出所。 */
+const crumb = (cur) => `<p class="crumb" data-domain="${cur.dom.key}"><b>${esc(cur.dom.num)}</b><span>${esc(cur.dom.h1)}</span></p>`;
 
 /** 前後の送り。ドメインの境目も越えて、本全体で1本につながる */
 const pager = (i) => {
