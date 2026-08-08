@@ -262,6 +262,28 @@ order.forEach(s => {
 });
 if (!covNg) console.log(`  ✓ ${Object.keys(TASKS).length} タスクすべてに対応する節あり（ラベルも欠落なし）`);
 
+/* --- 5i. 正解の位置が偏っていないか ----------------------------------
+   設問を書くと、正解を自然と2番目に置いてしまう。実際 100問中76問が
+   2番目で、4番目は1問しかなかった（§7 #29）。「Bを選べば76%当たる」
+   状態では練習にならないので、位置の分布を機械で見る。
+   直すときは選択肢を**巡回**させる（相対順序が保たれる）。 */
+console.log('\n■ 正解の位置');
+const posAll = [0, 0, 0, 0];
+let posNg2 = 0;
+Object.entries(QUIZ).forEach(([k, v]) => {
+  const d = [0, 0, 0, 0];
+  v.forEach(x => { d[x.a]++; posAll[x.a]++; });
+  // 4問以上あるのに2種類以下に固まっていたら、その回答面は当てられる
+  if (v.length >= 4 && d.filter(Boolean).length <= 2) {
+    bad(`設問キー ${k}: ${v.length}問の正解が ${d.filter(Boolean).length} か所に固まっている（${d.join('/')}）`);
+    posNg2++;
+  }
+});
+const posN = posAll.reduce((a, b) => a + b, 0);
+const worst = Math.max(...posAll) / posN;
+if (worst > 0.4) { bad(`全体で正解の ${(worst * 100).toFixed(0)}% が同じ位置（${posAll.join(' / ')}）`); posNg2++; }
+if (!posNg2) console.log(`  ✓ ${posN}問の正解位置 ${posAll.join(' / ')}（最大 ${(worst * 100).toFixed(0)}%）`);
+
 /* --- 5h. 本文のタグが釣り合っているか --------------------------------
    `</div>` が1つ多いと、ブラウザは**その節を早じまいして**
    後ろの内容を .shell の外に出す。見た目には「なんとなく余白が変」
