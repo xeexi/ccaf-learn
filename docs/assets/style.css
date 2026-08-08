@@ -59,13 +59,16 @@ html[data-theme="light"]{
   --line-soft:#E9EDF4;
   --ink:#0F172A;
   --ink-2:#33415B;
-  --muted:#64748B;
+  --muted:#5D6C82;   /* #64748B は白地で 4.48 で AA に 0.02 届かなかった */
 
-  --blue:#0284C7;
+  --blue:#0369A1;    /* #0284C7 は白地で 4.1 だった */
   --amber:#B45309;
   --green:#047857;
   --red:#BE123C;
   --violet:#6D28D9;
+  /* アクセントはダーク用の明るい色のままだと白地で 1.8:1 しかなく読めない。
+     ライトでは同じ色相の暗い側に振る（白地に対して 5.0:1 以上）。 */
+  --accent:#0E7490;
 
   --fig-surface:#FFFFFF;
   --fig-fill-neutral:#F4F6FA;
@@ -74,7 +77,7 @@ html[data-theme="light"]{
   --fig-line:#CBD4E2;
   --fig-dash:#A8B5CA;
   --fig-muted:#64748B;
-  --fig-blue:#0284C7;
+  --fig-blue:#0369A1;
   --fig-fill-blue:#E6F3FC;
   --fig-line-blue:#7FC0E6;
   --fig-amber:#B45309;
@@ -98,7 +101,18 @@ html[data-theme="light"]{
 [data-domain="context"]{ --accent:#FB7185; }
 [data-domain="summary"]{ --accent:#94A3B8; }
 
-/* ---------- 文字サイズ ─ この7段階だけを使う ----------
+/* ドメイン別アクセント ─ ライト。
+   白地でのコントラストは 5.0〜7.6:1。白抜き文字（.ann .n）を載せても同じ比率で足りる。
+   [data-domain] は上部ナビ・パンくず・トップのカードに付く。 */
+html[data-theme="light"] [data-domain="basics"] { --accent:#4F46E5; }  /* 6.29 */
+html[data-theme="light"] [data-domain="agentic"]{ --accent:#0E7490; }  /* 5.36 */
+html[data-theme="light"] [data-domain="tools"]  { --accent:#6D28D9; }  /* 7.10 */
+html[data-theme="light"] [data-domain="code"]   { --accent:#047857; }  /* 5.48 */
+html[data-theme="light"] [data-domain="prompt"] { --accent:#B45309; }  /* 5.02 */
+html[data-theme="light"] [data-domain="context"]{ --accent:#BE123C; }  /* 6.29 */
+html[data-theme="light"] [data-domain="summary"]{ --accent:#475569; }  /* 7.58 */
+
+/* ---------- 文字サイズ ─ この5段階だけを使う ----------
    基準（--fs-base）はヘッダーのナビと目次リンクのサイズ。本文も箱の中もボタンもこれ。
    新しく font-size を px で直接書かない。段階が足りないと感じたら、まず既存の段階で足りるか疑う。
    SVG の中だけは別系統（図の座標に合わせてあるため svg text / .ttl / .lbl / .sm / .mono を使う）。 */
@@ -356,6 +370,17 @@ pre.code{
 .code .c{ color:var(--muted) }
 .code .hl{ background:color-mix(in srgb,var(--amber) 20%,transparent); border-radius:4px; padding:2px 3px }
 .code .rng{ background:color-mix(in srgb,var(--green) 13%,transparent); box-shadow:0 0 0 2px color-mix(in srgb,var(--green) 13%,transparent) }
+/* ライトでは「濃い色を混ぜる」と地が暗くなり、載っている文字のコントラストが落ちる。
+   ライト用に定義済みの淡い塗りに差し替える。 */
+html[data-theme="light"] .code .hl{ background:var(--fig-fill-amber) }
+html[data-theme="light"] .code .rng{
+  /* 中に琥珀（--amber）の値が入ることがあるので、緑の塗りより一段薄くする */
+  --rng-bg:color-mix(in srgb,var(--green) 7%,#FFFFFF);
+  background:var(--rng-bg); box-shadow:0 0 0 2px var(--rng-bg);
+}
+html[data-theme="light"] .reqbar .tail{ background:var(--fig-fill-amber) }
+html[data-theme="light"] .reqbar .hit{ background:var(--fig-fill-green) }
+html[data-theme="light"] .chip.i{ background:color-mix(in srgb,var(--accent) 9%,#FFFFFF) }
 .code .n{
   display:inline-grid; place-items:center; width:18px; height:18px; border-radius:50%;
   background:var(--accent); color:#0B0F19; font-size:var(--fs-xs); font-weight:700;
@@ -396,7 +421,7 @@ html[data-theme="light"] .ctrl button.go{ color:#fff }
 }
 .reqbar span:last-child{ border-right:0 }
 .reqbar .hit{ background:color-mix(in srgb,var(--green) 22%,var(--surface-2)); color:var(--green); font-weight:600 }
-.reqbar .miss{ background:color-mix(in srgb,var(--red) 18%,var(--surface-2)); color:var(--red) }
+.reqbar .miss{ background:color-mix(in srgb,var(--red) 11%,var(--surface-2)); color:var(--red) }
 .reqbar .tail{ background:color-mix(in srgb,var(--amber) 20%,var(--surface-2)); color:var(--amber) }
 
 .cand{ display:flex; flex-direction:column; gap:7px; margin-top:12px }
