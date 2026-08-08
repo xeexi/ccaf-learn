@@ -76,52 +76,51 @@
 <h3 class="sub" id="think-1">難しい問題は「考える場所」を与える</h3>
 <p class="lead">結論だけをいきなり出させると精度が落ちます。推論の過程を出力させると、そのトークン列自体が次の判断材料になります。</p>
 <p class="goal"><b>ゴール</b>考えさせる場面と、そうでない場面を分けられる。</p>
-  <div class="figbox"><div class="diagram run">
-  <svg viewBox="0 0 760 250">
-    <g class="s1"><rect x="16" y="30" width="340" height="86" rx="12" fill="var(--fig-fill-red)" stroke="var(--fig-line-red)"/>
-      <text class="ttl" x="40" y="60" style="fill:var(--fig-red)">いきなり結論</text>
-      <rect x="40" y="72" width="80" height="28" rx="6" fill="var(--fig-surface)" stroke="var(--fig-line)"/>
-      <text class="mono" x="80" y="91" text-anchor="middle">質問</text>
-      <line x1="126" y1="86" x2="176" y2="86" stroke="var(--fig-muted)" stroke-width="2" marker-end="url(#ar)"/>
-      <rect x="184" y="72" width="162" height="28" rx="6" fill="var(--fig-surface)" stroke="var(--fig-line-red)"/>
-      <text class="mono" x="265" y="91" text-anchor="middle">結論（当てずっぽう気味）</text></g>
-    <g class="s2"><rect x="16" y="132" width="728" height="96" rx="12" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)"/>
-      <text class="ttl" x="40" y="162" style="fill:var(--fig-green)">考える場所を与える</text>
-      <rect x="40" y="176" width="80" height="30" rx="6" fill="var(--fig-surface)" stroke="var(--fig-line)"/>
-      <text class="mono" x="80" y="196" text-anchor="middle">質問</text>
-      <line x1="126" y1="191" x2="176" y2="191" stroke="var(--fig-green)" stroke-width="2" marker-end="url(#ar)"/>
-      <rect x="184" y="176" width="330" height="30" rx="6" fill="var(--fig-surface)" stroke="var(--fig-line-green)"/>
-      <text class="mono" x="349" y="196" text-anchor="middle">thinking：条件を並べ、順に確かめる…</text>
-      <line x1="520" y1="191" x2="570" y2="191" stroke="var(--fig-green)" stroke-width="2" marker-end="url(#ar)"/>
-      <rect x="578" y="176" width="140" height="30" rx="6" fill="var(--fig-surface)" stroke="var(--fig-line-green)"/>
-      <text class="mono" x="648" y="196" text-anchor="middle">結論</text></g>
-    <text class="sm s3" x="380" y="248" text-anchor="middle">ただし思考も出力トークン＝コスト。単純な分類にまで付ける必要はない</text>
-  </svg>
-  </div></div>
-  <div class="detail">
-    <h3>図の読み方</h3>
-    <ol class="ann">
-      <li><span class="n">1</span><span>上（赤）が<b>いきなり結論</b>。質問と結論の間に何もありません。</span></li>
-      <li><span class="n">2</span><span>下（緑）は、質問と結論の間に <b>thinking の箱</b>があります。ここで条件を並べ、順に確かめています。</span></li>
-      <li><span class="n">3</span><span>効く理由は前提編にあります。出力は<b>直前までの文章</b>を手がかりに1トークンずつ選ばれるので、<b>途中の思考を書き出すこと自体が、次を選ぶ手がかりを増やします</b>。</span></li>
-      <li><span class="n">4</span><span>下の注記のとおり、<b>思考も出力トークン</b>です。そのぶん遅く、高くなります。</span></li>
-    </ol>
-    <div class="ex"><span class="exl">使いどころを分ける</span>
-    ○ 規約の条件を突き合わせて可否を決める、原因を切り分ける → <b>考えさせる</b><br>
-    ✗ 問い合わせを5種類に分類する、日付の書式を直す → <b>考えさせない</b>。思考も出力トークンなので、そのぶん遅く高くなるだけ</div>
-  </div>
+<table class="tbl">
+  <thead><tr><th></th><th>いきなり結論を出させる</th><th>考える場所を与える</th></tr></thead>
+  <tbody>
+    <tr><td data-l="">出力の並び</td>
+        <td data-l="いきなり結論を出させる">質問 → <b>結論</b><br>あいだに何もない</td>
+        <td data-l="考える場所を与える">質問 → <b>条件を並べ、順に確かめる</b> → 結論</td></tr>
+    <tr><td data-l="">なぜ差が出るか</td>
+        <td data-l="いきなり結論を出させる"><span class="ng">手がかりが質問だけ</span></td>
+        <td data-l="考える場所を与える"><span class="ok">途中の思考が、次の1トークンを選ぶ手がかりになる</span>（前提編）</td></tr>
+    <tr><td data-l="">代償</td>
+        <td data-l="いきなり結論を出させる">速い・安い</td>
+        <td data-l="考える場所を与える"><b>思考も出力トークン。</b>そのぶん遅く、高くなる</td></tr>
+    <tr><td data-l="">向く仕事</td>
+        <td data-l="いきなり結論を出させる">問い合わせを5種類に分類する／日付の書式を直す</td>
+        <td data-l="考える場所を与える">規約の条件を突き合わせて可否を決める／原因を切り分ける</td></tr>
+  </tbody>
+</table>
+
   <p class="point"><b>ポイント</b>「難しい判断＝考えさせる」「機械的な変換＝考えさせない」。使いどころを分けるのが設計。</p>
 
 <h3 class="sub" id="think-2">「thinking」は2つの意味で使われる</h3>
-<p class="lead">上の図にあった <code>thinking</code> を、もう少し正確に分けておきます。似ていますが、片方は<b>ただのプロンプト</b>、もう片方は<b>APIの機能</b>です。</p>
+<p class="lead">上の表にあった「考える場所」を、もう少し正確に分けておきます。似ていますが、片方は<b>ただのプロンプト</b>、もう片方は<b>APIの機能</b>です。</p>
+<p class="goal"><b>ゴール</b>2種類の「考えさせる」を言い分けられる。</p>
+
+<table class="tbl">
+  <thead><tr><th></th><th>① プロンプトで考えさせる<br>（chain-of-thought）</th><th>② 拡張思考<br>（extended thinking）</th></tr></thead>
+  <tbody>
+    <tr><td data-l="">やること</td>
+        <td data-l="① プロンプトで考えさせる">「順を追って考えてから答えて」と<b>書くだけ</b></td>
+        <td data-l="② 拡張思考">リクエストに <code>thinking</code> フィールドを付ける</td></tr>
+    <tr><td data-l="">推論はどこに出るか</td>
+        <td data-l="① プロンプトで考えさせる"><b>ふつうのテキスト出力の中に混ざる</b></td>
+        <td data-l="② 拡張思考"><b>専用の <code>thinking</code> ブロックとして分かれる</b></td></tr>
+    <tr><td data-l="">API の機能か</td>
+        <td data-l="① プロンプトで考えさせる"><span class="ng">いいえ</span>　ただのプロンプト</td>
+        <td data-l="② 拡張思考"><span class="ok">はい</span></td></tr>
+    <tr><td data-l="">効く理屈</td>
+        <td data-l="① プロンプトで考えさせる"><b>同じ</b></td>
+        <td data-l="② 拡張思考"><b>同じ</b></td></tr>
+  </tbody>
+</table>
+
+  <p class="note">※ 効く理屈が同じなのは、出力が<b>直前までの文章を手がかりに1トークンずつ</b>選ばれるから（前提編）。途中の推論を書き出すこと自体が手がかりを増やします。<b>①と②の違いは「どこに出るか」だけ</b>で、効き方の原理ではありません。</p>
+
   <div class="detail">
-    <div class="ex"><span class="exl">同じ「考えさせる」でも2種類ある</span>
-    <b>① プロンプトで考えさせる</b>（chain-of-thought）<br>
-    「順を追って考えてから答えて」と書くだけ。推論は<b>ふつうのテキスト出力の中に</b>混ざって出てきます。APIの機能ではありません。<br><br>
-    <b>② 拡張思考（extended thinking）</b><br>
-    リクエストに <code>thinking</code> フィールドを付けます。推論が<b>専用のブロックとして分かれて</b>返ってきます。</div>
-    <h3>効く理屈は、どちらも同じ</h3>
-    <p>出力は<b>直前までの文章を手がかりに1トークンずつ</b>選ばれます（前提編）。だから途中の推論を書き出すこと自体が、次を選ぶ手がかりを増やします。①と②の違いは<b>「どこに出るか」</b>であって、効き方の原理ではありません。</p>
     <div class="myth">
       <span class="t">誤解</span><span>「<code>thinking</code> を有効にすれば、タダで賢くなる」</span>
       <span class="t o">実際は</span><span>①も②も、<b>思考ぶんが出力トークンとして課金されます</b>。遅くなり、高くなります。だから<b>使いどころを分ける</b>のが設計です。</span>
@@ -142,6 +141,6 @@
   </div>
 </div>
 <script src="../assets/quiz-data.js?v=47ac7a88"></script>
-<script src="../assets/search-index.js?v=c1db6486"></script>
+<script src="../assets/search-index.js?v=89870b9e"></script>
 <script src="../assets/app.js?v=542dc47c"></script>
 </body></html>

@@ -77,45 +77,28 @@
 <p class="lead">「合っていますか」と尋ねても、返ってくるのはやはり確率的な答えです。検算はモデルの外側で行います。</p>
 <p class="task"><span class="tn">BLUEPRINT 4.4</span><b>抽出品質のための検証・再試行・フィードバック</b></p>
 <p class="goal"><b>ゴール</b>検証になっている方法と、なっていない方法を区別できる。</p>
-  <div class="figbox"><div class="diagram run">
-  <svg viewBox="0 0 760 250">
-    <g class="s1"><rect x="16" y="94" width="120" height="56" rx="10" fill="var(--fig-fill-amber)" stroke="var(--fig-line-amber)"/>
-      <text class="ttl" x="76" y="128" text-anchor="middle" style="fill:var(--fig-amber)">出力</text></g>
-    <g class="s2"><line x1="142" y1="122" x2="176" y2="122" stroke="var(--fig-muted)" stroke-width="2" marker-end="url(#ar)"/>
-      <rect x="184" y="30" width="180" height="56" rx="10" fill="var(--fig-fill-blue)" stroke="var(--fig-line-blue)"/>
-      <text class="lbl" x="274" y="54" text-anchor="middle" style="fill:var(--fig-blue)">① 形を確かめる</text>
-      <text class="sm" x="274" y="74" text-anchor="middle">スキーマ検証・必須項目</text></g>
-    <g class="s3"><rect x="184" y="94" width="180" height="56" rx="10" fill="var(--fig-fill-blue)" stroke="var(--fig-line-blue)"/>
-      <text class="lbl" x="274" y="118" text-anchor="middle" style="fill:var(--fig-blue)">② 中身を検算する</text>
-      <text class="sm" x="274" y="138" text-anchor="middle">合計が合うか・元資料と一致するか</text></g>
-    <g class="s4"><rect x="184" y="158" width="180" height="56" rx="10" fill="var(--fig-fill-blue)" stroke="var(--fig-line-blue)"/>
-      <text class="lbl" x="274" y="182" text-anchor="middle" style="fill:var(--fig-blue)">③ 過去の例で回帰</text>
-      <text class="sm" x="274" y="202" text-anchor="middle">答えが分かっている評価セット</text></g>
-    <g class="s5"><line x1="370" y1="122" x2="410" y2="122" stroke="var(--fig-muted)" stroke-width="2" marker-end="url(#ar)"/>
-      <rect x="418" y="60" width="150" height="56" rx="10" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)"/>
-      <text class="lbl" x="493" y="94" text-anchor="middle" style="fill:var(--fig-green)">通れば採用</text>
-      <rect x="418" y="130" width="150" height="56" rx="10" fill="var(--fig-fill-red)" stroke="var(--fig-line-red)"/>
-      <text class="lbl" x="493" y="156" text-anchor="middle" style="fill:var(--fig-red)">だめなら差し戻し</text>
-      <text class="sm" x="493" y="176" text-anchor="middle">理由を付けて再試行</text></g>
-    <g class="s6"><path d="M493 190 C 493 226, 76 226, 76 156" fill="none" stroke="var(--fig-red)" stroke-width="1.6"
-        stroke-dasharray="4 4" marker-end="url(#arr)"/>
-      <rect x="592" y="60" width="152" height="126" rx="10" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
-      <text class="sm" x="668" y="94" text-anchor="middle">①②はコードで書ける</text>
-      <text class="sm" x="668" y="118" text-anchor="middle">＝ 必ず同じ判定になる</text>
-      <text class="sm" x="668" y="148" text-anchor="middle">③は変更したときに</text>
-      <text class="sm" x="668" y="168" text-anchor="middle">壊れていないかを見る</text></g>
-  </svg>
-  </div></div>
-  <div class="detail">
-    <h3>図の読み方</h3>
-    <ol class="ann">
-      <li><span class="n">1</span><span>左が<b>モデルの出力</b>。ここが検査の対象です。</span></li>
-      <li><span class="n">2</span><span>中央の3つが、順に通す検査。<b>①形</b>（スキーマ・必須項目）、<b>②中身</b>（合計が合うか、元資料と一致するか）、<b>③回帰</b>（答えが分かっている過去の例）。</span></li>
-      <li><span class="n">3</span><span>右上が<b>通れば採用</b>、右下が<b>だめなら差し戻し</b>。</span></li>
-      <li><span class="n">4</span><span>差し戻しの点線は、<b>理由を付けて、もう一度出力させる</b>経路です。</span></li>
-      <li><span class="n">5</span><span>右端の注記が要点。<b>①②はコードで書けるので、判定が毎回同じになります</b>。ここが「検証」と呼べる条件です。</span></li>
-    </ol>
-    <div class="ex"><span class="exl">3段の使い分け</span>
+<table class="tbl">
+  <thead><tr><th>段</th><th>何を見るか</th><th>検証として成立するか</th></tr></thead>
+  <tbody>
+    <tr><td data-l="段"><b>① 形</b></td>
+        <td data-l="何を見るか">スキーマ検証・必須項目・型</td>
+        <td data-l="検証として成立するか"><span class="ok">する</span>　コードで書けるので、判定が毎回同じ</td></tr>
+    <tr><td data-l="段"><b>② 中身</b></td>
+        <td data-l="何を見るか">明細の合計と総額が一致するか／元資料に同じ文字列があるか</td>
+        <td data-l="検証として成立するか"><span class="ok">する</span>　同上</td></tr>
+    <tr><td data-l="段"><b>③ 回帰</b></td>
+        <td data-l="何を見るか">答えが分かっている過去の例をまとめて流す</td>
+        <td data-l="検証として成立するか"><span class="ok">する</span>　<b>プロンプトや設定を変えたとき</b>に効く</td></tr>
+    <tr><td data-l="段">もう1体の Claude に聞く</td>
+        <td data-l="何を見るか">「この結果は正しいですか」</td>
+        <td data-l="検証として成立するか"><span class="ng">しない</span>　<b>判定が毎回同じになる保証がない。</b>補助であって、決定的な検証の代わりにはならない</td></tr>
+  </tbody>
+</table>
+
+<p class="point"><b>ポイント</b>「もう一度 Claude に確認させる」は検証ではない。<b>判定が毎回同じになる方法だけ</b>が検証になる。</p>
+
+<div class="detail">
+      <div class="ex"><span class="exl">3段の使い分け</span>
     ① <b>形</b>：スキーマ検証。必須項目があるか、型は合っているか → コードで書ける<br>
     ② <b>中身</b>：明細の合計と請求書の総額が一致するか、元資料に同じ文字列があるか → コードで書ける<br>
     ③ <b>回帰</b>：答えが分かっている過去の例をまとめて流し、以前より悪くなっていないか見る → <b>プロンプトや設定を変えたとき</b>に効く</div>
@@ -124,48 +107,31 @@
       <span class="t o">実際は</span><span>参考にはなりますが、<b>判定が毎回同じになる保証がありません</b>。補助であって、決定的な検証の代わりにはなりません。</span>
     </div>
   </div>
-  <p class="point"><b>ポイント</b>「もう一度Claudeに確認させる」は検証ではない。判定が毎回同じになる方法だけが検証になる。</p>
 
 <h3 class="sub" id="verify-2">検証に落ちたら、理由を付けて返す</h3>
 <p class="lead">検証は通すか落とすかで終わりではありません。<b>落ちた理由を渡して、もう一度書かせます</b>。</p>
-  <div class="figbox"><div class="diagram run">
-  <svg viewBox="0 0 760 260">
-    <g class="s1"><rect x="16" y="30" width="150" height="52" rx="10" fill="var(--fig-fill-amber)" stroke="var(--fig-line-amber)"/>
-      <text class="ttl" x="91" y="62" text-anchor="middle" style="fill:var(--fig-amber)">出力</text></g>
-    <g class="s2"><line x1="172" y1="56" x2="206" y2="56" stroke="var(--fig-muted)" stroke-width="2" marker-end="url(#ar)"/>
-      <rect x="214" y="30" width="180" height="52" rx="10" fill="var(--fig-fill-blue)" stroke="var(--fig-line-blue)"/>
-      <text class="lbl" x="304" y="54" text-anchor="middle" style="fill:var(--fig-blue)">検証</text>
-      <text class="sm" x="304" y="72" text-anchor="middle">形・中身・照合</text></g>
-    <g class="s3"><line x1="400" y1="46" x2="440" y2="46" stroke="var(--fig-green)" stroke-width="2" marker-end="url(#ar)"/>
-      <rect x="448" y="24" width="140" height="44" rx="10" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)"/>
-      <text class="lbl" x="518" y="52" text-anchor="middle" style="fill:var(--fig-green)">通れば採用</text></g>
-    <g class="s4"><line x1="400" y1="70" x2="440" y2="98" stroke="var(--fig-red)" stroke-width="2" marker-end="url(#arr)"/>
-      <rect x="448" y="80" width="300" height="76" rx="10" fill="var(--fig-fill-red)" stroke="var(--fig-line-red)"/>
-      <text class="lbl" x="460" y="104" style="fill:var(--fig-red)">落ちたら、理由を添えて差し戻す</text>
-      <text class="mono" x="460" y="128">"currency が enum にありません（受領:円）"</text>
-      <text class="sm" x="460" y="148">何が・どう違ったかを具体的に書く</text></g>
-    <g class="s5"><path d="M596 156 C 596 196, 91 196, 91 90" fill="none" stroke="var(--fig-red)" stroke-width="2"
-        stroke-dasharray="5 4" marker-end="url(#arr)"/>
-      <text class="sm" x="340" y="192" text-anchor="middle" style="fill:var(--fig-red)">同じ会話に足して、もう一度出力させる</text></g>
-    <g class="s6"><rect x="16" y="210" width="728" height="42" rx="10" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
-      <text class="lbl" x="40" y="234">再試行には必ず上限を置く。2〜3回で通らなければ、人に回すか、その1件を落とす</text></g>
-  </svg>
-  </div></div>
-  <div class="detail">
-    <h3>図の読み方</h3>
-    <ol class="ann">
-      <li><span class="n">1</span><span>出力を<b>検証</b>にかけます（形＝スキーマ、中身＝合計や元資料との照合）。</span></li>
-      <li><span class="n">2</span><span>通れば採用。落ちたら<b>捨てるのではなく差し戻します</b>。</span></li>
-      <li><span class="n">3</span><span>差し戻すときは<b>「何が」「どう違ったか」を具体的に書きます</b>。「不正です」だけでは同じ間違いを繰り返します。</span></li>
-      <li><span class="n">4</span><span>差し戻しは<b>同じ会話に足して</b>送ります。前の出力と指摘が履歴に残るので、次はそこを避けられます。</span></li>
-      <li><span class="n">5</span><span><b>再試行の上限は必ず置きます。</b>通らない入力は存在するので、2〜3回で人へ回すか、その1件を落とします。</span></li>
-    </ol>
-    <div class="myth">
+<div class="figbox"><figure class="fig run">
+  <p class="fig-t">検証の出口は<b>3つ</b></p>
+  <ol class="fig-steps">
+    <li class="s1"><span class="fig-who">採用</span>
+      <span class="fig-do">形・中身・照合をすべて通った</span></li>
+    <li class="s2"><span class="fig-who">差し戻し</span>
+      <span class="fig-do"><b>捨てるのではなく、理由を添えて同じ会話に足し、もう一度出力させる</b><br>
+      <code>"currency が enum にありません（受領: 円）"</code> ── <span class="key">何が・どう違ったかを具体的に</span>。「不正です」だけでは同じ間違いを繰り返す</span></li>
+    <li class="s3"><span class="fig-who">打ち切り</span>
+      <span class="fig-do"><b>再試行には必ず上限を置く。</b>2〜3回で通らなければ、人に回すか、その1件を落とす ── 通らない入力は存在する</span></li>
+  </ol>
+  <p class="fig-f">同じプロンプトで投げ直しても<b>同じ理由で落ちる</b>。<b>指摘を入力に足すことが再試行の本体</b></p>
+</figure></div>
+
+<p class="point"><b>ポイント</b>検証の出口は3つ ── <b>採用・差し戻し・打ち切り</b>。差し戻しには必ず理由を、打ち切りには必ず上限を。</p>
+
+<div class="detail">
+      <div class="myth">
       <span class="t">誤解</span><span>「落ちたら同じプロンプトでもう一度投げればいい」</span>
       <span class="t o">実際は</span><span>同じ入力を投げ直しても<b>同じ理由で落ちる確率が高い</b>。<b>指摘を入力に足すこと</b>が再試行の本体です。</span>
     </div>
   </div>
-  <p class="point"><b>ポイント</b>検証の出口は3つ ── <b>採用・差し戻し・打ち切り</b>。差し戻しには必ず理由を、打ち切りには必ず上限を。</p>
 </section>
 <!-- ▲ 本文 -->
 <nav class="secpager btm"><a class="pgv prev" href="../04-prompt/10-struct.html"><span class="vh">前へ</span></a><a class="pgv next" href="../04-prompt/12-q34.html"><span class="vh">次へ</span></a></nav>
@@ -179,6 +145,6 @@
   </div>
 </div>
 <script src="../assets/quiz-data.js?v=47ac7a88"></script>
-<script src="../assets/search-index.js?v=c1db6486"></script>
+<script src="../assets/search-index.js?v=89870b9e"></script>
 <script src="../assets/app.js?v=542dc47c"></script>
 </body></html>

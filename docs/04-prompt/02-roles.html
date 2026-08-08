@@ -48,6 +48,8 @@
   <div class="toc-head">Domain 4</div>
   <nav class="toc-list"><a class="itm toc-link" href="../04-prompt/01-d4about.html"><span class="itm-n">4-1</span><span class="itm-t">このドメインについて</span></a>
 <a class="itm toc-link on" href="../04-prompt/02-roles.html"><span class="itm-n">4-2</span><span class="itm-t">system / user / assistant</span></a>
+<a class="toc-link toc-sub" href="#roles-1">3つの役割は、効く範囲が違う</a>
+<a class="toc-link toc-sub" href="#roles-2">system の値は変えられるのか</a>
 <a class="itm toc-link" href="../04-prompt/03-order.html"><span class="itm-n">4-3</span><span class="itm-t">並べる順番</span></a>
 <a class="itm toc-link" href="../04-prompt/04-think.html"><span class="itm-n">4-4</span><span class="itm-t">考えさせる ─ thinking</span></a>
 <a class="itm toc-link" href="../04-prompt/05-thinkapi.html"><span class="itm-n">4-5</span><span class="itm-t">thinking の実物 ─ 何を送り、何が届くか</span></a>
@@ -70,54 +72,68 @@
 <header class="sec-head">
   <h2>4-2　system / user / assistant</h2>
 </header>
-<p class="lead">メッセージには役割があり、効き方が違います。system は会話の全期間にわたって効きます。</p>
-<p class="goal"><b>ゴール</b>恒久のルールと可変の入力を、書く場所で選び分けられる。</p>
-  <div class="figbox"><div class="diagram run">
-  <svg viewBox="0 0 760 260">
-    <g class="s1"><rect x="20" y="26" width="720" height="58" rx="10" fill="var(--fig-fill-amber)" stroke="var(--fig-line-amber)"/>
-      <text class="ttl" x="44" y="52" style="fill:var(--fig-amber)">system</text>
-      <text class="lbl" x="140" y="52">役割・守るべきルール・出力の形式 ─ 会話の間ずっと効く</text>
-      <text class="sm" x="140" y="72">「あなたはサポート担当。返金は承認なしに約束しない」</text></g>
-    <g class="s2"><rect x="20" y="96" width="350" height="58" rx="10" fill="var(--fig-fill-blue)" stroke="var(--fig-line-blue)"/>
-      <text class="ttl" x="44" y="122" style="fill:var(--fig-blue)">user</text>
-      <text class="lbl" x="110" y="122">その回の依頼・データ</text>
-      <text class="sm" x="44" y="142">毎ターン追加されていく</text></g>
-    <g class="s3"><rect x="390" y="96" width="350" height="58" rx="10" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)"/>
-      <text class="ttl" x="414" y="122" style="fill:var(--fig-green)">assistant</text>
-      <text class="lbl" x="500" y="122">Claudeの応答（履歴として残る）</text>
-      <text class="sm" x="414" y="142">先頭を書いておくと形式を誘導できる</text></g>
-    <g class="s4"><rect x="20" y="176" width="720" height="64" rx="10" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
-      <text class="lbl" x="44" y="202">ふるまいを直したいとき、まず触るのは system。user 側に毎回同じ注意書きを足すのは重複でありコスト増。</text>
-      <text class="sm" x="44" y="226">※ system は「書くのは一度でよい固定の指示」、user は「毎回変わる中身」（送信はどちらも毎回）</text></g>
-  </svg>
-  </div></div>
-  <div class="detail"><h3>図の読み方</h3>
-    <ol class="ann">
-      <li><span class="n">1</span><span>一番上の帯が <b>system</b>。<b>幅が全体に広がっている</b>のは、会話の間ずっと効き続けるという意味です。ただし<b>「1回送れば覚えている」のではありません</b>。毎回のリクエストに、そのまま入って送られています（前提編）。</span></li>
-      <li><span class="n">2</span><span>左下が <b>user</b>。その回の依頼やデータで、毎ターン追加されていきます。</span></li>
-      <li><span class="n">3</span><span>右下が <b>assistant</b>。Claude の応答で、これも履歴として残ります。</span></li>
-      <li><span class="n">4</span><span>一番下の帯が<b>使い分けの原則</b>。ふるまいを直したいときに触るのは system です。</span></li>
-    </ol>
-    </div>
 
-<h3 class="sub">system の値は変えられるのか</h3>
-<div class="detail"><h3>その前に ─ system は「messages の中の1つ」ではない</h3>
-    <p>リクエストの形を見ると分かります（Domain 1「実物を見る① 送るもの」）。<code>system</code> は <code>messages</code> 配列の<b>外側</b>にある、リクエストのトップレベルのフィールドです。<code>messages</code> に並ぶのは <code>user</code> と <code>assistant</code>。</p>
-    <p><b>同じ一文を「system に書くか、user の本文に混ぜるか」は選べます</b>が、<code>role</code> の値を書き換えて行き来させるようなものではありません。<b>入れ物が違う</b>、というのが正確なところです。</p>
-    <h3>system の値は変えられるのか</h3>
-    <p><b>変えられます。</b>system は毎回のリクエストに入れるフィールドなので、会話の途中で別の内容を送っても動きます。<b>ただし実務では固定して使うのが普通です。</b>理由は2つあります。</p>
-    <p>・<b>キャッシュが全部無効になる</b>　キャッシュは「ツール定義 → system → 会話」の順に積まれています。system を書き換えると、<b>その後ろの会話ぶんもまとめて作り直し</b>になります（前提編）。<br>
-    ・<b>前提が食い違う</b>　途中でルールが変わると、前半の応答と後半の応答が別の前提で書かれた状態になります。あとから読み返したときに、なぜその答えになったのか追えなくなります。</p>
-    <p>日付やユーザー名のように<b>毎回変わる情報は、system ではなく user 側（末尾）に置く</b>のが定石です。役割そのものを切り替えたいときは、system を書き換えるより<b>別のセッションや子エージェントに分ける</b>ほうが素直です（Domain 1）。</p>
-    <div class="ex"><span class="exl">同じ内容でも、置き場所で結果が変わる</span>
-    ✗ 毎ターンの末尾に「返金額は約束しないでください」→ 書き忘れた回に破られる。毎回トークンも食う<br>
-    ○ system に1回だけ書く → 全ターンに効く。会話が長くなっても消えない</div>
-    <div class="myth">
-      <span class="t">誤解</span><span>「system に書けば絶対に守られる」</span>
-      <span class="t o">実際は</span><span>強く効きますが、あくまで<b>確率的</b>です。絶対に守らせたいことは、権限設定やコードで塞ぎます（Domain 2・Domain 5）。</span>
+<h3 class="sub" id="roles-1">3つの役割は、効く範囲が違う</h3>
+<p class="lead">メッセージには役割があり、効き方が違います。<code>system</code> は会話の全期間にわたって効きます。</p>
+<p class="goal"><b>ゴール</b>恒久のルールと可変の入力を、書く場所で選び分けられる。</p>
+
+<div class="figbox"><figure class="fig run">
+  <p class="fig-t">幅がそのまま<b>効く範囲</b></p>
+  <div class="fig-row s1" style="--cols:1">
+    <div class="fig-card key">
+      <b class="fig-h"><code>system</code>　─　会話の間ずっと効く</b>
+      <span class="fig-note">役割・守るべきルール・出力の形式<br>「あなたはサポート担当。返金は承認なしに約束しない」</span>
+      <span class="fig-note"><code>messages</code> の<b>外側</b>にある、リクエストのトップレベルの欄</span>
     </div>
   </div>
-  <p class="point"><b>ポイント</b>役割の使い分けを誤ると、指示が薄まる。恒久ルールは system、可変の入力は user。</p>
+  <p class="fig-lbl s2"><code>messages</code> の中に並ぶのは、この2つだけ</p>
+  <div class="fig-row s2" style="--cols:2">
+    <div class="fig-card">
+      <b class="fig-h"><code>user</code>　─　その回だけ</b>
+      <span class="fig-note">依頼・データ。毎ターン追加されていく</span>
+    </div>
+    <div class="fig-card">
+      <b class="fig-h"><code>assistant</code>　─　その回だけ</b>
+      <span class="fig-note">Claude の応答。履歴として残る。<b>先頭を書いておくと形式を誘導できる</b></span>
+    </div>
+  </div>
+  <p class="fig-f">ふるまいを直したいとき、まず触るのは <code>system</code>。<b><code>user</code> 側に毎回同じ注意書きを足すのは重複</b>で、毎回トークンも食う</p>
+</figure></div>
+
+<p class="point"><b>ポイント</b>役割の使い分けを誤ると、指示が薄まる。<b>恒久ルールは <code>system</code>、可変の入力は <code>user</code>。</b></p>
+
+<div class="detail">
+  <div class="myth">
+    <span class="t">誤解</span><span>「<code>system</code> は1回送れば、あとは覚えている」</span>
+    <span class="t o">実際は</span><span><b>毎回のリクエストに、そのまま入って送られています</b>（前提編）。「ずっと効く」のは、毎回送っているからです。</span>
+  </div>
+  <div class="ex"><span class="exl">同じ内容でも、置き場所で結果が変わる</span>
+  ✗ 毎ターンの末尾に「返金額は約束しないでください」→ <b>書き忘れた回に破られる。</b>毎回トークンも食う<br>
+  ○ <code>system</code> に1回だけ書く → 全ターンに効く。会話が長くなっても消えない</div>
+</div>
+
+<h3 class="sub" id="roles-2">system の値は変えられるのか</h3>
+<p class="lead"><b>変えられます。</b>毎回のリクエストに入れる欄なので、途中で別の内容を送っても動きます。<b>ただし実務では固定して使います。</b></p>
+<p class="goal"><b>ゴール</b><code>system</code> を途中で書き換えない理由を2つ言える。</p>
+
+<table class="tbl">
+  <thead><tr><th>途中で書き換えると</th><th>何が起きるか</th></tr></thead>
+  <tbody>
+    <tr><td data-l="途中で書き換えると"><b>キャッシュが全部無効になる</b></td>
+        <td data-l="何が起きるか">キャッシュは「ツール定義 → <code>system</code> → 会話」の順に積まれている。<code>system</code> を書き換えると、<b>その後ろの会話ぶんもまとめて作り直し</b>（前提編）</td></tr>
+    <tr><td data-l="途中で書き換えると"><b>前提が食い違う</b></td>
+        <td data-l="何が起きるか">前半の応答と後半の応答が、<b>別の前提で書かれた状態</b>になる。あとから読み返しても、なぜその答えになったのか追えない</td></tr>
+  </tbody>
+</table>
+
+<p class="point"><b>ポイント</b>日付やユーザー名のように<b>毎回変わる情報は <code>user</code> 側（末尾）へ</b>。役割そのものを切り替えたいなら、書き換えるより<b>別のセッションや子エージェントに分ける</b>（Domain 1）。</p>
+
+<div class="detail">
+  <div class="myth">
+    <span class="t">誤解</span><span>「<code>system</code> に書けば絶対に守られる」</span>
+    <span class="t o">実際は</span><span>強く効きますが、あくまで<b>確率的</b>です。絶対に守らせたいことは、権限設定やコードで塞ぎます（Domain 2・Domain 5）。</span>
+  </div>
+</div>
 </section>
 <!-- ▲ 本文 -->
 <nav class="secpager btm"><a class="pgv prev" href="../04-prompt/01-d4about.html"><span class="vh">前へ</span></a><a class="pgv next" href="../04-prompt/03-order.html"><span class="vh">次へ</span></a></nav>
@@ -131,6 +147,6 @@
   </div>
 </div>
 <script src="../assets/quiz-data.js?v=47ac7a88"></script>
-<script src="../assets/search-index.js?v=c1db6486"></script>
+<script src="../assets/search-index.js?v=89870b9e"></script>
 <script src="../assets/app.js?v=542dc47c"></script>
 </body></html>

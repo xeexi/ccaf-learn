@@ -77,81 +77,57 @@
 <p class="lead">見落としが致命的な場面では、<b>同じ入力を複数回・複数の観点で通します</b>。</p>
 <p class="task"><span class="tn">BLUEPRINT 4.6</span><b>多重・多段レビュー構成</b></p>
 <p class="goal"><b>ゴール</b>多重化の是非をコストで判断できる。</p>
-  <div class="figbox"><div class="diagram run">
-  <svg viewBox="0 0 760 260">
-    <g class="s1"><rect x="16" y="24" width="350" height="212" rx="12" fill="var(--fig-fill-blue)" stroke="var(--fig-line-blue)"/>
-      <text class="ttl" x="191" y="50" text-anchor="middle" style="fill:var(--fig-blue)">multi-instance（横に並べる）</text>
-      <rect x="40" y="66" width="302" height="28" rx="6" fill="var(--fig-surface)" stroke="var(--fig-line-blue)"/>
-      <text class="sm" x="191" y="85" text-anchor="middle">同じ入力</text>
-      <line x1="120" y1="98" x2="90" y2="118" stroke="var(--fig-muted)" stroke-width="1.5" marker-end="url(#ar)"/>
-      <line x1="191" y1="98" x2="191" y2="118" stroke="var(--fig-muted)" stroke-width="1.5" marker-end="url(#ar)"/>
-      <line x1="262" y1="98" x2="292" y2="118" stroke="var(--fig-muted)" stroke-width="1.5" marker-end="url(#ar)"/>
-      <rect x="40" y="122" width="90" height="46" rx="6" fill="var(--fig-surface)" stroke="var(--fig-line)"/><text class="sm" x="85" y="150" text-anchor="middle">安全性の観点</text>
-      <rect x="146" y="122" width="90" height="46" rx="6" fill="var(--fig-surface)" stroke="var(--fig-line)"/><text class="sm" x="191" y="150" text-anchor="middle">性能の観点</text>
-      <rect x="252" y="122" width="90" height="46" rx="6" fill="var(--fig-surface)" stroke="var(--fig-line)"/><text class="sm" x="297" y="150" text-anchor="middle">仕様の観点</text>
-      <rect x="90" y="184" width="202" height="34" rx="6" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)"/>
-      <text class="sm" x="191" y="206" text-anchor="middle" style="fill:var(--fig-green)">結果を突き合わせる</text></g>
-    <g class="s2"><rect x="394" y="24" width="350" height="212" rx="12" fill="var(--fig-fill-amber)" stroke="var(--fig-line-amber)"/>
-      <text class="ttl" x="569" y="50" text-anchor="middle" style="fill:var(--fig-amber)">multi-pass（縦に重ねる）</text>
-      <rect x="418" y="70" width="302" height="34" rx="6" fill="var(--fig-surface)" stroke="var(--fig-line-amber)"/>
-      <text class="sm" x="569" y="92" text-anchor="middle">1回目：候補を広く挙げる</text>
-      <line x1="569" y1="108" x2="569" y2="122" stroke="var(--fig-amber)" stroke-width="2" marker-end="url(#ara)"/>
-      <rect x="418" y="126" width="302" height="34" rx="6" fill="var(--fig-surface)" stroke="var(--fig-line-amber)"/>
-      <text class="sm" x="569" y="148" text-anchor="middle">2回目：1件ずつ本当かを検証する</text>
-      <line x1="569" y1="164" x2="569" y2="178" stroke="var(--fig-amber)" stroke-width="2" marker-end="url(#ara)"/>
-      <rect x="418" y="182" width="302" height="34" rx="6" fill="var(--fig-surface)" stroke="var(--fig-line-amber)"/>
-      <text class="sm" x="569" y="204" text-anchor="middle">3回目：残ったものをまとめる</text></g>
-  </svg>
-  </div></div>
-  <div class="detail">
-    <h3>図の読み方</h3>
-    <ol class="ann">
-      <li><span class="n">1</span><span>左が<b>multi-instance</b>。同じ入力を<b>別々の観点</b>で並行して見せ、結果を突き合わせます。</span></li>
-      <li><span class="n">2</span><span>観点を変えるのが要点です。<b>同じ指示を3回投げても、同じ見落としをします。</b>安全性・性能・仕様のように<b>違う目</b>を当てます。</span></li>
-      <li><span class="n">3</span><span>右が<b>multi-pass</b>。<b>段階で役割を変えます</b>。1回目は広く拾い、2回目で1件ずつ潰す。</span></li>
-      <li><span class="n">4</span><span>この分業が効くのは、<b>「広く挙げる」と「厳しく絞る」を同時にやらせると両方中途半端になる</b>からです。Task 4.1 の基準の話と裏表です。</span></li>
-    </ol>
-    <div class="ex"><span class="exl">組み合わせる</span>
+<div class="figbox"><figure class="fig run">
+  <p class="fig-t">重ね方は2通り ─ <b>何を変えるか</b>が違う</p>
+  <p class="fig-lbl s1">multi-instance（横に並べる）── <b>観点</b>を変える</p>
+  <div class="fig-row s1" style="--cols:3">
+    <div class="fig-card"><b class="fig-h">安全性の観点</b></div>
+    <div class="fig-card"><b class="fig-h">性能の観点</b></div>
+    <div class="fig-card"><b class="fig-h">仕様の観点</b></div>
+  </div>
+  <p class="fig-lbl s2">multi-pass（縦に重ねる）── <b>役割</b>を変える</p>
+  <div class="fig-row flow s2" style="--cols:3">
+    <div class="fig-card"><b class="fig-h">1回目</b><span class="fig-note">候補を広く挙げる</span></div>
+    <div class="fig-card"><b class="fig-h">2回目</b><span class="fig-note">1件ずつ本当かを検証する</span></div>
+    <div class="fig-card"><b class="fig-h">3回目</b><span class="fig-note">残ったものをまとめる</span></div>
+  </div>
+  <p class="fig-f">同じ指示を3回投げても<b>同じ見落としをする</b>。効くのは、観点か役割を変えたときだけ</p>
+</figure></div>
+
+<p class="point"><b>ポイント</b><b>横に並べる＝観点を変える。縦に重ねる＝役割を変える。</b>どちらも「1回の判定を信じない」ための構成。</p>
+
+<div class="detail">
+      <div class="ex"><span class="exl">組み合わせる</span>
     1回目で候補を広く挙げ（再現率を優先）、2回目で<b>1件ずつ「本当に該当するか」を検証</b>する（適合率を優先）。<br>
     2回目は1件が1リクエストになるので、<b>件数が多いならバッチ処理と相性が良い</b>です（Task 4.5）。</div>
   </div>
-  <p class="point"><b>ポイント</b><b>横に並べる＝観点を変える。縦に重ねる＝役割を変える。</b>どちらも「1回の判定を信じない」ための構成。</p>
 
 <h3 class="sub" id="multi-2">倍のコストを払う価値があるか</h3>
 <p class="lead">多重レビューは<b>回数ぶん確実に高くなります</b>。使いどころを絞る必要があります。</p>
-  <div class="figbox"><div class="diagram run">
-  <svg viewBox="0 0 760 260">
-    <g class="s1"><rect x="16" y="24" width="350" height="100" rx="10" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)"/>
-      <text class="ttl" x="191" y="50" text-anchor="middle" style="fill:var(--fig-green)">多重にする価値がある</text>
-      <text class="sm" x="40" y="76">見落とすと取り返しがつかない（安全性・法務・課金）</text>
-      <text class="sm" x="40" y="98">件数が少なく、1件の重みが大きい</text>
-      <text class="sm" x="40" y="118">人が全部見るには多すぎる</text></g>
-    <g class="s2"><rect x="394" y="24" width="350" height="100" rx="10" fill="var(--fig-fill-red)" stroke="var(--fig-line-red)"/>
-      <text class="ttl" x="569" y="50" text-anchor="middle" style="fill:var(--fig-red)">やりすぎ</text>
-      <text class="sm" x="418" y="76">1回で十分な単純な分類にまで重ねる</text>
-      <text class="sm" x="418" y="98">同じ指示をただ3回繰り返す</text>
-      <text class="sm" x="418" y="118">検証で落ちても結局そのまま採用する</text></g>
-    <g class="s3"><rect x="16" y="140" width="728" height="106" rx="10" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
-      <text class="ttl" x="40" y="164">安く重ねる工夫</text>
-      <text class="lbl" x="40" y="192">・2回目以降は<tspan font-weight="700">対象を絞る</tspan>（1回目で候補になったものだけ検証する）</text>
-      <text class="lbl" x="40" y="216">・急がない検証は<tspan font-weight="700">バッチに回す</tspan>（半額・Task 4.5）</text>
-      <text class="lbl" x="40" y="240">・共通の長いプロンプトは<tspan font-weight="700">前に置いてキャッシュを効かせる</tspan>（前提編）</text></g>
-  </svg>
-  </div></div>
-  <div class="detail">
-    <h3>図の読み方</h3>
-    <ol class="ann">
-      <li><span class="n">1</span><span><b>「多重にする価値がある」</b>（左）── 共通するのは<b>見落としのコストが、追加の実行コストより大きい</b>ことです。この一文が判断基準になります。</span></li>
-      <li><span class="n">2</span><span><b>「やりすぎ」</b>（右）── とくに「同じ指示をただ繰り返す」は効果が薄い ── <b>同じ見落としが3回起きるだけ</b>です。観点を変えなければ重ねる意味がありません。</span></li>
-      <li><span class="n">3</span><span><b>「安く重ねる工夫」</b>（下）── <b>2回目以降の対象を絞る</b>のが最も効きます。全件を2回通す必要はありません。</span></li>
-      <li><span class="n">4</span><span>急がない検証パスは<b>バッチに回せば半額</b>です。多重レビューとバッチは組み合わせやすい。</span></li>
-    </ol>
-    <div class="myth">
+<table class="tbl">
+  <thead><tr><th></th><th>多重にする価値がある</th><th>やりすぎ</th></tr></thead>
+  <tbody>
+    <tr><td data-l="">どんな場面か</td>
+        <td data-l="多重にする価値がある">見落とすと取り返しがつかない（安全性・法務・課金）／件数が少なく、1件の重みが大きい／人が全部見るには多すぎる</td>
+        <td data-l="やりすぎ">1回で十分な単純な分類にまで重ねる／<b>同じ指示をただ3回繰り返す</b>／検証で落ちても結局そのまま採用する</td></tr>
+    <tr><td data-l="">共通しているのは</td>
+        <td data-l="多重にする価値がある"><span class="ok">見落としのコストが、追加の実行コストより大きい</span></td>
+        <td data-l="やりすぎ"><span class="ng">同じ見落としが3回起きるだけ</span></td></tr>
+  </tbody>
+</table>
+
+<p class="point"><b>ポイント</b>多重化の判断は「精度が上がるか」ではなく<b>「見落としのコストが実行コストを上回るか」</b>。</p>
+
+<div class="detail">
+  <div class="ex"><span class="exl">安く重ねる工夫</span>
+  ・2回目以降は<b>対象を絞る</b>（1回目で候補になったものだけ検証する）── <b>これが最も効く。</b>全件を2回通す必要はない<br>
+  ・急がない検証は<b>バッチに回す</b>（半額）<br>
+  ・共通の長いプロンプトは<b>前に置いてキャッシュを効かせる</b>（前提編）</div>
+      <div class="myth">
       <span class="t">誤解</span><span>「多重にすれば精度が上がる」</span>
       <span class="t o">実際は</span><span>上がるのは<b>観点や役割を変えたとき</b>だけ。同じ指示の繰り返しは、<b>コストだけが倍になります</b>。</span>
     </div>
   </div>
-  <p class="point"><b>ポイント</b>多重化の判断は「精度が上がるか」ではなく<b>「見落としのコストが実行コストを上回るか」</b>。</p>
 </section>
 <!-- ▲ 本文 -->
 <nav class="secpager btm"><a class="pgv prev" href="../04-prompt/13-batch.html"><span class="vh">前へ</span></a><a class="pgv next" href="../04-prompt/15-q56.html"><span class="vh">次へ</span></a></nav>
@@ -165,6 +141,6 @@
   </div>
 </div>
 <script src="../assets/quiz-data.js?v=47ac7a88"></script>
-<script src="../assets/search-index.js?v=c1db6486"></script>
+<script src="../assets/search-index.js?v=89870b9e"></script>
 <script src="../assets/app.js?v=542dc47c"></script>
 </body></html>

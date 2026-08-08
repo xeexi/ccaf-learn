@@ -78,42 +78,34 @@
 <p class="lead">文章で「JSONで返して」と頼むと、前置きや揺れが混ざります。スキーマ（ツール定義）で受け取れば、形が保証されます。</p>
 <p class="task"><span class="tn">BLUEPRINT 4.3</span><b>ツール利用と JSON スキーマによる構造化出力の強制</b></p>
 <p class="goal"><b>ゴール</b>出力の形を保証する手段を選べる。</p>
-  <div class="figbox"><div class="diagram run">
-  <svg viewBox="0 0 760 300">
-    <g class="s1"><rect x="16" y="24" width="350" height="242" rx="12" fill="var(--fig-fill-red)" stroke="var(--fig-line-red)"/>
-      <text class="ttl" x="191" y="54" text-anchor="middle" style="fill:var(--fig-red)">✗ 文章でお願いする</text>
-      <rect x="40" y="72" width="302" height="34" rx="8" fill="var(--fig-surface)" stroke="var(--fig-line)"/>
-      <text class="mono" x="191" y="94" text-anchor="middle">「JSON形式で出力してください」</text>
-      <line x1="191" y1="110" x2="191" y2="136" stroke="var(--fig-red)" stroke-width="2" marker-end="url(#arr)"/>
-      <rect x="40" y="142" width="302" height="106" rx="8" fill="var(--fig-surface)" stroke="var(--fig-line-red)"/>
-      <text class="mono" x="56" y="166">はい、こちらが結果です:</text>
-      <text class="mono" x="56" y="188">```json</text>
-      <text class="mono" x="56" y="210">{ "name": "田中", "amount": "1,200円" }</text>
-      <text class="sm" x="56" y="234" style="fill:var(--fig-red)">前置き・囲み・型の揺れが混ざる</text></g>
-    <g class="s2"><rect x="394" y="24" width="350" height="242" rx="12" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)"/>
-      <text class="ttl" x="569" y="54" text-anchor="middle" style="fill:var(--fig-green)">○ スキーマで受け取る</text>
-      <rect x="418" y="72" width="302" height="70" rx="8" fill="var(--fig-surface)" stroke="var(--fig-line)"/>
-      <text class="mono" x="434" y="94">input_schema: {</text>
-      <text class="mono" x="434" y="114">  name: string, amount: integer</text>
-      <text class="mono" x="434" y="134">}  required: [name, amount]</text>
-      <line x1="569" y1="146" x2="569" y2="170" stroke="var(--fig-green)" stroke-width="2" marker-end="url(#arg)"/>
-      <rect x="418" y="176" width="302" height="72" rx="8" fill="var(--fig-surface)" stroke="var(--fig-line-green)"/>
-      <text class="mono" x="434" y="200">{ "name": "田中",</text>
-      <text class="mono" x="434" y="220">  "amount": 1200 }</text>
-      <text class="sm" x="434" y="240" style="fill:var(--fig-green)">型と必須項目が守られる</text></g>
-    <text class="sm s3" x="380" y="290" text-anchor="middle">抽出タスクでは「モデルに整形させる」のではなく「受け皿の形を先に決める」</text>
-  </svg>
-  </div></div>
-  <div class="detail">
-    <h3>図の読み方</h3>
-    <ol class="ann">
-      <li><span class="n">1</span><span>左（赤）が<b>文章でお願いした場合</b>。上が指示、下が返ってきたものです。</span></li>
-      <li><span class="n">2</span><span>返ってきたほうをよく見てください。<b>前置きの一文、コードブロックの囲み、そして "1,200円" という文字列</b>が混ざっています。数値として扱えません。</span></li>
-      <li><span class="n">3</span><span>右（緑）が<b>スキーマで受け取った場合</b>。上が定義、下が結果です。</span></li>
-      <li><span class="n">4</span><span>こちらは<b>型と必須項目が守られ、金額が整数で返っています</b>。囲みも前置きもありません。</span></li>
-    </ol>
-    <p>スキーマで受け取るというのは、<b>記入欄の形を先に決めておく</b>ということです。書き方が割れる余地をなくします。ここでいうスキーマは、ツール定義の <code>input_schema</code> そのものです（Domain 2「ツール定義の解剖」）。<b>抽出したい形をツールの引数として定義し、そのツールを呼ばせる</b>ことで、受け皿を先に用意します。</p>
-    <div class="ex"><span class="exl">決めておくべきこと</span>
+<div class="figbox" style="padding:16px 18px">
+  <p class="codelabel">✗ 文章でお願いする</p>
+  <pre class="code"><span class="c">［指示］</span> JSON形式で出力してください
+
+<span class="c">［返ってきたもの］</span>
+はい、こちらが結果です:
+```json
+{ <span class="k">"name"</span>: <span class="s">"田中"</span>, <span class="k">"amount"</span>: <span class="hl"><span class="s">"1,200円"</span></span> }
+
+<span class="c">→ 前置き・囲み・型の揺れが混ざる。金額を数値として扱えない</span></pre>
+  <p class="codelabel">○ スキーマ（ツール定義）で受け取る</p>
+  <pre class="code"><span class="c">［定義］</span>
+<span class="k">"input_schema"</span>: { <span class="k">"name"</span>: <span class="s">"string"</span>, <span class="k">"amount"</span>: <span class="s">"integer"</span> }
+<span class="k">"required"</span>: [<span class="s">"name"</span>, <span class="s">"amount"</span>]
+
+<span class="c">［返ってきたもの］</span>
+{ <span class="k">"name"</span>: <span class="s">"田中"</span>, <span class="k">"amount"</span>: <span class="hl"><span class="v">1200</span></span> }
+
+<span class="c">→ 型と必須項目が守られる。囲みも前置きもない</span></pre>
+</div>
+
+<p class="point"><b>ポイント</b>構造化データ抽出は、プロンプトを工夫する問題ではなく、<b>スキーマを設計する問題</b>。値が無い場合の表現（<code>null</code> を許すか）まで決めておく。</p>
+
+<div class="detail">
+  <div class="ex"><span class="exl">ここでいうスキーマは、ツール定義の <code>input_schema</code> そのもの</span>
+  抽出したい形を<b>ツールの引数として定義し、そのツールを呼ばせる</b>ことで、受け皿を先に用意します（Domain 2〈ツール定義は3つの部品〉）。
+  <b>記入欄の形を先に決めておく</b>ということです。</div>
+      <div class="ex"><span class="exl">決めておくべきこと</span>
     ・型（金額は文字列か整数か）<br>
     ・必須かどうか（<code>required</code>）<br>
     ・<b>値が見つからなかったときどう書くか</b>（null を許すのか、空文字か、そもそも項目を出さないのか）<br>
@@ -123,91 +115,64 @@
       <span class="t o">実際は</span><span>返ることも多いですが、<b>保証されません</b>。前置き、コードブロックの囲み、全角記号。構造化抽出はプロンプトの問題ではなく<b>スキーマ設計の問題</b>です。</span>
     </div>
   </div>
-  <p class="point"><b>ポイント</b>構造化データ抽出は、プロンプトを工夫する問題ではなく、スキーマを設計する問題。値が無い場合の表現（null を許すか）まで決めておく。</p>
 
 <h3 class="sub" id="struct-2">ツールを「使わせる」4つの指定</h3>
 <p class="lead"><code>tool_choice</code> は、道具を使うかどうかの判断を<b>こちらが決める</b>ためのものです。</p>
-  <div class="figbox"><div class="diagram run">
-  <svg viewBox="0 0 760 260">
-    <g class="s1"><rect x="16" y="24" width="176" height="96" rx="10" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
-      <text class="mono" x="104" y="52" text-anchor="middle">auto</text>
-      <text class="sm" x="104" y="76" text-anchor="middle">使うかどうかは</text>
-      <text class="sm" x="104" y="94" text-anchor="middle">モデルが決める</text>
-      <text class="sm" x="104" y="112" text-anchor="middle" style="fill:var(--fig-amber)">既定値</text></g>
-    <g class="s2"><rect x="200" y="24" width="176" height="96" rx="10" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)"/>
-      <text class="mono" x="288" y="52" text-anchor="middle" style="fill:var(--fig-green)">any</text>
-      <text class="sm" x="288" y="76" text-anchor="middle">どれかは必ず使う</text>
-      <text class="sm" x="288" y="94" text-anchor="middle">どれかは選ばせる</text></g>
-    <g class="s3"><rect x="384" y="24" width="176" height="96" rx="10" fill="var(--fig-fill-blue)" stroke="var(--fig-line-blue)"/>
-      <text class="mono" x="472" y="52" text-anchor="middle" style="fill:var(--fig-blue)">tool</text>
-      <text class="sm" x="472" y="76" text-anchor="middle">この道具を必ず使う</text>
-      <text class="sm" x="472" y="94" text-anchor="middle">名前を指定する</text></g>
-    <g class="s4"><rect x="568" y="24" width="176" height="96" rx="10" fill="var(--fig-fill-red)" stroke="var(--fig-line-red)"/>
-      <text class="mono" x="656" y="52" text-anchor="middle" style="fill:var(--fig-red)">none</text>
-      <text class="sm" x="656" y="76" text-anchor="middle">道具を使わせない</text>
-      <text class="sm" x="656" y="94" text-anchor="middle">文章だけ返させる</text></g>
-    <g class="s5"><rect x="16" y="136" width="728" height="52" rx="10" fill="var(--fig-code-bg)" stroke="var(--fig-line)"/>
-      <text class="mono" x="40" y="160">"tool_choice": { "type": "tool", "name": "extract_invoice" }</text>
-      <text class="sm" x="40" y="180">これで、必ず extract_invoice の形で返ってくる ＝ 構造化出力の強制</text></g>
-    <g class="s6"><rect x="16" y="200" width="728" height="46" rx="10" fill="var(--fig-fill-red)" stroke="var(--fig-line-red)"/>
-      <text class="lbl" x="40" y="222" style="fill:var(--fig-red)">any / tool を指定すると、前置きの文章は出なくなる</text>
-      <text class="sm" x="40" y="240">「説明してから使って」と書いても効かない。説明も欲しいなら auto ＋ 指示文にする</text></g>
-  </svg>
-  </div></div>
-  <div class="detail">
-    <h3>図の読み方</h3>
-    <ol class="ann">
-      <li><span class="n">1</span><span><b><code>auto</code></b> ─ 既定値。使うかどうかをモデルが判断します。ふつうの道具はこれ。</span></li>
-      <li><span class="n">2</span><span><b><code>any</code></b> ─ <b>どれかは必ず使う</b>。ただしどれを使うかはモデルが選びます。</span></li>
-      <li><span class="n">3</span><span><b><code>tool</code></b> ─ <b>この道具を必ず使う</b>。名前で指定します。<b>構造化出力を強制したいときはこれ</b>です。</span></li>
-      <li><span class="n">4</span><span><b><code>none</code></b> ─ 道具を使わせません。道具を渡したまま、今回だけ文章で答えさせたいときに使います。</span></li>
-      <li><span class="n">5</span><span>下の注意が実務で効きます。<b><code>any</code> や <code>tool</code> を指定すると、前置きの文章が出なくなります。</b>「先に説明してから」と書いても効きません。</span></li>
-    </ol>
-    <div class="ex"><span class="exl">設問での問われ方</span>
+<table class="tbl">
+  <thead><tr><th><code>tool_choice</code></th><th>何が起きるか</th><th>使いどころ</th></tr></thead>
+  <tbody>
+    <tr><td data-l="tool_choice"><code>auto</code>（既定）</td><td data-l="何が起きるか">使うかどうかを<b>モデルが決める</b></td>
+        <td data-l="使いどころ">ふつうの道具はこれ</td></tr>
+    <tr><td data-l="tool_choice"><code>any</code></td><td data-l="何が起きるか"><b>どれかは必ず使う。</b>どれを使うかはモデルが選ぶ</td>
+        <td data-l="使いどころ">道具は複数あるが、文章で答えられては困るとき</td></tr>
+    <tr><td data-l="tool_choice"><code>tool</code></td><td data-l="何が起きるか"><b>この道具を必ず使う</b>（名前で指定）</td>
+        <td data-l="使いどころ"><span class="ok">構造化出力を強制したいときはこれ</span></td></tr>
+    <tr><td data-l="tool_choice"><code>none</code></td><td data-l="何が起きるか">道具を使わせない</td>
+        <td data-l="使いどころ">道具は渡したまま、今回だけ文章で答えさせたいとき</td></tr>
+  </tbody>
+</table>
+
+<div class="figbox" style="padding:16px 18px">
+  <p class="codelabel">これで、必ず extract_invoice の形で返ってくる ＝ 構造化出力の強制</p>
+  <pre class="code"><span class="k">"tool_choice"</span>: { <span class="k">"type"</span>: <span class="s">"tool"</span>, <span class="k">"name"</span>: <span class="s">"extract_invoice"</span> }</pre>
+</div>
+
+<p class="point"><b>ポイント</b>「JSONで返して」と頼むのではなく、<b>ツールを使わざるを得なくする</b>。これが構造化出力の強制。</p>
+
+<div class="detail">
+  <div class="myth">
+    <span class="t">誤解</span><span>「<code>any</code> や <code>tool</code> でも、先に説明させてから使わせられる」</span>
+    <span class="t o">実際は</span><span><b>前置きの文章は出なくなります。</b>「説明してから使って」と書いても効きません。説明も欲しいなら <code>auto</code> ＋ 指示文にします。</span>
+  </div>
+      <div class="ex"><span class="exl">設問での問われ方</span>
     「請求書から項目を抽出したい。必ずJSONで受け取りたい」→ <b><code>tool_choice</code> を <code>tool</code> にして抽出用ツールを指定</b>。<br>
     「道具は渡しておくが、今回は使わせたくない」→ <b><code>none</code></b>。ツール定義を外す必要はありません。</div>
   </div>
-  <p class="point"><b>ポイント</b>「JSONで返して」と頼むのではなく、<b>ツールを使わざるを得なくする</b>。これが構造化出力の強制。</p>
   <p class="note">※ どの型にも <code>"disable_parallel_tool_use": true</code> を添えられます。付けると<b>1回の応答で呼ばれる道具が1つに制限されます</b>（Domain 1〈子はどう起こすのか〉の並列ツール使用を切る指定）。抽出のように「1件につき1つ」と決まっている場面で使います。</p>
 
 <h3 class="sub" id="struct-3">受け皿の形で、揺れを潰す</h3>
 <p class="lead">スキーマは「形を決める」だけでなく、<b>迷ったときの逃げ道</b>まで決めるものです。</p>
-  <div class="figbox"><div class="diagram run">
-  <svg viewBox="0 0 760 260">
-    <g class="s1"><rect x="16" y="24" width="440" height="220" rx="10" fill="var(--fig-code-bg)" stroke="var(--fig-line)"/>
-      <text class="mono" x="36" y="48">"properties": {</text>
-      <text class="mono" x="52" y="70">"amount":   { "type": "integer" },</text>
-      <text class="mono" x="52" y="92">"currency": { "type": "string",</text>
-      <text class="mono" x="70" y="114">"enum": ["JPY","USD"] },</text>
-      <text class="mono" x="52" y="136">"due_date": { "type": ["string","null"] },</text>
-      <text class="mono" x="52" y="158">"category": { "type": "string",</text>
-      <text class="mono" x="70" y="180">"enum": ["物品","役務","その他"] },</text>
-      <text class="mono" x="52" y="202">"detail":   { "type": "string" }</text>
-      <text class="mono" x="36" y="224">}, "required": ["amount","currency","category"]</text></g>
-    <g class="s2"><rect x="476" y="24" width="268" height="52" rx="10" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)"/>
-      <text class="lbl" x="496" y="46" style="fill:var(--fig-green)">integer にする</text>
-      <text class="sm" x="496" y="66">"1,200円" のような文字列を防ぐ</text></g>
-    <g class="s3"><rect x="476" y="86" width="268" height="52" rx="10" fill="var(--fig-fill-blue)" stroke="var(--fig-line-blue)"/>
-      <text class="lbl" x="496" y="108" style="fill:var(--fig-blue)">enum で選択肢を閉じる</text>
-      <text class="sm" x="496" y="128">表記ゆれ（円 / JPY / 日本円）を防ぐ</text></g>
-    <g class="s4"><rect x="476" y="148" width="268" height="44" rx="10" fill="var(--fig-fill-amber)" stroke="var(--fig-line-amber)"/>
-      <text class="lbl" x="496" y="170" style="fill:var(--fig-amber)">null を許す</text>
-      <text class="sm" x="496" y="188">「値がない」を表せるようにする</text></g>
-    <g class="s5"><rect x="476" y="202" width="268" height="42" rx="10" fill="var(--fig-fill-red)" stroke="var(--fig-line-red)"/>
-      <text class="lbl" x="496" y="222" style="fill:var(--fig-red)">「その他」＋ detail</text>
-      <text class="sm" x="496" y="240">分類に収まらない入力の逃げ道</text></g>
-  </svg>
-  </div></div>
-  <div class="detail">
-    <h3>図の読み方</h3>
-    <ol class="ann">
-      <li><span class="n">1</span><span><b>型を絞る</b>。金額を <code>integer</code> にすれば、<code>"1,200円"</code> のような文字列は入りません。</span></li>
-      <li><span class="n">2</span><span><b><code>enum</code> で選択肢を閉じる</b>。自由記述にすると「円 / JPY / 日本円」のように表記が割れます。</span></li>
-      <li><span class="n">3</span><span><b><code>null</code> を許す</b>。読み取れなかった項目を「無い」と表せないと、<b>それらしい値を作られます</b>。</span></li>
-      <li><span class="n">4</span><span><b>「その他」＋ <code>detail</code></b>。用意した分類に収まらない入力の逃げ道です。これが無いと、近い分類へ無理に押し込まれます。</span></li>
-      <li><span class="n">5</span><span><code>required</code> で<b>必ず埋まるべき項目</b>を宣言します。逆に言えば、埋まらないことがある項目は required に入れません。</span></li>
-    </ol>
-    <div class="ex"><span class="exl">さらに厳密にしたいとき</span>
+<div class="figbox" style="padding:16px 18px">
+  <p class="codelabel">正常系の形と、異常系の逃げ道を両方決める</p>
+  <pre class="code"><span class="k">"properties"</span>: {
+  <span class="k">"amount"</span>:   { <span class="k">"type"</span>: <span class="s">"integer"</span> },<span class="n">1</span>
+  <span class="k">"currency"</span>: { <span class="k">"enum"</span>: [<span class="s">"JPY"</span>, <span class="s">"USD"</span>] },<span class="n">2</span>
+  <span class="k">"due_date"</span>: { <span class="k">"type"</span>: [<span class="s">"string"</span>, <span class="hl"><span class="s">"null"</span></span>] },<span class="n">3</span>
+  <span class="k">"category"</span>: { <span class="k">"enum"</span>: [<span class="s">"物品"</span>, <span class="s">"役務"</span>, <span class="hl"><span class="s">"その他"</span></span>] },<span class="n">4</span>
+  <span class="k">"detail"</span>:   { <span class="k">"type"</span>: <span class="s">"string"</span> }
+},
+<span class="k">"required"</span>: [<span class="s">"amount"</span>, <span class="s">"currency"</span>, <span class="s">"category"</span>]<span class="n">5</span></pre>
+  <ol class="ann">
+    <li><span class="n">1</span><span><b>型を絞る。</b><code>integer</code> にすれば <code>"1,200円"</code> のような文字列は入りません。</span></li>
+    <li><span class="n">2</span><span><b><code>enum</code> で選択肢を閉じる。</b>自由記述にすると「円 / JPY / 日本円」のように表記が割れます。</span></li>
+    <li><span class="n">3</span><span><b><code>null</code> を許す。</b>読み取れなかった項目を「無い」と表せないと、<b>それらしい値を作られます</b>。</span></li>
+    <li><span class="n">4</span><span><b>「その他」＋ <code>detail</code>。</b>用意した分類に収まらない入力の逃げ道です。これが無いと、近い分類へ無理に押し込まれます。</span></li>
+    <li><span class="n">5</span><span><code>required</code> で<b>必ず埋まるべき項目</b>を宣言します。逆に言えば、<b>埋まらないことがある項目は入れません</b>。</span></li>
+  </ol>
+</div>
+
+<div class="detail">
+      <div class="ex"><span class="exl">さらに厳密にしたいとき</span>
     ツール定義に <b><code>strict: true</code></b> を付けると、入力がスキーマに厳密に従うことを保証できます。<br>
     <code>tool_choice: any</code> と組み合わせると、<b>「どれかのツールが必ず呼ばれ、かつ入力がスキーマどおり」</b>という状態を作れます。</div>
   </div>
@@ -225,6 +190,6 @@
   </div>
 </div>
 <script src="../assets/quiz-data.js?v=47ac7a88"></script>
-<script src="../assets/search-index.js?v=c1db6486"></script>
+<script src="../assets/search-index.js?v=89870b9e"></script>
 <script src="../assets/app.js?v=542dc47c"></script>
 </body></html>

@@ -77,101 +77,73 @@
 <p class="lead">1件ずつ同期で投げる代わりに、まとめて非同期で処理します。<b>料金が半分</b>になります。</p>
 <p class="task"><span class="tn">BLUEPRINT 4.5</span><b>効率的なバッチ処理</b></p>
 <p class="goal"><b>ゴール</b>バッチに回す判断基準と、順序への対処を言える。</p>
-  <div class="figbox"><div class="diagram run">
-  <svg viewBox="0 0 760 348">
-    <g class="s1"><text class="lbl" x="16" y="24">同期 ── 1件ごとに待つ</text>
-      <rect x="16" y="36" width="110" height="50" rx="8" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
-      <text class="sm" x="71" y="66" text-anchor="middle">1件送る</text>
-      <line x1="132" y1="61" x2="160" y2="61" stroke="var(--fig-muted)" stroke-width="2" marker-end="url(#ar)"/>
-      <rect x="166" y="36" width="120" height="50" rx="8" fill="var(--fig-fill-red)" stroke="var(--fig-line-red)"/>
-      <text class="sm" x="226" y="66" text-anchor="middle" style="fill:var(--fig-red)">待つ</text>
-      <line x1="292" y1="61" x2="320" y2="61" stroke="var(--fig-muted)" stroke-width="2" marker-end="url(#ar)"/>
-      <rect x="326" y="36" width="130" height="50" rx="8" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
-      <text class="sm" x="391" y="66" text-anchor="middle">結果を受け取る</text>
-      <path d="M462 61 L490 61 L490 100 L71 100 L71 92" fill="none" stroke="var(--fig-red)" stroke-width="2" marker-end="url(#arr)"/>
-      <text class="sm" x="280" y="116" text-anchor="middle" style="fill:var(--fig-red)">これを2,000回。待ち時間が件数分積み上がる</text></g>
+<div class="figbox"><figure class="fig run">
+  <p class="fig-t">2,000件を処理する ─ 待つか、待たないか</p>
+  <div class="fig-row s1" style="--cols:1">
+    <div class="fig-card red">
+      <b class="fig-h">同期 ─ 1件ごとに待つ</b>
+      <span class="fig-note">1件送る → <b>待つ</b> → 結果を受け取る　…これを2,000回</span>
+      <span class="fig-note"><b>待ち時間が件数分積み上がる。</b>処理そのものが遅いわけではない</span>
+    </div>
+  </div>
+  <div class="fig-row s2" style="--cols:1">
+    <div class="fig-card key">
+      <b class="fig-h">バッチ ─ 送ったら待たない</b>
+      <span class="fig-note">2,000件まとめて送る → <b>手が空く</b> → 都合のいいときに取りに行く</span>
+      <span class="fig-note">見張る必要もない</span>
+    </div>
+  </div>
+  <p class="fig-lbl s3">数字は4つ。<b>選択に効くのは料金だけ</b></p>
+  <div class="fig-row s3" style="--cols:4">
+    <div class="fig-card key"><b class="fig-h">50%</b><span class="fig-note">料金が半分（入力も出力も）</span></div>
+    <div class="fig-card"><b class="fig-h">24時間</b><span class="fig-note">超えた分は期限切れ</span></div>
+    <div class="fig-card"><b class="fig-h">10万件</b><span class="fig-note">または 256MB</span></div>
+    <div class="fig-card"><b class="fig-h">29日</b><span class="fig-note">結果を取得できる期間</span></div>
+  </div>
+  <p class="fig-f">判断基準はひとつ ── <b>すぐ答えが要るか。</b>件数が多いかどうかは基準ではない</p>
+</figure></div>
 
-    <g class="s2"><text class="lbl" x="16" y="162" style="fill:var(--fig-green)">バッチ ── 送ったら待たない</text>
-      <rect x="16" y="174" width="150" height="50" rx="8" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)"/>
-      <text class="sm" x="91" y="204" text-anchor="middle" style="fill:var(--fig-green)">2,000件まとめて</text>
-      <line x1="172" y1="199" x2="200" y2="199" stroke="var(--fig-green)" stroke-width="2" marker-end="url(#arg)"/>
-      <rect x="206" y="174" width="180" height="50" rx="8" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)" stroke-dasharray="5 4"/>
-      <text class="sm" x="296" y="204" text-anchor="middle">向こうで処理中</text>
-      <line x1="392" y1="199" x2="420" y2="199" stroke="var(--fig-green)" stroke-width="2" marker-end="url(#arg)"/>
-      <rect x="426" y="174" width="150" height="50" rx="8" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)"/>
-      <text class="sm" x="501" y="204" text-anchor="middle" style="fill:var(--fig-green)">取りに行く</text>
-      <rect x="596" y="174" width="148" height="50" rx="8" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
-      <text class="sm" x="670" y="196" text-anchor="middle">その間、別の</text>
-      <text class="sm" x="670" y="214" text-anchor="middle">仕事ができる</text>
-      <text class="sm" x="296" y="242" text-anchor="middle">順序は保証されない ── custom_id で対応づける</text></g>
+<p class="point"><b>ポイント</b>判断基準はひとつ ── <b>すぐ答えが要るか</b>。要らないなら、半額で通せる。</p>
 
-    <g class="s3"><rect x="16" y="264" width="176" height="72" rx="10" fill="var(--fig-fill-blue)" stroke="var(--fig-line-blue)"/>
-      <text class="ttl" x="104" y="292" text-anchor="middle" style="fill:var(--fig-blue)">50%</text>
-      <text class="sm" x="104" y="316" text-anchor="middle">料金が半分（入力も出力も）</text></g>
-    <g class="s4"><rect x="200" y="264" width="176" height="72" rx="10" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
-      <text class="ttl" x="288" y="292" text-anchor="middle">24時間</text>
-      <text class="sm" x="288" y="316" text-anchor="middle">超えた分は期限切れ</text></g>
-    <g class="s5"><rect x="384" y="264" width="176" height="72" rx="10" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
-      <text class="ttl" x="472" y="292" text-anchor="middle">10万件</text>
-      <text class="sm" x="472" y="316" text-anchor="middle">または 256MB</text></g>
-    <g class="s6"><rect x="568" y="264" width="176" height="72" rx="10" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
-      <text class="ttl" x="656" y="292" text-anchor="middle">29日</text>
-      <text class="sm" x="656" y="316" text-anchor="middle">結果を取得できる期間</text></g>
-  </svg>
-  </div></div>
-  <div class="detail">
-    <h3>図の読み方</h3>
-    <ol class="ann">
-      <li><span class="n">1</span><span>上の帯にある赤い戻り矢印が、この2つの差そのものです。<b>1件ごとに待つので、待ち時間が件数分積み上がります</b>。処理そのものが遅いわけではありません。</span></li>
-      <li><span class="n">2</span><span>下の帯では送ったあと<b>手が空きます</b>。取りに行くのは自分の都合のいいときでよく、破線の区間で何が起きているかを見張る必要もありません。</span></li>
-      <li><span class="n">3</span><span>判断基準はひとつだけ ── <b>すぐ答えが要るか</b>。要らないなら下を選べます。件数が多いかどうかは基準ではありません。</span></li>
-      <li><span class="n">4</span><span>下段4つのうち、選択に効くのは<b>料金</b>だけです。残りは「その仕事が収まるか」を確かめるための上限で、超えた分は期限切れになり課金もされません。</span></li>
-      <li><span class="n">5</span><span>下の帯の注記が実装でいちばん踏む落とし穴です。<b>投げた順に返ってこない</b>ので、ID で突き合わせる以外に方法がありません。</span></li>
-    </ol>
-    <div class="ex"><span class="exl">向く仕事</span>
+<div class="detail">
+      <div class="ex"><span class="exl">向く仕事</span>
     大量の評価セットの実行 ／ 投稿の一括分類・モデレーション ／ 蓄積した文書からの一括抽出 ／ 過去データの棚卸し<br>
     いずれも「今すぐ答えが要らない」点が共通です。</div>
   </div>
-  <p class="point"><b>ポイント</b>判断基準はひとつ ── <b>すぐ答えが要るか</b>。要らないなら、半額で通せる。</p>
 
 <h3 class="sub" id="batch-2">順序は保証されない ─ custom_id で対応づける</h3>
 <p class="lead">結果は投げた順に返ってきません。<b>1件ごとに付けた ID で突き合わせます。</b></p>
-  <div class="figbox"><div class="diagram run">
-  <svg viewBox="0 0 760 260">
-    <g class="s1"><rect x="16" y="24" width="330" height="120" rx="10" fill="var(--fig-code-bg)" stroke="var(--fig-line)"/>
-      <text class="sm" x="36" y="46">送るとき</text>
-      <text class="mono" x="36" y="70">{ "custom_id": "inv-001", "params": {…} }</text>
-      <text class="mono" x="36" y="92">{ "custom_id": "inv-002", "params": {…} }</text>
-      <text class="mono" x="36" y="114">{ "custom_id": "inv-003", "params": {…} }</text>
-      <text class="sm" x="36" y="136">英数字・ハイフン・下線／64文字まで</text></g>
-    <g class="s2"><line x1="356" y1="84" x2="396" y2="84" stroke="var(--fig-muted)" stroke-width="2" marker-end="url(#ar)"/>
-      <rect x="404" y="24" width="330" height="120" rx="10" fill="var(--fig-fill-red)" stroke="var(--fig-line-red)"/>
-      <text class="sm" x="424" y="46" style="fill:var(--fig-red)">返ってくるとき ─ 順番はばらばら</text>
-      <text class="mono" x="424" y="70">{ "custom_id": "inv-003", … }</text>
-      <text class="mono" x="424" y="92">{ "custom_id": "inv-001", … }</text>
-      <text class="mono" x="424" y="114">{ "custom_id": "inv-002", … }</text>
-      <text class="sm" x="424" y="136" style="fill:var(--fig-red)">配列の位置で対応づけてはいけない</text></g>
-    <g class="s3"><rect x="16" y="160" width="728" height="86" rx="10" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
-      <text class="ttl" x="40" y="184">1件ごとの結果は4種類</text>
-      <text class="lbl" x="40" y="212">succeeded 成功　　　errored エラー（課金なし）</text>
-      <text class="lbl" x="400" y="212">canceled 取り消し　　expired 24時間で期限切れ</text>
-      <text class="sm" x="40" y="236">errored は「直して投げ直す」ものと「そのまま再試行してよい」ものに分かれる</text></g>
-  </svg>
-  </div></div>
-  <div class="detail">
-    <h3>図の読み方</h3>
-    <ol class="ann">
-      <li><span class="n">1</span><span>送るとき、1件ごとに <b><code>custom_id</code></b> を付けます。英数字・ハイフン・下線で64文字までです。</span></li>
-      <li><span class="n">2</span><span><b>結果の順序は保証されません。</b>投げた順に返る前提で書くと、静かに取り違えます。</span></li>
-      <li><span class="n">3</span><span>だから<b>必ず <code>custom_id</code> で突き合わせます</b>。意味のあるIDにしておくと、突き合わせも調査も楽になります。</span></li>
-      <li><span class="n">4</span><span>結果は<b>4種類</b>。成功以外の3つは課金されません。<code>expired</code> は24時間で処理しきれなかったものです。</span></li>
-    </ol>
-    <div class="ex"><span class="exl">できないこと</span>
+<div class="figbox" style="padding:16px 18px">
+  <p class="codelabel">送るとき ─ 1件ごとに custom_id を付ける</p>
+  <pre class="code">{ <span class="k">"custom_id"</span>: <span class="s">"inv-001"</span>, <span class="k">"params"</span>: {…} }
+{ <span class="k">"custom_id"</span>: <span class="s">"inv-002"</span>, <span class="k">"params"</span>: {…} }
+{ <span class="k">"custom_id"</span>: <span class="s">"inv-003"</span>, <span class="k">"params"</span>: {…} }
+<span class="c">英数字・ハイフン・下線／64文字まで</span></pre>
+  <p class="codelabel">返ってくるとき ─ 順番はばらばら</p>
+  <pre class="code">{ <span class="hl"><span class="k">"custom_id"</span>: <span class="s">"inv-003"</span></span>, … }
+{ <span class="hl"><span class="k">"custom_id"</span>: <span class="s">"inv-001"</span></span>, … }
+{ <span class="hl"><span class="k">"custom_id"</span>: <span class="s">"inv-002"</span></span>, … }
+<span class="c">配列の位置で対応づけてはいけない</span></pre>
+</div>
+
+<p class="point"><b>ポイント</b>順序は保証されない ── これがバッチ処理で最初に踏む落とし穴。<b>ID で対応づける</b>のが唯一の正解。</p>
+
+<table class="tbl">
+  <thead><tr><th>1件ごとの結果</th><th>意味</th><th>課金</th></tr></thead>
+  <tbody>
+    <tr><td data-l="1件ごとの結果"><code>succeeded</code></td><td data-l="意味">成功</td><td data-l="課金">あり</td></tr>
+    <tr><td data-l="1件ごとの結果"><code>errored</code></td><td data-l="意味">エラー。<b>「直して投げ直す」ものと「そのまま再試行してよい」もの</b>に分かれる</td><td data-l="課金"><span class="ok">なし</span></td></tr>
+    <tr><td data-l="1件ごとの結果"><code>canceled</code></td><td data-l="意味">取り消し</td><td data-l="課金"><span class="ok">なし</span></td></tr>
+    <tr><td data-l="1件ごとの結果"><code>expired</code></td><td data-l="意味">24時間で処理しきれなかった</td><td data-l="課金"><span class="ok">なし</span></td></tr>
+  </tbody>
+</table>
+
+<div class="detail">
+      <div class="ex"><span class="exl">できないこと</span>
     <b><code>stream: true</code> は使えません</b>（結果はまとめて1つのファイルで返るため）。<br>
     一方で<b>ツール使用・複数ターンの会話・拡張思考・画像は使えます</b>。「バッチだから単発の質問しか投げられない」わけではありません。<br>
     ※ 処理に時間がかかるため、共通の長いプロンプトを使うなら<b>キャッシュは長め（1時間）の設定</b>と相性が良くなります。</div>
   </div>
-  <p class="point"><b>ポイント</b>順序は保証されない ── これがバッチ処理で最初に踏む落とし穴。<b>ID で対応づける</b>のが唯一の正解。</p>
 </section>
 <!-- ▲ 本文 -->
 <nav class="secpager btm"><a class="pgv prev" href="../04-prompt/12-q34.html"><span class="vh">前へ</span></a><a class="pgv next" href="../04-prompt/14-multi.html"><span class="vh">次へ</span></a></nav>
@@ -185,6 +157,6 @@
   </div>
 </div>
 <script src="../assets/quiz-data.js?v=47ac7a88"></script>
-<script src="../assets/search-index.js?v=c1db6486"></script>
+<script src="../assets/search-index.js?v=89870b9e"></script>
 <script src="../assets/app.js?v=542dc47c"></script>
 </body></html>

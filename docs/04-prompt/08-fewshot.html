@@ -77,76 +77,64 @@
 <p class="lead">出力の形や粒度は、言葉で説明するより<b>実物を見せたほうが速く伝わります</b>。</p>
 <p class="task"><span class="tn">BLUEPRINT 4.2</span><b>出力の一貫性を高める few-shot</b></p>
 <p class="goal"><b>ゴール</b>例をどこから選ぶべきか答えられる。</p>
-  <div class="figbox"><div class="diagram run">
-  <svg viewBox="0 0 760 260">
-    <g class="s1"><rect x="16" y="24" width="350" height="100" rx="10" fill="var(--fig-fill-red)" stroke="var(--fig-line-red)"/>
-      <text class="ttl" x="191" y="50" text-anchor="middle" style="fill:var(--fig-red)">説明を厚くする</text>
-      <text class="sm" x="40" y="76">「簡潔に、箇条書きで、専門用語は避けて、</text>
-      <text class="sm" x="40" y="96">1項目は40字以内で、語尾は統一して…」</text>
-      <text class="sm" x="40" y="116" style="fill:var(--fig-red)">条件が増えるほど、どれかが抜ける</text></g>
-    <g class="s2"><rect x="394" y="24" width="350" height="100" rx="10" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)"/>
-      <text class="ttl" x="569" y="50" text-anchor="middle" style="fill:var(--fig-green)">例を1つ見せる</text>
-      <rect x="418" y="62" width="302" height="50" rx="6" fill="var(--fig-surface)" stroke="var(--fig-line-green)"/>
-      <text class="mono" x="432" y="82">入力: 「この関数は何をする？」</text>
-      <text class="mono" x="432" y="102">出力: 「役割 / 引数 / 戻り値 を1行ずつ」</text></g>
-    <g class="s3"><rect x="16" y="140" width="728" height="102" rx="10" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
-      <text class="ttl" x="40" y="164">例が伝えるもの</text>
-      <text class="lbl" x="40" y="192">形式（項目の並び・記号・長さ）</text>
-      <text class="lbl" x="290" y="192">粒度（どこまで細かく書くか）</text>
-      <text class="lbl" x="540" y="192">語調（です・ます／体言止め）</text>
-      <text class="sm" x="40" y="222">これらを言葉で全部指定するのは難しい。1つの実物が、まとめて伝える</text></g>
-  </svg>
-  </div></div>
-  <div class="detail">
-    <h3>図の読み方</h3>
-    <ol class="ann">
-      <li><span class="n">1</span><span><b>「説明を厚くする」</b>（左・赤）── 条件を言葉で積み上げるやり方。指定が増えるほど、どれかが抜けます。しかも<b>どれが抜けたかは、出力を見るまで分かりません</b>。</span></li>
-      <li><span class="n">2</span><span><b>「例を1つ見せる」</b>（右・緑）── 入力と出力を<b>対で</b>1つ置くだけ。左のような条件はひとつも書いていません。</span></li>
-      <li><span class="n">3</span><span><b>「例が伝えるもの」</b>（下）── その1つが<b>同時に伝えている中身</b>の内訳です。形式・粒度・語調。これらを言葉で全部書き出そうとすると、左の問題が起きます。</span></li>
-      <li><span class="n">4</span><span>例は<b>入力とセット</b>で示すのが要点です。出力だけ見せても「どんなときにその形にするのか」が伝わりません。</span></li>
-    </ol>
-    <div class="myth">
+<div class="figbox" style="padding:16px 18px">
+  <p class="codelabel">✗ 説明を厚くする ─ 条件を言葉で積み上げる</p>
+  <pre class="code">簡潔に、箇条書きで、専門用語は避けて、
+1項目は40字以内で、語尾は統一して…
+
+<span class="c">→ 条件が増えるほど、どれかが抜ける。</span>
+<span class="c">  しかも、どれが抜けたかは出力を見るまで分からない</span></pre>
+  <p class="codelabel">○ 例を1つ見せる ─ 入力と出力を対で</p>
+  <pre class="code"><span class="c">入力:</span> この関数は何をする？
+<span class="c">出力:</span> 役割　: 注文を金額順に並べ替える
+      引数　: orders（配列）
+      戻り値: 並べ替え済みの配列
+
+<span class="c">→ 上のような条件は、ひとつも書いていない</span></pre>
+</div>
+
+<p class="point"><b>ポイント</b>曖昧な依頼を長文で補うより、<b>実物を1つ</b>。ただし<b>入力と出力を対で</b>示す。</p>
+
+<div class="detail">
+  <div class="ex"><span class="exl">その1つが、同時に伝えているもの</span>
+  <b>形式</b>（項目の並び・記号・長さ）／<b>粒度</b>（どこまで細かく書くか）／<b>語調</b>（です・ます／体言止め）<br>
+  これらを言葉で全部書き出そうとすると、左の問題が起きます。<b>出力だけ見せても</b>「どんなときにその形にするのか」が伝わらないので、入力とセットにします。</div>
+      <div class="myth">
       <span class="t">誤解</span><span>「例は多いほどよい」</span>
       <span class="t o">実際は</span><span>例もコンテキストを消費します。<b>効くのは最初の1〜3個</b>で、そこから先は伸びが鈍ります。数より、下で扱う<b>選び方</b>です。</span>
     </div>
   </div>
-  <p class="point"><b>ポイント</b>曖昧な依頼を長文で補うより、<b>実物を1つ</b>。ただし入力と出力を対で示す。</p>
 
 <h3 class="sub" id="fewshot-2">例は「難しいところ」から選ぶ</h3>
 <p class="lead">いちばん典型的な例を並べても、判断に迷う場面では効きません。</p>
-  <div class="figbox"><div class="diagram run">
-  <svg viewBox="0 0 760 260">
-    <g class="s1"><rect x="16" y="24" width="230" height="100" rx="10" fill="var(--fig-fill-red)" stroke="var(--fig-line-red)"/>
-      <text class="ttl" x="131" y="50" text-anchor="middle" style="fill:var(--fig-red)">典型例ばかり</text>
-      <text class="sm" x="40" y="78">誰が見ても明らかな例を3つ</text>
-      <text class="sm" x="40" y="100">→ 迷う場面の助けにならない</text></g>
-    <g class="s2"><rect x="264" y="24" width="230" height="100" rx="10" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)"/>
-      <text class="ttl" x="379" y="50" text-anchor="middle" style="fill:var(--fig-green)">境界の例</text>
-      <text class="sm" x="288" y="78">「これは該当する／しない」の</text>
-      <text class="sm" x="288" y="100">きわどい例を選ぶ</text></g>
-    <g class="s3"><rect x="512" y="24" width="232" height="100" rx="10" fill="var(--fig-fill-blue)" stroke="var(--fig-line-blue)"/>
-      <text class="ttl" x="628" y="50" text-anchor="middle" style="fill:var(--fig-blue)">誤りの例</text>
-      <text class="sm" x="536" y="78">「こう答えたのは誤り。理由は…」</text>
-      <text class="sm" x="536" y="100">を対で示す</text></g>
-    <g class="s4"><rect x="16" y="140" width="728" height="102" rx="10" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
-      <text class="ttl" x="40" y="164">例を作るときの3つの決まりごと</text>
-      <text class="lbl" x="40" y="192">① 形式を完全に揃える（例どうしがずれていると、そのずれごと学ぶ）</text>
-      <text class="lbl" x="40" y="216">② 出現しうる分類を偏りなく含める（片寄ると、その分類に引っぱられる）</text>
-      <text class="lbl" x="40" y="240">③ 実際に間違えた出力を、次の例として足していく</text></g>
-  </svg>
-  </div></div>
-  <div class="detail">
-    <h3>図の読み方</h3>
-    <ol class="ann">
-      <li><span class="n">1</span><span><b>「典型例ばかり」</b>（左）── もともと迷わない場面にしか効きません。<b>例を足したのに精度が上がらない</b>ときは、たいていこれです。</span></li>
-      <li><span class="n">2</span><span><b>「境界の例」</b>（中央）── 「ここまでは該当、ここからは該当しない」という<b>線を、例で引きます</b>。言葉で線を引くより速く伝わります。</span></li>
-      <li><span class="n">3</span><span><b>「誤りの例」</b>（右）── 理由と対で示すと、避けるべき方向が伝わります。</span></li>
-      <li><span class="n">4</span><span><b>「3つの決まりごと」</b>（下）── とくに③。<b>実際に間違えた出力を例に昇格させる</b>のが、いちばん効率のよい増やし方です。探す手間がなく、必ず境界の例になっているからです。</span></li>
-    </ol>
-    <div class="ex"><span class="exl">Domain 3 とのつながり</span>
+<p class="goal"><b>ゴール</b>効く例と、効かない例を見分けられる。</p>
+
+<table class="tbl">
+  <thead><tr><th>選ぶ例</th><th>中身</th><th>効くか</th></tr></thead>
+  <tbody>
+    <tr><td data-l="選ぶ例">典型例ばかり</td>
+        <td data-l="中身">誰が見ても明らかな例を3つ</td>
+        <td data-l="効くか"><span class="ng">効かない</span>　もともと迷わない場面にしか当たらない。<b>例を足したのに精度が上がらないときは、たいていこれ</b></td></tr>
+    <tr><td data-l="選ぶ例"><b>境界の例</b></td>
+        <td data-l="中身">「これは該当する／しない」の<b>きわどい例</b></td>
+        <td data-l="効くか"><span class="ok">効く</span>　言葉で線を引くより速く伝わる</td></tr>
+    <tr><td data-l="選ぶ例"><b>誤りの例</b></td>
+        <td data-l="中身">「こう答えたのは誤り。理由は…」を対で示す</td>
+        <td data-l="効くか"><span class="ok">効く</span>　避けるべき方向が伝わる</td></tr>
+  </tbody>
+</table>
+
+<p class="point"><b>ポイント</b>例の価値は数ではなく<b>どこを示すか</b>。境界と誤りを見せると、判断が安定する。</p>
+
+<div class="detail">
+  <div class="ex"><span class="exl">例を作るときの3つの決まりごと</span>
+  ① <b>形式を完全に揃える</b>（例どうしがずれていると、そのずれごと学ぶ）<br>
+  ② <b>出現しうる分類を偏りなく含める</b>（片寄ると、その分類に引っぱられる）<br>
+  ③ <b>実際に間違えた出力を、次の例として足していく</b><br>
+  とくに③が、いちばん効率のよい増やし方です。<b>探す手間がなく、必ず境界の例になっている</b>から。</div>
+      <div class="ex"><span class="exl">Domain 3 とのつながり</span>
     ③は、Domain 3 の「反復的な改善」と同じ考え方です。<b>気づいた基準を会話で終わらせず、例として書き戻す。</b>次回から自動で効きます。</div>
   </div>
-  <p class="point"><b>ポイント</b>例の価値は数ではなく<b>どこを示すか</b>。境界と誤りを見せると、判断が安定する。</p>
 </section>
 <!-- ▲ 本文 -->
 <nav class="secpager btm"><a class="pgv prev" href="../04-prompt/07-criteria.html"><span class="vh">前へ</span></a><a class="pgv next" href="../04-prompt/09-q12.html"><span class="vh">次へ</span></a></nav>
@@ -160,6 +148,6 @@
   </div>
 </div>
 <script src="../assets/quiz-data.js?v=47ac7a88"></script>
-<script src="../assets/search-index.js?v=c1db6486"></script>
+<script src="../assets/search-index.js?v=89870b9e"></script>
 <script src="../assets/app.js?v=542dc47c"></script>
 </body></html>

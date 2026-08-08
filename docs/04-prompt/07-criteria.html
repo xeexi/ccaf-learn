@@ -77,39 +77,33 @@
 <p class="lead">基準を書かないと、モデルは広く拾います。増えるのは<b>誤検知</b>です。</p>
 <p class="task"><span class="tn">BLUEPRINT 4.1</span><b>精度を上げ誤検知を減らす明示的な基準</b></p>
 <p class="goal"><b>ゴール</b>「見つけて」が基準になっていない理由を説明できる。</p>
-  <div class="figbox"><div class="diagram run">
-  <svg viewBox="0 0 760 260">
-    <g class="s1"><rect x="16" y="24" width="350" height="210" rx="12" fill="var(--fig-fill-red)" stroke="var(--fig-line-red)"/>
-      <text class="ttl" x="191" y="50" text-anchor="middle" style="fill:var(--fig-red)">基準なし</text>
-      <rect x="40" y="66" width="302" height="30" rx="6" fill="var(--fig-surface)" stroke="var(--fig-line)"/>
-      <text class="mono" x="54" y="86">「このコードのバグを探して」</text>
-      <line x1="191" y1="102" x2="191" y2="118" stroke="var(--fig-red)" stroke-width="2" marker-end="url(#arr)"/>
-      <rect x="40" y="122" width="302" height="94" rx="6" fill="var(--fig-surface)" stroke="var(--fig-line-red)"/>
-      <text class="sm" x="54" y="144">・変数名が分かりにくい</text>
-      <text class="sm" x="54" y="164">・コメントが少ない</text>
-      <text class="sm" x="54" y="184">・ここは実際に落ちる ←本命</text>
-      <text class="sm" x="54" y="206" style="fill:var(--fig-red)">指摘は多いが、ほとんどが誤検知</text></g>
-    <g class="s2"><rect x="394" y="24" width="350" height="210" rx="12" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)"/>
-      <text class="ttl" x="569" y="50" text-anchor="middle" style="fill:var(--fig-green)">基準あり</text>
-      <rect x="418" y="66" width="302" height="66" rx="6" fill="var(--fig-surface)" stroke="var(--fig-line)"/>
-      <text class="mono" x="432" y="86">次のいずれかに該当するものだけを</text>
-      <text class="mono" x="432" y="104">バグとする。①実行時に例外 ②誤った値</text>
-      <text class="mono" x="432" y="122">③データ喪失。該当なしなら「なし」</text>
-      <line x1="569" y1="138" x2="569" y2="154" stroke="var(--fig-green)" stroke-width="2" marker-end="url(#ar)"/>
-      <rect x="418" y="158" width="302" height="58" rx="6" fill="var(--fig-surface)" stroke="var(--fig-line-green)"/>
-      <text class="sm" x="432" y="180">・ここは実際に落ちる（①に該当）</text>
-      <text class="sm" x="432" y="206" style="fill:var(--fig-green)">1件。ただし確度が高い</text></g>
-  </svg>
-  </div></div>
-  <div class="detail">
-    <h3>図の読み方</h3>
-    <ol class="ann">
-      <li><span class="n">1</span><span>左は基準を書いていない場合。<b>「バグ」の範囲が決まっていない</b>ので、気になった点をすべて拾ってきます。</span></li>
-      <li><span class="n">2</span><span>結果として<b>誤検知（false positive）が増えます</b>。件数は多いのに、確認の手間ばかりかかる状態です。</span></li>
-      <li><span class="n">3</span><span>右は<b>該当条件を列挙</b>したもの。①②③のどれかに当てはまるものだけを拾わせます。</span></li>
-      <li><span class="n">4</span><span>さらに<b>「該当なしなら『なし』と答える」</b>と書いてあるのが効きます。このすぐ下で扱います。</span></li>
-    </ol>
-    <div class="ex"><span class="exl">基準の書き方の型</span>
+<div class="figbox" style="padding:16px 18px">
+  <p class="codelabel">✗ 基準を書かない</p>
+  <pre class="code"><span class="c">［指示］</span>
+このコードのバグを探して
+
+<span class="c">［返ってきたもの］</span>
+・変数名が分かりにくい
+・コメントが少ない
+・ここは実際に落ちる<span class="c">      ← 本命はこれ1件だけ</span></pre>
+  <p class="codelabel">○ 該当条件を列挙する</p>
+  <pre class="code"><span class="c">［指示］</span>
+次のいずれかに該当するものだけをバグとする。
+  <span class="hl">① 実行時に例外　② 誤った値　③ データ喪失</span>
+読みにくさ・命名は対象外。テストコード内も対象外。
+該当なしなら「なし」と答えること。
+
+<span class="c">［返ってきたもの］</span>
+・ここは実際に落ちる（①に該当）</pre>
+</div>
+
+<p class="point"><b>ポイント</b>「見つけて」は基準ではない。<b>何を該当とし、何を対象外とするか</b>を書いて初めて、出力が絞れる。</p>
+
+<div class="detail">
+  <div class="ex"><span class="exl">左右で変わったのは、指示の3行だけ</span>
+  上は「バグ」の範囲が決まっていないので、気になった点をすべて拾ってきます。増えるのは<b>誤検知</b>で、
+  件数は多いのに確認の手間ばかりかかります。下は<b>該当条件・対象外・境界</b>を書いたので、1件に絞れています。</div>
+      <div class="ex"><span class="exl">基準の書き方の型</span>
     ・<b>該当するもの</b>を列挙する（できれば3つ以内）<br>
     ・<b>該当しないもの</b>も書く（「読みにくさ・命名は対象外」）<br>
     ・<b>境界を示す</b>（「テストコード内は対象外」）<br>
@@ -119,36 +113,42 @@
       <span class="t o">実際は</span><span>誤検知が多いと<b>人が確認しなくなり、結果として本物も見逃されます</b>。精度が落ちれば、その仕組み自体が使われなくなります。</span>
     </div>
   </div>
-  <p class="point"><b>ポイント</b>「見つけて」は基準ではない。<b>何を該当とし、何を対象外とするか</b>を書いて初めて、出力が絞れる。</p>
 
 <h3 class="sub" id="criteria-2">ゼロ件を返せるようにする</h3>
 <p class="lead">モデルは<b>何かを答えようとします</b>。空を返してよいと明示しないと、無理に何かを作ります。</p>
-  <div class="figbox"><div class="diagram run">
-  <svg viewBox="0 0 760 260">
-    <g class="s1"><rect x="16" y="26" width="350" height="90" rx="10" fill="var(--fig-fill-red)" stroke="var(--fig-line-red)"/>
-      <text class="ttl" x="40" y="52" style="fill:var(--fig-red)">「該当なし」を書かないと</text>
-      <text class="lbl" x="40" y="78">問題のないコードにも、無理に指摘を作る</text>
-      <text class="sm" x="40" y="100">＝ 出力が空になることを避けようとする</text></g>
-    <g class="s2"><rect x="394" y="26" width="350" height="90" rx="10" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)"/>
-      <text class="ttl" x="418" y="52" style="fill:var(--fig-green)">明示すると</text>
-      <text class="lbl" x="418" y="78">「該当なし」と答えられるようになる</text>
-      <text class="sm" x="418" y="100">＝ 0件が正しい答えになりうる</text></g>
-    <g class="s3"><rect x="16" y="132" width="728" height="110" rx="10" fill="var(--fig-code-bg)" stroke="var(--fig-line)"/>
-      <text class="ttl" x="40" y="156">スキーマで受け取るなら、こう表す</text>
-      <text class="mono" x="40" y="182">findings: []　　　　　　　… 空配列を許す</text>
-      <text class="mono" x="40" y="204">confidence: "high" | "low"　… 確度を返させる</text>
-      <text class="mono" x="40" y="226">category: "その他" ＋ detail　… 分類に当てはまらない場合の逃げ道</text></g>
-  </svg>
-  </div></div>
-  <div class="detail">
-    <h3>3つの受け皿は、それぞれ何を防ぐか</h3>
-    <ol class="ann">
-      <li><span class="n">1</span><span><code>findings: []</code> ── <b>0件を0件として受け取れる</b>ようにします。これがないと、モデルは空の出力を避けようとして、問題のないコードにも指摘を作ります（図の左）。</span></li>
-      <li><span class="n">2</span><span><code>confidence</code> ── 確度を一緒に返させると、<b>低いものだけ人が見る</b>という運用ができます。全件を人が確認する必要がなくなります（Domain 5 の人間レビュー設計）。</span></li>
-      <li><span class="n">3</span><span><code>category: "その他"</code> ＋ <code>detail</code> ── <b>3つのうち、いちばん効きます</b>。用意した分類に収まらない入力が来たとき、逃げ道がないと<b>必ずどこかに誤分類されます</b>。自由記述の <code>detail</code> をセットにするのは、あとで「その他」の中身を見直せるようにするためです。</span></li>
-    </ol>
-    <p>3つに共通しているのは、<b>「答えられない」を答えとして表せる形にしてある</b>ことです。表せない受け皿を渡すと、モデルは無理にでも埋めます。</p>
-    <div class="ex"><span class="exl">設問での問われ方</span>
+<div class="figbox"><figure class="fig run">
+  <p class="fig-t">「該当なし」を答えとして表せるか</p>
+  <div class="fig-row" style="--cols:2">
+    <div class="fig-card red s1">
+      <b class="fig-h">書かないと</b>
+      <span class="fig-note">問題のないコードにも、<b>無理に指摘を作る</b></span>
+      <span class="fig-note">＝ 出力が空になることを避けようとする</span>
+    </div>
+    <div class="fig-card green s2">
+      <b class="fig-h">明示すると</b>
+      <span class="fig-note">「該当なし」と答えられるようになる</span>
+      <span class="fig-note">＝ <b>0件が正しい答えになりうる</b></span>
+    </div>
+  </div>
+  <p class="fig-f">モデルは<b>何かを答えようとする</b>。空を返してよいと明示しないと、無理に何かを作る</p>
+</figure></div>
+
+<div class="figbox" style="padding:16px 18px">
+  <p class="codelabel">スキーマで受け取るなら、こう表す</p>
+  <pre class="code"><span class="k">"findings"</span>: []<span class="n">1</span>
+<span class="k">"confidence"</span>: <span class="s">"high"</span> | <span class="s">"low"</span><span class="n">2</span>
+<span class="k">"category"</span>: <span class="s">"その他"</span> ＋ <span class="k">"detail"</span><span class="n">3</span></pre>
+  <ol class="ann">
+    <li><span class="n">1</span><span><b>0件を0件として受け取れる</b>ようにします。これがないと、モデルは空の出力を避けようとして、問題のないコードにも指摘を作ります。</span></li>
+    <li><span class="n">2</span><span>確度を一緒に返させると、<b>低いものだけ人が見る</b>という運用ができます。全件を人が確認する必要がなくなります（Domain 5 の人間レビュー設計）。</span></li>
+    <li><span class="n">3</span><span><b>3つのうち、いちばん効きます。</b>用意した分類に収まらない入力が来たとき、逃げ道がないと<b>必ずどこかに誤分類されます</b>。自由記述の <code>detail</code> をセットにするのは、あとで「その他」の中身を見直せるようにするためです。</span></li>
+  </ol>
+</div>
+
+<div class="detail">
+  <div class="ex"><span class="exl">3つに共通していること</span>
+  <b>「答えられない」を答えとして表せる形にしてある</b>ことです。表せない受け皿を渡すと、モデルは無理にでも埋めます。</div>
+      <div class="ex"><span class="exl">設問での問われ方</span>
     「分類させると、どれにも当てはまらないものが無理に分類される」<br>
     → <b>enum に「その他」を加え、detail の自由記述をセットにする</b>。<br>
     「確認の手間を減らしたい」→ <b>確度を返させ、低いものだけ人が見る</b>（Domain 5 の人間レビュー設計につながります）。</div>
@@ -167,6 +167,6 @@
   </div>
 </div>
 <script src="../assets/quiz-data.js?v=47ac7a88"></script>
-<script src="../assets/search-index.js?v=c1db6486"></script>
+<script src="../assets/search-index.js?v=89870b9e"></script>
 <script src="../assets/app.js?v=542dc47c"></script>
 </body></html>
