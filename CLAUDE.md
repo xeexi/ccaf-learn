@@ -371,18 +371,27 @@ git config user.email ki4shi.ito@gmail.com
 ### push はセッションからはできない ── Windows 側で叩く
 
 コミットまではセッションで作れる（実フォルダの `.git` にそのまま入る）。**push だけが通らない。**
-サンドボックスに GitHub の認証情報が一切ない ── `credential.helper` 未設定、`gh` なし、proxy 環境変数なし。
-出るエラーは `fatal: could not read Username for 'https://github.com'`。
-以前は git proxy が 403 を返していた（`... is not in this session's authorized repository set`）。
-**失敗の仕方は変わるが、結論は同じ。**
 
 ```
 cd C:\Users\guard\Documents\Claude作業用\ccaf-learn
 git push origin main
 ```
 
-設定 → Cowork の「クラウドで新しいタスクを実行する」をオフにすると、以後の**新規**タスクが手元で動く。
-**動いているセッションは移動できない。**
+**設定を探しても解決しない。調べ直さないこと。** 2026-08-08 に裏取り済み。
+
+| 実行のしかた | 失敗の理由 |
+|---|---|
+| ローカル実行 | サンドボックスに認証情報が一切ない ── `credential.helper` 未設定、`gh` なし、proxy 環境変数なし。`fatal: could not read Username for 'https://github.com'` |
+| クラウド実行 | git proxy が `... is not in this session's authorized repository set` で 403。**利用者が PAT を渡しても同じく弾かれる**。エラーは「セッションのソースに追加せよ」と言うが、**Cowork デスクトップにその UI が存在しない** |
+
+クラウド側は Anthropic 公式リポジトリに未解決のバグとして上がっている ──
+[anthropics/claude-code #76248](https://github.com/anthropics/claude-code/issues/76248)（2026-07-10 起票、`area:cowork` / `bug`、Open）。
+
+**GitHub コネクタでも代替できない。** あれはリポジトリを読み取ってコンテキストに入れるための機能で、
+同期されるのは「特定ブランチのファイル名と内容」だけ。commit も push も扱わない
+（[公式ヘルプ](https://support.claude.com/en/articles/10167454-use-the-github-integration) の FAQ）。
+
+自動化するなら Windows 側（タスクスケジューラ等）でやるしかない。利用者は**手動 push を選択**した。
 
 ### GitHub Pages で公開する
 
