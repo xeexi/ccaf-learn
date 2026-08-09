@@ -141,6 +141,18 @@ body{
   -webkit-font-smoothing:antialiased;
 }
 a{ color:inherit }
+/* 本文の中のリンク。既定が color:inherit なので、何も当てないと
+   **リンクだと分からない**（参考資料の一覧では致命的）。
+   ナビ・目次・送り・全項目一覧は UI 部品として別に色が付いているので、
+   ここで拾うのは「文の中に置いたリンク」だけに限る。 */
+.tbl a, .hero p a, .note a, .ex a, .detail p a{
+  color:var(--accent);
+  text-decoration:underline; text-underline-offset:3px; text-decoration-thickness:1px;
+  text-decoration-color:color-mix(in srgb, var(--accent) 45%, transparent);
+}
+.tbl a:hover, .hero p a:hover, .note a:hover, .ex a:hover, .detail p a:hover{
+  text-decoration-color:var(--accent);
+}
 kbd{
   font-family:var(--mono); font-size:var(--fs-xs); padding:2px 6px; border-radius:5px;
   background:var(--surface-3); border:1px solid var(--line); color:var(--muted);
