@@ -469,6 +469,33 @@ Object.entries(VOCAB).forEach(([task, words]) => {
 });
 if (!vocNg) console.log(`  ✓ ${Object.keys(VOCAB).length} タスクの必須語 ${vocN} 件すべて本文にあり`);
 
+/* --- 5l. 本文の中のリンクが、実在する先を指しているか ------------------
+   本文にはふつうリンクを書かない（移動は目次と前後の送りが受け持つ）。
+   例外として 6-4 が7つのシナリオへ直接リンクしている ── 「このあとの7項です」
+   と言うなら、そこから飛べるほうがよい。ただし**ファイル名を変えると黙って
+   切れる**（実際この回で 06-summary を7ファイルぶんリネームしている）。
+   ページ内アンカー（#…）も、その id が本文にあるかを見る。 */
+console.log('\n■ 本文のリンク');
+let lnkNg = 0, lnkN = 0;
+FILES.concat('index.html').forEach(f => {
+  const h = fs.readFileSync(path.join(ROOT, f), 'utf8');
+  const body = f === 'index.html' ? h
+    : (h.match(/▼ 本文[^\n]*-->([\s\S]*?)<!-- ▲ 本文/) || [])[1];
+  if (!body) return;
+  [...body.matchAll(/href="([^"]+)"/g)].map(m => m[1]).forEach(href => {
+    if (/^(https?:|mailto:)/.test(href)) return;      // 外部は対象外
+    lnkN++;
+    if (href.startsWith('#')) {
+      if (!body.includes(`id="${href.slice(1)}"`)) { bad(`${f}: リンク先 ${href} の id が本文にない`); lnkNg++; }
+      return;
+    }
+    // ?v=… は reindex が打つキャッシュ対策。パスの一部ではないので落とす
+    const target = path.resolve(path.dirname(path.join(ROOT, f)), href.split(/[?#]/)[0]);
+    if (!fs.existsSync(target)) { bad(`${f}: リンク先 ${href} が存在しない`); lnkNg++; }
+  });
+});
+if (!lnkNg) console.log(`  ✓ 本文のリンク ${lnkN} 本すべて実在する先を指している`);
+
 /* --- 5g2. 必須概念の網羅 ---------------------------------------------
    5g は「語があるか」しか見ない。だが公式 Knowledge / Skills の多くは
    識別子ではなく**日本語で書く内容**で、語では捕まえられない ──

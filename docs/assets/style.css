@@ -555,19 +555,28 @@ html[data-theme="light"] .sq-n{ color:#fff }
 }
 .sq-idle > b{ display:block; font-size:var(--fs-sm); color:var(--ink); font-weight:700 }
 
-/* 量・比率をそのまま長さで見せる帯 */
-.fig-bars{ display:grid; gap:10px }
+/* 量・比率をそのまま長さで見せる帯
+   **トラックは必ず全幅の1行にする。** 以前は「名前｜トラック｜値」の3列で、
+   各 .fig-bar がそれぞれ独立したグリッドだった。列幅が `auto` なので
+   **値の文字数が違う行だけトラックが伸び縮みし、同じ値の帯が違う長さで描かれた**
+   （6-2 実測：どちらも「3本」なのに 99px と 149px／トラック 200px と 301px）。
+   長さを比べるための図なのに比べられない、という致命的な状態。
+   名前と値を1行目、トラックを2行目の全幅に置けば、幅に関係なく全行そろう。 */
+.fig-bars{ display:grid; gap:14px }
 .fig-bar{
   display:grid; gap:4px 12px; align-items:center;
-  grid-template-columns:minmax(84px,auto) minmax(0,1fr) minmax(92px,auto);
+  grid-template-columns:minmax(0,1fr) auto;
 }
-.fig-bar .b-name{ font-size:var(--fs-sm); font-weight:700; color:var(--ink) }
+.fig-bar .b-name{ font-size:var(--fs-sm); font-weight:700; color:var(--ink);
+  grid-column:1; grid-row:1 }
 .fig-bar .b-track{ display:block;
+  grid-column:1 / -1; grid-row:2;
   height:20px; border-radius:5px; overflow:hidden;
   background:var(--fig-fill-neutral); border:1px solid var(--fig-line);
 }
 .fig-bar .b-fill{ display:block; height:100%; background:var(--accent); border-radius:4px }
-.fig-bar .b-val{ font-size:var(--fs-xs); color:var(--ink-2); font-family:var(--mono); text-align:right }
+.fig-bar .b-val{ grid-column:2; grid-row:1;
+  font-size:var(--fs-xs); color:var(--ink-2); font-family:var(--mono); text-align:right }
 .fig-bar .b-val b{ color:var(--accent) }
 
 /* 図の段階表示（SVG・HTML 共通） */
@@ -1108,7 +1117,6 @@ html[data-theme="light"] .opt:hover:not(.done) .ol{ color:#fff }
   }
   /* 帯は「名前」を上に出し、下に帯と数値を並べる */
   .fig-bar{ grid-template-columns:minmax(0,1fr) auto }
-  .fig-bar .b-name{ grid-column:1 / -1 }
 
   /* 手順は「番号＋誰が」を1行目、内容を2行目に折る */
   .fig-steps > li{ grid-template-columns:26px minmax(0,1fr) }

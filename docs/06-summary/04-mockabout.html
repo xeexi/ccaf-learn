@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/style.css?v=8bbb4b5f">
+<link rel="stylesheet" href="../assets/style.css?v=2a44f201">
 </head>
 <body data-page="mockabout">
 <script>(function(){var t=localStorage.getItem('ccarf-theme');if(t)document.documentElement.dataset.theme=t;})();</script>
@@ -70,26 +70,29 @@
 <p class="lead">実際の設問は、単独の用語ではなく<b>状況を読んで一番適切な手を選ぶ</b>形で出ます。ここまでの内容を、ドメインをまたいだ<b>7つの状況</b>で試します。</p>
 <p class="goal"><b>ゴール</b>状況から、過剰でない手を選べる。</p>
 
+<p><b>その7つが、このあとの7項です。</b>各項に状況と設問がまとまっているので、状況を見ながら答えられます。</p>
+
 <table class="tbl">
-  <thead><tr><th>この教材の7つ</th><th>主に問うドメイン</th><th>本番のどれに当たるか</th></tr></thead>
+  <thead><tr><th>この教材の7つ（＝このあとの7項）</th><th>主に問うドメイン</th><th>本番のどれに当たるか</th></tr></thead>
   <tbody>
-    <tr><td data-l="この教材の7つ">① 社内の問い合わせに答えるエージェント</td>
+    <tr><td data-l="この教材の7つ">① <a href="05-mock1.html">社内の問い合わせに答えるエージェント</a></td>
         <td data-l="ドメイン">1・2・5</td><td data-l="本番">問い合わせ対応</td></tr>
-    <tr><td data-l="この教材の7つ">② 未知のコードベースの不具合調査</td>
+    <tr><td data-l="この教材の7つ">② <a href="06-mock2.html">未知のコードベースの不具合調査</a></td>
         <td data-l="ドメイン">1・5</td><td data-l="本番">複数エージェントの調査 ／ 開発者向けの道具</td></tr>
-    <tr><td data-l="この教材の7つ">③ 5人のチームに導入する</td>
+    <tr><td data-l="この教材の7つ">③ <a href="07-mock3.html">5人のチームに導入する</a></td>
         <td data-l="ドメイン">3</td><td data-l="本番">Claude Code でコードを書く</td></tr>
-    <tr><td data-l="この教材の7つ">④ 請求書から項目を抜き出す</td>
+    <tr><td data-l="この教材の7つ">④ <a href="08-mock4.html">請求書から項目を抜き出す</a></td>
         <td data-l="ドメイン">4・5</td><td data-l="本番">書類から構造化して抜き出す</td></tr>
-    <tr><td data-l="この教材の7つ">⑤ 社外サービスを繋ぐ</td>
+    <tr><td data-l="この教材の7つ">⑤ <a href="09-mock5.html">社外サービスを繋ぐ</a></td>
         <td data-l="ドメイン">2</td><td data-l="本番"><span class="n">対応なし ─ MCP の追加演習</span></td></tr>
-    <tr><td data-l="この教材の7つ">⑥ 300ファイルの一括移行</td>
+    <tr><td data-l="この教材の7つ">⑥ <a href="10-mock6.html">300ファイルの一括移行</a></td>
         <td data-l="ドメイン">1・4</td><td data-l="本番"><span class="n">対応なし ─ 分解と検証の追加演習</span></td></tr>
-    <tr><td data-l="この教材の7つ">⑦ CI に自動レビューを組み込む</td>
+    <tr><td data-l="この教材の7つ">⑦ <a href="11-mock7.html">CI に自動レビューを組み込む</a></td>
         <td data-l="ドメイン">3・4</td><td data-l="本番">CI に組み込む</td></tr>
   </tbody>
 </table>
-<p class="note">※ 本番のシナリオ6本と、どのドメインが何本に出るかは〈本番はシナリオで出る〉にあります。⑤⑥は本番に対応するシナリオがありませんが、Domain 2 と分解・検証を通すのに使えるので残しています。</p>
+<p class="note">※ 表の①〜⑦は、各項の見出しの上に出る「シナリオ ①」〜「シナリオ ⑦」と同じ番号です。<br>
+※ 本番のシナリオ6本と、どのドメインが何本に出るかは〈本番はシナリオで出る〉にあります。⑤⑥は本番に対応するシナリオがありませんが、Domain 2 と分解・検証を通すのに使えるので残しています。</p>
   <div class="detail">
     <h3>選び方の基準</h3>
     <p>迷ったら<b>「効く一番単純な手」</b>を選びます。選択肢に「モデルを大きくする」「複数エージェントにする」「毎回人が確認する」のような大きい手が並んでいるとき、それらはたいてい誤答です。逆に、確実さが要る場面で「プロンプトで丁寧に頼む」を選ぶのも誤答になります。</p>
@@ -115,6 +118,6 @@
   </div>
 </div>
 <script src="../assets/quiz-data.js?v=6eea7702"></script>
-<script src="../assets/search-index.js?v=9439504a"></script>
+<script src="../assets/search-index.js?v=a8612bb3"></script>
 <script src="../assets/app.js?v=94ab4eeb"></script>
 </body></html>
