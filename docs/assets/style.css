@@ -681,6 +681,15 @@ pre.code{
   border-radius:var(--radius-sm); font-family:var(--mono); font-size:var(--fs-sm); line-height:1.85;
   overflow-x:auto; max-height:none; color:var(--ink);
 }
+/* 狭い画面では**折り返す。** 390px でコードに使える幅は 282px しかないのに
+   JSON の文字列値には日本語の文が入るので、実測 34ブロック中 25 が横スクロール
+   していた（最大 462px ＝ 幅の2倍以上はみ出す）。しかも `.figbox` 自体は
+   溢れないので **app.js のスワイプ案内も出ず、切れていることに気づけない。**
+   折り返せば 25 → 0。総スクロール量はほとんど増えない（270k → 271k px）。
+   広い画面では従来どおり字下げをそのまま保つ。 */
+@media (max-width:640px){
+  pre.code{ white-space:pre-wrap; overflow-wrap:anywhere }
+}
 .code .k{ color:var(--blue) }
 .code .s{ color:var(--green) }
 .code .v{ color:var(--amber) }
