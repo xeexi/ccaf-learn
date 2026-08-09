@@ -104,7 +104,17 @@
     const cur = document.querySelector('.toc-link.on');
     const label = () => {
       const n = tocEl.querySelectorAll('.toc-link:not(.toc-sub)').length;
-      btn.innerHTML = '<span>目次</span><b>' + (cur ? cur.textContent.trim() : '') + '</b><i>' + n + ' 項</i>';
+      /* 項番号とタイトルは**必ず区切る。** textContent をそのまま使うと
+         2つの span が地続きになり、6-1「1枚で全体を見る」が
+         「6-11枚で全体を見る」＝「6-11」に見える。 */
+      const num = cur && cur.querySelector('.itm-n');
+      const ttl = cur && cur.querySelector('.itm-t');
+      const here = cur
+        ? (num && ttl ? num.textContent.trim() + '　' + ttl.textContent.trim()
+                      : cur.textContent.trim())
+        : '';
+      btn.innerHTML = '<span>目次</span><b></b><i>' + n + ' 項</i>';
+      btn.querySelector('b').textContent = here;
     };
     label();
     btn.onclick = () => {
