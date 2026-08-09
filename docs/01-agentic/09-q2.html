@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>1-1　このドメインについて ─ Domain 1 ─ CCAR-F 学習ノート</title>
+<title>1-9　理解度チェック ─ 往復の中身と壊れ方 ─ Domain 1 ─ CCAR-F 学習ノート</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/style.css?v=56bfe8db">
 </head>
-<body data-page="d1about">
+<body data-page="q2">
 <script>(function(){var t=localStorage.getItem('ccarf-theme');if(t)document.documentElement.dataset.theme=t;})();</script>
 <nav class="domnav">
   <a class="brand" href="../index.html"><span class="brand-mark">CCAR-F</span><span class="brand-sub">学習ノート</span></a>
@@ -46,7 +46,7 @@
 <div class="shell">
 <aside class="toc">
   <div class="toc-head">Domain 1</div>
-  <nav class="toc-list"><a class="itm toc-link on" href="../01-agentic/01-d1about.html"><span class="itm-n">1-1</span><span class="itm-t">このドメインについて</span></a>
+  <nav class="toc-list"><a class="itm toc-link" href="../01-agentic/01-d1about.html"><span class="itm-n">1-1</span><span class="itm-t">このドメインについて</span></a>
 <a class="itm toc-link" href="../01-agentic/02-tools.html"><span class="itm-n">1-2</span><span class="itm-t">ツールを渡すとは、説明書を渡すこと</span></a>
 <a class="itm toc-link" href="../01-agentic/03-loop.html"><span class="itm-n">1-3</span><span class="itm-t">エージェントループの1周</span></a>
 <a class="itm toc-link" href="../01-agentic/04-stop.html"><span class="itm-n">1-4</span><span class="itm-t">stop_reason で分岐する</span></a>
@@ -54,7 +54,7 @@
 <a class="itm toc-link" href="../01-agentic/06-seq.html"><span class="itm-n">1-6</span><span class="itm-t">誰が、何を送っているのか</span></a>
 <a class="itm toc-link" href="../01-agentic/07-real.html"><span class="itm-n">1-7</span><span class="itm-t">実物を見る ─ 往復のJSON</span></a>
 <a class="itm toc-link" href="../01-agentic/08-broken.html"><span class="itm-n">1-8</span><span class="itm-t">ループが壊れるとき</span></a>
-<a class="itm toc-link itm-quiz" href="../01-agentic/09-q2.html"><span class="itm-n">1-9</span><span class="itm-t">理解度チェック ─ 往復の中身と壊れ方</span></a>
+<a class="itm toc-link on itm-quiz" href="../01-agentic/09-q2.html"><span class="itm-n">1-9</span><span class="itm-t">理解度チェック ─ 往復の中身と壊れ方</span></a>
 <a class="itm toc-link" href="../01-agentic/10-split.html"><span class="itm-n">1-10</span><span class="itm-t">1体か、分けるか</span></a>
 <a class="itm toc-link" href="../01-agentic/11-parent.html"><span class="itm-n">1-11</span><span class="itm-t">親子の形</span></a>
 <a class="itm toc-link" href="../01-agentic/12-chain.html"><span class="itm-n">1-12</span><span class="itm-t">固定チェーンか、動的分解か</span></a>
@@ -71,35 +71,17 @@
 </aside>
 <main class="doc">
 <p class="crumb" data-domain="agentic"><b>Domain 1</b><span>エージェント設計とオーケストレーション</span></p>
-<nav class="secpager top"><a class="pgv prev" href="../00-basics/07-q.html"><span class="vh">前へ</span></a><a class="pgv next" href="../01-agentic/02-tools.html"><span class="vh">次へ</span></a></nav>
+<nav class="secpager top"><a class="pgv prev" href="../01-agentic/08-broken.html"><span class="vh">前へ</span></a><a class="pgv next" href="../01-agentic/10-split.html"><span class="vh">次へ</span></a></nav>
 <!-- ▼ 本文 ─ ここだけを編集する。この前後は node tools/reindex.mjs が書き出す -->
-<section class="sec" id="d1about">
+<section class="sec sec-quiz" id="q2" data-quiz="q2b">
 <header class="sec-head">
-  <h2>1-1　このドメインについて</h2>
+  <h2>1-9　理解度チェック ─ 往復の中身と壊れ方</h2>
 </header>
-<p class="lead">Claude が自分で道具を使い、返ってきた結果を見て次の手を決める ── この形をエージェントと呼びます。人が1手ずつ指示する使い方との違いは、そこだけです。</p>
-<div class="goal"><b>ゴール</b>
-<ul>
-  <li>1回で終わらない仕事が、どういう順番で進むのか</li>
-  <li>1体でやるか複数に分けるか、理由をつけて選べる</li>
-  <li>手順が固定の仕事と、毎回変わる仕事の組み方の違い</li>
-</ul></div>
-  <div class="detail">
-    <h3>なぜ「道具の渡し方」から始まるのか</h3>
-    <p>道具がなければ、モデルは文章を返すだけで外の世界に触れません。ログを調べることも、ファイルを直すこともできない。<b>だから最初に見るのは、道具をどう渡すかです。</b>ここが決まらないと、「いつ呼ぶか」「結果をどう返すか」という次の話が始まりません。</p>
-    <div class="ex"><span class="exl">この順番で進みます</span>
-    道具の渡し方 → 1周の流れと分岐 → 壊れ方<br>
-    そのうえで、1体で足りるか・分けるか → 親子の形 → 手順を固定するか、その場で分けるか</div>
-    <div class="myth">
-      <span class="t">誤解</span><span>「エージェントとは、賢いモデルのことだ」</span>
-      <span class="t o">実際は</span><span>モデルの賢さの話ではなく<b>組み方の話</b>です。同じモデルでも、道具の渡し方と往復の作り方で結果は変わります。試験で問われるのは組み方の側です。</span>
-    </div>
-  </div>
-<p class="point"><b>ポイント</b>このドメインは配点が最大の27%。中身は「1回で終わらない仕事を、どう組み立てるか」に尽きる。</p>
-<p class="note">※ 先に「前提」の〈会話は毎回、まるごと送り直している〉と〈トークンとコンテキストウィンドウ〉を読んでおくと、この先が短く済みます。</p>
+<p class="lead"><span class="qcount"></span>選択肢をクリックすると、その場で正誤と解説が出ます。</p>
+  <div class="qwrap"></div>
 </section>
 <!-- ▲ 本文 -->
-<nav class="secpager btm"><a class="pgv prev" href="../00-basics/07-q.html"><span class="vh">前へ</span></a><a class="pgv next" href="../01-agentic/02-tools.html"><span class="vh">次へ</span></a></nav>
+<nav class="secpager btm"><a class="pgv prev" href="../01-agentic/08-broken.html"><span class="vh">前へ</span></a><a class="pgv next" href="../01-agentic/10-split.html"><span class="vh">次へ</span></a></nav>
 </main>
 </div>
 <div class="modal" id="searchModal" hidden>

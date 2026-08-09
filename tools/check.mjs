@@ -549,6 +549,51 @@ Object.entries(CONCEPT).forEach(([k, res]) => {
 });
 if (!cptNg) console.log(`  ✓ ${Object.keys(CONCEPT).length} 項目すべて本文にあり（公式 §6 の箇条書きと1対1）`);
 
+/* --- 5q. CLAUDE.md が書いた節番号が、その節を指しているか ---------------
+   節を1つ挿すとドメイン内の番号が全部ずれる。CLAUDE.md には §5 の判定表・
+   §7 の記録・§10 の一覧に**節番号で書いた参照が数十件**あり、番号がずれても
+   何も落ちなかった（実際に Domain 1・2・5 を振り直したとき23件が古くなった）。
+
+   見るのは「番号 ＋ そのすぐ後ろの語」だけ。後ろの語が**どこかの節の題の
+   先頭と5字以上一致するのに、書かれた番号の節ではない**とき落とす。
+   散文（「1-11 に…を置いた」）は題と一致しないので対象外になる。 */
+console.log(String.fromCharCode(10) + "■ CLAUDE.md の節参照");
+let mdRefNg = 0, mdRefN = 0;
+{
+  const md = fs.readFileSync(path.join(ROOT, '..', 'CLAUDE.md'), 'utf8').split(String.fromCharCode(10));
+  // 節番号 → 題（order は番号を持っていないので、ここで本文から作る）
+  const titles = {};
+  FILES.forEach(f => {
+    const b2 = (fs.readFileSync(path.join(ROOT, f), 'utf8')
+      .match(/▼ 本文[^\n]*-->([\s\S]*?)<!-- ▲ 本文/) || [])[1] || '';
+    for (const h of b2.matchAll(/<h2>([^<]*)<\/h2>/g)) {
+      const parts = h[1].split(String.fromCharCode(0x3000));
+      if (parts.length > 1) titles[parts[0]] = parts.slice(1).join(String.fromCharCode(0x3000));
+    }
+  });
+  md.forEach((line, li) => {
+    for (const m of line.matchAll(/(?<![\d.\-\/])([0-6])-(\d{1,2})(?![\d\-])/g)) {
+      const key = m[1] + '-' + m[2];
+      const after = line.slice(m.index + m[0].length).replace(/^[ 　]+/, '').replace(/^\*+/, '');
+      let best = 0, owners = [];
+      for (const [num, title] of Object.entries(titles)) {
+        for (let k = Math.min(title.length, after.length); k >= 5; k--) {
+          if (!after.startsWith(title.slice(0, k))) continue;
+          if (k > best) { best = k; owners = [num]; } else if (k === best) owners.push(num);
+          break;
+        }
+      }
+      if (best < 5) continue;                       // 題を伴わない参照は見ない
+      mdRefN++;
+      if (!owners.includes(key)) {
+        bad(`CLAUDE.md L${li + 1} の「${key} ${after.slice(0, best)}」── その題は ${owners.join(' / ')}`);
+        mdRefNg++;
+      }
+    }
+  });
+}
+if (!mdRefNg) console.log(`  ✓ 題つきの節参照 ${mdRefN} 件すべて、その節を指している`);
+
 /* --- 5p. CLAUDE.md に書いた数が、実物と合っているか --------------------
    CLAUDE.md は毎セッション読み込まれる。**そこに古い数字があると、
    それを前提に作業が進む。** 監査したら7件ズレていた（項数・図の数・
