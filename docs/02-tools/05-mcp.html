@@ -154,7 +154,11 @@
       <li><span class="n">4</span><span><code>${DB_URL}</code> のように<b>環境変数を展開できます</b>。鍵そのものを書かずに済むので、このファイルを<b>リポジトリに入れられる</b>のがポイントです。</span></li>
     </ol>
   </div>
-  <div class="detail"><h3>3つのスコープ ─ 誰に見えるか</h3>
+  <div class="detail">
+  <div class="ex"><span class="exl">目録（<code>resources</code>）を出すと、探りの呼び出しが減る</span>
+  道具しか渡していないと、Claude は<b>「何があるか」を知るために呼んでみる</b>しかありません ── 一覧を取る、当てずっぽうで検索する、空振りする。<br>
+  <code>resources</code> で<b>読める資料の目録</b>（課題の一覧・仕様書の構成・テーブル定義など）を出しておくと、<b>先に見てから、要るものだけ取りに行けます。</b>
+  探りの往復が減るぶん、窓も時間も節約できます。</div><h3>3つのスコープ ─ 誰に見えるか</h3>
     <div class="ex"><span class="exl">同名で重複したら local &gt; project &gt; user の順で勝つ</span>
     <b>local</b>（既定）　自分だけ・そのプロジェクトだけ　→ <code>~/.claude.json</code><br>
     <b>project</b>　チーム全員　→ <b><code>.mcp.json</code></b>（バージョン管理に入れる）<br>
@@ -178,6 +182,6 @@
   </div>
 </div>
 <script src="../assets/quiz-data.js?v=6eea7702"></script>
-<script src="../assets/search-index.js?v=4590319c"></script>
+<script src="../assets/search-index.js?v=425970a3"></script>
 <script src="../assets/app.js?v=bfb45e2d"></script>
 </body></html>

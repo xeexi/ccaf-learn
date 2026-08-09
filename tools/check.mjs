@@ -476,7 +476,10 @@ if (!lnkNg) console.log(`  ✓ 本文のリンク ${lnkN} 本すべて実在す�
 console.log('\n■ 必須概念の網羅（語では捕まえられないもの）');
 const CONCEPT = {};
 for (const [n, tk] of Object.entries(BP))
-  for (const [k, re] of Object.entries(tk.concepts)) CONCEPT[`${n} ${k}`] = new RegExp(re);
+  // 値が配列の項目は、**全部を満たすこと**。原文の1つの箇条書きが
+  // 複数のことを言っている場合（1.1 S3 の「誤り3つ」など）に使う
+  for (const [k, re] of Object.entries(tk.concepts))
+    CONCEPT[`${n} ${k}`] = (Array.isArray(re) ? re : [re]).map(x => new RegExp(x));
 
 /* 当たった節も出す。**「あるが置き場所が違う」を見逃さないため** ──
    実際「テストを先に書く」は 1-14（タスク 1.4）にあって、
@@ -487,12 +490,14 @@ const perSec = order.filter(s => !s.quiz).map(s => ({
     .replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&amp;/g, '&'),
 }));
 let cptNg = 0;
-Object.entries(CONCEPT).forEach(([k, re]) => {
-  const where = perSec.filter(s => re.test(s.t)).map(s => s.id);
-  if (!where.length) { bad(`${k}：本文のどこにもない`); cptNg++; }
-  else console.log(`     ${k} → ${where.join(' / ')}`);
+Object.entries(CONCEPT).forEach(([k, res]) => {
+  // 条件ごとに「当たった節」を出す。1つでも当たらなければ落とす
+  const wheres = res.map(r => perSec.filter(s => r.test(s.t)).map(s => s.id));
+  const ng = wheres.findIndex(w => !w.length);
+  if (ng >= 0) { bad(`${k}：本文のどこにもない${res.length > 1 ? `（条件 ${ng + 1}/${res.length}）` : ''}`); cptNg++; }
+  else console.log(`     ${k} → ${[...new Set(wheres.flat())].join(' / ')}`);
 });
-if (!cptNg) console.log(`  ✓ ${Object.keys(CONCEPT).length} 項目すべて本文にあり`);
+if (!cptNg) console.log(`  ✓ ${Object.keys(CONCEPT).length} 項目すべて本文にあり（公式 §6 の箇条書きと1対1）`);
 
 /* --- 5f. 文字サイズが段階（--fs-*）で書かれているか -------------------
    px を直接書くと段階が増えていき、「ばらつきが大きい」状態に戻る。

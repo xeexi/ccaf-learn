@@ -172,6 +172,11 @@
 </div>
 
 <div class="detail">
+  <div class="ex"><span class="exl">スキーマで縛れないばらつきは、指示側で吸収する</span>
+  <code>enum</code> や型で縛れるのは<b>選択肢が決まっているもの</b>だけです。「2026年1月1日」「2026/01/01」「R8.1.1」のように
+  <b>元の書類ごとに書き方が違う</b>ものは、スキーマでは1つに寄せられません。<br>
+  そういう項目は<b>プロンプト側に「どう直すか」を書きます</b> ── 「日付は <code>YYYY-MM-DD</code> に直す」「金額は数値だけにして、通貨は別項目へ」。
+  <b>厳しいスキーマと、そろえ方の指示はセット</b>です。</div>
       <div class="ex"><span class="exl">さらに厳密にしたいとき</span>
     ツール定義に <b><code>strict: true</code></b> を付けると、入力がスキーマに厳密に従うことを保証できます。<br>
     <code>tool_choice: any</code> と組み合わせると、<b>「どれかのツールが必ず呼ばれ、かつ入力がスキーマどおり」</b>という状態を作れます。</div>
@@ -190,6 +195,6 @@
   </div>
 </div>
 <script src="../assets/quiz-data.js?v=6eea7702"></script>
-<script src="../assets/search-index.js?v=4590319c"></script>
+<script src="../assets/search-index.js?v=425970a3"></script>
 <script src="../assets/app.js?v=bfb45e2d"></script>
 </body></html>
