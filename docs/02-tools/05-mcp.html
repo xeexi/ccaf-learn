@@ -119,6 +119,12 @@
     <div class="ex"><span class="exl">たとえるなら USB</span>
     規格が決まる前は機器ごとに専用ケーブルが要りましたが、<b>差込口の形を決めた</b>ことで、作る量が掛け算から足し算になりました。
     賢さが変わるのではなく、つなぐ手間が変わります。</div>
+    <div class="ex"><span class="exl">繋いだサーバの道具は、全部まとめて見える</span>
+  MCP サーバは<b>繋いだ時点で道具の一覧を返し</b>、そこに載った道具は<b>すべて同時に候補になります。</b>
+  3台繋げば3台分が並ぶので、<b>台数を増やすほど選ぶ相手が増えます</b>（Domain 2 の「配る範囲」と同じ問題）。<br>
+  もうひとつ、<b>説明文を書き込まないと、組み込みの道具に負けます</b> ── 中身を詳しく返せる MCP の道具があっても、
+  説明が薄いと <code>Grep</code> のような手近な道具が選ばれます。<b>何ができて何が返るかを書き切る</b>のが、繋いだ道具を使わせる条件です。</div>
+  
     <div class="myth">
       <span class="t">誤解</span><span>「MCP を使うとモデルが賢くなる／速くなる」</span>
       <span class="t o">実際は</span><span>賢さは変わりません。変わるのは<b>つなぐ手間</b>だけです。「新しいサービスと連携したい」という要件で、自前実装より既存の MCP サーバを選ぶのはそのためです。</span>
@@ -172,6 +178,6 @@
   </div>
 </div>
 <script src="../assets/quiz-data.js?v=6eea7702"></script>
-<script src="../assets/search-index.js?v=a8612bb3"></script>
+<script src="../assets/search-index.js?v=1eeaab6e"></script>
 <script src="../assets/app.js?v=bfb45e2d"></script>
 </body></html>

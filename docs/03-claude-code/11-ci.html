@@ -102,6 +102,12 @@
 <div class="detail">
   <div class="ex"><span class="exl">さらに形を固めたいとき</span>
   <code>--json-schema</code> で<b>出力の形そのものを指定</b>できます。Domain 4 の「スキーマで受け取る」を、CLI の外側でやる形です。</div>
+  <div class="ex"><span class="exl">CI で2回目以降に渡すもの</span>
+  <b>前回の指摘</b>を渡さないと、コミットのたびに<b>同じ指摘が積み上がります</b>。すでに出したものを渡し、
+  「<b>新しく出たものと、まだ直っていないものだけ</b>報告して」と書きます。<br>
+  テストを作らせるときは<b>既存のテストを渡します</b>。渡さないと、すでに書かれている場面をもう一度作ります。<br>
+  どちらも「Claude は前回を覚えていない」という前提編の話が、そのまま CI に出たものです。</div>
+  
   <div class="myth">
     <span class="t">つまずきやすい</span><span>非対話では<b>確認のダイアログを出せません</b>。「危なければ人が止める」という設計が成立しないので、<b>何を許すかを事前に決めておく</b>のが前提になります（後述の <code>settings.json</code> と <code>permissions</code>）。</span>
   </div>
@@ -151,6 +157,6 @@
   </div>
 </div>
 <script src="../assets/quiz-data.js?v=6eea7702"></script>
-<script src="../assets/search-index.js?v=a8612bb3"></script>
+<script src="../assets/search-index.js?v=1eeaab6e"></script>
 <script src="../assets/app.js?v=bfb45e2d"></script>
 </body></html>

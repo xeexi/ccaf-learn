@@ -105,6 +105,15 @@
 
 <div class="detail">
   <p>新規を選ぶと渡し直しの手間が増えるので、<code>CLAUDE.md</code> に書けることは先に書いておくと楽になります。</p>
+  <div class="ex"><span class="exl">再開したら、<b>その間に変わったもの</b>を必ず伝える</span>
+  履歴には<b>調べた当時のファイルの中身</b>が残っています。そのあとコードを直していると、
+  モデルは<b>古い中身のまま考え続けます</b> ── しかも食い違いに気づく手段がありません。<br>
+  再開したら「<code>src/api.ts</code> と <code>src/db.ts</code> を直した」と<b>変えた場所だけ</b>伝えます。
+  全部を調べ直させるより速く、古い前提も消えます。</div>
+  <div class="ex"><span class="exl">古い結果を抱えたまま再開するより、新規＋要約のほうが確実</span>
+  前の文脈が<b>おおむね生きている</b>なら再開が速い。ですが<b>ツールの結果が軒並み古い</b>なら、
+  再開は「間違った前提を全部持ち込む」ことになります。そのときは<b>新規で始めて、確定した結論だけを要約して渡す</b>ほうが確実です。<br>
+  判断の基準は「<b>履歴のうち、いま読み返しても正しいものが多いかどうか</b>」です。</div>
   <div class="myth">
     <span class="t">誤解</span><span>「セッションを再開すれば、軽い状態から始まる」</span>
     <span class="t o">実際は</span><span>履歴ごと復元されるので、<b>再開した時点の重さがそのまま戻ります</b>。軽くしたいなら圧縮するか、新規で始めて必要な前提だけ渡します。</span>
@@ -123,6 +132,6 @@
   </div>
 </div>
 <script src="../assets/quiz-data.js?v=6eea7702"></script>
-<script src="../assets/search-index.js?v=a8612bb3"></script>
+<script src="../assets/search-index.js?v=1eeaab6e"></script>
 <script src="../assets/app.js?v=bfb45e2d"></script>
 </body></html>

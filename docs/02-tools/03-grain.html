@@ -90,6 +90,13 @@
   ・<b>説明文を書き分けられない</b>ものが並んでいる → 細かすぎ。まとめる<br>
   ・<b>引数の値によって、やることが変わる</b>（<code>action</code> のような切り替え引数がある）→ 大きすぎ。分ける<br>
   切り替え引数は「1つの道具に複数の仕事が入っている」印です。</div>
+  <div class="ex"><span class="exl">太すぎる道具は、用途で割る</span>
+  <code>analyze_document</code> のような<b>何でもできる名前</b>は、いつ呼ぶべきかが書けません（境界が引けない）。<br>
+  <b>やることで割ります</b> ── <code>extract_data_points</code>（数値を抜く）／<code>summarize_content</code>（要約する）／<code>verify_claim_against_source</code>（元資料と突き合わせる）。
+  1本ずつなら「いつ呼ぶか」も「何を返すか」も書けます。<br>
+  同じ理屈で、<b>広すぎる道具は制約つきに置き換えます</b> ── <code>fetch_url</code>（どこへでも取りに行く）を <code>load_document</code>（決めた置き場の文書だけ）にすれば、
+  説明も短くなり、事故の範囲も狭くなります。</div>
+  
   <div class="myth">
     <span class="t">誤解</span><span>「道具を減らせば減らすほど、選び間違いは減る」</span>
     <span class="t o">実際は</span><span>減らしすぎると、こんどは<b>引数の中で選ばせている</b>だけになります。選択がなくなったのではなく、<b>説明文で守られない場所へ移った</b>のが悪いところです。<code>input_schema</code> は型と列挙で縛れますが、どの組み合わせが正しいかまでは書けません。</span>
@@ -108,6 +115,6 @@
   </div>
 </div>
 <script src="../assets/quiz-data.js?v=6eea7702"></script>
-<script src="../assets/search-index.js?v=a8612bb3"></script>
+<script src="../assets/search-index.js?v=1eeaab6e"></script>
 <script src="../assets/app.js?v=bfb45e2d"></script>
 </body></html>

@@ -119,6 +119,11 @@
 <p class="point"><b>ポイント</b>多重化の判断は「精度が上がるか」ではなく<b>「見落としのコストが実行コストを上回るか」</b>。</p>
 
 <div class="detail">
+  <div class="ex"><span class="exl">なぜ「もう1体」でなければならないのか</span>
+  同じセッションで書かせたものを同じセッションで見直させると、<b>書いたときの考えがそのまま残っています。</b>
+  「なぜそう書いたか」を覚えている状態なので、<b>自分の判断を疑う側に回りにくい</b> ── 見直しても「これでよい」に着地します。<br>
+  <b>別のインスタンスは、その考えを持っていません。</b>コードだけを見て判断するので、書いた側が当然と思っていた前提にも引っかかります。
+  「もっとよく見直して」と頼むことや、考える時間を延ばすことでは代わりになりません ── <b>足りないのは能力ではなく、独立していること</b>だからです。</div>
   <div class="ex"><span class="exl">安く重ねる工夫</span>
   ・2回目以降は<b>対象を絞る</b>（1回目で候補になったものだけ検証する）── <b>これが最も効く。</b>全件を2回通す必要はない<br>
   ・急がない検証は<b>バッチに回す</b>（半額）<br>
@@ -141,6 +146,6 @@
   </div>
 </div>
 <script src="../assets/quiz-data.js?v=6eea7702"></script>
-<script src="../assets/search-index.js?v=a8612bb3"></script>
+<script src="../assets/search-index.js?v=1eeaab6e"></script>
 <script src="../assets/app.js?v=bfb45e2d"></script>
 </body></html>

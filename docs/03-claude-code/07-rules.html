@@ -111,7 +111,13 @@
   <div class="ex"><span class="exl"><code>CLAUDE.md</code> との使い分け</span>
   <b>常に効かせたい規約</b>（言語共通の方針）→ <code>CLAUDE.md</code><br>
   <b>特定の種類のファイルにだけ効かせたい規約</b>（React コンポーネントの書き方、テストの命名）→ <code>.claude/rules/</code> ＋ <code>paths</code><br>
-  後者を <code>CLAUDE.md</code> に全部書くと、<b>関係ない作業のときも窓を食い続けます。</b>
+  後者を <code>CLAUDE.md</code> に全部書くと、<b>関係ない作業のときも窓を食い続けます。</b></div>
+  <div class="ex"><span class="exl">ディレクトリ別の <code>CLAUDE.md</code> で足りないとき</span>
+  効かせたい相手が<b>1つのディレクトリにまとまっているなら</b>、そこに <code>CLAUDE.md</code> を置けば済みます（〈CLAUDE.md の階層〉）。<br>
+  足りなくなるのは、<b>対象がツリー中に散らばっている</b>ときです ── テストは <code>src/</code> のあちこちに、
+  <code>*.test.tsx</code> という<b>名前だけを手がかりに</b>置かれています。ディレクトリごとに <code>CLAUDE.md</code> を撒くと、
+  同じ内容が何枚もでき、あとから増えたディレクトリには付け忘れます。<br>
+  <b>「置き場所ではなく、名前で決まる規約」は <code>paths</code> の glob で書きます</b> ── <code>paths: ["**/*.test.tsx"]</code> の1枚で、どこにあっても効きます。
   前節の <code>@import</code> は分割するだけで量は減りませんが、<b><code>paths</code> は実際に載る量を減らします</b>。</div>
 </div>
 </section>
@@ -127,6 +133,6 @@
   </div>
 </div>
 <script src="../assets/quiz-data.js?v=6eea7702"></script>
-<script src="../assets/search-index.js?v=a8612bb3"></script>
+<script src="../assets/search-index.js?v=1eeaab6e"></script>
 <script src="../assets/app.js?v=bfb45e2d"></script>
 </body></html>

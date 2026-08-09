@@ -105,6 +105,11 @@
 <div class="detail">
   <div class="ex"><span class="exl">試験でのねらわれ方</span>
   「エージェントが暴走している。最初に取るべき対処は？」という設問で、<b>「より大きなモデルに変える」「アーキテクチャを作り直す」は誤答</b>になりやすい選択肢です。反復上限のような、小さくて確実な手が正解になります。</div>
+  <div class="ex"><span class="exl">ただし、反復上限は<b>保険</b>であって停止条件ではない</span>
+  正常に終わるときの合図は <code>stop_reason</code> が <code>end_turn</code> になることです。
+  <b>上限は「壊れたときに無限に回らないようにする」ためのもの</b>で、これを主な止め方に据えると、
+  <b>まだ終わっていない仕事を途中で切る</b>ことになります ── 5周で足りる日もあれば12周かかる日もあるのが、確率で動く仕組みです。<br>
+  設問で「ループはどう終わらせるか」と問われたら、答えは<b>上限ではなく <code>stop_reason</code></b>。上限は別に置く安全弁です。</div>
   <div class="myth">
     <span class="t">誤解</span><span>「壊れているのはモデルの判断なので、プロンプトで丁寧に頼めば直る」</span>
     <span class="t o">実際は</span><span>3つとも<b>コードで決まる話</b>です。設問で「プロンプトで丁寧に頼む」系の選択肢が並んでいたら、たいてい誤答です。</span>
@@ -123,6 +128,6 @@
   </div>
 </div>
 <script src="../assets/quiz-data.js?v=6eea7702"></script>
-<script src="../assets/search-index.js?v=a8612bb3"></script>
+<script src="../assets/search-index.js?v=1eeaab6e"></script>
 <script src="../assets/app.js?v=bfb45e2d"></script>
 </body></html>
