@@ -412,8 +412,12 @@ const VOCAB = {
   '2.2 エラー応答':          ['is_error'],
   '2.3 配分と tool_choice':  ['tool_choice'],
   '2.4 MCP':                 ['.mcp.json', 'stdio', 'resources', 'prompts'],
-  '2.5 組み込みツール':      ['クライアントツール', 'サーバツール', 'web_search',
-    'web_fetch', 'code_execution', 'text_editor', 'memory'],
+  // 公式のタスク文が道具を名指ししている ──
+  // 「Select and apply built-in tools (Read, Write, Edit, Bash, Grep, Glob) effectively」。
+  // 以前ここに web_fetch / text_editor / memory を入れていたが、
+  // それは**タスク 2.5 を API 側の話だと読み違えた**ときの名残（§7 #42）。
+  '2.5 組み込みツール':      ['Grep', 'Glob', 'Read', 'Write', 'Edit', 'Bash',
+    'クライアントツール', 'サーバツール', 'web_search', 'code_execution'],
   // Domain 3
   '3.1 CLAUDE.md':           ['CLAUDE.md', 'CLAUDE.local.md'],
   '3.2 コマンドとスキル':    ['SKILL.md', 'allowed-tools', 'argument-hint', '$ARGUMENTS', 'context: fork',

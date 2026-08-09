@@ -75,7 +75,7 @@
 
 <h3 class="sub" id="batch-1">急がない大量処理は、まとめて投げる</h3>
 <p class="lead">1件ずつ同期で投げる代わりに、まとめて非同期で処理します。<b>料金が半分</b>になります。</p>
-<p class="task"><span class="tn">BLUEPRINT 4.5</span><b>効率的なバッチ処理</b></p>
+<p class="task" data-t="4.5"><span class="tn">BLUEPRINT 4.5</span><b>Design efficient batch processing strategies</b></p>
 <p class="goal"><b>ゴール</b>バッチに回す判断基準と、順序への対処を言える。</p>
 <div class="figbox"><figure class="fig run">
   <p class="fig-t">2,000件を処理する ─ 待つか、待たないか</p>
@@ -139,9 +139,12 @@
 </table>
 
 <div class="detail">
-      <div class="ex"><span class="exl">できないこと</span>
-    <b><code>stream: true</code> は使えません</b>（結果はまとめて1つのファイルで返るため）。<br>
-    一方で<b>ツール使用・複数ターンの会話・拡張思考・画像は使えます</b>。「バッチだから単発の質問しか投げられない」わけではありません。<br>
+      <div class="ex"><span class="exl">できること／できないこと</span>
+    <b>使える</b>：ツール定義・複数ターンの会話・拡張思考・画像。「バッチだから単発の質問しか投げられない」わけではありません<br>
+    <b>使えない①</b>：<code>stream: true</code>（結果はまとめて返るため）<br>
+    <b>使えない②</b>：<b>1リクエストの中でツールを実行して結果を返すこと。</b><code>tool_use</code> が返っても、
+    その場で実行して続きを進める往復がありません ── つまり<b>バッチの中でエージェントループは回せません</b>。
+    ツールを使う仕事をバッチに乗せるなら、<b>1往復で終わる形に切ります</b>。<br>
     ※ 処理に時間がかかるため、共通の長いプロンプトを使うなら<b>キャッシュは長め（1時間）の設定</b>と相性が良くなります。</div>
   </div>
 </section>
@@ -157,6 +160,6 @@
   </div>
 </div>
 <script src="../assets/quiz-data.js?v=e66d3b2d"></script>
-<script src="../assets/search-index.js?v=a5a645b1"></script>
+<script src="../assets/search-index.js?v=73ba7c2f"></script>
 <script src="../assets/app.js?v=542dc47c"></script>
 </body></html>

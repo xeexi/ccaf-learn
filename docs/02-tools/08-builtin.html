@@ -54,9 +54,9 @@
 <a class="itm toc-link" href="../02-tools/06-perm.html"><span class="itm-n">2-6</span><span class="itm-t">権限と副作用</span></a>
 <a class="itm toc-link" href="../02-tools/07-distribute.html"><span class="itm-n">2-7</span><span class="itm-t">誰にどのツールを配るか</span></a>
 <a class="itm toc-link on" href="../02-tools/08-builtin.html"><span class="itm-n">2-8</span><span class="itm-t">組み込みのツールを選ぶ</span></a>
-<a class="toc-link toc-sub" href="#builtin-1">誰が実行するかで、2つに分かれる</a>
-<a class="toc-link toc-sub" href="#builtin-2">どれを選ぶか ─ 書く量が少ない順に見る</a>
-<a class="toc-link toc-sub" href="#builtin-3">Claude Code の組み込みツール</a>
+<a class="toc-link toc-sub" href="#builtin-1">6つの道具を、仕事で選び分ける</a>
+<a class="toc-link toc-sub" href="#builtin-2">未知のコードベースは、全部読まない</a>
+<a class="toc-link toc-sub" href="#builtin-3">できることが同じでも、権限の面が違う</a>
 <a class="itm toc-link itm-quiz" href="../02-tools/09-q.html"><span class="itm-n">2-9</span><span class="itm-t">理解度チェック ─ 定義・MCP・配り方</span></a></nav>
 </aside>
 <main class="doc">
@@ -68,81 +68,70 @@
   <h2>2-8　組み込みのツールを選ぶ</h2>
 </header>
 
-<h3 class="sub" id="builtin-1">誰が実行するかで、2つに分かれる</h3>
-<p class="lead">自分で作らなくても使えるツールがあります。選ぶ前に、<b>そのコードを誰が動かすのか</b>で分けます。</p>
-<p class="task"><span class="tn">BLUEPRINT 2.5</span><b>組み込みツールの選択と活用</b></p>
-<p class="goal"><b>ゴール</b>クライアントツールとサーバツールを、実行する場所で言い分けられる。</p>
+<h3 class="sub" id="builtin-1">6つの道具を、仕事で選び分ける</h3>
+<p class="lead">最初から入っている道具は6つ。同じことが複数の道具でできてしまうので、<b>選ぶ基準</b>が要ります。</p>
+<p class="task" data-t="2.5"><span class="tn">BLUEPRINT 2.5</span><b>Select and apply built-in tools (Read, Write, Edit, Bash, Grep, Glob) effectively</b></p>
+<p class="goal"><b>ゴール</b>6つを、探し方・直し方の違いで選び分けられる。</p>
 
-<div class="figbox"><figure class="fig run">
-  <p class="fig-t">分かれ目は「そのコードを誰が動かすか」</p>
-  <div class="fig-row" style="--cols:2">
-    <div class="fig-card blue s1">
-      <b class="fig-h">クライアントツール</b>
-      <span class="fig-note"><b>あなたのアプリが動かす。</b><code>tool_use</code> が返るので、実行して <code>tool_result</code> を返す ─ ループそのもの</span>
-      <span class="fig-note">自作のツール<br><code>bash</code>・<code>text_editor</code>・<code>computer</code>・<code>memory</code></span>
-    </div>
-    <div class="fig-card amber s2">
-      <b class="fig-h">サーバツール</b>
-      <span class="fig-note"><b>Anthropic 側で動く。</b>結果まで入って返るので、<b>実行するコードを書かない</b></span>
-      <span class="fig-note"><code>web_search</code>・<code>web_fetch</code>・<code>code_execution</code>・<code>tool_search</code></span>
-    </div>
-  </div>
-  <p class="fig-f">見分けかたは1つ ─ <b><code>tool_result</code> を返す必要があるか。</b>サーバツールには返さない</p>
-</figure></div>
-
-<p class="point"><b>ポイント</b>分かれ目は「実行するコードを自分で書くか」。サーバツールは往復が要らないぶん、いちばん安く済む。</p>
-
-<div class="detail">
-  <div class="ex"><span class="exl">サーバツールを使うと <code>pause_turn</code> が返ることがある</span>
-  Anthropic 側の実行は既定10周で一区切りが付きます。まだ答えは出ていないので、
-  <b>応答をそのまま足して投げ直します</b>（Domain 1〈<code>stop_reason</code> で分岐する〉）。完了として扱うと検索の途中で終わります。</div>
-</div>
-
-<h3 class="sub" id="builtin-2">どれを選ぶか ─ 書く量が少ない順に見る</h3>
-<p class="lead">要件から使うものが決まります。上ほど自分で書く量が少なく、設問でもそちらが正解になります。</p>
 <table class="tbl">
-  <thead><tr><th>やりたいこと</th><th>使うもの</th><th>自分で書くもの</th></tr></thead>
+  <thead><tr><th>道具</th><th>何をする</th><th>これを選ぶのは</th></tr></thead>
   <tbody>
-    <tr><td data-l="やりたいこと">web を調べる／コードを走らせる</td>
-        <td data-l="使うもの"><b>サーバツール</b><br><code>web_search</code>・<code>code_execution</code></td>
-        <td data-l="自分で書くもの"><span class="ok">定義1行だけ</span>　実行するコードは不要</td></tr>
-    <tr><td data-l="やりたいこと">ファイルを直す／コマンドを打つ</td>
-        <td data-l="使うもの"><b>Anthropic が形を決めたクライアントツール</b><br><code>text_editor</code>・<code>bash</code></td>
-        <td data-l="自分で書くもの">実行するコード。<b>説明文（<code>description</code>）は要らない</b> ─ 形が学習済みのため</td></tr>
-    <tr><td data-l="やりたいこと">既にある社外サービスを繋ぐ</td>
-        <td data-l="使うもの"><b>既存の MCP サーバ</b>（〈MCP という差込口〉）</td>
-        <td data-l="自分で書くもの">設定だけ</td></tr>
-    <tr><td data-l="やりたいこと">自社だけの業務を扱う</td>
-        <td data-l="使うもの"><b>自作ツール</b>（〈ツール定義は3つの部品〉）</td>
-        <td data-l="自分で書くもの"><span class="ng">定義＋説明文＋実行するコード</span></td></tr>
+    <tr><td data-l="道具"><code>Grep</code></td><td data-l="何をする"><b>中身</b>を探す</td>
+        <td data-l="これを選ぶのは">関数名・エラーメッセージ・<code>import</code> 文など、<b>文字列</b>で探すとき</td></tr>
+    <tr><td data-l="道具"><code>Glob</code></td><td data-l="何をする"><b>ファイル名</b>を探す</td>
+        <td data-l="これを選ぶのは"><code>**/*.test.tsx</code> のように、<b>名前や拡張子のパターン</b>で探すとき</td></tr>
+    <tr><td data-l="道具"><code>Read</code></td><td data-l="何をする">全体を読む</td>
+        <td data-l="これを選ぶのは">中身が丸ごと要るとき</td></tr>
+    <tr><td data-l="道具"><code>Edit</code></td><td data-l="何をする">一部を直す</td>
+        <td data-l="これを選ぶのは"><b>一意に当たる文字列</b>を目印にできるとき</td></tr>
+    <tr><td data-l="道具"><code>Write</code></td><td data-l="何をする">丸ごと置き換える</td>
+        <td data-l="これを選ぶのは">新規作成のとき、または<b><code>Edit</code> の目印が一意にならないとき</b></td></tr>
+    <tr><td data-l="道具"><code>Bash</code></td><td data-l="何をする">コマンドを実行する</td>
+        <td data-l="これを選ぶのは">上で足りないとき。ただし<b>権限の扱いが違う</b>（この節の下）</td></tr>
   </tbody>
 </table>
 
-<p class="point"><b>ポイント</b>「新しい機能が欲しい」と言われたら、まず<b>上の3段で足りないか</b>を確かめる。自作はいちばん下。</p>
+<p class="point"><b>ポイント</b><code>Edit</code> は<b>一意に当たる目印</b>があってはじめて使える。当たらないときは <code>Read</code> で全体を読み、<code>Write</code> で書き戻す ── これが定石。</p>
 
-<h3 class="sub" id="builtin-3">Claude Code の組み込みツール</h3>
-<p class="lead">Claude Code が最初から持っている道具は、<b>すべてクライアントツール</b>です。同じことが複数の道具でできてしまうので、選び分けの基準が要ります。</p>
+<h3 class="sub" id="builtin-2">未知のコードベースは、全部読まない</h3>
+<p class="lead">先に読み尽くそうとすると窓が尽きます。<b>当たりを付けてから、必要なぶんだけ読みます。</b></p>
+<p class="goal"><b>ゴール</b>探索の順番を、道具の組み合わせで言える。</p>
 
-<div class="detail">
-  <div class="ex"><span class="exl">系統は5つ</span>
-  読む <code>Read</code>　／　探す <code>Grep</code> <code>Glob</code>　／　変える <code>Edit</code> <code>Write</code>　／　実行する <code>Bash</code>　／　外に出る <code>WebFetch</code> <code>WebSearch</code><br>
-  <b>右にいくほど、渡したときに起きうる範囲が大きくなります。</b>「変える」の2つは、既存の一部を直すのが <code>Edit</code>、丸ごと置き換えるのが <code>Write</code>。</div>
-</div>
+<div class="figbox"><figure class="fig run">
+  <p class="fig-t">積み上げて理解する ─ 一気に読まない</p>
+  <ol class="fig-steps">
+    <li class="s1"><span class="fig-who"><code>Grep</code></span>
+      <span class="fig-do"><b>入口を見つける。</b>関数名やエラーメッセージで、呼ばれている場所を絞る</span></li>
+    <li class="s2"><span class="fig-who"><code>Read</code></span>
+      <span class="fig-do"><b>その周りだけ読む。</b><code>import</code> を追って、流れをたどる</span></li>
+    <li class="s3"><span class="fig-who"><code>Grep</code></span>
+      <span class="fig-do">次に要る場所が分かったら、<b>また探す</b>。この往復を積み上げる</span></li>
+  </ol>
+  <p class="fig-f">ラッパー越しに関数の使われ方を追うときは、<b>まず export されている名前を全部拾い</b>、その名前ごとに横断で探す</p>
+</figure></div>
+
+<p class="point"><b>ポイント</b>「全ファイルを先に読む」は窓を尽かす。<b><code>Grep</code> で当たりを付けて <code>Read</code> で追う</b>を繰り返す。</p>
+
+<h3 class="sub" id="builtin-3">できることが同じでも、権限の面が違う</h3>
+<p class="lead">同じ「探す」でも、専用の道具と <code>Bash</code> 経由では扱いが変わります。</p>
+<p class="goal"><b>ゴール</b>同じ仕事でも道具によって確認が出る／出ないを説明できる。</p>
 
 <table class="tbl">
-  <thead><tr><th>同じ「探す」でも</th><th>専用のツール（<code>Grep</code> / <code>Glob</code>）</th><th><code>Bash</code> で同じことをする</th></tr></thead>
+  <thead><tr><th>同じ「探す」でも</th><th>専用の道具（<code>Grep</code> / <code>Glob</code>）</th><th><code>Bash</code> で同じことをする</th></tr></thead>
   <tbody>
     <tr><td data-l="同じ「探す」でも">作業ディレクトリの中</td>
-        <td data-l="専用のツール"><span class="ok">確認を挟まずに動く</span></td>
+        <td data-l="専用の道具"><span class="ok">確認を挟まずに動く</span></td>
         <td data-l="Bash で同じことをする"><span class="ng">既定で確認が出る</span><br>読み取りだけの決まった命令は例外</td></tr>
     <tr><td data-l="同じ「探す」でも">外のパス</td>
-        <td data-l="専用のツール">確認が出る</td>
+        <td data-l="専用の道具">確認が出る</td>
         <td data-l="Bash で同じことをする">確認が出る</td></tr>
     <tr><td data-l="同じ「探す」でも">結果</td>
-        <td data-l="専用のツール">調査を任せても止まらない</td>
+        <td data-l="専用の道具">調査を任せても止まらない</td>
         <td data-l="Bash で同じことをする">同じ調査でも毎回止まる</td></tr>
   </tbody>
 </table>
+
+<p class="point"><b>ポイント</b>できることが同じでも権限の面が違う。ツール名は<b>権限・子への配布・フックで共通の識別子</b>。</p>
 
 <div class="detail">
   <div class="ex"><span class="exl">名前が効く3か所</span>
@@ -154,9 +143,12 @@
     <span class="t">誤解</span><span>「<code>Bash</code> があれば、読む・探すも全部それで済む」</span>
     <span class="t o">実際は</span><span>できることは同じでも<b>権限の扱いが違います</b>。「なぜ調査が毎回止まるのか」の答えがここにあることが多い。</span>
   </div>
+  <div class="ex"><span class="exl">※ 実行する場所がもう1つある ── クライアントツールとサーバツール</span>
+  上の6つは<b>あなたのアプリ（Claude Code）が実行する</b>もので、<b>クライアントツール</b>と呼びます。
+  これとは別に、<code>web_search</code> や <code>code_execution</code> のように <b>Anthropic 側で実行され、結果まで入って返る</b><b>サーバツール</b>があります。
+  こちらは <code>tool_result</code> を返す往復が要りません。<br>
+  サーバツールは既定10周で一区切りが付き、<code>pause_turn</code> が返ります ── 応答をそのまま足して投げ直せば続きます（Domain 1〈<code>stop_reason</code> で分岐する〉）。</div>
 </div>
-
-<p class="point"><b>ポイント</b>できることが同じでも権限の面が違う。ツール名は権限・子への配布・フックで共通の識別子。</p>
 </section>
 <!-- ▲ 本文 -->
 <nav class="secpager btm"><a class="pgv prev" href="../02-tools/07-distribute.html"><span class="vh">前へ</span></a><a class="pgv next" href="../02-tools/09-q.html"><span class="vh">次へ</span></a></nav>
@@ -170,6 +162,6 @@
   </div>
 </div>
 <script src="../assets/quiz-data.js?v=e66d3b2d"></script>
-<script src="../assets/search-index.js?v=a5a645b1"></script>
+<script src="../assets/search-index.js?v=73ba7c2f"></script>
 <script src="../assets/app.js?v=542dc47c"></script>
 </body></html>

@@ -54,6 +54,7 @@
 <a class="itm toc-link on" href="../05-context/06-confidence.html"><span class="itm-n">5-6</span><span class="itm-t">確信が持てないときに止める</span></a>
 <a class="toc-link toc-sub" href="#conf-1">逃げ道がないと、迷いは誤答になる</a>
 <a class="toc-link toc-sub" href="#conf-2">いつ人に渡すか ─ 引き金になるもの、ならないもの</a>
+<a class="toc-link toc-sub" href="#conf-3">確信度は、引き金にはしないが「人を回す順番」には使える</a>
 <a class="itm toc-link" href="../05-context/07-observe.html"><span class="itm-n">5-7</span><span class="itm-t">壊れたことに気づける</span></a>
 <a class="itm toc-link" href="../05-context/08-propagate.html"><span class="itm-n">5-8</span><span class="itm-t">失敗を親まで届ける</span></a>
 <a class="itm toc-link itm-quiz" href="../05-context/09-q.html"><span class="itm-n">5-9</span><span class="itm-t">理解度チェック ─ 窓とサブエージェント</span></a>
@@ -70,7 +71,7 @@
 
 <h3 class="sub" id="conf-1">逃げ道がないと、迷いは誤答になる</h3>
 <p class="lead">確率で答えを作る仕組みは、根拠が薄いときも<b>同じ調子で答えます</b>。止まる道を用意していないと、迷いは黙って誤答になります。</p>
-<p class="task"><span class="tn">BLUEPRINT 5.2</span><b>エスカレーションと曖昧さの解消</b>　／　<span class="tn">BLUEPRINT 5.5</span><b>人のレビュー導線と確信度の校正</b></p>
+<p class="task" data-t="5.2 5.5"><span class="tn">BLUEPRINT 5.2</span><b>Design effective escalation and ambiguity resolution patterns</b>　／　<span class="tn">BLUEPRINT 5.5</span><b>Design human review workflows and confidence calibration</b></p>
 <p class="goal"><b>ゴール</b>止まる道を用意する設計と、その置き場所を言える。</p>
 
 <div class="figbox"><figure class="fig run">
@@ -145,6 +146,31 @@
   </div>
 </div>
 <p class="point"><b>ポイント</b>引き金は<b>明示的な要求・規約の穴・進まないこと</b>の3つ。感情や自信の数値を引き金にしない ── どちらもモデルの出力を信じ直しているだけ。</p>
+
+<h3 class="sub" id="conf-3">確信度は、引き金にはしないが「人を回す順番」には使える</h3>
+<p class="lead">自信の数値そのものは信じられません。ただし<b>校正すれば、限られたレビューの手をどこに向けるかを決める道具</b>にはなります。</p>
+<p class="goal"><b>ゴール</b>確信度を「判定」に使わず「優先順位」に使う理由を言える。</p>
+
+<table class="tbl">
+  <thead><tr><th>確信度の使い方</th><th>成立するか</th></tr></thead>
+  <tbody>
+    <tr><td data-l="確信度の使い方">低いものは自動で人へ回す<b>判定</b>にする</td>
+        <td data-l="成立するか"><span class="ng">しない</span>　その数値も同じ仕組みが生成した確率的な出力。外で検算したことにならない</td></tr>
+    <tr><td data-l="確信度の使い方"><b>人が見る順番</b>を決める（低いものから先に見る）</td>
+        <td data-l="成立するか"><span class="ok">する</span>　全件見るより、限られた手を効かせられる</td></tr>
+    <tr><td data-l="確信度の使い方"><b>ラベル付きの検証セットでしきい値を校正</b>してから使う</td>
+        <td data-l="成立するか"><span class="ok">する</span>　「0.9 以上なら人を省いてよい」を<b>実測で決める</b></td></tr>
+  </tbody>
+</table>
+
+<p class="point"><b>ポイント</b><b>確信度は判定の根拠にはならないが、優先順位の材料にはなる。</b>しきい値は勘ではなく、答えの分かっている検証セットで校正する。</p>
+
+<div class="detail">
+  <div class="myth">
+    <span class="t">誤解</span><span>「全体の正解率が97%なら、もう人のレビューは要らない」</span>
+    <span class="t o">実際は</span><span><b>全体の数字は、特定の書類種別や項目での不出来を隠します。</b>種別ごと・項目ごとに分けて確かめてから、はじめて人を減らせます。減らしたあとも、確信度の高いものから<b>抜き取りで</b>誤りの率を測り続けます。</span>
+  </div>
+</div>
 </section>
 <!-- ▲ 本文 -->
 <nav class="secpager btm"><a class="pgv prev" href="../05-context/05-shape.html"><span class="vh">前へ</span></a><a class="pgv next" href="../05-context/07-observe.html"><span class="vh">次へ</span></a></nav>
@@ -158,6 +184,6 @@
   </div>
 </div>
 <script src="../assets/quiz-data.js?v=e66d3b2d"></script>
-<script src="../assets/search-index.js?v=a5a645b1"></script>
+<script src="../assets/search-index.js?v=73ba7c2f"></script>
 <script src="../assets/app.js?v=542dc47c"></script>
 </body></html>
