@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>1-8　理解度チェック ─ ループ ─ Domain 1 ─ CCAR-F 学習ノート</title>
+<title>2-11　理解度チェック ─ 権限・配り方・組み込み ─ Domain 2 ─ CCAR-F 学習ノート</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/style.css?v=56bfe8db">
 </head>
-<body data-page="q1">
+<body data-page="q3">
 <script>(function(){var t=localStorage.getItem('ccarf-theme');if(t)document.documentElement.dataset.theme=t;})();</script>
 <nav class="domnav">
   <a class="brand" href="../index.html"><span class="brand-mark">CCAR-F</span><span class="brand-sub">学習ノート</span></a>
   <div class="nav-list"><a class="nav-item" data-domain="basics" href="../00-basics/01-flow.html" title="会話の実体">
        <span class="nav-num">前提</span><span class="nav-title">会話の実体</span></a>
-<a class="nav-item on" data-domain="agentic" href="../01-agentic/01-d1about.html" title="エージェント設計とオーケストレーション">
+<a class="nav-item" data-domain="agentic" href="../01-agentic/01-d1about.html" title="エージェント設計とオーケストレーション">
        <span class="nav-num">Domain 1</span><span class="nav-title">エージェント設計</span></a>
-<a class="nav-item" data-domain="tools" href="../02-tools/01-d2about.html" title="ツール設計と MCP 連携">
+<a class="nav-item on" data-domain="tools" href="../02-tools/01-d2about.html" title="ツール設計と MCP 連携">
        <span class="nav-num">Domain 2</span><span class="nav-title">ツールと MCP</span></a>
 <a class="nav-item" data-domain="code" href="../03-claude-code/01-about.html" title="Claude Code の設定とワークフロー">
        <span class="nav-num">Domain 3</span><span class="nav-title">Claude Code</span></a>
@@ -45,41 +45,32 @@
 </defs></svg>
 <div class="shell">
 <aside class="toc">
-  <div class="toc-head">Domain 1</div>
-  <nav class="toc-list"><a class="itm toc-link" href="../01-agentic/01-d1about.html"><span class="itm-n">1-1</span><span class="itm-t">このドメインについて</span></a>
-<a class="itm toc-link" href="../01-agentic/02-tools.html"><span class="itm-n">1-2</span><span class="itm-t">ツールを渡すとは、説明書を渡すこと</span></a>
-<a class="itm toc-link" href="../01-agentic/03-loop.html"><span class="itm-n">1-3</span><span class="itm-t">エージェントループの1周</span></a>
-<a class="itm toc-link" href="../01-agentic/04-stop.html"><span class="itm-n">1-4</span><span class="itm-t">stop_reason で分岐する</span></a>
-<a class="itm toc-link" href="../01-agentic/05-seq.html"><span class="itm-n">1-5</span><span class="itm-t">誰が、何を送っているのか</span></a>
-<a class="itm toc-link" href="../01-agentic/06-real.html"><span class="itm-n">1-6</span><span class="itm-t">実物を見る ─ 往復のJSON</span></a>
-<a class="itm toc-link" href="../01-agentic/07-broken.html"><span class="itm-n">1-7</span><span class="itm-t">ループが壊れるとき</span></a>
-<a class="itm toc-link on itm-quiz" href="../01-agentic/08-q1.html"><span class="itm-n">1-8</span><span class="itm-t">理解度チェック ─ ループ</span></a>
-<a class="itm toc-link" href="../01-agentic/09-split.html"><span class="itm-n">1-9</span><span class="itm-t">1体か、分けるか</span></a>
-<a class="itm toc-link" href="../01-agentic/10-parent.html"><span class="itm-n">1-10</span><span class="itm-t">親子の形</span></a>
-<a class="itm toc-link" href="../01-agentic/11-chain.html"><span class="itm-n">1-11</span><span class="itm-t">固定チェーンか、動的分解か</span></a>
-<a class="itm toc-link itm-quiz" href="../01-agentic/12-q2.html"><span class="itm-n">1-12</span><span class="itm-t">理解度チェック ─ 複数エージェント</span></a>
-<a class="itm toc-link" href="../01-agentic/13-spawn.html"><span class="itm-n">1-13</span><span class="itm-t">子はどう起こすのか</span></a>
-<a class="itm toc-link" href="../01-agentic/14-gate.html"><span class="itm-n">1-14</span><span class="itm-t">前提は関門で、引き継ぎは欄で</span></a>
-<a class="itm toc-link" href="../01-agentic/15-intercept.html"><span class="itm-n">1-15</span><span class="itm-t">ツール呼び出しに割り込む</span></a>
-<a class="itm toc-link" href="../01-agentic/16-hookreg.html"><span class="itm-n">1-16</span><span class="itm-t">どこに書いて、どう止めるか</span></a>
-<a class="itm toc-link" href="../01-agentic/17-hooknorm.html"><span class="itm-n">1-17</span><span class="itm-t">割り込みで、形をそろえる</span></a>
-<a class="itm toc-link itm-quiz" href="../01-agentic/18-q3.html"><span class="itm-n">1-18</span><span class="itm-t">理解度チェック ─ 起動と強制</span></a>
-<a class="itm toc-link" href="../01-agentic/19-session.html"><span class="itm-n">1-19</span><span class="itm-t">セッションをまたぐ</span></a>
-<a class="itm toc-link itm-quiz" href="../01-agentic/20-q4.html"><span class="itm-n">1-20</span><span class="itm-t">理解度チェック ─ セッション</span></a></nav>
+  <div class="toc-head">Domain 2</div>
+  <nav class="toc-list"><a class="itm toc-link" href="../02-tools/01-d2about.html"><span class="itm-n">2-1</span><span class="itm-t">このドメインについて</span></a>
+<a class="itm toc-link" href="../02-tools/02-anatomy.html"><span class="itm-n">2-2</span><span class="itm-t">ツール定義は3つの部品でできている</span></a>
+<a class="itm toc-link" href="../02-tools/03-grain.html"><span class="itm-n">2-3</span><span class="itm-t">ツールの粒度</span></a>
+<a class="itm toc-link" href="../02-tools/04-error.html"><span class="itm-n">2-4</span><span class="itm-t">失敗は読める形で返す</span></a>
+<a class="itm toc-link itm-quiz" href="../02-tools/05-q1.html"><span class="itm-n">2-5</span><span class="itm-t">理解度チェック ─ 定義・粒度・失敗の返し方</span></a>
+<a class="itm toc-link" href="../02-tools/06-mcp.html"><span class="itm-n">2-6</span><span class="itm-t">MCP という差込口</span></a>
+<a class="itm toc-link itm-quiz" href="../02-tools/07-q2.html"><span class="itm-n">2-7</span><span class="itm-t">理解度チェック ─ MCP の仕組みと設定</span></a>
+<a class="itm toc-link" href="../02-tools/08-perm.html"><span class="itm-n">2-8</span><span class="itm-t">権限と副作用</span></a>
+<a class="itm toc-link" href="../02-tools/09-distribute.html"><span class="itm-n">2-9</span><span class="itm-t">誰にどのツールを配るか</span></a>
+<a class="itm toc-link" href="../02-tools/10-builtin.html"><span class="itm-n">2-10</span><span class="itm-t">組み込みのツールを選ぶ</span></a>
+<a class="itm toc-link on itm-quiz" href="../02-tools/11-q3.html"><span class="itm-n">2-11</span><span class="itm-t">理解度チェック ─ 権限・配り方・組み込み</span></a></nav>
 </aside>
 <main class="doc">
-<p class="crumb" data-domain="agentic"><b>Domain 1</b><span>エージェント設計とオーケストレーション</span></p>
-<nav class="secpager top"><a class="pgv prev" href="../01-agentic/07-broken.html"><span class="vh">前へ</span></a><a class="pgv next" href="../01-agentic/09-split.html"><span class="vh">次へ</span></a></nav>
+<p class="crumb" data-domain="tools"><b>Domain 2</b><span>ツール設計と MCP 連携</span></p>
+<nav class="secpager top"><a class="pgv prev" href="../02-tools/10-builtin.html"><span class="vh">前へ</span></a><a class="pgv next" href="../03-claude-code/01-about.html"><span class="vh">次へ</span></a></nav>
 <!-- ▼ 本文 ─ ここだけを編集する。この前後は node tools/reindex.mjs が書き出す -->
-<section class="sec sec-quiz" id="q1" data-quiz="q2">
+<section class="sec sec-quiz" id="q3" data-quiz="q4c">
 <header class="sec-head">
-  <h2>1-8　理解度チェック ─ ループ</h2>
+  <h2>2-11　理解度チェック ─ 権限・配り方・組み込み</h2>
 </header>
 <p class="lead"><span class="qcount"></span>選択肢をクリックすると、その場で正誤と解説が出ます。</p>
   <div class="qwrap"></div>
 </section>
 <!-- ▲ 本文 -->
-<nav class="secpager btm"><a class="pgv prev" href="../01-agentic/07-broken.html"><span class="vh">前へ</span></a><a class="pgv next" href="../01-agentic/09-split.html"><span class="vh">次へ</span></a></nav>
+<nav class="secpager btm"><a class="pgv prev" href="../02-tools/10-builtin.html"><span class="vh">前へ</span></a><a class="pgv next" href="../03-claude-code/01-about.html"><span class="vh">次へ</span></a></nav>
 </main>
 </div>
 <div class="modal" id="searchModal" hidden>

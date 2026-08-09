@@ -52,7 +52,7 @@
 <a class="itm toc-link" href="../00-basics/04-window.html"><span class="itm-n">0-4</span><span class="itm-t">トークンとコンテキストウィンドウ</span></a>
 <a class="itm toc-link on" href="../00-basics/05-cache.html"><span class="itm-n">0-5</span><span class="itm-t">プロンプトキャッシュ</span></a>
 <a class="toc-link toc-sub" href="#cache-1">同じ前半は、使い回せる</a>
-<a class="toc-link toc-sub" href="#cache-2">キャッシュが崩れる3つの場合</a>
+<a class="toc-link toc-sub" href="#cache-2">崩れるのは、前を書き換えたとき</a>
 <a class="itm toc-link" href="../00-basics/06-token.html"><span class="itm-n">0-6</span><span class="itm-t">確率で次の1トークンを選ぶ</span></a>
 <a class="itm toc-link itm-quiz" href="../00-basics/07-q.html"><span class="itm-n">0-7</span><span class="itm-t">理解度チェック ─ 形・窓・キャッシュ・確率</span></a></nav>
 </aside>
@@ -86,25 +86,18 @@
     <div class="answer show" id="cans"></div>
   </div>
 
-<h3 class="sub" id="cache-2">キャッシュが崩れる3つの場合</h3>
+<h3 class="sub" id="cache-2">崩れるのは、前を書き換えたとき</h3>
 <div class="detail"><div class="ex"><span class="exl">よくある失敗</span>
     プロンプトの冒頭に <code>今日は2026年8月6日です</code> と入れている。<br>
     → 日付は毎日変わる。つまり<b>毎日、先頭から不一致</b>になり、後ろにどんなに長い資料があってもキャッシュが1度も効かない。</div>
-    <h3>「会話を続けているだけなら、勝手に効くのでは？」</h3>
-    <p>そのとおりです。会話履歴は<b>追記しかされない</b>ので、前回送った内容がそのまま今回の前半になります。ふつうに会話を続けている限り、何も意識しなくてもキャッシュは効きます。<b>順番を自分で設計する必要があるのは、会話ではなく「1回きりのリクエストを何本も投げる」とき</b>です（同じ長い資料に対して、質問だけ変えて何十本も投げるような場合）。</p>
-    <p>ただし「不変だから常に効く」とまでは言えません。崩れるのは次の3つです。</p>
-    <p>・<b>履歴を書き換えたとき</b>　要約して圧縮する、古い発言を削る、途中のツール結果を差し替える。どれもその地点から後ろが作り直しになります。Domain 5の「溢れそうなら圧縮する」は、<b>同時にキャッシュを捨てる行為でもある</b>ということです。<br>
-    ・<b>前段を変えたとき</b>　キャッシュは「ツール定義 → システム指示 → 会話」の順に積まれていて、上を変えると下が全部無効になります。会話履歴が同じでも、<b>ツールを1つ足しただけで全滅</b>します。<br>
-    ・<b>時間が空いたとき</b>　キャッシュには有効期限があり、既定では数分程度です（より長く保つ設定もありますが、そのぶん割高になります）。翌日また続きから、では効きません。</p>
+    <p>会話を続けているだけなら、履歴は<b>追記しかされない</b>ので何も意識しなくても効きます。並び順を自分で設計する必要があるのは、<b>同じ長い資料に、質問だけ変えて何本も投げる</b>ときです。</p>
+    <p><b>効かなくなるのは、前を書き換えたとき。</b>要約して圧縮する、古い発言を削る、ツール定義を1つ足す ── どれもその地点から後ろが作り直しになります。<b>Domain 5 の「溢れそうなら圧縮する」は、同時にキャッシュを捨てる行為でもある</b>ということです。</p>
     <h3>だから並び順が効く</h3>
     <p>変わらないもの（役割の説明、道具の定義、参照する資料）を<b>前に</b>、変わるもの（今回の質問、今日の日付）を<b>後ろに</b>置く。これだけで、読ませる資料が長い用途ほど効果が大きくなります。Domain 4で「長い資料は先、指示は後」と出てきますが、あれは精度の話であると同時に、ここでのコストの話でもあります。</p>
   </div>
   <p class="point"><b>ポイント</b>キャッシュは「先頭から一致している範囲」だけ効く。1文字でも前を書き換えると、そこから後ろは全部作り直しになる。だからDomain 4の「長い資料は先、指示は後」は、精度だけでなくコストの話でもある。</p>
 
-<p class="note">※ <b>キャッシュの細かい仕様は試験の範囲外です</b> ── 公式 Exam Guide が「Prompt caching implementation details（あることを知る以上）」を出題対象外と明記しています。
-区切りを明示するフィールドや、効いたかどうかを見る欄、有効期限の長さは覚えなくてかまいません。<br>
-ここで要るのは<b>性質だけ</b>です ── <b>前半が前回と同じなら計算をやり直さない。1文字でも前を書き換えると、そこから後ろは全部作り直しになる。</b>
-この性質が、Domain 4 の「長い資料は先、指示は後」と、Domain 5 の「圧縮するとキャッシュも捨てる」につながります。</p>
+<p class="note">※ 公式 Exam Guide は「Prompt caching implementation details（あることを知る以上）」を出題対象外としています。<b>この節が要るのは上のポイント1つだけ</b>で、区切りを指定するフィールドや有効期限の長さは出ません。</p>
 </section>
 <!-- ▲ 本文 -->
 <nav class="secpager btm"><a class="pgv prev" href="../00-basics/04-window.html"><span class="vh">前へ</span></a><a class="pgv next" href="../00-basics/06-token.html"><span class="vh">次へ</span></a></nav>
@@ -117,7 +110,7 @@
     <div class="modal-foot"><kbd>Esc</kbd> で閉じる</div>
   </div>
 </div>
-<script src="../assets/quiz-data.js?v=d3ccdc57"></script>
-<script src="../assets/search-index.js?v=74048193"></script>
+<script src="../assets/quiz-data.js?v=c0b88abc"></script>
+<script src="../assets/search-index.js?v=fbdd2428"></script>
 <script src="../assets/app.js?v=bfb45e2d"></script>
 </body></html>

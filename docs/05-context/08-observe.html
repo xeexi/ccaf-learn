@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>5-5　返す量を設計する ─ Domain 5 ─ CCAR-F 学習ノート</title>
+<title>5-8　壊れたことに気づける ─ Domain 5 ─ CCAR-F 学習ノート</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/style.css?v=56bfe8db">
 </head>
-<body data-page="shape">
+<body data-page="observe">
 <script>(function(){var t=localStorage.getItem('ccarf-theme');if(t)document.documentElement.dataset.theme=t;})();</script>
 <nav class="domnav">
   <a class="brand" href="../index.html"><span class="brand-mark">CCAR-F</span><span class="brand-sub">学習ノート</span></a>
@@ -50,62 +50,57 @@
 <a class="itm toc-link" href="../05-context/02-compact.html"><span class="itm-n">5-2</span><span class="itm-t">窓が埋まったら</span></a>
 <a class="itm toc-link" href="../05-context/03-sub.html"><span class="itm-n">5-3</span><span class="itm-t">サブエージェント</span></a>
 <a class="itm toc-link" href="../05-context/04-hooks.html"><span class="itm-n">5-4</span><span class="itm-t">確実にしたいことは仕組み側へ</span></a>
-<a class="itm toc-link on" href="../05-context/05-shape.html"><span class="itm-n">5-5</span><span class="itm-t">返す量を設計する</span></a>
-<a class="itm toc-link" href="../05-context/06-confidence.html"><span class="itm-n">5-6</span><span class="itm-t">確信が持てないときに止める</span></a>
-<a class="itm toc-link" href="../05-context/07-observe.html"><span class="itm-n">5-7</span><span class="itm-t">壊れたことに気づける</span></a>
-<a class="itm toc-link" href="../05-context/08-propagate.html"><span class="itm-n">5-8</span><span class="itm-t">失敗を親まで届ける</span></a>
-<a class="itm toc-link itm-quiz" href="../05-context/09-q.html"><span class="itm-n">5-9</span><span class="itm-t">理解度チェック ─ 窓とサブエージェント</span></a>
+<a class="itm toc-link itm-quiz" href="../05-context/05-q.html"><span class="itm-n">5-5</span><span class="itm-t">理解度チェック ─ 窓・サブエージェント・仕組み側</span></a>
+<a class="itm toc-link" href="../05-context/06-shape.html"><span class="itm-n">5-6</span><span class="itm-t">返す量を設計する</span></a>
+<a class="itm toc-link" href="../05-context/07-confidence.html"><span class="itm-n">5-7</span><span class="itm-t">確信が持てないときに止める</span></a>
+<a class="itm toc-link on" href="../05-context/08-observe.html"><span class="itm-n">5-8</span><span class="itm-t">壊れたことに気づける</span></a>
+<a class="itm toc-link" href="../05-context/09-propagate.html"><span class="itm-n">5-9</span><span class="itm-t">失敗を親まで届ける</span></a>
 <a class="itm toc-link itm-quiz" href="../05-context/10-q2.html"><span class="itm-n">5-10</span><span class="itm-t">理解度チェック ─ 信頼性</span></a></nav>
 </aside>
 <main class="doc">
 <p class="crumb" data-domain="context"><b>Domain 5</b><span>コンテキスト管理と信頼性</span></p>
-<nav class="secpager top"><a class="pgv prev" href="../05-context/04-hooks.html"><span class="vh">前へ</span></a><a class="pgv next" href="../05-context/06-confidence.html"><span class="vh">次へ</span></a></nav>
+<nav class="secpager top"><a class="pgv prev" href="../05-context/07-confidence.html"><span class="vh">前へ</span></a><a class="pgv next" href="../05-context/09-propagate.html"><span class="vh">次へ</span></a></nav>
 <!-- ▼ 本文 ─ ここだけを編集する。この前後は node tools/reindex.mjs が書き出す -->
-<section class="sec" id="shape">
+<section class="sec" id="observe">
 <header class="sec-head">
-  <h2>5-5　返す量を設計する</h2>
+  <h2>5-8　壊れたことに気づける</h2>
 </header>
-<p class="lead">窓を守るいちばん確実な手は、載せてから減らすことではなく、<b>載せる前に減らす</b>ことです。減らす場所はツールの返り値です。</p>
-<p class="task" data-t="5.4"><span class="tn">BLUEPRINT 5.4</span><b>Manage context effectively in large codebase exploration</b></p>
-<p class="goal"><b>ゴール</b>ツールの返し方で窓の消費が決まることを説明できる。</p>
-<div class="figbox"><figure class="fig run">
-  <p class="fig-t">ツールが5万行を返してきた。<b>履歴に入る前が、唯一「捨てても無料」な地点</b></p>
-  <div class="fig-row s1" style="--cols:1">
-    <div class="fig-card">
-      <b class="fig-h">生の結果 ─ ログ・検索結果 5万行</b>
-      <span class="fig-note">まだ履歴には入っていない</span>
-    </div>
-  </div>
-  <div class="fig-row" style="--cols:2">
-    <div class="fig-card red s2">
-      <b class="fig-h">そのまま返す</b>
-      <span class="fig-note">1周ごとに窓が埋まり、<b>以降ずっと載り続ける</b></span>
-      <span class="fig-note">効くのは1周だけではない ── <b>以降のすべての周回で送り直される</b>（前提編）。1回の油断が最後まで残る</span>
-    </div>
-    <div class="fig-card green s3">
-      <b class="fig-h">返す前に形を決める</b>
-      <ul>
-        <li>必要な行だけ返す（件数の上限・絞り込み条件）</li>
-        <li>要約して返す（判断に要る点だけ）</li>
-        <li><b>置き場所だけ返す</b>（パスや ID。読むのは必要になってから）</li>
-      </ul>
-      <span class="fig-note">履歴に載るのは<b>数十行。</b>次の1周も軽いまま</span>
-    </div>
-  </div>
-  <p class="fig-f">3つのうち<b>置き場所だけ返すのがいちばん軽い</b> ── 読むかどうかをモデルに選ばせられるので、要らなければ0行で済む</p>
-</figure></div>
+<p class="lead">確率的に動くものは、静かに間違えます。<b>間違えたことが後から分かる形</b>で動かしていないと、直す手がかりが残りません。</p>
+<p class="task" data-t="5.6"><span class="tn">BLUEPRINT 5.6</span><b>Preserve information provenance and handle uncertainty in multi-source synthesis</b></p>
+<p class="goal"><b>ゴール</b>後から追えるようにするために何を残すか挙げられる。</p>
+<table class="tbl">
+  <thead><tr><th>1周ぶんの実行で残すもの</th><th>残していないと</th></tr></thead>
+  <tbody>
+    <tr><td data-l="1周ぶんの実行で残すもの"><b>どのツールを・どんな引数で呼び、何が返ったか</b><br>
+        <span class="ok">引数まで含める</span></td>
+        <td data-l="残していないと">「検索した」だけでは再現できず、<b>同じ条件で試せない</b></td></tr>
+    <tr><td data-l="1周ぶんの実行で残すもの"><b>結論の出典</b>（どの資料の、どこから）</td>
+        <td data-l="残していないと"><span class="ng">結論が正しいかを人が確かめられない。</span>あとで裏取りするための唯一の手がかりが消える</td></tr>
+    <tr><td data-l="1周ぶんの実行で残すもの">─</td>
+        <td data-l="残していないと"><b>結論だけが残る</b>＝ 合っているかも、どこで曲がったかも分からない。<b>もっともらしく見えるので、間違いに気づく契機そのものがなくなる</b></td></tr>
+  </tbody>
+</table>
 
-<p class="point"><b>ポイント</b>減らす場所は「履歴に入る前」。<b>返す量はツールの設計で決める。</b>絞る条件はツールの引数として持たせる ── 「短く返して」と頼む形にすると、守られるかどうかが確率になる。</p>
+<p class="point"><b>ポイント</b>結論だけを残すと直せない。<b>呼んだ内容と出典を残し、やり直しても壊れない形</b>にしておく。</p>
 
 <div class="detail">
-      <div class="myth">
-      <span class="t">誤解</span><span>「窓が大きいモデルを使えば、返す量は気にしなくてよい」</span>
-      <span class="t o">実際は</span><span>窓は入力と出力で食い合う共有資源です。埋まるほど<b>1周あたりの費用と待ち時間も増えます</b>。大きい窓は余裕であって、無料ではありません。</span>
-    </div>
+  <div class="ex"><span class="exl">出典には<b>いつのものか</b>も持たせる</span>
+  同じ項目に違う数字が並んだとき、<b>矛盾なのか、時点が違うだけなのか</b>は日付がないと分かりません。
+  「35%」と「41%」は、2024年と2026年の調査なら<b>どちらも正しい</b>のに、日付を落とすと食い違いに見えます。<br>
+  出典の欄には<b>文書名・場所とあわせて、公表日か取得日</b>を入れます。</div>
+  <div class="ex"><span class="exl">食い違ったら、選ばずに両方残す</span>
+  信頼できる出どころ同士で数字が割れることがあります。ここで<b>片方を選ばせてはいけません</b> ── どちらを捨てたかが記録に残らないからです。<br>
+  <b>両方を、それぞれの出典つきで残し、割れている事実に注記を付けます。</b>どちらを採るかは、全体を見ている側（親や人）が決めます。<br>
+  出し方も中身に合わせます ── <b>数字は表、経緯は文章、確認事項は箇条書き。</b>全部を同じ形に均すと、読み取れるものが減ります。</div>
+  <div class="ex"><span class="exl">記録は仕組み側に置ける</span>
+  記録は<b>判断が要らない処理</b>です。だから前節の線引きに従って、モデルに頼まず<b>フックなど仕組み側</b>に置けます。</div>
+      <div class="ex"><span class="exl">やり直しを安全にする</span>
+    同じ操作を2回走らせても結果が変わらない形（同じ ID で登録し直すと上書きになる、など）にしておくと、途中で失敗しても<b>記録を見て途中から再実行できます</b>。<br>
+    逆に「呼ぶたびに1件増える」形だと、再実行が二重登録になり、記録があっても直せません。</div>
   </div>
 </section>
 <!-- ▲ 本文 -->
-<nav class="secpager btm"><a class="pgv prev" href="../05-context/04-hooks.html"><span class="vh">前へ</span></a><a class="pgv next" href="../05-context/06-confidence.html"><span class="vh">次へ</span></a></nav>
+<nav class="secpager btm"><a class="pgv prev" href="../05-context/07-confidence.html"><span class="vh">前へ</span></a><a class="pgv next" href="../05-context/09-propagate.html"><span class="vh">次へ</span></a></nav>
 </main>
 </div>
 <div class="modal" id="searchModal" hidden>
@@ -115,7 +110,7 @@
     <div class="modal-foot"><kbd>Esc</kbd> で閉じる</div>
   </div>
 </div>
-<script src="../assets/quiz-data.js?v=d3ccdc57"></script>
-<script src="../assets/search-index.js?v=74048193"></script>
+<script src="../assets/quiz-data.js?v=c0b88abc"></script>
+<script src="../assets/search-index.js?v=fbdd2428"></script>
 <script src="../assets/app.js?v=bfb45e2d"></script>
 </body></html>

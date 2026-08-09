@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>5-9　理解度チェック ─ 窓とサブエージェント ─ Domain 5 ─ CCAR-F 学習ノート</title>
+<title>2-5　理解度チェック ─ 定義・粒度・失敗の返し方 ─ Domain 2 ─ CCAR-F 学習ノート</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/style.css?v=56bfe8db">
 </head>
-<body data-page="q">
+<body data-page="q1">
 <script>(function(){var t=localStorage.getItem('ccarf-theme');if(t)document.documentElement.dataset.theme=t;})();</script>
 <nav class="domnav">
   <a class="brand" href="../index.html"><span class="brand-mark">CCAR-F</span><span class="brand-sub">学習ノート</span></a>
@@ -17,13 +17,13 @@
        <span class="nav-num">前提</span><span class="nav-title">会話の実体</span></a>
 <a class="nav-item" data-domain="agentic" href="../01-agentic/01-d1about.html" title="エージェント設計とオーケストレーション">
        <span class="nav-num">Domain 1</span><span class="nav-title">エージェント設計</span></a>
-<a class="nav-item" data-domain="tools" href="../02-tools/01-d2about.html" title="ツール設計と MCP 連携">
+<a class="nav-item on" data-domain="tools" href="../02-tools/01-d2about.html" title="ツール設計と MCP 連携">
        <span class="nav-num">Domain 2</span><span class="nav-title">ツールと MCP</span></a>
 <a class="nav-item" data-domain="code" href="../03-claude-code/01-about.html" title="Claude Code の設定とワークフロー">
        <span class="nav-num">Domain 3</span><span class="nav-title">Claude Code</span></a>
 <a class="nav-item" data-domain="prompt" href="../04-prompt/01-d4about.html" title="プロンプト設計と構造化出力">
        <span class="nav-num">Domain 4</span><span class="nav-title">プロンプト設計</span></a>
-<a class="nav-item on" data-domain="context" href="../05-context/01-d5about.html" title="コンテキスト管理と信頼性">
+<a class="nav-item" data-domain="context" href="../05-context/01-d5about.html" title="コンテキスト管理と信頼性">
        <span class="nav-num">Domain 5</span><span class="nav-title">コンテキスト管理</span></a>
 <a class="nav-item" data-domain="summary" href="../06-summary/01-all.html" title="全体をもう一度">
        <span class="nav-num">まとめ</span><span class="nav-title">全体をもう一度</span></a></div>
@@ -45,31 +45,32 @@
 </defs></svg>
 <div class="shell">
 <aside class="toc">
-  <div class="toc-head">Domain 5</div>
-  <nav class="toc-list"><a class="itm toc-link" href="../05-context/01-d5about.html"><span class="itm-n">5-1</span><span class="itm-t">このドメインについて</span></a>
-<a class="itm toc-link" href="../05-context/02-compact.html"><span class="itm-n">5-2</span><span class="itm-t">窓が埋まったら</span></a>
-<a class="itm toc-link" href="../05-context/03-sub.html"><span class="itm-n">5-3</span><span class="itm-t">サブエージェント</span></a>
-<a class="itm toc-link" href="../05-context/04-hooks.html"><span class="itm-n">5-4</span><span class="itm-t">確実にしたいことは仕組み側へ</span></a>
-<a class="itm toc-link" href="../05-context/05-shape.html"><span class="itm-n">5-5</span><span class="itm-t">返す量を設計する</span></a>
-<a class="itm toc-link" href="../05-context/06-confidence.html"><span class="itm-n">5-6</span><span class="itm-t">確信が持てないときに止める</span></a>
-<a class="itm toc-link" href="../05-context/07-observe.html"><span class="itm-n">5-7</span><span class="itm-t">壊れたことに気づける</span></a>
-<a class="itm toc-link" href="../05-context/08-propagate.html"><span class="itm-n">5-8</span><span class="itm-t">失敗を親まで届ける</span></a>
-<a class="itm toc-link on itm-quiz" href="../05-context/09-q.html"><span class="itm-n">5-9</span><span class="itm-t">理解度チェック ─ 窓とサブエージェント</span></a>
-<a class="itm toc-link itm-quiz" href="../05-context/10-q2.html"><span class="itm-n">5-10</span><span class="itm-t">理解度チェック ─ 信頼性</span></a></nav>
+  <div class="toc-head">Domain 2</div>
+  <nav class="toc-list"><a class="itm toc-link" href="../02-tools/01-d2about.html"><span class="itm-n">2-1</span><span class="itm-t">このドメインについて</span></a>
+<a class="itm toc-link" href="../02-tools/02-anatomy.html"><span class="itm-n">2-2</span><span class="itm-t">ツール定義は3つの部品でできている</span></a>
+<a class="itm toc-link" href="../02-tools/03-grain.html"><span class="itm-n">2-3</span><span class="itm-t">ツールの粒度</span></a>
+<a class="itm toc-link" href="../02-tools/04-error.html"><span class="itm-n">2-4</span><span class="itm-t">失敗は読める形で返す</span></a>
+<a class="itm toc-link on itm-quiz" href="../02-tools/05-q1.html"><span class="itm-n">2-5</span><span class="itm-t">理解度チェック ─ 定義・粒度・失敗の返し方</span></a>
+<a class="itm toc-link" href="../02-tools/06-mcp.html"><span class="itm-n">2-6</span><span class="itm-t">MCP という差込口</span></a>
+<a class="itm toc-link itm-quiz" href="../02-tools/07-q2.html"><span class="itm-n">2-7</span><span class="itm-t">理解度チェック ─ MCP の仕組みと設定</span></a>
+<a class="itm toc-link" href="../02-tools/08-perm.html"><span class="itm-n">2-8</span><span class="itm-t">権限と副作用</span></a>
+<a class="itm toc-link" href="../02-tools/09-distribute.html"><span class="itm-n">2-9</span><span class="itm-t">誰にどのツールを配るか</span></a>
+<a class="itm toc-link" href="../02-tools/10-builtin.html"><span class="itm-n">2-10</span><span class="itm-t">組み込みのツールを選ぶ</span></a>
+<a class="itm toc-link itm-quiz" href="../02-tools/11-q3.html"><span class="itm-n">2-11</span><span class="itm-t">理解度チェック ─ 権限・配り方・組み込み</span></a></nav>
 </aside>
 <main class="doc">
-<p class="crumb" data-domain="context"><b>Domain 5</b><span>コンテキスト管理と信頼性</span></p>
-<nav class="secpager top"><a class="pgv prev" href="../05-context/08-propagate.html"><span class="vh">前へ</span></a><a class="pgv next" href="../05-context/10-q2.html"><span class="vh">次へ</span></a></nav>
+<p class="crumb" data-domain="tools"><b>Domain 2</b><span>ツール設計と MCP 連携</span></p>
+<nav class="secpager top"><a class="pgv prev" href="../02-tools/04-error.html"><span class="vh">前へ</span></a><a class="pgv next" href="../02-tools/06-mcp.html"><span class="vh">次へ</span></a></nav>
 <!-- ▼ 本文 ─ ここだけを編集する。この前後は node tools/reindex.mjs が書き出す -->
-<section class="sec sec-quiz" id="q" data-quiz="q5">
+<section class="sec sec-quiz" id="q1" data-quiz="q4a">
 <header class="sec-head">
-  <h2>5-9　理解度チェック ─ 窓とサブエージェント</h2>
+  <h2>2-5　理解度チェック ─ 定義・粒度・失敗の返し方</h2>
 </header>
 <p class="lead"><span class="qcount"></span>選択肢をクリックすると、その場で正誤と解説が出ます。</p>
   <div class="qwrap"></div>
 </section>
 <!-- ▲ 本文 -->
-<nav class="secpager btm"><a class="pgv prev" href="../05-context/08-propagate.html"><span class="vh">前へ</span></a><a class="pgv next" href="../05-context/10-q2.html"><span class="vh">次へ</span></a></nav>
+<nav class="secpager btm"><a class="pgv prev" href="../02-tools/04-error.html"><span class="vh">前へ</span></a><a class="pgv next" href="../02-tools/06-mcp.html"><span class="vh">次へ</span></a></nav>
 </main>
 </div>
 <div class="modal" id="searchModal" hidden>
@@ -79,7 +80,7 @@
     <div class="modal-foot"><kbd>Esc</kbd> で閉じる</div>
   </div>
 </div>
-<script src="../assets/quiz-data.js?v=d3ccdc57"></script>
-<script src="../assets/search-index.js?v=74048193"></script>
+<script src="../assets/quiz-data.js?v=c0b88abc"></script>
+<script src="../assets/search-index.js?v=fbdd2428"></script>
 <script src="../assets/app.js?v=bfb45e2d"></script>
 </body></html>

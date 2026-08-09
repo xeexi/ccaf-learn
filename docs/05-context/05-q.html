@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>5-7　壊れたことに気づける ─ Domain 5 ─ CCAR-F 学習ノート</title>
+<title>5-5　理解度チェック ─ 窓・サブエージェント・仕組み側 ─ Domain 5 ─ CCAR-F 学習ノート</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/style.css?v=56bfe8db">
 </head>
-<body data-page="observe">
+<body data-page="q">
 <script>(function(){var t=localStorage.getItem('ccarf-theme');if(t)document.documentElement.dataset.theme=t;})();</script>
 <nav class="domnav">
   <a class="brand" href="../index.html"><span class="brand-mark">CCAR-F</span><span class="brand-sub">学習ノート</span></a>
@@ -50,57 +50,26 @@
 <a class="itm toc-link" href="../05-context/02-compact.html"><span class="itm-n">5-2</span><span class="itm-t">窓が埋まったら</span></a>
 <a class="itm toc-link" href="../05-context/03-sub.html"><span class="itm-n">5-3</span><span class="itm-t">サブエージェント</span></a>
 <a class="itm toc-link" href="../05-context/04-hooks.html"><span class="itm-n">5-4</span><span class="itm-t">確実にしたいことは仕組み側へ</span></a>
-<a class="itm toc-link" href="../05-context/05-shape.html"><span class="itm-n">5-5</span><span class="itm-t">返す量を設計する</span></a>
-<a class="itm toc-link" href="../05-context/06-confidence.html"><span class="itm-n">5-6</span><span class="itm-t">確信が持てないときに止める</span></a>
-<a class="itm toc-link on" href="../05-context/07-observe.html"><span class="itm-n">5-7</span><span class="itm-t">壊れたことに気づける</span></a>
-<a class="itm toc-link" href="../05-context/08-propagate.html"><span class="itm-n">5-8</span><span class="itm-t">失敗を親まで届ける</span></a>
-<a class="itm toc-link itm-quiz" href="../05-context/09-q.html"><span class="itm-n">5-9</span><span class="itm-t">理解度チェック ─ 窓とサブエージェント</span></a>
+<a class="itm toc-link on itm-quiz" href="../05-context/05-q.html"><span class="itm-n">5-5</span><span class="itm-t">理解度チェック ─ 窓・サブエージェント・仕組み側</span></a>
+<a class="itm toc-link" href="../05-context/06-shape.html"><span class="itm-n">5-6</span><span class="itm-t">返す量を設計する</span></a>
+<a class="itm toc-link" href="../05-context/07-confidence.html"><span class="itm-n">5-7</span><span class="itm-t">確信が持てないときに止める</span></a>
+<a class="itm toc-link" href="../05-context/08-observe.html"><span class="itm-n">5-8</span><span class="itm-t">壊れたことに気づける</span></a>
+<a class="itm toc-link" href="../05-context/09-propagate.html"><span class="itm-n">5-9</span><span class="itm-t">失敗を親まで届ける</span></a>
 <a class="itm toc-link itm-quiz" href="../05-context/10-q2.html"><span class="itm-n">5-10</span><span class="itm-t">理解度チェック ─ 信頼性</span></a></nav>
 </aside>
 <main class="doc">
 <p class="crumb" data-domain="context"><b>Domain 5</b><span>コンテキスト管理と信頼性</span></p>
-<nav class="secpager top"><a class="pgv prev" href="../05-context/06-confidence.html"><span class="vh">前へ</span></a><a class="pgv next" href="../05-context/08-propagate.html"><span class="vh">次へ</span></a></nav>
+<nav class="secpager top"><a class="pgv prev" href="../05-context/04-hooks.html"><span class="vh">前へ</span></a><a class="pgv next" href="../05-context/06-shape.html"><span class="vh">次へ</span></a></nav>
 <!-- ▼ 本文 ─ ここだけを編集する。この前後は node tools/reindex.mjs が書き出す -->
-<section class="sec" id="observe">
+<section class="sec sec-quiz" id="q" data-quiz="q5">
 <header class="sec-head">
-  <h2>5-7　壊れたことに気づける</h2>
+  <h2>5-5　理解度チェック ─ 窓・サブエージェント・仕組み側</h2>
 </header>
-<p class="lead">確率的に動くものは、静かに間違えます。<b>間違えたことが後から分かる形</b>で動かしていないと、直す手がかりが残りません。</p>
-<p class="task" data-t="5.6"><span class="tn">BLUEPRINT 5.6</span><b>Preserve information provenance and handle uncertainty in multi-source synthesis</b></p>
-<p class="goal"><b>ゴール</b>後から追えるようにするために何を残すか挙げられる。</p>
-<table class="tbl">
-  <thead><tr><th>1周ぶんの実行で残すもの</th><th>残していないと</th></tr></thead>
-  <tbody>
-    <tr><td data-l="1周ぶんの実行で残すもの"><b>どのツールを・どんな引数で呼び、何が返ったか</b><br>
-        <span class="ok">引数まで含める</span></td>
-        <td data-l="残していないと">「検索した」だけでは再現できず、<b>同じ条件で試せない</b></td></tr>
-    <tr><td data-l="1周ぶんの実行で残すもの"><b>結論の出典</b>（どの資料の、どこから）</td>
-        <td data-l="残していないと"><span class="ng">結論が正しいかを人が確かめられない。</span>あとで裏取りするための唯一の手がかりが消える</td></tr>
-    <tr><td data-l="1周ぶんの実行で残すもの">─</td>
-        <td data-l="残していないと"><b>結論だけが残る</b>＝ 合っているかも、どこで曲がったかも分からない。<b>もっともらしく見えるので、間違いに気づく契機そのものがなくなる</b></td></tr>
-  </tbody>
-</table>
-
-<p class="point"><b>ポイント</b>結論だけを残すと直せない。<b>呼んだ内容と出典を残し、やり直しても壊れない形</b>にしておく。</p>
-
-<div class="detail">
-  <div class="ex"><span class="exl">出典には<b>いつのものか</b>も持たせる</span>
-  同じ項目に違う数字が並んだとき、<b>矛盾なのか、時点が違うだけなのか</b>は日付がないと分かりません。
-  「35%」と「41%」は、2024年と2026年の調査なら<b>どちらも正しい</b>のに、日付を落とすと食い違いに見えます。<br>
-  出典の欄には<b>文書名・場所とあわせて、公表日か取得日</b>を入れます。</div>
-  <div class="ex"><span class="exl">食い違ったら、選ばずに両方残す</span>
-  信頼できる出どころ同士で数字が割れることがあります。ここで<b>片方を選ばせてはいけません</b> ── どちらを捨てたかが記録に残らないからです。<br>
-  <b>両方を、それぞれの出典つきで残し、割れている事実に注記を付けます。</b>どちらを採るかは、全体を見ている側（親や人）が決めます。<br>
-  出し方も中身に合わせます ── <b>数字は表、経緯は文章、確認事項は箇条書き。</b>全部を同じ形に均すと、読み取れるものが減ります。</div>
-  <div class="ex"><span class="exl">記録は仕組み側に置ける</span>
-  記録は<b>判断が要らない処理</b>です。だから前節の線引きに従って、モデルに頼まず<b>フックなど仕組み側</b>に置けます。</div>
-      <div class="ex"><span class="exl">やり直しを安全にする</span>
-    同じ操作を2回走らせても結果が変わらない形（同じ ID で登録し直すと上書きになる、など）にしておくと、途中で失敗しても<b>記録を見て途中から再実行できます</b>。<br>
-    逆に「呼ぶたびに1件増える」形だと、再実行が二重登録になり、記録があっても直せません。</div>
-  </div>
+<p class="lead"><span class="qcount"></span>選択肢をクリックすると、その場で正誤と解説が出ます。</p>
+  <div class="qwrap"></div>
 </section>
 <!-- ▲ 本文 -->
-<nav class="secpager btm"><a class="pgv prev" href="../05-context/06-confidence.html"><span class="vh">前へ</span></a><a class="pgv next" href="../05-context/08-propagate.html"><span class="vh">次へ</span></a></nav>
+<nav class="secpager btm"><a class="pgv prev" href="../05-context/04-hooks.html"><span class="vh">前へ</span></a><a class="pgv next" href="../05-context/06-shape.html"><span class="vh">次へ</span></a></nav>
 </main>
 </div>
 <div class="modal" id="searchModal" hidden>
@@ -110,7 +79,7 @@
     <div class="modal-foot"><kbd>Esc</kbd> で閉じる</div>
   </div>
 </div>
-<script src="../assets/quiz-data.js?v=d3ccdc57"></script>
-<script src="../assets/search-index.js?v=74048193"></script>
+<script src="../assets/quiz-data.js?v=c0b88abc"></script>
+<script src="../assets/search-index.js?v=fbdd2428"></script>
 <script src="../assets/app.js?v=bfb45e2d"></script>
 </body></html>

@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>5-4　確実にしたいことは仕組み側へ ─ Domain 5 ─ CCAR-F 学習ノート</title>
+<title>5-6　返す量を設計する ─ Domain 5 ─ CCAR-F 学習ノート</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/style.css?v=56bfe8db">
 </head>
-<body data-page="hooks">
+<body data-page="shape">
 <script>(function(){var t=localStorage.getItem('ccarf-theme');if(t)document.documentElement.dataset.theme=t;})();</script>
 <nav class="domnav">
   <a class="brand" href="../index.html"><span class="brand-mark">CCAR-F</span><span class="brand-sub">学習ノート</span></a>
@@ -49,11 +49,9 @@
   <nav class="toc-list"><a class="itm toc-link" href="../05-context/01-d5about.html"><span class="itm-n">5-1</span><span class="itm-t">このドメインについて</span></a>
 <a class="itm toc-link" href="../05-context/02-compact.html"><span class="itm-n">5-2</span><span class="itm-t">窓が埋まったら</span></a>
 <a class="itm toc-link" href="../05-context/03-sub.html"><span class="itm-n">5-3</span><span class="itm-t">サブエージェント</span></a>
-<a class="itm toc-link on" href="../05-context/04-hooks.html"><span class="itm-n">5-4</span><span class="itm-t">確実にしたいことは仕組み側へ</span></a>
-<a class="toc-link toc-sub" href="#hooks-1">「必ず起きてほしいこと」はモデルに頼まない</a>
-<a class="toc-link toc-sub" href="#hooks-2">仕組み側に移すもの</a>
+<a class="itm toc-link" href="../05-context/04-hooks.html"><span class="itm-n">5-4</span><span class="itm-t">確実にしたいことは仕組み側へ</span></a>
 <a class="itm toc-link itm-quiz" href="../05-context/05-q.html"><span class="itm-n">5-5</span><span class="itm-t">理解度チェック ─ 窓・サブエージェント・仕組み側</span></a>
-<a class="itm toc-link" href="../05-context/06-shape.html"><span class="itm-n">5-6</span><span class="itm-t">返す量を設計する</span></a>
+<a class="itm toc-link on" href="../05-context/06-shape.html"><span class="itm-n">5-6</span><span class="itm-t">返す量を設計する</span></a>
 <a class="itm toc-link" href="../05-context/07-confidence.html"><span class="itm-n">5-7</span><span class="itm-t">確信が持てないときに止める</span></a>
 <a class="itm toc-link" href="../05-context/08-observe.html"><span class="itm-n">5-8</span><span class="itm-t">壊れたことに気づける</span></a>
 <a class="itm toc-link" href="../05-context/09-propagate.html"><span class="itm-n">5-9</span><span class="itm-t">失敗を親まで届ける</span></a>
@@ -61,50 +59,53 @@
 </aside>
 <main class="doc">
 <p class="crumb" data-domain="context"><b>Domain 5</b><span>コンテキスト管理と信頼性</span></p>
-<nav class="secpager top"><a class="pgv prev" href="../05-context/03-sub.html"><span class="vh">前へ</span></a><a class="pgv next" href="../05-context/05-q.html"><span class="vh">次へ</span></a></nav>
+<nav class="secpager top"><a class="pgv prev" href="../05-context/05-q.html"><span class="vh">前へ</span></a><a class="pgv next" href="../05-context/07-confidence.html"><span class="vh">次へ</span></a></nav>
 <!-- ▼ 本文 ─ ここだけを編集する。この前後は node tools/reindex.mjs が書き出す -->
-<section class="sec" id="hooks">
+<section class="sec" id="shape">
 <header class="sec-head">
-  <h2>5-4　確実にしたいことは仕組み側へ</h2>
+  <h2>5-6　返す量を設計する</h2>
 </header>
-
-<h3 class="sub" id="hooks-1">「必ず起きてほしいこと」はモデルに頼まない</h3>
-<p class="lead">お願いは守られないことがあります。必ず実行したい処理は、仕組み側（フック等）で自動的に走らせます。</p>
-<p class="task" data-t="1.5"><span class="tn">BLUEPRINT 1.5</span><b>Apply Agent SDK hooks for tool call interception and data normalization</b></p>
-<p class="note">※ 出題は Domain 1 のタスクですが、<b>「長く動かしても崩れない作り」の話</b>としてここで扱います。割り込み口の中身そのものは <a href="../01-agentic/15-intercept.html">1-15</a> にあります。</p>
-<p class="goal"><b>ゴール</b>お願いと仕組みの違いを言える。</p>
-<table class="tbl">
-  <thead><tr><th></th><th>確率的 ─ お願いする</th><th>決定的 ─ 仕組みで走らせる</th></tr></thead>
-  <tbody>
-    <tr><td data-l="">書き方</td>
-        <td data-l="確率的 ─ お願いする">「編集したら必ず整形して」と<b>指示に書く</b></td>
-        <td data-l="決定的 ─ 仕組みで走らせる"><b>編集ツールの実行後に、整形を起動する</b>（フック）</td></tr>
-    <tr><td data-l="">どうなるか</td>
-        <td data-l="確率的 ─ お願いする"><span class="ng">だいたい守る</span>　忘れることがあり、<b>回数が増えるほど取りこぼす</b></td>
-        <td data-l="決定的 ─ 仕組みで走らせる"><span class="ok">100% 走る</span>　モデルの気分に左右されない</td></tr>
-    <tr><td data-l="">気づけるか</td>
-        <td data-l="確率的 ─ お願いする"><b>飛ばしたことが記録に残らない</b></td>
-        <td data-l="決定的 ─ 仕組みで走らせる">ログに残る</td></tr>
-  </tbody>
-</table>
-
-<p class="point"><b>ポイント</b>お願いは<b>高確率で守られるが100%ではない</b>。長く動かすほど、その差が積み上がる。</p>
-
-  <h3 class="sub" id="hooks-2">仕組み側に移すもの</h3>
-<div class="detail">
-    <p><b>「退室時は施錠してください」の貼り紙</b>と<b>オートロック</b>の違いです。貼り紙はほとんどの人が守りますが、急いでいる日に忘れる人が出ます。オートロックは忘れることができません。</p>
-    <div class="ex"><span class="exl">仕組み側に移すもの</span>
-    ・編集したら整形する／リンタをかける<br>
-    ・コミット前にテストを走らせる<br>
-    ・危険なコマンドの実行を止める<br>
-    ・実行内容をログに残す<br>
-    どれも<b>判断が要りません</b>。判断が要らないものを、判断できる相手に頼む必要はありません。</div>
-    <p>この線引きは、そのままこの教材全体の背骨です。<b>判断が要ることはモデルへ、要らないことはコードへ。</b></p>
+<p class="lead">窓を守るいちばん確実な手は、載せてから減らすことではなく、<b>載せる前に減らす</b>ことです。減らす場所はツールの返り値です。</p>
+<p class="task" data-t="5.4"><span class="tn">BLUEPRINT 5.4</span><b>Manage context effectively in large codebase exploration</b></p>
+<p class="goal"><b>ゴール</b>ツールの返し方で窓の消費が決まることを説明できる。</p>
+<div class="figbox"><figure class="fig run">
+  <p class="fig-t">ツールが5万行を返してきた。<b>履歴に入る前が、唯一「捨てても無料」な地点</b></p>
+  <div class="fig-row s1" style="--cols:1">
+    <div class="fig-card">
+      <b class="fig-h">生の結果 ─ ログ・検索結果 5万行</b>
+      <span class="fig-note">まだ履歴には入っていない</span>
+    </div>
   </div>
-  <p class="point"><b>ポイント</b>判断が要ることはモデルに、要らないことはコードに。この線引きが、そのまま信頼性の設計になる。</p>
+  <div class="fig-row" style="--cols:2">
+    <div class="fig-card red s2">
+      <b class="fig-h">そのまま返す</b>
+      <span class="fig-note">1周ごとに窓が埋まり、<b>以降ずっと載り続ける</b></span>
+      <span class="fig-note">効くのは1周だけではない ── <b>以降のすべての周回で送り直される</b>（前提編）。1回の油断が最後まで残る</span>
+    </div>
+    <div class="fig-card green s3">
+      <b class="fig-h">返す前に形を決める</b>
+      <ul>
+        <li>必要な行だけ返す（件数の上限・絞り込み条件）</li>
+        <li>要約して返す（判断に要る点だけ）</li>
+        <li><b>置き場所だけ返す</b>（パスや ID。読むのは必要になってから）</li>
+      </ul>
+      <span class="fig-note">履歴に載るのは<b>数十行。</b>次の1周も軽いまま</span>
+    </div>
+  </div>
+  <p class="fig-f">3つのうち<b>置き場所だけ返すのがいちばん軽い</b> ── 読むかどうかをモデルに選ばせられるので、要らなければ0行で済む</p>
+</figure></div>
+
+<p class="point"><b>ポイント</b>減らす場所は「履歴に入る前」。<b>返す量はツールの設計で決める。</b>絞る条件はツールの引数として持たせる ── 「短く返して」と頼む形にすると、守られるかどうかが確率になる。</p>
+
+<div class="detail">
+      <div class="myth">
+      <span class="t">誤解</span><span>「窓が大きいモデルを使えば、返す量は気にしなくてよい」</span>
+      <span class="t o">実際は</span><span>窓は入力と出力で食い合う共有資源です。埋まるほど<b>1周あたりの費用と待ち時間も増えます</b>。大きい窓は余裕であって、無料ではありません。</span>
+    </div>
+  </div>
 </section>
 <!-- ▲ 本文 -->
-<nav class="secpager btm"><a class="pgv prev" href="../05-context/03-sub.html"><span class="vh">前へ</span></a><a class="pgv next" href="../05-context/05-q.html"><span class="vh">次へ</span></a></nav>
+<nav class="secpager btm"><a class="pgv prev" href="../05-context/05-q.html"><span class="vh">前へ</span></a><a class="pgv next" href="../05-context/07-confidence.html"><span class="vh">次へ</span></a></nav>
 </main>
 </div>
 <div class="modal" id="searchModal" hidden>

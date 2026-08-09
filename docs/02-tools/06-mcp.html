@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>2-5　MCP という差込口 ─ Domain 2 ─ CCAR-F 学習ノート</title>
+<title>2-6　MCP という差込口 ─ Domain 2 ─ CCAR-F 学習ノート</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -50,22 +50,24 @@
 <a class="itm toc-link" href="../02-tools/02-anatomy.html"><span class="itm-n">2-2</span><span class="itm-t">ツール定義は3つの部品でできている</span></a>
 <a class="itm toc-link" href="../02-tools/03-grain.html"><span class="itm-n">2-3</span><span class="itm-t">ツールの粒度</span></a>
 <a class="itm toc-link" href="../02-tools/04-error.html"><span class="itm-n">2-4</span><span class="itm-t">失敗は読める形で返す</span></a>
-<a class="itm toc-link on" href="../02-tools/05-mcp.html"><span class="itm-n">2-5</span><span class="itm-t">MCP という差込口</span></a>
+<a class="itm toc-link itm-quiz" href="../02-tools/05-q1.html"><span class="itm-n">2-5</span><span class="itm-t">理解度チェック ─ 定義・粒度・失敗の返し方</span></a>
+<a class="itm toc-link on" href="../02-tools/06-mcp.html"><span class="itm-n">2-6</span><span class="itm-t">MCP という差込口</span></a>
 <a class="toc-link toc-sub" href="#mcp-1">MCP＝ツールをつなぐ共通の差込口</a>
 <a class="toc-link toc-sub" href="#mcp-2">3層の関係と、よくある誤解</a>
 <a class="toc-link toc-sub" href="#mcp-3">実物を見る ─ .mcp.json でサーバを登録する</a>
-<a class="itm toc-link" href="../02-tools/06-perm.html"><span class="itm-n">2-6</span><span class="itm-t">権限と副作用</span></a>
-<a class="itm toc-link" href="../02-tools/07-distribute.html"><span class="itm-n">2-7</span><span class="itm-t">誰にどのツールを配るか</span></a>
-<a class="itm toc-link" href="../02-tools/08-builtin.html"><span class="itm-n">2-8</span><span class="itm-t">組み込みのツールを選ぶ</span></a>
-<a class="itm toc-link itm-quiz" href="../02-tools/09-q.html"><span class="itm-n">2-9</span><span class="itm-t">理解度チェック ─ 定義・MCP・配り方</span></a></nav>
+<a class="itm toc-link itm-quiz" href="../02-tools/07-q2.html"><span class="itm-n">2-7</span><span class="itm-t">理解度チェック ─ MCP の仕組みと設定</span></a>
+<a class="itm toc-link" href="../02-tools/08-perm.html"><span class="itm-n">2-8</span><span class="itm-t">権限と副作用</span></a>
+<a class="itm toc-link" href="../02-tools/09-distribute.html"><span class="itm-n">2-9</span><span class="itm-t">誰にどのツールを配るか</span></a>
+<a class="itm toc-link" href="../02-tools/10-builtin.html"><span class="itm-n">2-10</span><span class="itm-t">組み込みのツールを選ぶ</span></a>
+<a class="itm toc-link itm-quiz" href="../02-tools/11-q3.html"><span class="itm-n">2-11</span><span class="itm-t">理解度チェック ─ 権限・配り方・組み込み</span></a></nav>
 </aside>
 <main class="doc">
 <p class="crumb" data-domain="tools"><b>Domain 2</b><span>ツール設計と MCP 連携</span></p>
-<nav class="secpager top"><a class="pgv prev" href="../02-tools/04-error.html"><span class="vh">前へ</span></a><a class="pgv next" href="../02-tools/06-perm.html"><span class="vh">次へ</span></a></nav>
+<nav class="secpager top"><a class="pgv prev" href="../02-tools/05-q1.html"><span class="vh">前へ</span></a><a class="pgv next" href="../02-tools/07-q2.html"><span class="vh">次へ</span></a></nav>
 <!-- ▼ 本文 ─ ここだけを編集する。この前後は node tools/reindex.mjs が書き出す -->
 <section class="sec" id="mcp">
 <header class="sec-head">
-  <h2>2-5　MCP という差込口</h2>
+  <h2>2-6　MCP という差込口</h2>
 </header>
 
 <h3 class="sub" id="mcp-1">MCP＝ツールをつなぐ共通の差込口</h3>
@@ -171,7 +173,7 @@
   <p class="point"><b>ポイント</b>「チーム全員が同じツールを使えるようにしたい」の答えが <code>.mcp.json</code>（project スコープ）。個人の実験は local。<b>設定ファイルの置き場所＝共有範囲</b>という読み方は、Domain 3 の CLAUDE.md や settings.json とまったく同じ。</p>
 </section>
 <!-- ▲ 本文 -->
-<nav class="secpager btm"><a class="pgv prev" href="../02-tools/04-error.html"><span class="vh">前へ</span></a><a class="pgv next" href="../02-tools/06-perm.html"><span class="vh">次へ</span></a></nav>
+<nav class="secpager btm"><a class="pgv prev" href="../02-tools/05-q1.html"><span class="vh">前へ</span></a><a class="pgv next" href="../02-tools/07-q2.html"><span class="vh">次へ</span></a></nav>
 </main>
 </div>
 <div class="modal" id="searchModal" hidden>
@@ -181,7 +183,7 @@
     <div class="modal-foot"><kbd>Esc</kbd> で閉じる</div>
   </div>
 </div>
-<script src="../assets/quiz-data.js?v=d3ccdc57"></script>
-<script src="../assets/search-index.js?v=74048193"></script>
+<script src="../assets/quiz-data.js?v=c0b88abc"></script>
+<script src="../assets/search-index.js?v=fbdd2428"></script>
 <script src="../assets/app.js?v=bfb45e2d"></script>
 </body></html>
