@@ -19,64 +19,30 @@
 import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
+import { GUIDE, EXAM, DOMAINS as BP_DOM, SCENARIOS, TASKS, domainItems, scenarioCount } from './blueprint.mjs';
 
 /* 成果物（HTML と assets）は docs/ の下 ─ GitHub Pages がそのまま公開できる名前。tools/ と CLAUDE.md はリポジトリ直下 */
 const ROOT = path.join(path.resolve(new URL('..', import.meta.url).pathname), 'docs');
 
-/* ---------- ドメインの定義 ─ 順序もここで決まる ---------- */
-/* w = 出題比率、q = 本試験60問を比率で按分した問数（16+11+12+12+9 = 60）。
-   比率だけだと「で、何問なのか」が分からないので、必ず併記する。 */
-const EXAM_Q = 60;
+/* ---------- ドメインの定義 ─ 順序もここで決まる ----------
+   **比率と問数はここに書かない。** blueprint.mjs の DOMAINS[key].weight が出所で、
+   問数は domainItems() が EXAM.items から計算する ── 手で持つと、比率を変えたときに
+   帯の長さだけ動いて問数ラベルが古いまま残る（§7 #60 で実際に起きた）。 */
 const DOMAINS = [
-  { dir: '00-basics',      key: 'basics',  num: '前提',     h1: '会話の実体',                            nav: '会話の実体',       w: '',    q: 0,  sub: '全ドメイン共通の土台' },
-  { dir: '01-agentic',     key: 'agentic', num: 'Domain 1', h1: 'エージェント設計とオーケストレーション', nav: 'エージェント設計', w: '27%', q: 16, sub: 'エージェントの組み立て' },
-  { dir: '02-tools',       key: 'tools',   num: 'Domain 2', h1: 'ツール設計と MCP 連携',                 nav: 'ツールと MCP',     w: '18%', q: 11, sub: '道具そのものの設計' },
-  { dir: '03-claude-code', key: 'code',    num: 'Domain 3', h1: 'Claude Code の設定とワークフロー',       nav: 'Claude Code',      w: '20%', q: 12, sub: 'Claude Code の運用' },
-  { dir: '04-prompt',      key: 'prompt',  num: 'Domain 4', h1: 'プロンプト設計と構造化出力',             nav: 'プロンプト設計',   w: '20%', q: 12, sub: '指示と出力の設計' },
-  { dir: '05-context',     key: 'context', num: 'Domain 5', h1: 'コンテキスト管理と信頼性',               nav: 'コンテキスト管理', w: '15%', q: 9,  sub: '長く動かすための備え' },
-  { dir: '06-summary',     key: 'summary', num: 'まとめ',   h1: '全体をもう一度',                        nav: '全体をもう一度',   w: '',    q: 0,  sub: '総合チェック・模擬試験' },
+  { dir: '00-basics',      key: 'basics',  num: '前提',     h1: '会話の実体',                            nav: '会話の実体',       sub: '全ドメイン共通の土台' },
+  { dir: '01-agentic',     key: 'agentic', num: 'Domain 1', h1: 'エージェント設計とオーケストレーション', nav: 'エージェント設計', sub: 'エージェントの組み立て' },
+  { dir: '02-tools',       key: 'tools',   num: 'Domain 2', h1: 'ツール設計と MCP 連携',                 nav: 'ツールと MCP',     sub: '道具そのものの設計' },
+  { dir: '03-claude-code', key: 'code',    num: 'Domain 3', h1: 'Claude Code の設定とワークフロー',       nav: 'Claude Code',      sub: 'Claude Code の運用' },
+  { dir: '04-prompt',      key: 'prompt',  num: 'Domain 4', h1: 'プロンプト設計と構造化出力',             nav: 'プロンプト設計',   sub: '指示と出力の設計' },
+  { dir: '05-context',     key: 'context', num: 'Domain 5', h1: 'コンテキスト管理と信頼性',               nav: 'コンテキスト管理', sub: '長く動かすための備え' },
+  { dir: '06-summary',     key: 'summary', num: 'まとめ',   h1: '全体をもう一度',                        nav: '全体をもう一度',   sub: '総合チェック・模擬試験' },
 ];
-/* ---------- 出題タスクの名前 ─ 公式 Exam Guide の原文 ----------
-   出所：Claude Certified Architect – Foundations Exam Guide
-         Version 1.0 / Effective July 2026 / Exam code CCAR-F の
-         「6. Detailed Objectives by Domain」の Task Statement。
-   **訳さない。** 設問は英語で書かれるので、原文のまま覚えるほうが結びつく。
+/** 比率のあるドメイン（＝ブループリントの5つ）だけを、定義順で返す */
+const scored = () => DOMAINS.filter(d => BP_DOM[d.key]);/* ---------- 出題タスクの名前 ----------
+   **出所は blueprint.mjs の TASKS[番号].name**（公式 Exam Guide の Task Statement 原文）。
+   本文には \`<p class="task" data-t="1.1"></p>\` と番号だけ書き、中身はここから差し込む。
+   2つ持つ節は \`data-t="5.2 5.5"\` のように空白で並べる。 */
 
-   同じ番号が複数の節に出る（1.1 は5節、2.1 は3節）。**唯一の出所はここ。**
-   本文には `<p class="task" data-t="1.1"></p>` と番号だけ書き、中身はここから差し込む。
-   2つ持つ節は `data-t="5.2 5.5"` のように空白で並べる。 */
-const TASK_NAMES = {
-  '1.1': 'Design and implement agentic loops for autonomous task execution',
-  '1.2': 'Orchestrate multi-agent systems with coordinator-subagent patterns',
-  '1.3': 'Configure subagent invocation, context passing, and spawning',
-  '1.4': 'Implement multi-step workflows with enforcement and handoff patterns',
-  '1.5': 'Apply Agent SDK hooks for tool call interception and data normalization',
-  '1.6': 'Design task decomposition strategies for complex workflows',
-  '1.7': 'Manage session state, resumption, and forking',
-  '2.1': 'Design effective tool interfaces with clear descriptions and boundaries',
-  '2.2': 'Implement structured error responses for MCP tools',
-  '2.3': 'Distribute tools appropriately across agents and configure tool choice',
-  '2.4': 'Integrate MCP servers into Claude Code and agent workflows',
-  '2.5': 'Select and apply built-in tools (Read, Write, Edit, Bash, Grep, Glob) effectively',
-  '3.1': 'Configure CLAUDE.md files with appropriate hierarchy, scoping, and modular organization',
-  '3.2': 'Create and configure custom slash commands and skills',
-  '3.3': 'Apply path-specific rules for conditional convention loading',
-  '3.4': 'Determine when to use plan mode vs direct execution',
-  '3.5': 'Apply iterative refinement techniques for progressive improvement',
-  '3.6': 'Integrate Claude Code into CI/CD pipelines',
-  '4.1': 'Design prompts with explicit criteria to improve precision and reduce false positives',
-  '4.2': 'Apply few-shot prompting to improve output consistency and quality',
-  '4.3': 'Enforce structured output using tool use and JSON schemas',
-  '4.4': 'Implement validation, retry, and feedback loops for extraction quality',
-  '4.5': 'Design efficient batch processing strategies',
-  '4.6': 'Design multi-instance and multi-pass review architectures',
-  '5.1': 'Manage conversation context to preserve critical information across long interactions',
-  '5.2': 'Design effective escalation and ambiguity resolution patterns',
-  '5.3': 'Implement error propagation strategies across multi-agent systems',
-  '5.4': 'Manage context effectively in large codebase exploration',
-  '5.5': 'Design human review workflows and confidence calibration',
-  '5.6': 'Preserve information provenance and handle uncertainty in multi-source synthesis',
-};
 
 const OPEN = '<!-- ▼ 本文 ─ ここだけを編集する。この前後は node tools/reindex.mjs が書き出す -->';
 const CLOSE = '<!-- ▲ 本文 -->';
@@ -157,27 +123,79 @@ const itemLink = (p, { href, cls = '', on = false }) =>
 /** 配点の図。トップと「6-2 どこに時間を使うか」の2か所に同じものが要るので、ここで1回だけ作る。
  *  帯の全長＝60問。以前は帯の枠と Domain 1 のバーが同じ長さで、27% が満杯に見えていた。 */
 const weightFig = () => {
-  const ds = DOMAINS.filter(d => d.w);
+  const ds = scored();
+  const items = ds.map(d => domainItems(d.key));
+  const max = ds[items.indexOf(Math.max(...items))], min = ds[items.indexOf(Math.min(...items))];
   // 5本を別々の帯にすると、どれも短くて差が読めなかった。
   // 1本を5つに割って隣り合わせにすると、差がそのまま長さの差として見える。
-  const segs = ds.map(d =>
-    `<span class="seg" data-domain="${d.key}" style="width:${parseFloat(d.w)}%">${d.q}問</span>`).join('');
+  const segs = ds.map((d, i) =>
+    `<span class="seg" data-domain="${d.key}" style="width:${(BP_DOM[d.key].weight * 100).toFixed(0)}%">${items[i]}問</span>`).join('');
   const legend = ds.map((d, i) =>
-    `    <span class="lg s${i + 1}" data-domain="${d.key}"><span class="sw"></span><b>${esc(d.num)}</b><span class="n">${esc(d.w)}　${esc(d.sub)}</span></span>`).join('\n');
+    `    <span class="lg s${i + 1}" data-domain="${d.key}"><span class="sw"></span><b>${esc(d.num)}</b><span class="n">${(BP_DOM[d.key].weight * 100).toFixed(0)}%　${esc(d.sub)}</span></span>`).join('\n');
   return `<div class="figbox"><figure class="fig run">
-  <p class="fig-t">本試験 ${EXAM_Q} 問の内訳 ─ 帯の全長が ${EXAM_Q} 問</p>
+  <p class="fig-t">本試験 ${EXAM.items} 問の内訳 ─ 帯の全長が ${EXAM.items} 問</p>
   <div class="fig-seg s1">${segs}</div>
   <div class="fig-legend">
 ${legend}
   </div>
-  <p class="fig-f">いちばん多い Domain 1 でも 16 問、いちばん少ない Domain 5 でも 9 問。<b>その差は 7 問</b>で、1問の重みはどこも同じ。捨てられる範囲はない。</p>
+  <p class="fig-f">いちばん多い ${esc(max.num)} でも ${Math.max(...items)} 問、いちばん少ない ${esc(min.num)} でも ${Math.min(...items)} 問。<b>その差は ${Math.max(...items) - Math.min(...items)} 問</b>で、1問の重みはどこも同じ。捨てられる範囲はない。</p>
 </figure></div>`;
 };
+
 
 /** 本文に <!--#名前--> で差し込める共通の塊。fillBlocks が使う。
  *  nsec は「全何項か」。**手で書くと必ず古くなる** ── 実際にトップの
  *  「全 88 項」が2か所とも実数とズレていた（設問数と同じ事故・§7 #45）。 */
-const BLOCKS = { weightfig: weightFig, nsec: () => String(pages.length) };
+/** 出題形式 ─ 60問・120分・720点。**3か所に手書きされていた**（§7 #60） */
+const examFmt = () => `本試験は <b>${EXAM.items}問・${EXAM.minutes}分</b>、合格は ${EXAM.scaleMax.toLocaleString('en-US')}点満点中 <b>${EXAM.pass}点</b>`;
+
+/** シナリオの表と帯 ─ 6-2。
+ *  **本数も帯の幅も、どこを強調するかも計算で出す。**
+ *  手で書くと、比が狂ったり（§7 #52）、比率を変えたときに古い数字が残る（§7 #60）。 */
+const scenarioFig = () => {
+  const ds = scored();
+  const pct = (x) => String(+(x * 100).toFixed(1)).replace(/\.0$/, '');
+  const cnt = Object.fromEntries(ds.map(d => [d.key, scenarioCount(d.key)]));
+  const wt = Object.fromEntries(ds.map(d => [d.key, BP_DOM[d.key].weight]));
+  const maxC = Math.max(...Object.values(cnt)), minC = Math.min(...Object.values(cnt));
+  const maxW = Math.max(...Object.values(wt)), minW = Math.min(...Object.values(wt));
+  // 表では、シナリオの数が最多／最少のドメインだけ太字にする（読み手の目印）
+  const mark = (k) => cnt[k] === maxC || cnt[k] === minC;
+  const rows = SCENARIOS.map(s => {
+    const ns = s.domains.slice().sort((a, b) => BP_DOM[a].n - BP_DOM[b].n)
+      .map(k => mark(k) ? `<b>${BP_DOM[k].n}</b>` : String(BP_DOM[k].n));
+    return `    <tr><td data-l="シナリオ">${'①②③④⑤⑥⑦⑧'[s.n - 1]} ${esc(s.ja)}</td><td data-l="ドメイン">${ns.join('・')}</td></tr>`;
+  }).join('\n');
+  const bars = ds.slice().sort((a, b) => cnt[b.key] - cnt[a.key] || BP_DOM[a.key].n - BP_DOM[b.key].n);
+  const barHtml = bars.map(d => {
+    const c = cnt[d.key], w = wt[d.key];
+    // 配点を添えるのは、シナリオ数か配点のどちらかで端にいるドメインだけ
+    const note = (w === maxW) ? `　配点は最大 ${pct(w)}%`
+               : (w === minW) ? `　配点は最小 ${pct(w)}%`
+               : (c === maxC || c === minC) ? `　配点は ${pct(w)}%` : '';
+    const val = (c === maxC || c === minC) ? `<b>${c}本</b>` : `${c}本`;
+    return `    <div class="fig-bar" data-domain="${d.key}"><span class="b-name">${esc(d.num)}</span>
+      <span class="b-track"><span class="b-fill" style="width:${pct(c / EXAM.scenariosTotal)}%"></span></span>
+      <span class="b-val">${val}${note}</span></div>`;
+  }).join('\n');
+  const most = bars[0], least = bars[bars.length - 1];
+  return `<table class="tbl">
+  <thead><tr><th>本番のシナリオ（${EXAM.scenariosTotal}本のうち${EXAM.scenariosShown}本が出る）</th><th>主に問うドメイン</th></tr></thead>
+  <tbody>
+${rows}
+  </tbody>
+</table>
+
+<div class="figbox"><figure class="fig run">
+  <p class="fig-t">${EXAM.scenariosTotal}本のうち、いくつのシナリオに顔を出すか ─ <b>多い順</b>。帯の全長が ${EXAM.scenariosTotal} 本</p>
+  <div class="fig-bars s1">
+${barHtml}
+  </div>
+  <p class="fig-f"><b>配点と、出るシナリオの広さは一致しない。</b>${esc(most.d ? most.d.num : most.num)}（配点 ${pct(wt[most.key])}%）は<b>${EXAM.scenariosTotal}本中${cnt[most.key]}本</b>に顔を出し、${esc(least.num)}（配点 ${pct(wt[least.key])}%）は<b>${cnt[least.key]}本に集中</b>している</p>
+</figure></div>`;
+};
+
+const BLOCKS = { weightfig: weightFig, examfmt: examFmt, scenariofig: scenarioFig, nsec: () => String(pages.length) };
 
 /** `<p class="task" data-t="1.1"></p>` に、公式の原文を差し込む。
  *  中身は毎回まるごと作り直すので、何度実行しても同じ結果になる。 */
@@ -185,8 +203,8 @@ const fillTasks = (html) => html.replace(
   /<p class="task" data-t="([^"]+)">[\s\S]*?<\/p>/g,
   (_, ids) => {
     const label = ids.trim().split(/\s+/).map(id => {
-      if (!TASK_NAMES[id]) throw new Error('未知のタスク番号: ' + id);
-      return `<span class="tn">BLUEPRINT ${id}</span><b>${esc(TASK_NAMES[id])}</b>`;
+      if (!TASKS[id]) throw new Error('未知のタスク番号: ' + id + '（blueprint.mjs の TASKS にない）');
+      return `<span class="tn">BLUEPRINT ${id}</span><b>${esc(TASKS[id].name)}</b>`;
     }).join('　／　');
     return `<p class="task" data-t="${ids}">${label}</p>`;
   });
