@@ -586,6 +586,27 @@ Object.entries(CONCEPT).forEach(([k, res]) => {
 });
 if (!cptNg) console.log(`  ✓ ${Object.keys(CONCEPT).length} 項目すべて本文にあり（公式 §6 の箇条書きと1対1）`);
 
+/* --- 5s. 丸の中の数字が、行送りで下にずれていないか --------------------
+   丸番号は `border-radius:50%` ＋ `place-items:center` で組んでいる。
+   ここに `line-height` を書かないと**親の行送りをそのまま継ぐ**ので、
+   `pre.code`（1.85）の中では数字が円の中心から **2.63px 下**へずれる（実測）。
+   さらに数字はベースラインに乗るぶん、下の空きで 0.5px ほど下に見えるので
+   `padding-bottom:1px` で上へ寄せる（`box-sizing:border-box` 前提）。 */
+console.log(String.fromCharCode(10) + "■ 丸番号の中央そろえ");
+let cirNg = 0, cirN = 0;
+{
+  const css = fs.readFileSync(path.join(ROOT, 'assets/style.css'), 'utf8');
+  for (const m of css.matchAll(/([.#][\w-][^{]*)\{([^}]*)\}/g)) {
+    const sel = m[1].trim().replace(/\s+/g, ' '), body = m[2];
+    if (!/border-radius:\s*50%/.test(body)) continue;
+    if (!/place-items:\s*center/.test(body)) continue;
+    cirN++;
+    if (!/line-height:\s*1\b/.test(body)) { bad(`style.css の ${sel} に line-height:1 がない（親の行送りを継いで数字が下にずれる）`); cirNg++; }
+    else if (!/padding-bottom:\s*1px/.test(body)) { bad(`style.css の ${sel} に padding-bottom:1px がない（ベースラインぶん下に見える）`); cirNg++; }
+  }
+}
+if (!cirNg) console.log(`  ✓ 丸番号の規則 ${cirN} 件すべて、行送りと下寄せを指定している`);
+
 /* --- 5r. ラベルの中で色を変えて強調していないか -----------------------
    `.exl`（例のラベル）は色そのものが役割を持つ（アクセント＝ここが区画の頭）。
    その中で `<b>` を使うと**白に変わり、ラベルの中に2色が並ぶ** ── 強調のつもりが
