@@ -28,6 +28,12 @@ export const EXAM = {
   scaleMax:        1000,
   scenariosTotal:  6,
   scenariosShown:  4,
+  fee:             125,          // USD
+  validityMonths:  12,           // 認定の有効期間。期限内なら無料の更新試験
+  retakeWaitDays:  [14, 30, 90], // 不合格のたびに待機が伸びる
+  attemptsPerYear: 4,            // 12か月で同じ試験を受けられる回数
+  cancelHours:     24,           // これを切ると受験料は戻らない
+  sampleQuestions: 12,           // §9 に解説つきで載っている
   multiResponse:   true,   // 1つ選ぶ設問と、複数選ぶ設問が混じる
 };
 
@@ -42,12 +48,81 @@ export const DOMAINS = {
 
 /** 5. Exam Scenarios ─ 6本のうち EXAM.scenariosShown 本が出る */
 export const SCENARIOS = [
-  { n: 1, en: "Customer Support Resolution Agent",     ja: "問い合わせ対応エージェント",   domains: ["agentic", "tools", "context"] },
-  { n: 2, en: "Code Generation with Claude Code",      ja: "Claude Code でコードを書く",   domains: ["code", "context"] },
-  { n: 3, en: "Multi-Agent Research System",           ja: "複数エージェントの調査システム", domains: ["agentic", "tools", "context"] },
-  { n: 4, en: "Developer Productivity with Claude",    ja: "開発者向けの道具づくり",       domains: ["tools", "code", "agentic"] },
-  { n: 5, en: "Claude Code for Continuous Integration",ja: "CI に組み込む",                domains: ["code", "prompt"] },
-  { n: 6, en: "Structured Data Extraction",            ja: "書類から構造化して抜き出す",   domains: ["prompt", "context"] },
+  { n: 1, en: "Customer Support Resolution Agent",     ja: "問い合わせ対応エージェント",   detail: "返品・請求・アカウントの曖昧な依頼を扱う。自社システムへは MCP の道具4本（<code>get_customer</code> / <code>lookup_order</code> / <code>process_refund</code> / <code>escalate_to_human</code>）で繋ぐ。<b>初回解決 80% 以上</b>を狙いつつ、いつ人に渡すかを見極める", domains: ["agentic", "tools", "context"] },
+  { n: 2, en: "Code Generation with Claude Code",      ja: "Claude Code でコードを書く",   detail: "生成・リファクタリング・デバッグ・文書化に使う。カスタムのスラッシュコマンドと <code>CLAUDE.md</code> で開発の流れに組み込み、<b>plan mode と直接実行の使い分け</b>を判断する", domains: ["code", "context"] },
+  { n: 3, en: "Multi-Agent Research System",           ja: "複数エージェントの調査システム", detail: "コーディネータが専門の子に委任する ── Web 検索・文書分析・統合・報告書生成。<b>出典つきの網羅的な報告</b>を作る", domains: ["agentic", "tools", "context"] },
+  { n: 4, en: "Developer Productivity with Claude",    ja: "開発者向けの道具づくり",       detail: "未知のコードベースの探索、レガシーの理解、定型コードの生成、繰り返し作業の自動化。<b>組み込みツール（Read, Write, Bash, Grep, Glob）</b>と MCP サーバを使う", domains: ["tools", "code", "agentic"] },
+  { n: 5, en: "Claude Code for Continuous Integration",ja: "CI に組み込む",                detail: "CI/CD の中で自動レビュー・テスト生成・PR へのフィードバックを回す。<b>実行できる指摘を出し、誤検知を減らす</b>プロンプトを設計する", domains: ["code", "prompt"] },
+  { n: 6, en: "Structured Data Extraction",            ja: "書類から構造化して抜き出す",   detail: "非定型の文書から情報を抜き、<b>JSON スキーマで検証</b>して高い精度を保つ。例外をうまく扱い、下流の仕組みに繋ぐ", domains: ["prompt", "context"] },
+];
+
+/** 7. How to Prepare ─ 公式が勧める準備。sections はこの教材の対応節 */
+export const PREPARE = [
+  { ja: "Agent SDK でエージェントを1つ作る",
+    detail: "ツール呼び出し・エラー処理・セッション管理まで通したループ。子を起こして文脈を渡すところまでやる",
+    sections: ["loop", "stop", "seq", "real", "spawn", "session"] },
+  { ja: "実際のプロジェクトで Claude Code を設定する",
+    detail: "CLAUDE.md の階層、<code>.claude/rules/</code> のパス固有ルール、frontmatter つきのスキル（<code>context: fork</code>・<code>allowed-tools</code>）、MCP サーバを1つ以上つなぐ",
+    sections: ["claudemd", "import", "rules", "cmdskill", "mcp"] },
+  { ja: "MCP ツールを設計して、試す",
+    detail: "似た道具を書き分ける説明文、種別と再試行可否つきのエラー応答。<b>曖昧な依頼を投げて、狙った道具が選ばれるか確かめる</b>",
+    sections: ["anatomy", "grain", "error"] },
+  { ja: "構造化抽出の仕組みを1本通す",
+    detail: "<code>tool_use</code> ＋ JSON スキーマ、検証と再試行の輪、任意（null 可）の項目、Message Batches API でのバッチ処理",
+    sections: ["struct", "verify", "batch"] },
+  { ja: "プロンプトの手を練習する",
+    detail: "曖昧な場面の few-shot、誤検知を減らす明示的な基準、大きなレビューを多段に割る形",
+    sections: ["criteria", "fewshot", "multi"] },
+  { ja: "文脈管理の型を身につける",
+    detail: "長い返り値から事実を抜く、長丁場の作業メモ、窓を保つための子への委任",
+    sections: ["compact", "sub", "shape"] },
+  { ja: "人に渡す判断を見直す",
+    detail: "規約の穴・利用者の要求・進まないこと ⇄ 自分で解決。確信度で振り分ける人のレビュー導線を設計する",
+    sections: ["confidence", "propagate"] },
+];
+
+/** 8. Preparation Exercises ─ 手を動かす演習。domains は公式が「補強される」としたドメイン */
+export const EXERCISES = [
+  { n: 1, ja: "人に渡す判断つきの、複数ツール・エージェントを作る",
+    objective: "ループにツールを組み込み、失敗を構造で返し、人へ渡す形まで通す",
+    steps: [
+      "説明文を書き分けた MCP ツールを3〜4本定義する。<b>うち2本は似た機能</b>にして、取り違えないか試す",
+      "<code>stop_reason</code> を見てループを回す。<code>tool_use</code> と <code>end_turn</code> の両方を正しく扱う",
+      "<code>errorCategory</code>（一時的／検証／権限）と <code>isRetryable</code>、読める説明を返す。種別ごとに扱いが変わるか確かめる",
+      "業務規則（一定額を超える返金など）を止めるフックを入れ、人へ回す道に差し替える",
+      "用件が複数ある依頼を投げ、<b>分けて調べ、1つにまとめて返す</b>か確かめる",
+    ],
+    domains: ["agentic", "tools", "context"] },
+  { n: 2, ja: "チーム開発向けに Claude Code を設定する",
+    objective: "CLAUDE.md の階層・コマンド・パス固有ルール・MCP を、複数人の前提で組む",
+    steps: [
+      "プロジェクトの <code>CLAUDE.md</code> に共通の規約を書き、全員に効くことを確かめる",
+      "<code>.claude/rules/</code> に <code>paths</code> つきのルールを作り、該当ファイルを開いたときだけ載ることを確かめる",
+      "<code>.claude/skills/</code> に <code>context: fork</code> と <code>allowed-tools</code> つきのスキルを作り、本体の会話が汚れないことを確かめる",
+      "<code>.mcp.json</code> に環境変数の展開つきでサーバを設定し、個人用を <code>~/.claude.json</code> に足して、両方見えることを確かめる",
+      "難しさの違う3つの作業で plan mode と直接実行を比べ、<b>どこから plan mode が効くか</b>を見る",
+    ],
+    domains: ["code", "tools"] },
+  { n: 3, ja: "構造化抽出の仕組みを作る",
+    objective: "スキーマ設計・検証と再試行・バッチ・人のレビュー導線を、ひと続きで組む",
+    steps: [
+      "必須と任意、<code>enum</code>（「その他」＋詳細）、null 可の項目を持つスキーマを定義し、<b>無い項目を作らずに null で返す</b>か確かめる",
+      "検証に落ちたら、元の文書・失敗した出力・具体的な指摘を添えて投げ直す。<b>直る失敗と直らない失敗</b>を数える",
+      "書式の違う文書の few-shot を足して、扱いが安定するか見る",
+      "100件をバッチで投げ、<code>custom_id</code> で失敗を拾い、直して投げ直す。<b>締め切りから間隔を逆算する</b>",
+      "項目ごとの確信度を出させ、低いものを人へ回す。<b>書類種別・項目ごとに精度を見る</b>",
+    ],
+    domains: ["prompt", "context"] },
+  { n: 4, ja: "複数エージェントの調査を組んで、壊れ方を見る",
+    objective: "委任・文脈の受け渡し・失敗の伝播・出典を保った統合を、実際に壊しながら確かめる",
+    steps: [
+      "親から子を2体以上起こす。<b>親に子を起こす道具を渡し</b>、子には結果を指示の中で直接渡す",
+      "1つの応答に複数の呼び出しを入れて並列に起こし、<b>順に起こした場合と待ち時間を比べる</b>",
+      "子の返す形を「主張・根拠の引用・出典・日付」に分け、統合の子が<b>出典を保つ</b>か確かめる",
+      "子を1体わざとタイムアウトさせ、親に<b>失敗の種類・試したこと・途中まで得たもの</b>が届くか、そのまま先へ進めるか確かめる",
+      "食い違う数字を持つ資料を2つ与え、<b>片方を選ばずに両方を出典つきで残す</b>か確かめる",
+    ],
+    domains: ["agentic", "tools", "context"] },
 ];
 
 /** 17. Appendix ─ 出題範囲。**出るものと、出ないものの公式リスト。**

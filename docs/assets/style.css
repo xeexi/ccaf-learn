@@ -591,6 +591,11 @@ html[data-theme="light"] .sq-n{ color:#fff }
   font-size:var(--fs-xs); color:var(--ink-2); font-family:var(--mono); text-align:right }
 .fig-bar .b-val b{ color:var(--accent) }
 
+/* 演習の手順 ─ .ex の中の番号つきリスト。番号を .ann と同じ見え方にそろえる */
+.ex .exsteps{ margin:10px 0 0; padding-left:1.4em; display:grid; gap:6px }
+.ex .exsteps li{ font-size:var(--fs-sm); line-height:1.85; color:var(--ink-2) }
+.ex .exsteps li::marker{ color:var(--accent); font-weight:700 }
+
 /* 図の段階表示（SVG・HTML 共通） */
 .diagram.run g[class^="s"],.diagram.run text[class*="s1"],
 .diagram.run text[class*="s2"],.diagram.run text[class*="s3"],

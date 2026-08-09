@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="ja" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>6-12　読むだけで足りるか ─ 公式が勧める準備 ─ まとめ ─ CCAR-F 学習ノート</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css?v=56bfe8db">
+</head>
+<body data-page="prepare">
+<script>(function(){var t=localStorage.getItem('ccarf-theme');if(t)document.documentElement.dataset.theme=t;})();</script>
+<nav class="domnav">
+  <a class="brand" href="../index.html"><span class="brand-mark">CCAR-F</span><span class="brand-sub">学習ノート</span></a>
+  <div class="nav-list"><a class="nav-item" data-domain="basics" href="../00-basics/01-flow.html" title="会話の実体">
+       <span class="nav-num">前提</span><span class="nav-title">会話の実体</span></a>
+<a class="nav-item" data-domain="agentic" href="../01-agentic/01-d1about.html" title="エージェント設計とオーケストレーション">
+       <span class="nav-num">Domain 1</span><span class="nav-title">エージェント設計</span></a>
+<a class="nav-item" data-domain="tools" href="../02-tools/01-d2about.html" title="ツール設計と MCP 連携">
+       <span class="nav-num">Domain 2</span><span class="nav-title">ツールと MCP</span></a>
+<a class="nav-item" data-domain="code" href="../03-claude-code/01-about.html" title="Claude Code の設定とワークフロー">
+       <span class="nav-num">Domain 3</span><span class="nav-title">Claude Code</span></a>
+<a class="nav-item" data-domain="prompt" href="../04-prompt/01-d4about.html" title="プロンプト設計と構造化出力">
+       <span class="nav-num">Domain 4</span><span class="nav-title">プロンプト設計</span></a>
+<a class="nav-item" data-domain="context" href="../05-context/01-d5about.html" title="コンテキスト管理と信頼性">
+       <span class="nav-num">Domain 5</span><span class="nav-title">コンテキスト管理</span></a>
+<a class="nav-item on" data-domain="summary" href="../06-summary/01-all.html" title="全体をもう一度">
+       <span class="nav-num">まとめ</span><span class="nav-title">全体をもう一度</span></a></div>
+  <div class="search-wrap">
+  <button class="search-btn" id="openSearch" aria-label="検索"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span>検索</span><kbd>/</kbd></button>
+</div>
+</nav>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-muted)"/></marker>
+  <marker id="ara" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-amber)"/></marker>
+  <marker id="arb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-blue)"/></marker>
+  <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-red)"/></marker>
+  <marker id="arg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-green)"/></marker>
+</defs></svg>
+<div class="shell">
+<aside class="toc">
+  <div class="toc-head">まとめ</div>
+  <nav class="toc-list"><a class="itm toc-link" href="../06-summary/01-all.html"><span class="itm-n">6-1</span><span class="itm-t">1枚で全体を見る</span></a>
+<a class="itm toc-link" href="../06-summary/02-weight.html"><span class="itm-n">6-2</span><span class="itm-t">本番はシナリオで出る</span></a>
+<a class="itm toc-link itm-quiz" href="../06-summary/03-q.html"><span class="itm-n">6-3</span><span class="itm-t">理解度チェック ─ 全ドメイン総合</span></a>
+<a class="itm toc-link" href="../06-summary/04-mockabout.html"><span class="itm-n">6-4</span><span class="itm-t">シナリオで解く</span></a>
+<a class="itm toc-link" href="../06-summary/05-mock1.html"><span class="itm-n">6-5</span><span class="itm-t">社内の問い合わせに答えるエージェント</span></a>
+<a class="itm toc-link" href="../06-summary/06-mock2.html"><span class="itm-n">6-6</span><span class="itm-t">未知のコードベースの不具合調査</span></a>
+<a class="itm toc-link" href="../06-summary/07-mock3.html"><span class="itm-n">6-7</span><span class="itm-t">5人のチームに導入する</span></a>
+<a class="itm toc-link" href="../06-summary/08-mock4.html"><span class="itm-n">6-8</span><span class="itm-t">請求書から項目を抜き出す</span></a>
+<a class="itm toc-link" href="../06-summary/09-mock5.html"><span class="itm-n">6-9</span><span class="itm-t">社外サービスを繋ぐ</span></a>
+<a class="itm toc-link" href="../06-summary/10-mock6.html"><span class="itm-n">6-10</span><span class="itm-t">300ファイルの一括移行</span></a>
+<a class="itm toc-link" href="../06-summary/11-mock7.html"><span class="itm-n">6-11</span><span class="itm-t">CI に自動レビューを組み込む</span></a>
+<a class="itm toc-link on" href="../06-summary/12-prepare.html"><span class="itm-n">6-12</span><span class="itm-t">読むだけで足りるか ─ 公式が勧める準備</span></a></nav>
+</aside>
+<main class="doc">
+<p class="crumb" data-domain="summary"><b>まとめ</b><span>全体をもう一度</span></p>
+<nav class="secpager top"><a class="pgv prev" href="../06-summary/11-mock7.html"><span class="vh">前へ</span></a><span class="pgv next end"><span class="vh">ここで終わり</span></span></nav>
+<!-- ▼ 本文 ─ ここだけを編集する。この前後は node tools/reindex.mjs が書き出す -->
+<section class="sec" id="prepare">
+<header class="sec-head">
+  <h2>6-12　読むだけで足りるか ─ 公式が勧める準備</h2>
+</header>
+<p class="lead">公式 Exam Guide は「<b>practical judgment（実際に手を動かして得る判断）</b>を問う」と書いていて、そのための準備を <b>7つ</b>挙げ、<b>演習を4本</b>用意しています。ここはその一覧です。</p>
+<p class="goal"><b>ゴール</b>読んだあと、何を作って確かめればよいか分かる。</p>
+
+<!--#preparefig--><table class="tbl">
+  <thead><tr><th>公式が勧める準備（7つ）</th><th>中身</th><th>対応する項</th></tr></thead>
+  <tbody>
+    <tr><td data-l="やること"><b>Agent SDK でエージェントを1つ作る</b></td>
+        <td data-l="中身">ツール呼び出し・エラー処理・セッション管理まで通したループ。子を起こして文脈を渡すところまでやる</td>
+        <td data-l="対応する項"><span class="n"><a href="../01-agentic/03-loop.html">1-3</a> <a href="../01-agentic/04-stop.html">1-4</a> <a href="../01-agentic/05-seq.html">1-5</a> <a href="../01-agentic/06-real.html">1-6</a> <a href="../01-agentic/13-spawn.html">1-13</a> <a href="../01-agentic/19-session.html">1-19</a></span></td></tr>
+    <tr><td data-l="やること"><b>実際のプロジェクトで Claude Code を設定する</b></td>
+        <td data-l="中身">CLAUDE.md の階層、<code>.claude/rules/</code> のパス固有ルール、frontmatter つきのスキル（<code>context: fork</code>・<code>allowed-tools</code>）、MCP サーバを1つ以上つなぐ</td>
+        <td data-l="対応する項"><span class="n"><a href="../03-claude-code/02-claudemd.html">3-2</a> <a href="../03-claude-code/03-import.html">3-3</a> <a href="../03-claude-code/07-rules.html">3-7</a> <a href="../03-claude-code/05-cmdskill.html">3-5</a> <a href="../02-tools/05-mcp.html">2-5</a></span></td></tr>
+    <tr><td data-l="やること"><b>MCP ツールを設計して、試す</b></td>
+        <td data-l="中身">似た道具を書き分ける説明文、種別と再試行可否つきのエラー応答。<b>曖昧な依頼を投げて、狙った道具が選ばれるか確かめる</b></td>
+        <td data-l="対応する項"><span class="n"><a href="../02-tools/02-anatomy.html">2-2</a> <a href="../02-tools/03-grain.html">2-3</a> <a href="../02-tools/04-error.html">2-4</a></span></td></tr>
+    <tr><td data-l="やること"><b>構造化抽出の仕組みを1本通す</b></td>
+        <td data-l="中身"><code>tool_use</code> ＋ JSON スキーマ、検証と再試行の輪、任意（null 可）の項目、Message Batches API でのバッチ処理</td>
+        <td data-l="対応する項"><span class="n"><a href="../04-prompt/10-struct.html">4-10</a> <a href="../04-prompt/11-verify.html">4-11</a> <a href="../04-prompt/13-batch.html">4-13</a></span></td></tr>
+    <tr><td data-l="やること"><b>プロンプトの手を練習する</b></td>
+        <td data-l="中身">曖昧な場面の few-shot、誤検知を減らす明示的な基準、大きなレビューを多段に割る形</td>
+        <td data-l="対応する項"><span class="n"><a href="../04-prompt/07-criteria.html">4-7</a> <a href="../04-prompt/08-fewshot.html">4-8</a> <a href="../04-prompt/14-multi.html">4-14</a></span></td></tr>
+    <tr><td data-l="やること"><b>文脈管理の型を身につける</b></td>
+        <td data-l="中身">長い返り値から事実を抜く、長丁場の作業メモ、窓を保つための子への委任</td>
+        <td data-l="対応する項"><span class="n"><a href="../05-context/02-compact.html">5-2</a> <a href="../05-context/03-sub.html">5-3</a> <a href="../05-context/05-shape.html">5-5</a></span></td></tr>
+    <tr><td data-l="やること"><b>人に渡す判断を見直す</b></td>
+        <td data-l="中身">規約の穴・利用者の要求・進まないこと ⇄ 自分で解決。確信度で振り分ける人のレビュー導線を設計する</td>
+        <td data-l="対応する項"><span class="n"><a href="../05-context/06-confidence.html">5-6</a> <a href="../05-context/08-propagate.html">5-8</a></span></td></tr>
+  </tbody>
+</table>
+
+<p class="point"><b>ポイント</b>読んで分かることと、作って分かることは別。<b>公式が挙げている7つは、どれもこの教材の節に対応している</b>ので、読んだあとに同じ順で手を動かせる。</p>
+
+<div class="detail">
+  <div class="ex"><span class="exl">演習 ①　人に渡す判断つきの、複数ツール・エージェントを作る</span>
+  <b>ねらい</b>　ループにツールを組み込み、失敗を構造で返し、人へ渡す形まで通す　<span class="n">（Domain 1・Domain 2・Domain 5）</span>
+  <ol class="exsteps">
+      <li>説明文を書き分けた MCP ツールを3〜4本定義する。<b>うち2本は似た機能</b>にして、取り違えないか試す</li>
+      <li><code>stop_reason</code> を見てループを回す。<code>tool_use</code> と <code>end_turn</code> の両方を正しく扱う</li>
+      <li><code>errorCategory</code>（一時的／検証／権限）と <code>isRetryable</code>、読める説明を返す。種別ごとに扱いが変わるか確かめる</li>
+      <li>業務規則（一定額を超える返金など）を止めるフックを入れ、人へ回す道に差し替える</li>
+      <li>用件が複数ある依頼を投げ、<b>分けて調べ、1つにまとめて返す</b>か確かめる</li>
+  </ol></div>
+  <div class="ex"><span class="exl">演習 ②　チーム開発向けに Claude Code を設定する</span>
+  <b>ねらい</b>　CLAUDE.md の階層・コマンド・パス固有ルール・MCP を、複数人の前提で組む　<span class="n">（Domain 3・Domain 2）</span>
+  <ol class="exsteps">
+      <li>プロジェクトの <code>CLAUDE.md</code> に共通の規約を書き、全員に効くことを確かめる</li>
+      <li><code>.claude/rules/</code> に <code>paths</code> つきのルールを作り、該当ファイルを開いたときだけ載ることを確かめる</li>
+      <li><code>.claude/skills/</code> に <code>context: fork</code> と <code>allowed-tools</code> つきのスキルを作り、本体の会話が汚れないことを確かめる</li>
+      <li><code>.mcp.json</code> に環境変数の展開つきでサーバを設定し、個人用を <code>~/.claude.json</code> に足して、両方見えることを確かめる</li>
+      <li>難しさの違う3つの作業で plan mode と直接実行を比べ、<b>どこから plan mode が効くか</b>を見る</li>
+  </ol></div>
+  <div class="ex"><span class="exl">演習 ③　構造化抽出の仕組みを作る</span>
+  <b>ねらい</b>　スキーマ設計・検証と再試行・バッチ・人のレビュー導線を、ひと続きで組む　<span class="n">（Domain 4・Domain 5）</span>
+  <ol class="exsteps">
+      <li>必須と任意、<code>enum</code>（「その他」＋詳細）、null 可の項目を持つスキーマを定義し、<b>無い項目を作らずに null で返す</b>か確かめる</li>
+      <li>検証に落ちたら、元の文書・失敗した出力・具体的な指摘を添えて投げ直す。<b>直る失敗と直らない失敗</b>を数える</li>
+      <li>書式の違う文書の few-shot を足して、扱いが安定するか見る</li>
+      <li>100件をバッチで投げ、<code>custom_id</code> で失敗を拾い、直して投げ直す。<b>締め切りから間隔を逆算する</b></li>
+      <li>項目ごとの確信度を出させ、低いものを人へ回す。<b>書類種別・項目ごとに精度を見る</b></li>
+  </ol></div>
+  <div class="ex"><span class="exl">演習 ④　複数エージェントの調査を組んで、壊れ方を見る</span>
+  <b>ねらい</b>　委任・文脈の受け渡し・失敗の伝播・出典を保った統合を、実際に壊しながら確かめる　<span class="n">（Domain 1・Domain 2・Domain 5）</span>
+  <ol class="exsteps">
+      <li>親から子を2体以上起こす。<b>親に子を起こす道具を渡し</b>、子には結果を指示の中で直接渡す</li>
+      <li>1つの応答に複数の呼び出しを入れて並列に起こし、<b>順に起こした場合と待ち時間を比べる</b></li>
+      <li>子の返す形を「主張・根拠の引用・出典・日付」に分け、統合の子が<b>出典を保つ</b>か確かめる</li>
+      <li>子を1体わざとタイムアウトさせ、親に<b>失敗の種類・試したこと・途中まで得たもの</b>が届くか、そのまま先へ進めるか確かめる</li>
+      <li>食い違う数字を持つ資料を2つ与え、<b>片方を選ばずに両方を出典つきで残す</b>か確かめる</li>
+  </ol></div>
+</div><!--/#preparefig-->
+
+<p class="note">※ この一覧は公式 Exam Guide の「7. How to Prepare」と「8. Preparation Exercises」を写したものです（原文は<a href="../index.html#src">参考資料</a>から）。<br>
+※ 全部を作る必要はありません。<b>設問を解いて手が止まったところ</b>から選ぶのが早道です ── どこで止まったかは、直前の理解度チェックが教えてくれます。</p>
+</section>
+<!-- ▲ 本文 -->
+<nav class="secpager btm"><a class="pgv prev" href="../06-summary/11-mock7.html"><span class="vh">前へ</span></a><span class="pgv next end"><span class="vh">ここで終わり</span></span></nav>
+</main>
+</div>
+<div class="modal" id="searchModal" hidden>
+  <div class="modal-box">
+    <input id="searchInput" type="search" placeholder="用語・見出し・本文を検索（例: input_schema、キャッシュ）" autocomplete="off">
+    <div id="searchResults" class="results"></div>
+    <div class="modal-foot"><kbd>Esc</kbd> で閉じる</div>
+  </div>
+</div>
+<script src="../assets/quiz-data.js?v=29cde026"></script>
+<script src="../assets/search-index.js?v=db27face"></script>
+<script src="../assets/app.js?v=bfb45e2d"></script>
+</body></html>

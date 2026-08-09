@@ -19,7 +19,7 @@
 import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
-import { GUIDE, EXAM, DOMAINS as BP_DOM, SCENARIOS, TASKS, domainItems, scenarioCount } from './blueprint.mjs';
+import { GUIDE, EXAM, DOMAINS as BP_DOM, SCENARIOS, PREPARE, EXERCISES, TASKS, domainItems, scenarioCount } from './blueprint.mjs';
 
 /* 成果物（HTML と assets）は docs/ の下 ─ GitHub Pages がそのまま公開できる名前。tools/ と CLAUDE.md はリポジトリ直下 */
 const ROOT = path.join(path.resolve(new URL('..', import.meta.url).pathname), 'docs');
@@ -164,7 +164,7 @@ const scenarioFig = () => {
   const rows = SCENARIOS.map(s => {
     const ns = s.domains.slice().sort((a, b) => BP_DOM[a].n - BP_DOM[b].n)
       .map(k => mark(k) ? `<b>${BP_DOM[k].n}</b>` : String(BP_DOM[k].n));
-    return `    <tr><td data-l="シナリオ">${'①②③④⑤⑥⑦⑧'[s.n - 1]} ${esc(s.ja)}</td><td data-l="ドメイン">${ns.join('・')}</td></tr>`;
+    return `    <tr><td data-l="シナリオ">${'①②③④⑤⑥⑦⑧'[s.n - 1]} ${esc(s.ja)}<br><span class="n">${s.detail}</span></td><td data-l="ドメイン">${ns.join('・')}</td></tr>`;
   }).join('\n');
   const bars = ds.slice().sort((a, b) => cnt[b.key] - cnt[a.key] || BP_DOM[a.key].n - BP_DOM[b.key].n);
   const barHtml = bars.map(d => {
@@ -195,7 +195,48 @@ ${barHtml}
 </figure></div>`;
 };
 
-const BLOCKS = { weightfig: weightFig, examfmt: examFmt, scenariofig: scenarioFig, nsec: () => String(pages.length) };
+/** 受験の実務 ─ §3 / §11〜§15。**行動が変わる数字だけ**を出す（支払い方法や苦情の窓口は公式へ） */
+const examAdmin = () => `<div class="ex"><span class="exl">受験の実務 ─ 計画に効くものだけ</span>
+  <b>受け方</b>　オンライン監督つき、またはテストセンター（Pearson VUE）。受験料 <b>${EXAM.fee} USD</b>。予約の変更・取消は<b>${EXAM.cancelHours}時間前まで</b>（過ぎると受験料は戻りません）。<br>
+  <b>落ちたとき</b>　待機は<b>${EXAM.retakeWaitDays.join('日 → ')}日</b>と伸びます。12か月で受けられるのは<b>${EXAM.attemptsPerYear}回</b>まで。<b>1回目で通す前提で組むほうが安上がり</b>です。<br>
+  <b>受かったあと</b>　有効期間は<b>${EXAM.validityMonths}か月</b>。期限内なら<b>無料の更新試験</b>で更新でき、切らすと本試験を受け直しになります。<br>
+  <b>当日</b>　写真つきの本人確認書類が要ります。机の上に資料・端末は置けません。試験内容は<b>口外しない</b>という同意（NDA）に応じてから始まります。</div>`;
+
+/** §7 How to Prepare ＋ §8 Preparation Exercises ─ 手を動かす準備 */
+const prepareFig = () => {
+  const sec = (ids) => ids.map(id => {
+    const p = pages.find(x => x.id === id);
+    return p ? `<a href="../${p.rel}">${esc(p.num)}</a>` : null;
+  }).filter(Boolean).join(' ');
+  const rows = PREPARE.map(p =>
+    `    <tr><td data-l="やること"><b>${p.ja}</b></td>
+        <td data-l="中身">${p.detail}</td>
+        <td data-l="対応する項"><span class="n">${sec(p.sections)}</span></td></tr>`).join('\n');
+  const ex = EXERCISES.map(e => {
+    const doms = e.domains.map(k => `Domain ${BP_DOM[k].n}`).join('・');
+    const steps = e.steps.map(s => `      <li>${s}</li>`).join('\n');
+    return `  <div class="ex"><span class="exl">演習 ${'①②③④⑤⑥'[e.n - 1]}　${esc(e.ja)}</span>
+  <b>ねらい</b>　${esc(e.objective)}　<span class="n">（${doms}）</span>
+  <ol class="exsteps">
+${steps}
+  </ol></div>`;
+  }).join('\n');
+  return `<table class="tbl">
+  <thead><tr><th>公式が勧める準備（7つ）</th><th>中身</th><th>対応する項</th></tr></thead>
+  <tbody>
+${rows}
+  </tbody>
+</table>
+
+<p class="point"><b>ポイント</b>読んで分かることと、作って分かることは別。<b>公式が挙げている7つは、どれもこの教材の節に対応している</b>ので、読んだあとに同じ順で手を動かせる。</p>
+
+<div class="detail">
+${ex}
+</div>`;
+};
+
+const BLOCKS = { weightfig: weightFig, examfmt: examFmt, scenariofig: scenarioFig,
+  examadmin: examAdmin, preparefig: prepareFig, nsec: () => String(pages.length) };
 
 /** `<p class="task" data-t="1.1"></p>` に、公式の原文を差し込む。
  *  中身は毎回まるごと作り直すので、何度実行しても同じ結果になる。 */
