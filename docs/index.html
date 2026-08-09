@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/style.css?v=56bfe8db">
+<link rel="stylesheet" href="assets/style.css?v=92e9c916">
 
 </head>
 <body>
@@ -159,36 +159,39 @@
   <h2>参考資料</h2>
   <p>この教材は、下の公式資料で裏を取って書いています。<b>食い違いを見つけたら、そちらが正です。</b>数値や仕様はモデルの世代で変わるので、迷ったら原文を見てください。</p>
 
+  <h3>試験そのもの</h3>
   <table class="tbl">
-    <thead><tr><th>種類</th><th>資料</th><th>何が書いてあるか</th></tr></thead>
     <tbody>
-      <tr><th>試験の範囲</th>
-        <td><a href="https://everpath-course-content.s3-accelerate.amazonaws.com/instructor/6nizmqk8tpzpfjvt6qmmav7rh/public/1783542750/Claude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf"><b>Exam Guide</b></a><br>PDF・英語</td>
-        <td data-l="何が書いてあるか"><b>5ドメイン30タスクの原文</b>と、その Knowledge / Skills。6つのシナリオ。出題形式（60問・120分・1000点満点中720点）。<br>各項の <code>BLUEPRINT 1.1</code> の英文は、ここから写したものです。<br><span class="n">Version 1.0 ／ Effective July 2026 ／ CCAR-F</span></td></tr>
-      <tr><th>試験の申込</th>
-        <td><a href="https://anthropic-partners.skilljar.com/claude-certified-architect-foundations-certification">Anthropic Academy</a></td>
-        <td data-l="何が書いてあるか">申し込みと、Exam Guide の最新版の入手先</td></tr>
-      <tr><th>API</th>
-        <td><a href="https://platform.claude.com/docs/en/build-with-claude/working-with-messages">Working with Messages</a></td>
-        <td data-l="何が書いてあるか"><code>messages</code> ／ <code>content</code> ／ <code>stop_reason</code> ／ ツール使用</td></tr>
-      <tr><th>API</th>
-        <td><a href="https://platform.claude.com/docs/en/build-with-claude/prompt-caching">Prompt caching</a></td>
-        <td data-l="何が書いてあるか"><code>cache_control</code> ／ <code>usage</code> の見方</td></tr>
-      <tr><th>API</th>
-        <td><a href="https://platform.claude.com/docs/en/build-with-claude/extended-thinking">Extended thinking</a></td>
-        <td data-l="何が書いてあるか"><code>thinking</code> ブロック</td></tr>
-      <tr><th>API</th>
-        <td><a href="https://platform.claude.com/docs/en/build-with-claude/streaming">Streaming</a></td>
-        <td data-l="何が書いてあるか">逐次で返すときのイベント列</td></tr>
-      <tr><th>Claude Code</th>
-        <td><a href="https://code.claude.com/docs/en/mcp">MCP</a></td>
-        <td data-l="何が書いてあるか"><code>.mcp.json</code> ／ トランスポート ／ スコープ</td></tr>
-      <tr><th>Claude Code</th>
-        <td><a href="https://code.claude.com/docs/en/hooks">Hooks</a></td>
-        <td data-l="何が書いてあるか">イベント ／ <code>matcher</code> ／ <code>hookSpecificOutput</code> ／ 終了コード</td></tr>
-      <tr><th>窓の大きさ</th>
-        <td><a href="https://support.claude.com/en/articles/8606394-how-large-is-the-context-window-on-paid-claude-plans">Context window on paid plans</a></td>
-        <td data-l="何が書いてあるか">窓の大きさは<b>モデルで決まります</b>（プランは使用量の話）。この教材が 200K / 1M のような数字を書いていないのは、世代で変わるためです</td></tr>
+      <tr><th><a href="https://everpath-course-content.s3-accelerate.amazonaws.com/instructor/6nizmqk8tpzpfjvt6qmmav7rh/public/1783542750/Claude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf">Exam Guide</a><br><span class="n">PDF・英語</span></th>
+        <td><b>5ドメイン30タスクの原文</b>と、その Knowledge / Skills。6つのシナリオ。出題形式（60問・120分・1000点満点中720点）。各項の <code>BLUEPRINT 1.1</code> の英文は、ここから写したものです。<br><span class="n">Version 1.0 ／ Effective July 2026 ／ CCAR-F</span></td></tr>
+      <tr><th><a href="https://anthropic-partners.skilljar.com/claude-certified-architect-foundations-certification">Anthropic Academy</a></th>
+        <td>申し込みと、Exam Guide の最新版の入手先</td></tr>
+    </tbody>
+  </table>
+
+  <h3>API の仕様</h3>
+  <table class="tbl">
+    <tbody>
+      <tr><th><a href="https://platform.claude.com/docs/en/build-with-claude/working-with-messages">Working with Messages</a></th>
+        <td><code>messages</code> ／ <code>content</code> ／ <code>stop_reason</code> ／ ツール使用</td></tr>
+      <tr><th><a href="https://platform.claude.com/docs/en/build-with-claude/prompt-caching">Prompt caching</a></th>
+        <td><code>cache_control</code> ／ <code>usage</code> の見方</td></tr>
+      <tr><th><a href="https://platform.claude.com/docs/en/build-with-claude/extended-thinking">Extended thinking</a></th>
+        <td><code>thinking</code> ブロック</td></tr>
+      <tr><th><a href="https://platform.claude.com/docs/en/build-with-claude/streaming">Streaming</a></th>
+        <td>逐次で返すときのイベント列</td></tr>
+      <tr><th><a href="https://support.claude.com/en/articles/8606394-how-large-is-the-context-window-on-paid-claude-plans">Context window on paid plans</a></th>
+        <td>窓の大きさは<b>モデルで決まります</b>（プランは使用量の話）。この教材が 200K / 1M のような数字を書いていないのは、世代で変わるためです</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Claude Code</h3>
+  <table class="tbl">
+    <tbody>
+      <tr><th><a href="https://code.claude.com/docs/en/mcp">MCP</a></th>
+        <td><code>.mcp.json</code> ／ トランスポート ／ スコープ</td></tr>
+      <tr><th><a href="https://code.claude.com/docs/en/hooks">Hooks</a></th>
+        <td>イベント ／ <code>matcher</code> ／ <code>hookSpecificOutput</code> ／ 終了コード</td></tr>
     </tbody>
   </table>
   <div class="detail">
