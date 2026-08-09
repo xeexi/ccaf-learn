@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/style.css?v=d673ee43">
+<link rel="stylesheet" href="../assets/style.css?v=8bbb4b5f">
 </head>
 <body data-page="iterate">
 <script>(function(){var t=localStorage.getItem('ccarf-theme');if(t)document.documentElement.dataset.theme=t;})();</script>
@@ -55,6 +55,7 @@
 <a class="itm toc-link" href="../03-claude-code/07-rules.html"><span class="itm-n">3-7</span><span class="itm-t">パス固有ルール</span></a>
 <a class="itm toc-link" href="../03-claude-code/08-plan.html"><span class="itm-n">3-8</span><span class="itm-t">plan mode と直接実行</span></a>
 <a class="itm toc-link on" href="../03-claude-code/09-iterate.html"><span class="itm-n">3-9</span><span class="itm-t">反復的な改善</span></a>
+<a class="toc-link toc-sub" href="#it-2">回し方の型は4つ</a>
 <a class="itm toc-link itm-quiz" href="../03-claude-code/10-q345.html"><span class="itm-n">3-10</span><span class="itm-t">理解度チェック ─ ルール・plan mode・改善</span></a>
 <a class="itm toc-link" href="../03-claude-code/11-ci.html"><span class="itm-n">3-11</span><span class="itm-t">非対話実行と CI/CD</span></a>
 <a class="itm toc-link" href="../03-claude-code/12-settings.html"><span class="itm-n">3-12</span><span class="itm-t">settings.json と permissions</span></a>
@@ -71,7 +72,7 @@
 </header>
 <p class="lead">出力が確率的である以上、一発勝負は分が悪い。小さく回して、そのつど基準を書き足していきます。</p>
 <p class="task" data-t="3.5"><span class="tn">BLUEPRINT 3.5</span><b>Apply iterative refinement techniques for progressive improvement</b></p>
-<p class="goal"><b>ゴール</b>改善をどこへ書き戻すか答えられる。</p>
+<p class="goal"><b>ゴール</b>回し方の型を4つ挙げ、改善をどこへ書き戻すか答えられる。</p>
 <div class="figbox"><figure class="fig run">
   <p class="fig-t">1回で当てにいくか、回して寄せるか</p>
   <div class="fig-row s1" style="--cols:1">
@@ -102,6 +103,41 @@
     「大きな機能を一度に作らせたらうまくいかない」→ <b>plan mode で方針を合意 → 小さい単位に分けて実行 → 都度確認</b>。</div>
   </div>
   <p class="point"><b>ポイント</b>改善を会話の中で終わらせない。<b>設定ファイルに書き戻して初めて、次回から効く。</b></p>
+
+<h3 class="sub" id="it-2">回し方の型は4つ</h3>
+<p class="lead">「小さく回す」の中身です。<b>言葉を足す</b>のではなく、<b>渡すものを変える</b>のが型になっています。</p>
+<p class="goal"><b>ゴール</b>4つの型を、効く場面で選び分けられる。</p>
+
+<table class="tbl">
+  <thead><tr><th>型</th><th>やること</th><th>効く場面</th></tr></thead>
+  <tbody>
+    <tr><td data-l="型"><b>入出力の例を見せる</b></td>
+        <td data-l="やること">「この入力なら、この出力」を<b>2〜3件</b>添える</td>
+        <td data-l="効く場面">言葉で書くと解釈がぶれるとき（整形・変換・分類）。<b>散文で条件を足すより速い</b></td></tr>
+    <tr><td data-l="型"><b>先にテストを書く</b></td>
+        <td data-l="やること">期待する挙動・境界・性能を<b>テストにしてから</b>実装させ、<b>落ちたテストを渡して</b>もう一度</td>
+        <td data-l="効く場面">正しさの基準が決められるとき。直し方を言わずに<b>基準だけ</b>渡せる</td></tr>
+    <tr><td data-l="型"><b>先に質問させる</b></td>
+        <td data-l="やること">実装の前に「気になる点を<b>先に質問して</b>」と頼む</td>
+        <td data-l="効く場面">自分が不慣れな領域。<b>考慮漏れが、作り終わる前に出てくる</b></td></tr>
+    <tr><td data-l="型"><b>まとめて1通か、順番か</b></td>
+        <td data-l="やること">絡み合う指摘は<b>1通にまとめて</b>、独立した指摘は<b>1つずつ順番に</b></td>
+        <td data-l="効く場面">直したいところが複数あるとき</td></tr>
+  </tbody>
+</table>
+
+<p class="point"><b>ポイント</b>回すときに増やすのは<b>言葉ではなく材料</b> ── 例・テスト・質問。相互に絡む指摘だけは1通にまとめる。</p>
+
+<div class="detail">
+  <div class="ex"><span class="exl">なぜ「まとめて1通」と「順番に」を分けるのか</span>
+  <b>絡み合う指摘を順番に直させると、前の修正を壊しながら進みます。</b>「A を直して」→ 直る →「B も直して」→ A が戻る、という往復になります。<br>
+  逆に<b>独立した指摘を1通にまとめると、どれかが抜けます</b>（前提編・Domain 4 の「条件が増えるとどれかが抜ける」）。<br>
+  判断は「この2つは同じ箇所に触るか」だけです。</div>
+  <div class="myth">
+    <span class="t">誤解</span><span>「うまくいかないときは、指示をもっと詳しく書けばよい」</span>
+    <span class="t o">実際は</span><span>散文を足すほど、どれかが抜けます。<b>詳しく書くより、実物を渡す</b> ── 例・落ちたテスト・質問への答え。どれも「読み違えようがない材料」です。</span>
+  </div>
+</div>
 </section>
 <!-- ▲ 本文 -->
 <nav class="secpager btm"><a class="pgv prev" href="../03-claude-code/08-plan.html"><span class="vh">前へ</span></a><a class="pgv next" href="../03-claude-code/10-q345.html"><span class="vh">次へ</span></a></nav>
@@ -114,7 +150,7 @@
     <div class="modal-foot"><kbd>Esc</kbd> で閉じる</div>
   </div>
 </div>
-<script src="../assets/quiz-data.js?v=36c91b65"></script>
-<script src="../assets/search-index.js?v=8690ce7e"></script>
-<script src="../assets/app.js?v=e349201e"></script>
+<script src="../assets/quiz-data.js?v=6eea7702"></script>
+<script src="../assets/search-index.js?v=9439504a"></script>
+<script src="../assets/app.js?v=94ab4eeb"></script>
 </body></html>

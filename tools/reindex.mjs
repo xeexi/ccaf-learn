@@ -174,8 +174,10 @@ ${legend}
 </figure></div>`;
 };
 
-/** 本文に <!--#名前--> で差し込める共通の塊。fillBlocks が使う */
-const BLOCKS = { weightfig: weightFig };
+/** 本文に <!--#名前--> で差し込める共通の塊。fillBlocks が使う。
+ *  nsec は「全何項か」。**手で書くと必ず古くなる** ── 実際にトップの
+ *  「全 88 項」が2か所とも実数とズレていた（設問数と同じ事故・§7 #45）。 */
+const BLOCKS = { weightfig: weightFig, nsec: () => String(pages.length) };
 
 /** `<p class="task" data-t="1.1"></p>` に、公式の原文を差し込む。
  *  中身は毎回まるごと作り直すので、何度実行しても同じ結果になる。 */

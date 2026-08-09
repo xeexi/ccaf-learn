@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/style.css?v=d673ee43">
+<link rel="stylesheet" href="../assets/style.css?v=8bbb4b5f">
 </head>
 <body data-page="claudemd">
 <script>(function(){var t=localStorage.getItem('ccarf-theme');if(t)document.documentElement.dataset.theme=t;})();</script>
@@ -153,6 +153,10 @@
   <div class="ex"><span class="exl">設問での問われ方</span>
   「モノレポで、パッケージごとに違う規約を適用したい」→ <b>各パッケージに <code>CLAUDE.md</code> を置く</b>（全部をルートの1枚に詰め込まない）。<br>
   理由は2つ：関係ないパッケージの規約を読ませずに済む／ルートの1枚が肥大化しない。</div>
+  <div class="ex"><span class="exl">いま何が読まれているかを確かめる ─ <code>/memory</code></span>
+  階層で合成されるので、<b>どのファイルが効いているのか、見ただけでは分かりません。</b>
+  <code>/memory</code> を打つと、そのセッションで<b>実際に読み込まれている記憶ファイルの一覧</b>が出ます。<br>
+  「同じ指示なのに、あの人の手元では効かない」「先週と挙動が違う」というときは、まずこれで<b>読まれている枚数が違わないか</b>を見ます ── たいてい <code>~/.claude/</code> 側だけに書いてあります。</div>
 </div>
 </section>
 <!-- ▲ 本文 -->
@@ -166,7 +170,7 @@
     <div class="modal-foot"><kbd>Esc</kbd> で閉じる</div>
   </div>
 </div>
-<script src="../assets/quiz-data.js?v=36c91b65"></script>
-<script src="../assets/search-index.js?v=8690ce7e"></script>
-<script src="../assets/app.js?v=e349201e"></script>
+<script src="../assets/quiz-data.js?v=6eea7702"></script>
+<script src="../assets/search-index.js?v=9439504a"></script>
+<script src="../assets/app.js?v=94ab4eeb"></script>
 </body></html>

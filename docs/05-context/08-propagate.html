@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/style.css?v=d673ee43">
+<link rel="stylesheet" href="../assets/style.css?v=8bbb4b5f">
 </head>
 <body data-page="propagate">
 <script>(function(){var t=localStorage.getItem('ccarf-theme');if(t)document.documentElement.dataset.theme=t;})();</script>
@@ -97,6 +97,11 @@
       <span class="t">誤解</span><span>「子が失敗したら、例外や異常終了で親に伝わる」</span>
       <span class="t o">実際は</span><span>子は自分の中で失敗を処理して、<b>要約だけを返します</b>。返す形に欄を作っていなければ、失敗は要約から抜け落ちたまま親に届きます。</span>
     </div>
+  <div class="ex"><span class="exl">両端が、どちらも誤り</span>
+  <b>✗ 黙って握りつぶす</b>　失敗を空の結果として成功で返す。親は「0件だった」と読んで先へ進みます ── <b>アクセスできなかったのか、本当に0件だったのか</b>の区別が消えます。<br>
+  <b>✗ 1体こけたら全体を止める</b>　3体のうち1体が一時的に失敗しただけで、取れていた2体分まで捨てることになります。<br>
+  <b>○ 取れた分と、取れなかった理由を両方返す</b>　親が「やり直す／このまま進める／人に渡す」を選べます。<br>
+  子の側でやるのは<b>一時的な失敗の再試行まで</b>。それで直らないものだけを、何を試したかと途中まで得たものを添えて上げます（Domain 2 の〈失敗は読める形で返す〉）。</div>
   </div>
 </section>
 <!-- ▲ 本文 -->
@@ -110,7 +115,7 @@
     <div class="modal-foot"><kbd>Esc</kbd> で閉じる</div>
   </div>
 </div>
-<script src="../assets/quiz-data.js?v=36c91b65"></script>
-<script src="../assets/search-index.js?v=8690ce7e"></script>
-<script src="../assets/app.js?v=e349201e"></script>
+<script src="../assets/quiz-data.js?v=6eea7702"></script>
+<script src="../assets/search-index.js?v=9439504a"></script>
+<script src="../assets/app.js?v=94ab4eeb"></script>
 </body></html>

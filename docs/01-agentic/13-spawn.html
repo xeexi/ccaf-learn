@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/style.css?v=d673ee43">
+<link rel="stylesheet" href="../assets/style.css?v=8bbb4b5f">
 </head>
 <body data-page="spawn">
 <script>(function(){var t=localStorage.getItem('ccarf-theme');if(t)document.documentElement.dataset.theme=t;})();</script>
@@ -62,9 +62,11 @@
 <a class="toc-link toc-sub" href="#spawn-2">3体まとめて起こす ─ 並列ツール使用</a>
 <a class="itm toc-link" href="../01-agentic/14-gate.html"><span class="itm-n">1-14</span><span class="itm-t">前提は関門で、引き継ぎは欄で</span></a>
 <a class="itm toc-link" href="../01-agentic/15-intercept.html"><span class="itm-n">1-15</span><span class="itm-t">ツール呼び出しに割り込む</span></a>
-<a class="itm toc-link itm-quiz" href="../01-agentic/16-q3.html"><span class="itm-n">1-16</span><span class="itm-t">理解度チェック ─ 起動と強制</span></a>
-<a class="itm toc-link" href="../01-agentic/17-session.html"><span class="itm-n">1-17</span><span class="itm-t">セッションをまたぐ</span></a>
-<a class="itm toc-link itm-quiz" href="../01-agentic/18-q4.html"><span class="itm-n">1-18</span><span class="itm-t">理解度チェック ─ セッション</span></a></nav>
+<a class="itm toc-link" href="../01-agentic/16-hookreg.html"><span class="itm-n">1-16</span><span class="itm-t">どこに書いて、どう止めるか</span></a>
+<a class="itm toc-link" href="../01-agentic/17-hooknorm.html"><span class="itm-n">1-17</span><span class="itm-t">割り込みで、形をそろえる</span></a>
+<a class="itm toc-link itm-quiz" href="../01-agentic/18-q3.html"><span class="itm-n">1-18</span><span class="itm-t">理解度チェック ─ 起動と強制</span></a>
+<a class="itm toc-link" href="../01-agentic/19-session.html"><span class="itm-n">1-19</span><span class="itm-t">セッションをまたぐ</span></a>
+<a class="itm toc-link itm-quiz" href="../01-agentic/20-q4.html"><span class="itm-n">1-20</span><span class="itm-t">理解度チェック ─ セッション</span></a></nav>
 </aside>
 <main class="doc">
 <p class="crumb" data-domain="agentic"><b>Domain 1</b><span>エージェント設計とオーケストレーション</span></p>
@@ -129,6 +131,10 @@
 <p class="point"><b>ポイント</b>並列とは「1つの応答に複数の <code>tool_use</code> が入ること」。速くなるのは待ち時間だけで、往復の回数が減るぶん少し安くなる。</p>
 
 <div class="detail">
+  <div class="ex"><span class="exl">渡すときは、中身と出どころを分ける</span>
+  調べた結果を文章にまとめて渡すと、<b>どこから来た情報か</b>が本文に溶けます。次の子がそれを要約した時点で、もう復元できません。
+  <code>{ "text": "…", "source": "…/spec.md", "page": 12 }</code> のように<b>本文と出どころを別の欄にして</b>渡せば、何段先まで運んでも対応が崩れません。
+  文書名・ページ番号・URL は<b>本文に混ぜず、欄で持つ</b>（Domain 5 の〈壊れたことに気づける〉と同じ話）。</div>
   <div class="ex"><span class="exl">分けてよいのは、互いに結果を要らない仕事だけ</span>
   「A を調べてから、その結果で B を調べる」は並列にできません。<b>先に結果が要る仕事は、別の往復になります。</b>
   独立しているかどうかを決めるのは親です。</div>
@@ -137,7 +143,9 @@
     <span class="t o">実際は</span><span>短くなるのは<b>待ち時間だけ</b>で、トークンの総量は減りません。同時に走らせる数にも上限があり、超えた起動は失敗します。</span>
   </div>
 </div>
-<p class="note">※ 子を起こすツールの名前は、公式ドキュメントでは <code>Agent</code>。出題ガイドや古い資料では <code>Task</code> と表記される場合があります（<code>TaskCreate</code> などの <code>Task…</code> 系はタスク一覧の操作で、別物）。</p>
+<p class="note">※ 子を起こすツールの名前は、公式ドキュメントでは <code>Agent</code>。出題ガイドや古い資料では <code>Task</code> と表記される場合があります（<code>TaskCreate</code> などの <code>Task…</code> 系はタスク一覧の操作で、別物）。<b>親にそのツールを渡していないと子を起こせません</b> ── 出題ガイドは <code>allowedTools</code> に <code>Task</code> を含めること、という書き方をしています。<br>
+※ 子の型は SDK では <code>AgentDefinition</code> として定義します ── 説明文・システム指示・使わせるツールの3つを持ちます。Claude Code では <code>.claude/agents/</code> に置く定義ファイルがこれに当たります。<br>
+※ 同じ地点から複数の枝を試したいときは、子を起こすのではなく<b>セッションを分岐</b>させます（<code>fork_session</code>／CLI は <code>--fork-session</code>。〈セッションをまたぐ〉）。</p>
 </section>
 <!-- ▲ 本文 -->
 <nav class="secpager btm"><a class="pgv prev" href="../01-agentic/12-q2.html"><span class="vh">前へ</span></a><a class="pgv next" href="../01-agentic/14-gate.html"><span class="vh">次へ</span></a></nav>
@@ -150,7 +158,7 @@
     <div class="modal-foot"><kbd>Esc</kbd> で閉じる</div>
   </div>
 </div>
-<script src="../assets/quiz-data.js?v=36c91b65"></script>
-<script src="../assets/search-index.js?v=8690ce7e"></script>
-<script src="../assets/app.js?v=e349201e"></script>
+<script src="../assets/quiz-data.js?v=6eea7702"></script>
+<script src="../assets/search-index.js?v=9439504a"></script>
+<script src="../assets/app.js?v=94ab4eeb"></script>
 </body></html>

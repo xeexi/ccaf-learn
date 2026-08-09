@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/style.css?v=d673ee43">
+<link rel="stylesheet" href="../assets/style.css?v=8bbb4b5f">
 </head>
 <body data-page="intercept">
 <script>(function(){var t=localStorage.getItem('ccarf-theme');if(t)document.documentElement.dataset.theme=t;})();</script>
@@ -61,14 +61,15 @@
 <a class="itm toc-link" href="../01-agentic/13-spawn.html"><span class="itm-n">1-13</span><span class="itm-t">子はどう起こすのか</span></a>
 <a class="itm toc-link" href="../01-agentic/14-gate.html"><span class="itm-n">1-14</span><span class="itm-t">前提は関門で、引き継ぎは欄で</span></a>
 <a class="itm toc-link on" href="../01-agentic/15-intercept.html"><span class="itm-n">1-15</span><span class="itm-t">ツール呼び出しに割り込む</span></a>
-<a class="toc-link toc-sub" href="#int-ev">いつ走らせるか ─ 主なイベントと、止め方</a>
-<a class="itm toc-link itm-quiz" href="../01-agentic/16-q3.html"><span class="itm-n">1-16</span><span class="itm-t">理解度チェック ─ 起動と強制</span></a>
-<a class="itm toc-link" href="../01-agentic/17-session.html"><span class="itm-n">1-17</span><span class="itm-t">セッションをまたぐ</span></a>
-<a class="itm toc-link itm-quiz" href="../01-agentic/18-q4.html"><span class="itm-n">1-18</span><span class="itm-t">理解度チェック ─ セッション</span></a></nav>
+<a class="itm toc-link" href="../01-agentic/16-hookreg.html"><span class="itm-n">1-16</span><span class="itm-t">どこに書いて、どう止めるか</span></a>
+<a class="itm toc-link" href="../01-agentic/17-hooknorm.html"><span class="itm-n">1-17</span><span class="itm-t">割り込みで、形をそろえる</span></a>
+<a class="itm toc-link itm-quiz" href="../01-agentic/18-q3.html"><span class="itm-n">1-18</span><span class="itm-t">理解度チェック ─ 起動と強制</span></a>
+<a class="itm toc-link" href="../01-agentic/19-session.html"><span class="itm-n">1-19</span><span class="itm-t">セッションをまたぐ</span></a>
+<a class="itm toc-link itm-quiz" href="../01-agentic/20-q4.html"><span class="itm-n">1-20</span><span class="itm-t">理解度チェック ─ セッション</span></a></nav>
 </aside>
 <main class="doc">
 <p class="crumb" data-domain="agentic"><b>Domain 1</b><span>エージェント設計とオーケストレーション</span></p>
-<nav class="secpager top"><a class="pgv prev" href="../01-agentic/14-gate.html"><span class="vh">前へ</span></a><a class="pgv next" href="../01-agentic/16-q3.html"><span class="vh">次へ</span></a></nav>
+<nav class="secpager top"><a class="pgv prev" href="../01-agentic/14-gate.html"><span class="vh">前へ</span></a><a class="pgv next" href="../01-agentic/16-hookreg.html"><span class="vh">次へ</span></a></nav>
 <!-- ▼ 本文 ─ ここだけを編集する。この前後は node tools/reindex.mjs が書き出す -->
 <section class="sec" id="intercept">
 <header class="sec-head">
@@ -154,118 +155,11 @@
   <p class="fig-f">モデルが関わるのは <b>1</b> と <b>6</b> だけ。<b>2〜5 はモデルから見えない</b>ので、「フックを無視して実行する」ことも「フックの判定を知る」こともできない。<b>だから確実に効く。</b></p>
 </figure></div>
 
-<h3 class="sub">どこに、どう登録するか ─ <code>matcher</code></h3>
-<p class="lead">フックは <code>settings.json</code> に<b>3階層</b>で書きます。<b>どのツール呼び出しに効かせるかを決めるのが <code>matcher</code></b> です。</p>
-<p class="goal"><b>ゴール</b><code>matcher</code> の書き方で、効く範囲を絞れる。</p>
-
-<div class="figbox" style="padding:16px 18px">
-  <p class="codelabel">settings.json ─ Write と Edit のときだけ走らせる</p>
-  <pre class="code">{
-  <span class="k">"hooks"</span>: {
-    <span class="hl"><span class="k">"PreToolUse"</span></span>: [<span class="c">                       // ① いつ ─ イベント</span>
-      {
-        <span class="hl"><span class="k">"matcher"</span>: <span class="s">"Write|Edit"</span></span>,<span class="c">          // ② どのツールに ─ 省略すると全部</span>
-        <span class="k">"hooks"</span>: [
-          { <span class="k">"type"</span>: <span class="s">"command"</span>,<span class="c">              // ③ 何を走らせるか</span>
-            <span class="k">"command"</span>: <span class="s">"$CLAUDE_PROJECT_DIR/.claude/hooks/check.sh"</span> }
-        ]
-      }
-    ]
-  }
-}</pre>
-</div>
-
-<table class="tbl">
-  <thead><tr><th><code>matcher</code> の書き方</th><th>効く範囲</th><th>解釈</th></tr></thead>
-  <tbody>
-    <tr><td data-l="書き方"><b>省略</b> / <code>""</code> / <code>"*"</code></td>
-        <td data-l="効く範囲"><span class="ng">全ツール</span></td>
-        <td data-l="解釈">絞り込みなし。<b>書き忘れるとここになる</b></td></tr>
-    <tr><td data-l="書き方"><code>"Write"</code></td>
-        <td data-l="効く範囲">そのツールだけ</td>
-        <td data-l="解釈">ふつうの文字列として一致を見る</td></tr>
-    <tr><td data-l="書き方"><code>"Write|Edit"</code></td>
-        <td data-l="効く範囲">列挙したツール</td>
-        <td data-l="解釈"><code>|</code> か <code>,</code> で並べる</td></tr>
-    <tr><td data-l="書き方"><code>"mcp__github__.*"</code></td>
-        <td data-l="効く範囲">MCP サーバ単位でまとめて</td>
-        <td data-l="解釈"><b>英数字・<code>_</code>・<code>-</code>・空白・<code>,</code>・<code>|</code> 以外の文字が入ると正規表現</b>として読まれる</td></tr>
-  </tbody>
-</table>
-
-<p class="point"><b>ポイント</b><code>matcher</code> は「どのツール呼び出しに効かせるか」を決める唯一の場所。<b>書かなければ全ツールに掛かる</b>ので、重い検査を全部に走らせてしまう事故が起きる。</p>
-
-<p class="note">※ MCP のツールは <code>mcp__&lt;サーバ名&gt;__&lt;ツール名&gt;</code> という名前になるので（Domain 2）、<code>mcp__github__.*</code> のように<b>サーバ単位でまとめて</b>掛けられます。<br>
-※ <code>matcher</code> が<b>何を</b>絞るかはイベントによって違います。<code>PreToolUse</code> / <code>PostToolUse</code> はツール名ですが、<code>SessionStart</code> では「どうやって開始したか」（<code>startup</code> / <code>resume</code> / <code>clear</code> / <code>compact</code>）を絞ります。<code>UserPromptSubmit</code> や <code>Stop</code> のように <b>matcher を持たないイベント</b>もあります。</p>
-
-<h3 class="sub" id="int-ev">いつ走らせるか ─ 主なイベントと、止め方</h3>
-<p class="lead">割り込める場所はツールの前後だけではありません。<b>どこで止められるかは、イベントごとに決まっています。</b></p>
-<p class="goal"><b>ゴール</b>主なイベントと、フックが処理を止める仕組みを言える。</p>
-
-<table class="tbl">
-  <thead><tr><th>イベント</th><th>いつ走るか</th><th>止められるか</th></tr></thead>
-  <tbody>
-    <tr><td data-l="イベント"><code>PreToolUse</code></td><td data-l="いつ走るか">ツールを実行する直前</td>
-        <td data-l="止められるか"><span class="ok">止まる</span>　実行させない</td></tr>
-    <tr><td data-l="イベント"><code>PostToolUse</code></td><td data-l="いつ走るか">ツールが成功した直後</td>
-        <td data-l="止められるか"><span class="ng">止まらない</span>　整形と記録の場所</td></tr>
-    <tr><td data-l="イベント"><code>UserPromptSubmit</code></td><td data-l="いつ走るか">利用者の入力が Claude に渡る前</td>
-        <td data-l="止められるか"><span class="ok">止まる</span>　送らせない</td></tr>
-    <tr><td data-l="イベント"><code>SessionStart</code> / <code>SessionEnd</code></td><td data-l="いつ走るか">セッションの開始・再開／終了</td>
-        <td data-l="止められるか"><span class="ng">止まらない</span>　前提の注入や後片付けに使う</td></tr>
-    <tr><td data-l="イベント"><code>Stop</code> / <code>SubagentStop</code></td><td data-l="いつ走るか">応答が終わったとき／子が終わったとき</td>
-        <td data-l="止められるか"><span class="ok">止まる</span>　「まだ終わらせない」ができる</td></tr>
-    <tr><td data-l="イベント"><code>PreCompact</code></td><td data-l="いつ走るか">履歴の圧縮が走る前</td>
-        <td data-l="止められるか"><span class="ok">止まる</span>　消えては困るものを退避できる</td></tr>
-    <tr><td data-l="イベント"><code>Notification</code></td><td data-l="いつ走るか">Claude Code が通知を出すとき</td>
-        <td data-l="止められるか"><span class="ng">止まらない</span>　外部への通知に使う</td></tr>
-  </tbody>
-</table>
-<p class="note">※ ほかにも権限判定・ファイル変更・ワークツリーなどのイベントがあります。設問で問われるのは、上の<b>ツールの前後</b>と<b>セッションの前後</b>です。</p>
-
-<div class="detail">
-  <div class="ex"><span class="exl">止めるかどうかは、フックの<b>終了コード</b>で決まる</span>
-  <b><code>0</code></b>　… 正常。標準出力の JSON（上の <code>hookSpecificOutput</code>）が読まれる<br>
-  <b><code>exit 2</code></b>　… <b>ブロック。</b>標準出力の JSON は無視され、<b>標準エラーの文字がモデルに返る</b><br>
-  <b>それ以外</b>　… 非ブロックの失敗。処理はそのまま進み、記録に残るだけ</div>
-  <div class="myth">
-    <span class="t">誤解</span><span>「異常終了させれば止まる。<code>exit 1</code> でよい」</span>
-    <span class="t o">実際は</span><span><b><code>1</code> では止まりません。</b>「エラーは出たが処理は続行」の扱いになります。止めたいなら <code>exit 2</code> と、モデルに読ませたい理由を<b>標準エラー</b>へ。しかも <code>PostToolUse</code> のように<b>そもそも止まらないイベント</b>では、<code>exit 2</code> でも実行済みの操作は戻りません。</span>
-  </div>
-</div>
-<p class="point"><b>ポイント</b>止めるのは <code>exit 2</code>（<code>1</code> ではない）。<b>取り消せない操作は「後」ではなく「前」で止める</b> ── <code>PostToolUse</code> で気づいても手遅れ。</p>
-
-<h3 class="sub">実物を見る ─ 入力の書き換え</h3>
-<div class="figbox" style="padding:16px 18px">
-  <p class="codelabel">PreToolUse が返す JSON</p>
-  <pre class="code">{
-  <span class="k">"hookSpecificOutput"</span>: {<span class="n">1</span>
-    <span class="k">"hookEventName"</span>: <span class="s">"PreToolUse"</span>,
-    <span class="hl"><span class="k">"updatedInput"</span>: { <span class="k">"file_path"</span>: <span class="s">"/sandbox/notes.md"</span> },</span><span class="n">2</span>
-    <span class="k">"permissionDecision"</span>: <span class="s">"allow"</span><span class="n">3</span>
-  }
-}</pre>
-  <ol class="ann">
-    <li><span class="n">1</span><span><code>updatedInput</code> は必ず <code>hookSpecificOutput</code> の<b>中</b>に置きます。外側に書くと効きません ── 公式ドキュメントが躓きどころとして挙げている点です。</span></li>
-    <li><span class="n">2</span><span>元の引数を書き換えるのではなく<b>新しい値を返します</b>。ここではモデルが出したパスを、サンドボックス配下に差し替えています。</span></li>
-    <li><span class="n">3</span><span>書き換えた入力をそのまま通すなら <code>allow</code>、人に見せるなら <code>ask</code>。指定を省いても書き換えは効き、通常の権限判定に流れます。</span></li>
-  </ol>
-</div>
-
-<div class="detail">
-  <div class="ex"><span class="exl">判定が競合したときの優先順位</span>
-  <code>deny</code> ＞ <code>defer</code> ＞ <code>ask</code> ＞ <code>allow</code><br>
-  どれか1つが <code>deny</code> を返せば、他が何を返しても実行されません。<b>禁止が最も強い</b>と覚えます。<br>
-  ※ <code>defer</code>（あとで判断する）と入力の書き換えは併用できません。書き換えが捨てられます。</div>
-  <div class="myth">
-    <span class="t">誤解</span><span>「フックは危険な操作を止めるための仕組み」</span>
-    <span class="t o">実際は</span><span>止めるのは4つのうち1つです。<b>入力と出力を整える</b>用途 ── パスの差し替え、資格情報の注入、返り値の形を揃える ── も同じ場所で行います。</span>
-  </div>
-</div>
-<p class="note">※ 「必ず起きてほしい処理を仕組み側に置く」という考え方そのものは Domain 5 の〈確実にしたいことは仕組み側へ〉にあります。ここはその割り込み口の中身です。</p>
+<p class="note">※ 「必ず起きてほしい処理を仕組み側に置く」という考え方そのものは Domain 5 の〈確実にしたいことは仕組み側へ〉にあります。ここはその割り込み口の中身です。<br>
+※ <b>どこに書いて、どのツールに効かせるか</b>は次の〈どこに書いて、どう止めるか〉、<b>入力の書き換えと形そろえの実物</b>はその次の〈割り込みで形をそろえる〉で扱います。</p>
 </section>
 <!-- ▲ 本文 -->
-<nav class="secpager btm"><a class="pgv prev" href="../01-agentic/14-gate.html"><span class="vh">前へ</span></a><a class="pgv next" href="../01-agentic/16-q3.html"><span class="vh">次へ</span></a></nav>
+<nav class="secpager btm"><a class="pgv prev" href="../01-agentic/14-gate.html"><span class="vh">前へ</span></a><a class="pgv next" href="../01-agentic/16-hookreg.html"><span class="vh">次へ</span></a></nav>
 </main>
 </div>
 <div class="modal" id="searchModal" hidden>
@@ -275,7 +169,7 @@
     <div class="modal-foot"><kbd>Esc</kbd> で閉じる</div>
   </div>
 </div>
-<script src="../assets/quiz-data.js?v=36c91b65"></script>
-<script src="../assets/search-index.js?v=8690ce7e"></script>
-<script src="../assets/app.js?v=e349201e"></script>
+<script src="../assets/quiz-data.js?v=6eea7702"></script>
+<script src="../assets/search-index.js?v=9439504a"></script>
+<script src="../assets/app.js?v=94ab4eeb"></script>
 </body></html>

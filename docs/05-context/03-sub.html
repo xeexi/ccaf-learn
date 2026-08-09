@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/style.css?v=d673ee43">
+<link rel="stylesheet" href="../assets/style.css?v=8bbb4b5f">
 </head>
 <body data-page="sub">
 <script>(function(){var t=localStorage.getItem('ccarf-theme');if(t)document.documentElement.dataset.theme=t;})();</script>
@@ -49,6 +49,7 @@
   <nav class="toc-list"><a class="itm toc-link" href="../05-context/01-d5about.html"><span class="itm-n">5-1</span><span class="itm-t">このドメインについて</span></a>
 <a class="itm toc-link" href="../05-context/02-compact.html"><span class="itm-n">5-2</span><span class="itm-t">窓が埋まったら</span></a>
 <a class="itm toc-link on" href="../05-context/03-sub.html"><span class="itm-n">5-3</span><span class="itm-t">サブエージェント</span></a>
+<a class="toc-link toc-sub" href="#sub-2">長い探索を、最後まで持たせる</a>
 <a class="itm toc-link" href="../05-context/04-hooks.html"><span class="itm-n">5-4</span><span class="itm-t">確実にしたいことは仕組み側へ</span></a>
 <a class="itm toc-link" href="../05-context/05-shape.html"><span class="itm-n">5-5</span><span class="itm-t">返す量を設計する</span></a>
 <a class="itm toc-link" href="../05-context/06-confidence.html"><span class="itm-n">5-6</span><span class="itm-t">確信が持てないときに止める</span></a>
@@ -103,6 +104,36 @@
       <span class="t o">実際は</span><span>見ていません。<b>渡し忘れた前提は、そのまま誤った成果物として返ってきます。</b></span>
     </div>
   </div>
+<h3 class="sub" id="sub-2">長い探索を、最後まで持たせる</h3>
+<p class="lead">子に逃がしても、段が5つ6つと続けば親の窓も埋まります。<b>窓の外に置く場所</b>を先に決めておきます。</p>
+<p class="goal"><b>ゴール</b>窓が細っていく兆候と、その4つの手を言える。</p>
+
+<div class="figbox"><figure class="fig run">
+  <p class="fig-t">長く続けたときに起きること ─ と、その手当て</p>
+  <div class="fig-row s1" style="--cols:1">
+    <div class="fig-card red">
+      <b class="fig-h">兆候：答えがぼやける</b>
+      <span class="fig-note">最初のほうで見つけた<b>具体的なクラス名やファイル名を言わなくなり</b>、「よくあるパターンでは」と一般論を返しはじめる</span>
+      <span class="fig-note">壊れたのではなく、<b>その具体名がもう窓に載っていない</b>だけ</span>
+    </div>
+  </div>
+  <ol class="fig-steps s2">
+    <li><span class="fig-who blue">① 作業メモ</span><span class="fig-do">分かったことを<b>ファイルに書き出させる</b>。以降は「メモを見て」と言えば済むので、窓の外に置いたまま参照できる</span></li>
+    <li><span class="fig-who blue">② 段ごとに要約</span><span class="fig-do">次の子を起こす前に、<b>その段の結論だけ</b>にまとめる。子の最初の指示にはその要約を入れる</span></li>
+    <li><span class="fig-who blue">③ <code>/compact</code></span><span class="fig-do">溜まった履歴を圧縮する。探索の残骸が増えたときの手。<b>キャッシュは捨てることになる</b>（前提編）</span></li>
+    <li><span class="fig-who blue">④ 状態を書き出す</span><span class="fig-do">各体が<b>決まった場所へ状態を書き出し</b>、再開時は親がそれを読み直す。途中で落ちても、最初からやり直さずに済む</span></li>
+  </ol>
+  <p class="fig-f">①②は<b>予防</b>、③は<b>溜まってからの手</b>、④は<b>落ちたときの備え</b>。同じ「窓が足りない」でも打つ手が違う</p>
+</figure></div>
+
+<p class="point"><b>ポイント</b>「一般論を返しはじめた」は窓が細った合図。<b>大事なことは会話ではなくファイルに置く</b> ── そうすれば、窓が入れ替わっても失われない。</p>
+
+<div class="detail">
+  <div class="myth">
+    <span class="t">誤解</span><span>「答えがぼやけてきたら、もう一度ていねいに聞き直せばよい」</span>
+    <span class="t o">実際は</span><span>聞き方の問題ではありません。<b>参照していた具体名が窓から出ている</b>ので、聞き直しても同じ一般論が返ります。必要なのは、その具体名を<b>もう一度入力に入れること</b>です。</span>
+  </div>
+</div>
 <p class="note">※ 起動の実際（定義ファイル、子に載るもの／載らないもの、並列の上限）は Domain 1 の〈子はどう起こすのか〉にあります。</p>
 </section>
 <!-- ▲ 本文 -->
@@ -116,7 +147,7 @@
     <div class="modal-foot"><kbd>Esc</kbd> で閉じる</div>
   </div>
 </div>
-<script src="../assets/quiz-data.js?v=36c91b65"></script>
-<script src="../assets/search-index.js?v=8690ce7e"></script>
-<script src="../assets/app.js?v=e349201e"></script>
+<script src="../assets/quiz-data.js?v=6eea7702"></script>
+<script src="../assets/search-index.js?v=9439504a"></script>
+<script src="../assets/app.js?v=94ab4eeb"></script>
 </body></html>

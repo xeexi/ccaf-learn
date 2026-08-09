@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/style.css?v=d673ee43">
+<link rel="stylesheet" href="../assets/style.css?v=8bbb4b5f">
 </head>
 <body data-page="plan">
 <script>(function(){var t=localStorage.getItem('ccarf-theme');if(t)document.documentElement.dataset.theme=t;})();</script>
@@ -54,6 +54,7 @@
 <a class="itm toc-link itm-quiz" href="../03-claude-code/06-q32.html"><span class="itm-n">3-6</span><span class="itm-t">理解度チェック ─ コマンドとスキル</span></a>
 <a class="itm toc-link" href="../03-claude-code/07-rules.html"><span class="itm-n">3-7</span><span class="itm-t">パス固有ルール</span></a>
 <a class="itm toc-link on" href="../03-claude-code/08-plan.html"><span class="itm-n">3-8</span><span class="itm-t">plan mode と直接実行</span></a>
+<a class="toc-link toc-sub" href="#plan-2">調べる量が多いときは Explore に出す</a>
 <a class="itm toc-link" href="../03-claude-code/09-iterate.html"><span class="itm-n">3-9</span><span class="itm-t">反復的な改善</span></a>
 <a class="itm toc-link itm-quiz" href="../03-claude-code/10-q345.html"><span class="itm-n">3-10</span><span class="itm-t">理解度チェック ─ ルール・plan mode・改善</span></a>
 <a class="itm toc-link" href="../03-claude-code/11-ci.html"><span class="itm-n">3-11</span><span class="itm-t">非対話実行と CI/CD</span></a>
@@ -107,6 +108,33 @@
     </div>
   </div>
   <p class="point"><b>ポイント</b>plan mode の本質は「編集ができない」こと。だから、方針を間違えたまま手が動く事故を構造的に防げる。</p>
+
+<h3 class="sub" id="plan-2">調べる量が多いときは <code>Explore</code> に出す</h3>
+<p class="lead">計画を立てるには先に調べる必要がありますが、その<b>調べた過程</b>まで本体の窓に残ると、実装に入る前に窓が尽きます。</p>
+<p class="goal"><b>ゴール</b>下調べを本体でやるか、子に出すかを選び分けられる。</p>
+
+<table class="tbl">
+  <thead><tr><th></th><th>本体で調べる</th><th><code>Explore</code> に出す</th></tr></thead>
+  <tbody>
+    <tr><th>窓に残るもの</th>
+      <td data-l="本体で調べる"><span class="ng">読んだファイルの中身が全部残る</span></td>
+      <td data-l="Explore に出す"><span class="ok">要約だけが返る。</span>読んだ中身は子の窓で消える</td></tr>
+    <tr><th>向く場面</th>
+      <td data-l="本体で調べる">見るファイルが数個と分かっているとき</td>
+      <td data-l="Explore に出す">どこにあるか分からない、何十ファイルも当たるとき</td></tr>
+    <tr><th>段が多いとき</th>
+      <td data-l="本体で調べる">2段目・3段目に入る前に窓が尽きる</td>
+      <td data-l="Explore に出す">段ごとに要約を持ち帰るので、最後まで持つ</td></tr>
+  </tbody>
+</table>
+
+<p class="point"><b>ポイント</b>plan mode は「変更させない」仕組み、<code>Explore</code> は「探索の残骸を持ち込ませない」仕組み。長い調査を伴う計画では、両方を使う。</p>
+
+<div class="detail">
+  <div class="ex"><span class="exl">plan mode と直接実行は、混ぜて使う</span>
+  「どちらか一方を選ぶ」ものではありません。<b>調べて方針を決めるところは plan mode、決まった手順を流すところは直接実行</b>という組み合わせが基本形です。<br>
+  例：ライブラリ移行 →（plan mode）影響範囲を調べて手順を合意 →（直接実行）合意した手順を流す。</div>
+</div>
 </section>
 <!-- ▲ 本文 -->
 <nav class="secpager btm"><a class="pgv prev" href="../03-claude-code/07-rules.html"><span class="vh">前へ</span></a><a class="pgv next" href="../03-claude-code/09-iterate.html"><span class="vh">次へ</span></a></nav>
@@ -119,7 +147,7 @@
     <div class="modal-foot"><kbd>Esc</kbd> で閉じる</div>
   </div>
 </div>
-<script src="../assets/quiz-data.js?v=36c91b65"></script>
-<script src="../assets/search-index.js?v=8690ce7e"></script>
-<script src="../assets/app.js?v=e349201e"></script>
+<script src="../assets/quiz-data.js?v=6eea7702"></script>
+<script src="../assets/search-index.js?v=9439504a"></script>
+<script src="../assets/app.js?v=94ab4eeb"></script>
 </body></html>

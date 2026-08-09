@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/style.css?v=d673ee43">
+<link rel="stylesheet" href="../assets/style.css?v=8bbb4b5f">
 </head>
 <body data-page="criteria">
 <script>(function(){var t=localStorage.getItem('ccarf-theme');if(t)document.documentElement.dataset.theme=t;})();</script>
@@ -100,9 +100,9 @@
 <p class="point"><b>ポイント</b>「見つけて」は基準ではない。<b>何を該当とし、何を対象外とするか</b>を書いて初めて、出力が絞れる。</p>
 
 <div class="detail">
-  <div class="ex"><span class="exl">左右で変わったのは、指示の3行だけ</span>
-  上は「バグ」の範囲が決まっていないので、気になった点をすべて拾ってきます。増えるのは<b>誤検知</b>で、
-  件数は多いのに確認の手間ばかりかかります。下は<b>該当条件・対象外・境界</b>を書いたので、1件に絞れています。</div>
+  <div class="ex"><span class="exl">2つの例で変わったのは、指示の3行だけ</span>
+  <b>基準を書かないほう</b>は「バグ」の範囲が決まっていないので、気になった点をすべて拾ってきます。増えるのは<b>誤検知</b>で、
+  件数は多いのに確認の手間ばかりかかります。<b>基準を書いたほう</b>は<b>該当条件・対象外・境界</b>を示したので、1件に絞れています。</div>
       <div class="ex"><span class="exl">基準の書き方の型</span>
     ・<b>該当するもの</b>を列挙する（できれば3つ以内）<br>
     ・<b>該当しないもの</b>も書く（「読みにくさ・命名は対象外」）<br>
@@ -154,6 +154,7 @@
     「確認の手間を減らしたい」→ <b>確度を返させ、低いものだけ人が見る</b>（Domain 5 の人間レビュー設計につながります）。</div>
   </div>
   <p class="point"><b>ポイント</b>ゼロ件・分類不能・確信が持てない ── <b>これらを表現できる受け皿</b>を先に用意する。</p>
+<p class="note">※ <b>誤検知が多い分類は、基準が書けるまで一時的に外す</b>という手もあります。1つの分類が誤検知を出し続けると、<b>正しく出ている他の分類まで信用されなくなる</b>ためです ── 「これはよく間違える」と思われた時点で、当たっている指摘も読み飛ばされます。全部を鳴らし続けるより、<b>基準が書けた分類だけを鳴らす</b>ほうが早く信用が戻ります。</p>
 </section>
 <!-- ▲ 本文 -->
 <nav class="secpager btm"><a class="pgv prev" href="../04-prompt/06-q0.html"><span class="vh">前へ</span></a><a class="pgv next" href="../04-prompt/08-fewshot.html"><span class="vh">次へ</span></a></nav>
@@ -166,7 +167,7 @@
     <div class="modal-foot"><kbd>Esc</kbd> で閉じる</div>
   </div>
 </div>
-<script src="../assets/quiz-data.js?v=36c91b65"></script>
-<script src="../assets/search-index.js?v=8690ce7e"></script>
-<script src="../assets/app.js?v=e349201e"></script>
+<script src="../assets/quiz-data.js?v=6eea7702"></script>
+<script src="../assets/search-index.js?v=9439504a"></script>
+<script src="../assets/app.js?v=94ab4eeb"></script>
 </body></html>

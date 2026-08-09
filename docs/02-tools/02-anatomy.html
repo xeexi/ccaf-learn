@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/style.css?v=d673ee43">
+<link rel="stylesheet" href="../assets/style.css?v=8bbb4b5f">
 </head>
 <body data-page="anatomy">
 <script>(function(){var t=localStorage.getItem('ccarf-theme');if(t)document.documentElement.dataset.theme=t;})();</script>
@@ -98,6 +98,10 @@
   ○ 何をするか＋<b>いつ呼ぶか</b>＋<b>いつ呼ばないか</b>：<br>
   <code>"コーディング規約を取得する。命名やフォーマットに触れる前に必ず呼ぶ。一般的な設計方針の質問には使わない"</code><br>
   3つ目の「いつ呼ばないか」が<b>境界</b>です。これがないと、近い話題のたびに呼ばれます。</div>
+  <div class="ex"><span class="exl">説明文を直しても呼ばれないときは、<code>system</code> を疑う</span>
+  <code>system</code> に「調べものはまず検索から」と書いてあると、モデルはその語に引きずられて、丁寧に書いた <code>description</code> より名前が「検索」に近い道具を選びます。
+  <b>ツールの選ばれ方は、道具の説明文だけで決まっていません。</b><code>system</code> の言葉と、道具の名前や説明文が勝手に結びつくことがあります。<br>
+  呼ばれ方がおかしいときは、<code>system</code> に<b>特定の道具を連想させる語</b>が入っていないかを見ます。</div>
   <div class="myth">
     <span class="t">誤解</span><span>「<code>description</code> はコードのコメントのようなもの。人間が読む用」</span>
     <span class="t o">実際は</span><span><b>プロンプトの一部</b>です。しかも常にコンテキストを消費しています（前提編）。丁寧に、しかし冗長にならないよう書きます。</span>
@@ -115,7 +119,7 @@
     <div class="modal-foot"><kbd>Esc</kbd> で閉じる</div>
   </div>
 </div>
-<script src="../assets/quiz-data.js?v=36c91b65"></script>
-<script src="../assets/search-index.js?v=8690ce7e"></script>
-<script src="../assets/app.js?v=e349201e"></script>
+<script src="../assets/quiz-data.js?v=6eea7702"></script>
+<script src="../assets/search-index.js?v=9439504a"></script>
+<script src="../assets/app.js?v=94ab4eeb"></script>
 </body></html>

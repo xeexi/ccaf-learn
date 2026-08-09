@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/style.css?v=d673ee43">
+<link rel="stylesheet" href="../assets/style.css?v=8bbb4b5f">
 </head>
 <body data-page="verify">
 <script>(function(){var t=localStorage.getItem('ccarf-theme');if(t)document.documentElement.dataset.theme=t;})();</script>
@@ -131,6 +131,11 @@
       <span class="t">誤解</span><span>「落ちたら同じプロンプトでもう一度投げればいい」</span>
       <span class="t o">実際は</span><span>同じ入力を投げ直しても<b>同じ理由で落ちる確率が高い</b>。<b>指摘を入力に足すこと</b>が再試行の本体です。</span>
     </div>
+  <div class="ex"><span class="exl">却下された指摘から、次の基準を作る ─ <code>detected_pattern</code></span>
+  人が「これは違う」と却下した指摘を<b>そのまま捨てると、何も残りません。</b>
+  出力する1件ごとに「<b>どの書き方を見てそう判断したか</b>」を <code>detected_pattern</code> のような欄で持たせておくと、
+  却下されたものを集めたときに<b>どのパターンが誤検知を生んでいるか</b>が数で出ます。<br>
+  そこが分かってはじめて、基準を書き直せます ── <b>「精度が低い」だけでは直しようがありません。</b></div>
   </div>
 </section>
 <!-- ▲ 本文 -->
@@ -144,7 +149,7 @@
     <div class="modal-foot"><kbd>Esc</kbd> で閉じる</div>
   </div>
 </div>
-<script src="../assets/quiz-data.js?v=36c91b65"></script>
-<script src="../assets/search-index.js?v=8690ce7e"></script>
-<script src="../assets/app.js?v=e349201e"></script>
+<script src="../assets/quiz-data.js?v=6eea7702"></script>
+<script src="../assets/search-index.js?v=9439504a"></script>
+<script src="../assets/app.js?v=94ab4eeb"></script>
 </body></html>

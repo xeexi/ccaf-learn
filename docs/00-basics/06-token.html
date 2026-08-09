@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/style.css?v=d673ee43">
+<link rel="stylesheet" href="../assets/style.css?v=8bbb4b5f">
 </head>
 <body data-page="token">
 <script>(function(){var t=localStorage.getItem('ccarf-theme');if(t)document.documentElement.dataset.theme=t;})();</script>
@@ -89,6 +89,9 @@
     <p>この性質は消せません。消せない前提で、外側を設計します。<b>事実が要るなら道具で取りに行かせる</b>（Domain 1）、<b>形が要るならスキーマで受け取る</b>（Domain 4）、<b>絶対に守らせたいならコードで塞ぐ</b>（Domain 2・Domain 5）。この教材の残りは、ほぼこの1点への対処と言ってもかまいません。</p>
   </div>
   <p class="point"><b>ポイント</b>この選択の繰り返しが生成の実体。だから同じ質問でも答えは毎回わずかに揺れるし、もっともらしい嘘も起こりうる。確実性が要るところは、モデルの外側（コードによる検証など）で担保する。</p>
+<p class="note">※ 選ぶときの<b>散らばり具合</b>は <code>temperature</code>（温度）という値で調整できます。0 に近づけるほど、いつも最も確率の高い候補を選ぶようになり、答えは揺れにくくなります。<br>
+ただし<b>0 にしても「正しくなる」わけではありません。</b>選び方が偏るだけで、確率のもとになっている中身は変わらないので、もっともらしい誤りは同じように出ます ── <b>毎回同じ誤りが返るようになるだけ</b>です。<br>
+そのため設問では「<code>temperature</code> を下げる」「<code>temperature</code> を 0 にする」は<b>ほぼ誤答</b>です。精度や形を保証したいなら、モデルの外側（検算・スキーマ・関門）で担保します。</p>
 </section>
 <!-- ▲ 本文 -->
 <nav class="secpager btm"><a class="pgv prev" href="../00-basics/05-cache.html"><span class="vh">前へ</span></a><a class="pgv next" href="../00-basics/07-q.html"><span class="vh">次へ</span></a></nav>
@@ -101,7 +104,7 @@
     <div class="modal-foot"><kbd>Esc</kbd> で閉じる</div>
   </div>
 </div>
-<script src="../assets/quiz-data.js?v=36c91b65"></script>
-<script src="../assets/search-index.js?v=8690ce7e"></script>
-<script src="../assets/app.js?v=e349201e"></script>
+<script src="../assets/quiz-data.js?v=6eea7702"></script>
+<script src="../assets/search-index.js?v=9439504a"></script>
+<script src="../assets/app.js?v=94ab4eeb"></script>
 </body></html>

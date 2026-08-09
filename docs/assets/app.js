@@ -158,7 +158,7 @@
 
   /* ---------- 理解度チェック ---------- */
   const QUIZ = window.QUIZ || {};
-  document.querySelectorAll('.sec-quiz[data-quiz]').forEach(sec => {
+  document.querySelectorAll('[data-quiz]').forEach(sec => {
     const data = QUIZ[sec.dataset.quiz];
     const wrap = sec.querySelector('.qwrap');
     if (!data || !wrap) return;

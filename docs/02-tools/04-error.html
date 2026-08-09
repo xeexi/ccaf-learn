@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/style.css?v=d673ee43">
+<link rel="stylesheet" href="../assets/style.css?v=8bbb4b5f">
 </head>
 <body data-page="error">
 <script>(function(){var t=localStorage.getItem('ccarf-theme');if(t)document.documentElement.dataset.theme=t;})();</script>
@@ -51,6 +51,7 @@
 <a class="itm toc-link" href="../02-tools/03-grain.html"><span class="itm-n">2-3</span><span class="itm-t">ツールの粒度</span></a>
 <a class="itm toc-link on" href="../02-tools/04-error.html"><span class="itm-n">2-4</span><span class="itm-t">失敗は読める形で返す</span></a>
 <a class="toc-link toc-sub" href="#error-1">ツールの失敗は「読める文章」で返す</a>
+<a class="toc-link toc-sub" href="#error-3">種類も添える ─ もう一度試して意味があるか</a>
 <a class="toc-link toc-sub" href="#error-2">実物を見る ─ 失敗を返す tool_result</a>
 <a class="itm toc-link" href="../02-tools/05-mcp.html"><span class="itm-n">2-5</span><span class="itm-t">MCP という差込口</span></a>
 <a class="itm toc-link" href="../02-tools/06-perm.html"><span class="itm-n">2-6</span><span class="itm-t">権限と副作用</span></a>
@@ -100,6 +101,55 @@
 </div>
   <p class="point"><b>ポイント</b>返す文には「何が起きたか」と「どう直せるか」を両方入れる。ただし無限に再試行させないよう、回数の上限は外側で持つ。</p>
 
+<h3 class="sub" id="error-3">種類も添える ─ もう一度試して意味があるか</h3>
+<p class="lead">文章だけだと、受け取った側は<b>もう一度試すべきか</b>を毎回読み取ることになります。種類を欄で添えると、そこはコードで決められます。</p>
+<p class="goal"><b>ゴール</b>失敗を4つに分けて、再試行の可否を言える。</p>
+
+<table class="tbl">
+  <thead><tr><th>種類</th><th>例</th><th>もう一度試して直るか</th></tr></thead>
+  <tbody>
+    <tr><td data-l="種類"><b>一時的</b><br><code>transient</code></td>
+        <td data-l="例">タイムアウト、相手が一時的に落ちている</td>
+        <td data-l="直るか"><span class="ok">直りうる</span>　<b>同じ引数で</b>間をおいて再試行</td></tr>
+    <tr><td data-l="種類"><b>検証</b><br><code>validation</code></td>
+        <td data-l="例">引数の形が違う、必須が足りない</td>
+        <td data-l="直るか"><span class="ok">直りうる</span>　ただし<b>引数を直してから</b>。同じ引数では何度でも同じ</td></tr>
+    <tr><td data-l="種類"><b>業務</b><br><code>business</code></td>
+        <td data-l="例">規約で禁じられている（返金の上限を超えた）</td>
+        <td data-l="直るか"><span class="ng">直らない</span>　利用者に説明できる文で返し、再試行しない</td></tr>
+    <tr><td data-l="種類"><b>権限</b><br><code>permission</code></td>
+        <td data-l="例">その操作を許されていない</td>
+        <td data-l="直るか"><span class="ng">直らない</span>　誰に頼めばよいかを添える</td></tr>
+  </tbody>
+</table>
+
+<div class="figbox" style="padding:16px 18px">
+  <p class="codelabel">返す中身 ─ 文章に、2つの欄を添える</p>
+  <pre class="code">{
+  <span class="hl"><span class="k">"errorCategory"</span>: <span class="s">"validation"</span>,</span><span class="n">1</span>
+  <span class="hl"><span class="k">"isRetryable"</span>: <span class="v">true</span>,</span><span class="n">2</span>
+  <span class="k">"message"</span>: <span class="s">"A12 は見つかりません。ID は A-数字 の形式です"</span><span class="n">3</span>
+}</pre>
+  <ol class="ann">
+    <li><span class="n">1</span><span>4つのどれか。これで<b>誰が対処すべきか</b>が決まります ── 検証なら自分で直せる、業務なら利用者に伝える、権限なら人に回す。</span></li>
+    <li><span class="n">2</span><span><b>もう一度試して意味があるか。</b>これが無いと、直らない失敗を上限まで叩き続けます。判断がコードでできる形になっているのが要点です。</span></li>
+    <li><span class="n">3</span><span>人（とモデル）が読む文。<b>「エラーが発生しました」で済ませると、上の2欄も意味を失います。</b></span></li>
+  </ol>
+</div>
+
+<p class="point"><b>ポイント</b>失敗は「一時的・検証・業務・権限」の4つに分かれ、<b>やり直して直るのは前2つだけ</b>。種類と再試行可否を欄で返せば、そこの判断はコードでできる。</p>
+
+<div class="detail">
+  <div class="ex"><span class="exl">「0件」は失敗ではない</span>
+  <b>「該当0件」は成功です。</b>「検索そのものができなかった」が失敗です。<br>
+  この2つを同じ空の結果で返すと、受け取った側は<b>もう一度試すべきか判断できません</b> ── 0件なら次へ進めばよく、アクセス失敗なら再試行が要ります。
+  <b>0件は「見つからなかった」と書いて成功で返し、失敗は失敗として返します。</b></div>
+  <div class="myth">
+    <span class="t">誤解</span><span>「失敗はすべて上（親や利用者）に上げるのが正しい」</span>
+    <span class="t o">実際は</span><span>一時的な失敗は<b>その場で回復を試みます</b>。上に上げるのは、自分で解決できなかったものだけ ── そのとき「何を試したか」と「途中まで得たもの」を添えます（Domain 5 の〈失敗を親まで届ける〉）。</span>
+  </div>
+</div>
+
 <h3 class="sub" id="error-2">実物を見る ─ 失敗を返す <code>tool_result</code></h3>
 <p class="lead">上の考え方を、実際にアプリが送る JSON で確認します。</p>
   <div class="figbox" style="padding:16px 18px">
@@ -130,7 +180,7 @@
     <div class="modal-foot"><kbd>Esc</kbd> で閉じる</div>
   </div>
 </div>
-<script src="../assets/quiz-data.js?v=36c91b65"></script>
-<script src="../assets/search-index.js?v=8690ce7e"></script>
-<script src="../assets/app.js?v=e349201e"></script>
+<script src="../assets/quiz-data.js?v=6eea7702"></script>
+<script src="../assets/search-index.js?v=9439504a"></script>
+<script src="../assets/app.js?v=94ab4eeb"></script>
 </body></html>

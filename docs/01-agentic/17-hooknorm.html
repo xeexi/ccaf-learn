@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>1-8　理解度チェック ─ ループ ─ Domain 1 ─ CCAR-F 学習ノート</title>
+<title>1-17　割り込みで、形をそろえる ─ Domain 1 ─ CCAR-F 学習ノート</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/style.css?v=8bbb4b5f">
 </head>
-<body data-page="q1">
+<body data-page="hooknorm">
 <script>(function(){var t=localStorage.getItem('ccarf-theme');if(t)document.documentElement.dataset.theme=t;})();</script>
 <nav class="domnav">
   <a class="brand" href="../index.html"><span class="brand-mark">CCAR-F</span><span class="brand-sub">学習ノート</span></a>
@@ -53,7 +53,7 @@
 <a class="itm toc-link" href="../01-agentic/05-seq.html"><span class="itm-n">1-5</span><span class="itm-t">誰が、何を送っているのか</span></a>
 <a class="itm toc-link" href="../01-agentic/06-real.html"><span class="itm-n">1-6</span><span class="itm-t">実物を見る ─ 往復のJSON</span></a>
 <a class="itm toc-link" href="../01-agentic/07-broken.html"><span class="itm-n">1-7</span><span class="itm-t">ループが壊れるとき</span></a>
-<a class="itm toc-link on itm-quiz" href="../01-agentic/08-q1.html"><span class="itm-n">1-8</span><span class="itm-t">理解度チェック ─ ループ</span></a>
+<a class="itm toc-link itm-quiz" href="../01-agentic/08-q1.html"><span class="itm-n">1-8</span><span class="itm-t">理解度チェック ─ ループ</span></a>
 <a class="itm toc-link" href="../01-agentic/09-split.html"><span class="itm-n">1-9</span><span class="itm-t">1体か、分けるか</span></a>
 <a class="itm toc-link" href="../01-agentic/10-parent.html"><span class="itm-n">1-10</span><span class="itm-t">親子の形</span></a>
 <a class="itm toc-link" href="../01-agentic/11-chain.html"><span class="itm-n">1-11</span><span class="itm-t">固定チェーンか、動的分解か</span></a>
@@ -62,24 +62,92 @@
 <a class="itm toc-link" href="../01-agentic/14-gate.html"><span class="itm-n">1-14</span><span class="itm-t">前提は関門で、引き継ぎは欄で</span></a>
 <a class="itm toc-link" href="../01-agentic/15-intercept.html"><span class="itm-n">1-15</span><span class="itm-t">ツール呼び出しに割り込む</span></a>
 <a class="itm toc-link" href="../01-agentic/16-hookreg.html"><span class="itm-n">1-16</span><span class="itm-t">どこに書いて、どう止めるか</span></a>
-<a class="itm toc-link" href="../01-agentic/17-hooknorm.html"><span class="itm-n">1-17</span><span class="itm-t">割り込みで、形をそろえる</span></a>
+<a class="itm toc-link on" href="../01-agentic/17-hooknorm.html"><span class="itm-n">1-17</span><span class="itm-t">割り込みで、形をそろえる</span></a>
+<a class="toc-link toc-sub" href="#hn-1">入力を書き換える ─ 実物</a>
+<a class="toc-link toc-sub" href="#hn-2">返ってきた値の形をそろえる ─ PostToolUse</a>
 <a class="itm toc-link itm-quiz" href="../01-agentic/18-q3.html"><span class="itm-n">1-18</span><span class="itm-t">理解度チェック ─ 起動と強制</span></a>
 <a class="itm toc-link" href="../01-agentic/19-session.html"><span class="itm-n">1-19</span><span class="itm-t">セッションをまたぐ</span></a>
 <a class="itm toc-link itm-quiz" href="../01-agentic/20-q4.html"><span class="itm-n">1-20</span><span class="itm-t">理解度チェック ─ セッション</span></a></nav>
 </aside>
 <main class="doc">
 <p class="crumb" data-domain="agentic"><b>Domain 1</b><span>エージェント設計とオーケストレーション</span></p>
-<nav class="secpager top"><a class="pgv prev" href="../01-agentic/07-broken.html"><span class="vh">前へ</span></a><a class="pgv next" href="../01-agentic/09-split.html"><span class="vh">次へ</span></a></nav>
+<nav class="secpager top"><a class="pgv prev" href="../01-agentic/16-hookreg.html"><span class="vh">前へ</span></a><a class="pgv next" href="../01-agentic/18-q3.html"><span class="vh">次へ</span></a></nav>
 <!-- ▼ 本文 ─ ここだけを編集する。この前後は node tools/reindex.mjs が書き出す -->
-<section class="sec sec-quiz" id="q1" data-quiz="q2">
+<section class="sec" id="hooknorm">
 <header class="sec-head">
-  <h2>1-8　理解度チェック ─ ループ</h2>
+  <h2>1-17　割り込みで、形をそろえる</h2>
 </header>
-<p class="lead"><span class="qcount"></span>選択肢をクリックすると、その場で正誤と解説が出ます。</p>
-  <div class="qwrap"></div>
+<p class="lead">4つのうち「止める」以外の3つ ── 入力の書き換え・出力の差し替え・記録 ── は、どれも<b>データを通す前後で整える</b>仕事です。ここがタスク名の後半にある「正規化」です。</p>
+<p class="task" data-t="1.5"><span class="tn">BLUEPRINT 1.5</span><b>Apply Agent SDK hooks for tool call interception and data normalization</b></p>
+
+<h3 class="sub" id="hn-1">入力を書き換える ─ 実物</h3>
+<p class="goal"><b>ゴール</b>書き換えた値をどこに返すか言える。</p>
+
+<div class="figbox" style="padding:16px 18px">
+  <p class="codelabel">PreToolUse が返す JSON</p>
+  <pre class="code">{
+  <span class="k">"hookSpecificOutput"</span>: {<span class="n">1</span>
+    <span class="k">"hookEventName"</span>: <span class="s">"PreToolUse"</span>,
+    <span class="hl"><span class="k">"updatedInput"</span>: { <span class="k">"file_path"</span>: <span class="s">"/sandbox/notes.md"</span> },</span><span class="n">2</span>
+    <span class="k">"permissionDecision"</span>: <span class="s">"allow"</span><span class="n">3</span>
+  }
+}</pre>
+  <ol class="ann">
+    <li><span class="n">1</span><span><code>updatedInput</code> は必ず <code>hookSpecificOutput</code> の<b>中</b>に置きます。外側に書くと効きません ── 公式ドキュメントが躓きどころとして挙げている点です。</span></li>
+    <li><span class="n">2</span><span>元の引数を書き換えるのではなく<b>新しい値を返します</b>。ここではモデルが出したパスを、サンドボックス配下に差し替えています。</span></li>
+    <li><span class="n">3</span><span>書き換えた入力をそのまま通すなら <code>allow</code>、人に見せるなら <code>ask</code>。指定を省いても書き換えは効き、通常の権限判定に流れます。</span></li>
+  </ol>
+</div>
+
+<p class="point"><b>ポイント</b>書き換えは <code>hookSpecificOutput.updatedInput</code> に<b>新しい値を返す</b>形。元の引数を直接いじるのではない。</p>
+
+<div class="detail">
+  <div class="ex"><span class="exl">判定が競合したときの優先順位</span>
+  <code>deny</code> ＞ <code>defer</code> ＞ <code>ask</code> ＞ <code>allow</code><br>
+  どれか1つが <code>deny</code> を返せば、他が何を返しても実行されません。<b>禁止が最も強い</b>と覚えます。<br>
+  ※ <code>defer</code>（あとで判断する）と入力の書き換えは併用できません。書き換えが捨てられます。</div>
+  <div class="myth">
+    <span class="t">誤解</span><span>「フックは危険な操作を止めるための仕組み」</span>
+    <span class="t o">実際は</span><span>止めるのは4つのうち1つです。<b>入力と出力を整える</b>用途 ── パスの差し替え、資格情報の注入、返り値の形をそろえる ── も同じ場所で行います。</span>
+  </div>
+</div>
+
+<h3 class="sub" id="hn-2">返ってきた値の形をそろえる ─ <code>PostToolUse</code></h3>
+<p class="lead">道具を何本も繋ぐと、同じ「日時」が3通りの形で返ってきます。モデルに読ませる前にそろえてしまえば、以降は1つの形しか出てきません。</p>
+<p class="goal"><b>ゴール</b>形のばらつきを、どこで吸収するか言える。</p>
+
+<table class="tbl">
+  <thead><tr><th></th><th>プロンプトでお願いする</th><th><code>PostToolUse</code> でそろえる</th></tr></thead>
+  <tbody>
+    <tr><th>やること</th>
+      <td data-l="プロンプトでお願いする"><code>system</code> に「日時は <code>ISO 8601</code> として読んで」と書く</td>
+      <td data-l="PostToolUse でそろえる">道具が返した直後に、コードで <code>ISO 8601</code> へ直す</td></tr>
+    <tr><th>確実さ</th>
+      <td data-l="プロンプトでお願いする"><span class="ng">確率。読み違えても気づけない</span></td>
+      <td data-l="PostToolUse でそろえる"><span class="ok">決定的。そろった形しかモデルに届かない</span></td></tr>
+    <tr><th>窓への影響</th>
+      <td data-l="プロンプトでお願いする">生の値がそのまま履歴に残る</td>
+      <td data-l="PostToolUse でそろえる">そろえた後の形だけが残る</td></tr>
+  </tbody>
+</table>
+
+<p class="point"><b>ポイント</b>形のばらつきは、プロンプトで頼むのではなく <code>PostToolUse</code> で吸収する。モデルが読む前に直すので、そろっていない値は履歴にも残らない。</p>
+
+<div class="detail">
+  <div class="ex"><span class="exl">ばらつく代表3つ</span>
+  ・<b>日時</b>　<code>1767225600</code>（Unix 秒）／<code>2026-01-01T00:00:00Z</code>（<code>ISO 8601</code>）／<code>2026/01/01</code><br>
+  ・<b>状態</b>　<code>2</code>（数値コード）／<code>"shipped"</code>／<code>"SHIPPED"</code><br>
+  ・<b>金額</b>　<code>1200</code>（円）／<code>12.00</code>（ドル）／<code>"¥1,200"</code><br>
+  別々の提供元の MCP サーバを繋いだなら、そろっている理由がありません。<b>繋いだ側でそろえます。</b></div>
+  <div class="myth">
+    <span class="t">誤解</span><span>「形がばらついていても、Claude が文脈で読み取ってくれる」</span>
+    <span class="t o">実際は</span><span>たいてい読めますが、<b>読めなかったときに気づけません。</b><code>2</code> を「2番目の状態」と読むか「2件」と読むかは確率で決まります。日付の前後関係を比べる計算をさせるなら、形は先にそろえておきます。</span>
+  </div>
+</div>
+<p class="note">※ そろえた形を「必ず」保ちたいなら、返す側（ツールやサーバ）を直すのが本筋です。<code>PostToolUse</code> は<b>直せない相手</b>（他社の MCP サーバなど）を繋いだときの受け皿です。</p>
 </section>
 <!-- ▲ 本文 -->
-<nav class="secpager btm"><a class="pgv prev" href="../01-agentic/07-broken.html"><span class="vh">前へ</span></a><a class="pgv next" href="../01-agentic/09-split.html"><span class="vh">次へ</span></a></nav>
+<nav class="secpager btm"><a class="pgv prev" href="../01-agentic/16-hookreg.html"><span class="vh">前へ</span></a><a class="pgv next" href="../01-agentic/18-q3.html"><span class="vh">次へ</span></a></nav>
 </main>
 </div>
 <div class="modal" id="searchModal" hidden>

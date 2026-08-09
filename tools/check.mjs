@@ -130,7 +130,8 @@ const order = [];
 FILES.forEach(f => {
   const h = fs.readFileSync(path.join(ROOT, f), 'utf8');
   h.split(/(?=<section class="sec)/).filter(s => /^<section class="sec/.test(s))
-    .forEach(sec => order.push({ f, quiz: (sec.match(/data-quiz="([^"]*)"/) || [])[1], body: sec }));
+    .forEach(sec => order.push({ f, quiz: (sec.match(/data-quiz="([^"]*)"/) || [])[1],
+      quizOnly: /^<section class="sec sec-quiz/.test(sec), body: sec }));
 });
 const firstAt = {};
 TERMS.forEach(t => {
@@ -159,7 +160,7 @@ if (!scopeNg) console.log('  ✓ すべて既習範囲内');
    同じドメインに2つ以上あるときは、副題で中身を書き分ける。 */
 console.log('\n■ 設問の見出し');
 let qhNg = 0;
-const qHeads = order.filter(s => s.quiz).map(s => ({
+const qHeads = order.filter(s => s.quizOnly).map(s => ({
   f: s.f,
   dom: s.f.slice(0, 2),
   h2: ((s.body.match(/<h2>([\s\S]*?)<\/h2>/) || ['', ''])[1]).replace(/<[^>]*>/g, '').trim(),
@@ -191,7 +192,7 @@ if (!orphan.length && !missing.length) console.log(`  ✓ ${usedKeys.size} キ�
 console.log('\n■ ゴール');
 let goalNg = 0;
 order.forEach(s => {
-  if (s.quiz) return;
+  if (s.quizOnly) return;
   if (/class="goal"/.test(s.body)) return;
   bad(`${s.f} #${(s.body.match(/id="([^"]+)"/) || [])[1]}: ゴール（.goal）がない`);
   goalNg++;
@@ -393,7 +394,12 @@ if (!balNg) console.log(`  ✓ 本文 ${FILES.length} ファイルで div / sect
    入れてよいのは、公式ドキュメントで裏取りした語だけ。
    一般的な日本語（「要約」「検証」など）は偶然一致するので入れない。
    判定は本文（▼本文〜▲本文）のタグを外した文字列に対して行う ──
-   <code>pause_turn</code> のようにタグで割れていても拾えるようにするため。 */
+   <code>pause_turn</code> のようにタグで割れていても拾えるようにするため。
+
+   **この一覧は公式 Exam Guide の「6. Detailed Objectives by Domain」の
+   Knowledge of / Skills in から写す。** 以前ここは私の要約から作られていて、
+   74件すべて通るのに穴が11件あった（§7 #47）── 原文に無いものを数えても、
+   原文にあるものは見つからない。語を足すときも原文を開くこと。 */
 console.log('\n■ 必須語彙の網羅（ブループリントが名指ししている語）');
 const VOCAB = {
   // Domain 1 — stop_reason は7値すべて。pause_turn を落とすと
@@ -401,17 +407,23 @@ const VOCAB = {
   '1.1 ループと stop_reason': ['stop_reason', 'tool_use', 'end_turn', 'max_tokens',
     'pause_turn', 'stop_sequence', 'model_context_window_exceeded', 'tool_result'],
   '1.2 コーディネータ':      ['コーディネータ'],
-  '1.3 子の起動と並列':      ['disable_parallel_tool_use', '並列ツール使用'],
+  // 1.3 は「Task ツールで起こす」「allowedTools に Task が要る」「AgentDefinition で
+  // 定義する」「fork_session で分岐する」まで原文が名指ししている
+  '1.3 子の起動と並列':      ['disable_parallel_tool_use', '並列ツール使用',
+    'allowedTools', 'AgentDefinition', 'fork_session'],
   '1.4 関門とハンドオフ':    ['PreToolUse', 'PostToolUse'],
+  // 1.5 のタスク名は「tool call interception **and data normalization**」。
+  // 後半を落とすと、タスクの半分が無い状態になる
   '1.5 hooks':               ['matcher', 'permissionDecision', 'updatedInput',
-    'SessionStart', 'SubagentStop', 'PreCompact', 'exit 2'],
+    'SessionStart', 'SubagentStop', 'PreCompact', 'exit 2', 'ISO 8601'],
   '1.6 タスク分解':          ['固定チェーン', '動的分解'],
   '1.7 セッション':          ['--resume', '--continue', '--fork-session'],
   // Domain 2 — 2.5 は「誰が実行するか」が骨格。client / server の別が要る
   '2.1 ツール定義':          ['input_schema', 'description'],
-  '2.2 エラー応答':          ['is_error'],
+  // 2.2 は「読める文章で返す」だけでなく、**種別と再試行可否を構造で返す**まで
+  '2.2 エラー応答':          ['is_error', 'errorCategory', 'isRetryable'],
   '2.3 配分と tool_choice':  ['tool_choice'],
-  '2.4 MCP':                 ['.mcp.json', 'stdio', 'resources', 'prompts'],
+  '2.4 MCP':                 ['.mcp.json', '~/.claude.json', 'stdio', 'resources', 'prompts'],
   // 公式のタスク文が道具を名指ししている ──
   // 「Select and apply built-in tools (Read, Write, Edit, Bash, Grep, Glob) effectively」。
   // 以前ここに web_fetch / text_editor / memory を入れていたが、
@@ -419,23 +431,26 @@ const VOCAB = {
   '2.5 組み込みツール':      ['Grep', 'Glob', 'Read', 'Write', 'Edit', 'Bash',
     'クライアントツール', 'サーバツール', 'web_search', 'code_execution'],
   // Domain 3
-  '3.1 CLAUDE.md':           ['CLAUDE.md', 'CLAUDE.local.md'],
+  '3.1 CLAUDE.md':           ['CLAUDE.md', 'CLAUDE.local.md', '/memory'],
   '3.2 コマンドとスキル':    ['SKILL.md', 'allowed-tools', 'argument-hint', '$ARGUMENTS', 'context: fork',
     'YAML frontmatter'],   // ← JSON と見分けがつかないと「キーにハイフン？」になる（§7 #34）
   '3.3 パス固有ルール':      ['.claude/rules', 'paths'],
-  '3.4 plan mode':           ['plan mode', '--permission-mode'],
-  '3.6 CI/CD':               ['--output-format', '--allowedTools', 'bypassPermissions',
-    'settings.json', 'permissions', 'GitHub Actions'],
+  // 3.4 は plan mode だけでなく **Explore** も原文が名指ししている
+  '3.4 plan mode':           ['plan mode', '--permission-mode', 'Explore'],
+  '3.6 CI/CD':               ['--print', '--output-format', '--json-schema', '--allowedTools',
+    'bypassPermissions', 'settings.json', 'permissions', 'GitHub Actions'],
   // Domain 4
   '4.2 few-shot':            ['few-shot'],
   '4.3 構造化出力':          ['required', 'enum', 'strict'],
-  '4.5 バッチ':              ['custom_id'],
+  '4.4 検証と再試行':        ['detected_pattern'],
+  '4.5 バッチ':              ['custom_id', 'Message Batches'],
   '4.6 多重レビュー':        ['multi-instance', 'multi-pass'],
   // Domain 5 — 5.1 は「何を残すか」だけでなく「要約に通してはいけないもの」と
   // 「どこに置くか」まで。どちらもブループリントが名指ししている
   '5.1 文脈管理':            ['事実ブロック', 'lost in the middle'],
   '5.2 エスカレーション':    ['エスカレーション'],
-  '5.4 大規模探索':          ['サブエージェント'],
+  // 5.4 は「子に出す」だけではない。scratchpad・/compact・落ちたときの復帰まで
+  '5.4 大規模探索':          ['サブエージェント', '/compact'],
   '5.5 確信度':              ['確信度'],
   '5.6 出典':                ['出典'],
 };
@@ -453,6 +468,56 @@ Object.entries(VOCAB).forEach(([task, words]) => {
   });
 });
 if (!vocNg) console.log(`  ✓ ${Object.keys(VOCAB).length} タスクの必須語 ${vocN} 件すべて本文にあり`);
+
+/* --- 5g2. 必須概念の網羅 ---------------------------------------------
+   5g は「語があるか」しか見ない。だが公式 Knowledge / Skills の多くは
+   識別子ではなく**日本語で書く内容**で、語では捕まえられない ──
+   実際「テスト駆動」「インタビュー方式」「作業メモ」「エラーの種別分け」は
+   語彙検査を全部通ったまま、まるごと欠けていた（§7 #47）。
+
+   ここは1項目＝1つの正規表現で、本文のどこかに1回でも出ていればよい。
+   表現をひとつに縛らないため、言い換えを `|` で並べてある。
+   **項目は公式 Exam Guide の Knowledge of / Skills in から起こす。** */
+console.log('\n■ 必須概念の網羅（語では捕まえられないもの）');
+const CONCEPT = {
+  '1.1 文章では終わりを判定しない':   /文章(で|を)[^。]{0,24}判断しません|自然文[^。]{0,20}判定/,
+  '1.2 子どうしは直接つながらない':   /子(どうし|同士)[^。]{0,24}直接/,
+  '1.3 出典を保って渡す':             /(出典|出どころ|文書名|ページ番号)[^。]{0,60}(欄|分け|別に)/,
+  '1.5 形式をそろえる（正規化）':     /(時刻|日付|単位|表記)[^。]{0,30}(そろえ|統一)|ISO 8601/,
+  '1.6 ファイルごとと横断を分ける':   /ファイル(ごと|単位)[^。]{0,40}横断|横断[^。]{0,40}ファイル(ごと|単位)/,
+  '2.1 説明が重なると取り違える':     /似(通|た)[^。]{0,40}(取り違|選べ|区別)/,
+  '2.1 system の語がツール選択に効く': /system[^。]{0,60}(ツールの選択|選ばれ方|引きずら|寄せて)/,
+  '2.2 エラーを種類で分ける':         /一時的[^。]{0,60}(検証|業務|権限)/,
+  '2.2 もう一度試して意味があるか':   /再試行(して|する)意味|やり直して直る|isRetryable/,
+  '2.2 アクセス失敗と0件は別':        /(0件|ゼロ件)[^。]{0,50}(失敗|エラー|区別)|失敗[^。]{0,50}(0件|ゼロ件)/,
+  '3.4 探索を子に出す（Explore）':    /Explore/,
+  '3.5 入出力の例で示す':             /入出力の例|入力と出力の例|例を2〜3/,
+  '3.5 テストを先に書いて回す':       /テストを先に|先にテスト|テスト駆動/,
+  '3.5 実装前に質問させる':           /先に質問|質問させ|聞き返させ/,
+  '3.5 まとめて1通か、順番か':        /まとめて1通|1通にまとめ|順番に(直|出)/,
+  '4.1 誤検知の多い分類は一度外す':   /一時的に(止め|外|切)|いったん外/,
+  '4.4 誤検知の傾向を記録する':       /detected_pattern|どの(記述|書き方|パターン)が[^。]{0,30}(引き起|招い|検出)/,
+  '5.3 握りつぶさない・全体は止めない': /握りつぶ|黙って(成功|空)|全体を止め/,
+  '5.4 作業メモを窓の外に置く':       /作業メモ|メモをファイル|scratchpad/,
+  '5.4 長く続けると答えがぼやける':   /(長く|長時間|続けている)[^。]{0,50}(ぼやけ|曖昧|一般的な話|typical)/,
+  '5.4 落ちても再開できる形':         /(落ちても|中断しても|途中で止まっても)[^。]{0,40}(再開|やり直)/,
+  '5.5 種別ごとに抜き取って測る':     /(層化|種別ごと|項目ごと)[^。]{0,40}抜き取/,
+};
+/* 当たった節も出す。**「あるが置き場所が違う」を見逃さないため** ──
+   実際「テストを先に書く」は 1-14（タスク 1.4）にあって、
+   本来の 3-9（タスク 3.5）には無かった。存在だけを見ると通ってしまう。 */
+const perSec = order.filter(s => !s.quiz).map(s => ({
+  id: (s.body.match(/id="([^"]+)"/) || [])[1],
+  t: s.body.replace(/<[^>]+>/g, ' ')
+    .replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&amp;/g, '&'),
+}));
+let cptNg = 0;
+Object.entries(CONCEPT).forEach(([k, re]) => {
+  const where = perSec.filter(s => re.test(s.t)).map(s => s.id);
+  if (!where.length) { bad(`${k}：本文のどこにもない`); cptNg++; }
+  else console.log(`     ${k} → ${where.join(' / ')}`);
+});
+if (!cptNg) console.log(`  ✓ ${Object.keys(CONCEPT).length} 項目すべて本文にあり`);
 
 /* --- 5f. 文字サイズが段階（--fs-*）で書かれているか -------------------
    px を直接書くと段階が増えていき、「ばらつきが大きい」状態に戻る。
