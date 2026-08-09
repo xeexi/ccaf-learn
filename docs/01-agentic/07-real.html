@@ -117,12 +117,14 @@
   <p class="point"><b>ポイント</b>1回のリクエストに、指示・道具・会話が全部入っている。この全部が同じコンテキストウィンドウに載る。</p>
 
 <h3 class="sub" id="real-2">綴りが決まっているもの／自分で決めるもの</h3>
+<p class="goal"><b>ゴール</b>API が決めた名前と、自分で決める名前を見分けられる。</p>
 <div class="detail">
     <p>紛らわしいので分けておきます。<b><code>model</code> <code>system</code> <code>messages</code> <code>tools</code> <code>name</code> <code>description</code> <code>input_schema</code> <code>role</code> <code>content</code> は API が決めた綴り</b>で、変えられません。</p>
     <p>一方 <code>search_files</code> という名前、その説明文、<code>pattern</code> という引数名は<b>すべて自分で決めるもの</b>です。この教材に出てくる道具の名前は、説明のために私が作った架空のものです。</p>
   </div>
 
 <h3 class="sub" id="real-3">実物を見る ② 返ってくるもの</h3>
+<p class="goal"><b>ゴール</b>応答のどこに <code>tool_use</code> が入るか指せる。</p>
 <p class="lead">シーケンス図の <b>②（Claude → アプリ の橙の矢印）</b> の中身です。</p>
   <div class="figbox" style="padding:12px 16px">
     <pre class="code">{
@@ -147,6 +149,7 @@
   <p class="point"><b>ポイント</b>道具を使いたいという要求は <code>content</code> の中に並ぶ。アプリが次の一手を決めるのに見るのは、その外側の <code>stop_reason</code>。</p>
 
 <h3 class="sub" id="real-4">実物を見る ③ 返し直すもの</h3>
+<p class="goal"><b>ゴール</b>結果をどの役割で返すか言える。</p>
 <p class="lead">シーケンス図の <b>④と⑤</b> にあたります。ここでループが閉じます。</p>
   <div class="figbox" style="padding:12px 16px">
     <p class="codelabel">2回目のリクエスト</p>
@@ -191,6 +194,6 @@
   </div>
 </div>
 <script src="../assets/quiz-data.js?v=a940b378"></script>
-<script src="../assets/search-index.js?v=1a71e62b"></script>
+<script src="../assets/search-index.js?v=4be75b12"></script>
 <script src="../assets/app.js?v=bfb45e2d"></script>
 </body></html>

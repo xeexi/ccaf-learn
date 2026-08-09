@@ -72,20 +72,20 @@
 
 <h3 class="sub" id="mcp-1">MCP＝ツールをつなぐ共通の差込口</h3>
 <p class="goal"><b>ゴール</b>MCP が何を解決する仕組みか説明できる。</p>
-<p class="lead"><b>道具を、アプリごとに作り直さずに使い回すための規格</b>が MCP です。個別に実装していた接続を共通化すると、作る量が「掛け算」から「足し算」になります。</p>
+<p class="lead"><b>アプリとサービスを繋ぐ実装を、組み合わせのぶんだけ書かずに済ませる規格</b>が MCP です。3つのアプリから3つのサービスを使うなら、個別に書けば <b>3×3 で9本</b>。共通の差込口に1回ずつ合わせれば <b>3＋3 で6本</b>で足ります。</p>
 <p class="task" data-t="2.4"><span class="tn">BLUEPRINT 2.4</span><b>Integrate MCP servers into Claude Code and agent workflows</b></p>
 <div class="figbox"><figure class="fig run">
-  <p class="fig-t">つなぐ手間が「掛け算」から「足し算」になる</p>
+  <p class="fig-t">繋ぐ実装の本数 ─ <b>1本＝「あるアプリから、あるサービスを使う」ための実装</b></p>
   <div class="fig-row" style="--cols:2">
     <div class="fig-card red s1">
-      <b class="fig-h">MCP なし ─ N × M</b>
-      <span class="fig-note">アプリごと・サービスごとに個別実装。アプリ3つ × サービス3つで <b>9本</b></span>
-      <span class="fig-note"><b>アプリを1つ足すと ＋3本</b></span>
+      <b class="fig-h">MCP なし ─ 組み合わせのぶん</b>
+      <span class="fig-note">アプリ3つ <b>×</b> サービス3つ ＝ <b>9本</b>。相手ごとに別々に書く</span>
+      <span class="fig-note"><b>アプリを1つ足すと ＋3本</b>（サービスの数だけ増える）</span>
     </div>
     <div class="fig-card green s2">
-      <b class="fig-h">MCP あり ─ N ＋ M</b>
-      <span class="fig-note">共通の規格に1回ずつ合わせるだけ。3 ＋ 3 で <b>6本</b></span>
-      <span class="fig-note"><b>アプリを1つ足すと ＋1本</b></span>
+      <b class="fig-h">MCP あり ─ どちらも1回ずつ</b>
+      <span class="fig-note">アプリ3つ <b>＋</b> サービス3つ ＝ <b>6本</b>。差込口に合わせるだけ</span>
+      <span class="fig-note"><b>アプリを1つ足すと ＋1本</b>（相手が何個でも1本）</span>
     </div>
   </div>
   <p class="fig-lbl s3">効き目が出るのは、増やしたとき</p>
@@ -104,6 +104,7 @@
 </figure></div>
 
 <h3 class="sub" id="mcp-2">3層の関係と、よくある誤解</h3>
+<p class="goal"><b>ゴール</b>ホスト・クライアント・サーバを言い分けられる。</p>
 <div class="figbox"><figure class="fig run">
   <p class="fig-t">3層の呼び名 ─ 設問はこの語彙で書かれる</p>
   <div class="fig-row flow" style="--cols:3">
@@ -135,6 +136,7 @@
   <p class="point"><b>ポイント</b>「新しいサービスを繋ぎたい」という要件では、独自実装より既存の MCP サーバを使うのが素直な答えになる。</p>
 
 <h3 class="sub" id="mcp-3">実物を見る ─ <code>.mcp.json</code> でサーバを登録する</h3>
+<p class="goal"><b>ゴール</b>置き場所で誰に見えるかが変わることを言える。</p>
 <p class="lead">MCP サーバを<b>どこに書くか</b>で、誰に見えるかが変わります。チームで共有したいならプロジェクト直下の <code>.mcp.json</code> です。</p>
   <div class="figbox" style="padding:16px 18px">
     <p class="codelabel">プロジェクト直下の .mcp.json</p>
@@ -184,6 +186,6 @@
   </div>
 </div>
 <script src="../assets/quiz-data.js?v=a940b378"></script>
-<script src="../assets/search-index.js?v=1a71e62b"></script>
+<script src="../assets/search-index.js?v=4be75b12"></script>
 <script src="../assets/app.js?v=bfb45e2d"></script>
 </body></html>

@@ -66,7 +66,7 @@
 </header>
 
 <h3 class="sub" id="cache-1">同じ前半は、使い回せる</h3>
-<p class="goal"><b>ゴール</b>キャッシュが効く条件と、崩れる条件を言える。</p>
+<p class="goal"><b>ゴール</b>キャッシュが効く条件を言える。</p>
 <p class="lead">毎回まるごと送り直しますが、前半が前回と同じなら計算をやり直す必要はありません。これがプロンプトキャッシュです。</p>
   <div class="play">
     <div class="head">▶ 並べ方を切り替えて、2回目の負担を比べる</div>
@@ -87,6 +87,7 @@
   </div>
 
 <h3 class="sub" id="cache-2">崩れるのは、前を書き換えたとき</h3>
+<p class="goal"><b>ゴール</b>キャッシュが効かなくなる書き方を見分けられる。</p>
 <div class="detail"><div class="ex"><span class="exl">よくある失敗</span>
     プロンプトの冒頭に <code>今日は2026年8月6日です</code> と入れている。<br>
     → 日付は毎日変わる。つまり<b>毎日、先頭から不一致</b>になり、後ろにどんなに長い資料があってもキャッシュが1度も効かない。</div>
@@ -111,6 +112,6 @@
   </div>
 </div>
 <script src="../assets/quiz-data.js?v=a940b378"></script>
-<script src="../assets/search-index.js?v=1a71e62b"></script>
+<script src="../assets/search-index.js?v=4be75b12"></script>
 <script src="../assets/app.js?v=bfb45e2d"></script>
 </body></html>

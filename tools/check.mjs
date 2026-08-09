@@ -199,7 +199,7 @@ if (!orphan.length && !missing.length) console.log(`  ✓ ${usedKeys.size} キ�
    **置き場所は見出しのすぐ下**（§4）── 導入や BLUEPRINT ラベルの後ろに回ると、
    読み手は「何が身につくか」を知る前に本文へ入ることになる。 */
 console.log('\n■ ゴール');
-let goalNg = 0, goalN = 0;
+let goalNg = 0, goalN = 0, subN = 0;
 order.forEach(s => {
   if (s.quizOnly) return;
   if (!/class="goal"/.test(s.body)) {
@@ -218,7 +218,24 @@ order.forEach(s => {
     }
   }
 });
-if (!goalNg) console.log(`  ✓ 本文 ${order.filter(s => !s.quiz).length} 節すべてにあり、ゴール ${goalN} 件すべて見出しの直下`);
+// 小見出し（h3.sub）にもゴールを置く ── **新しい知識を教える場所は全部**。
+// ゴールは「その説明がいちばん短い手か」を判断する基準になるので、無い区画は
+// 価値を測れないまま増える（利用者の指示・§7 #77）。
+// 除くのは ① 設問の項（模擬シナリオの「では、どう手を打つか」）
+//         ② 生成ブロックの中（reindex が書き出すので本文側で足せない）
+order.forEach(s => {
+  if (s.quizOnly || s.quiz) return;
+  const clean = s.body.replace(/<!--#[\s\S]*?<!--\/#[a-z]+-->/g, ' ');
+  const parts = clean.split(/(?=<h3 class="sub")/);
+  parts.slice(1).forEach(part => {
+    const own = part.split(/(?=<h3 class="sub")/)[0];
+    if (/class="goal"/.test(own)) { subN++; return; }
+    const h = ((own.match(/<h3 class="sub"[^>]*>([\s\S]*?)<\/h3>/) || [])[1] || '').replace(/<[^>]+>/g, '');
+    bad(`${s.f}: 小見出し「${h}」にゴールがない`);
+    goalNg++;
+  });
+});
+if (!goalNg) console.log(`  ✓ 本文 ${order.filter(s => !s.quiz).length} 節すべてにあり、ゴール ${goalN} 件（うち小見出し ${subN} 件）すべて見出しの直下`);
 
 /* --- 5e. 出題タスクの表示（.task）が正しく出ているか ------------------
    対応するタスクがある節には BLUEPRINT ラベルを出す。
