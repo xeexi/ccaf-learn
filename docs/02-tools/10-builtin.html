@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/style.css?v=92e9c916">
+<link rel="stylesheet" href="../assets/style.css?v=d09f7a68">
 </head>
 <body data-page="builtin">
 <script>(function(){var t=localStorage.getItem('ccarf-theme');if(t)document.documentElement.dataset.theme=t;})();</script>
@@ -71,9 +71,9 @@
 </header>
 
 <h3 class="sub" id="builtin-1">6つの道具を、仕事で選び分ける</h3>
+<p class="goal"><b>ゴール</b>6つを、探し方・直し方の違いで選び分けられる。</p>
 <p class="lead">Claude Code に<b>最初から入っている道具は6つ</b>です。同じことが複数の道具でできてしまうので、<b>選ぶ基準</b>が要ります。</p>
 <p class="task" data-t="2.5"><span class="tn">BLUEPRINT 2.5</span><b>Select and apply built-in tools (Read, Write, Edit, Bash, Grep, Glob) effectively</b></p>
-<p class="goal"><b>ゴール</b>6つを、探し方・直し方の違いで選び分けられる。</p>
 
 <table class="tbl">
   <thead><tr><th>道具</th><th>何をする</th><th>これを選ぶのは</th></tr></thead>
@@ -96,8 +96,8 @@
 <p class="point"><b>ポイント</b><code>Edit</code> は<b>一意に当たる目印</b>があってはじめて使える。当たらないときは <code>Read</code> で全体を読み、<code>Write</code> で書き戻す ── これが定石。</p>
 
 <h3 class="sub" id="builtin-2">未知のコードベースは、全部読まない</h3>
-<p class="lead">先に読み尽くそうとすると窓が尽きます。<b>当たりを付けてから、必要なぶんだけ読みます。</b></p>
 <p class="goal"><b>ゴール</b>探索の順番を、道具の組み合わせで言える。</p>
+<p class="lead">先に読み尽くそうとすると窓が尽きます。<b>当たりを付けてから、必要なぶんだけ読みます。</b></p>
 
 <div class="figbox"><figure class="fig run">
   <p class="fig-t">積み上げて理解する ─ 一気に読まない</p>
@@ -115,8 +115,8 @@
 <p class="point"><b>ポイント</b>「全ファイルを先に読む」は窓を尽かす。<b><code>Grep</code> で当たりを付けて <code>Read</code> で追う</b>を繰り返す。</p>
 
 <h3 class="sub" id="builtin-3">できることが同じでも、権限の面が違う</h3>
-<p class="lead">同じ「探す」でも、専用の道具と <code>Bash</code> 経由では扱いが変わります。</p>
 <p class="goal"><b>ゴール</b>同じ仕事でも道具によって確認が出る／出ないを説明できる。</p>
+<p class="lead">同じ「探す」でも、専用の道具と <code>Bash</code> 経由では扱いが変わります。</p>
 
 <table class="tbl">
   <thead><tr><th>同じ「探す」でも</th><th>専用の道具（<code>Grep</code> / <code>Glob</code>）</th><th><code>Bash</code> で同じことをする</th></tr></thead>
@@ -164,6 +164,6 @@
   </div>
 </div>
 <script src="../assets/quiz-data.js?v=a940b378"></script>
-<script src="../assets/search-index.js?v=c467798f"></script>
+<script src="../assets/search-index.js?v=1a71e62b"></script>
 <script src="../assets/app.js?v=bfb45e2d"></script>
 </body></html>

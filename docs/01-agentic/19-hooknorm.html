@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/style.css?v=92e9c916">
+<link rel="stylesheet" href="../assets/style.css?v=d09f7a68">
 </head>
 <body data-page="hooknorm">
 <script>(function(){var t=localStorage.getItem('ccarf-theme');if(t)document.documentElement.dataset.theme=t;})();</script>
@@ -79,6 +79,7 @@
 <header class="sec-head">
   <h2>1-19　割り込みで、形をそろえる</h2>
 </header>
+<p class="goal"><b>ゴール</b>形のばらつきを、どこで吸収するか言える。</p>
 <p class="lead">割り込みでできる4つのうち、「止める」以外の3つ ── <b>入力の書き換え・出力の差し替え・記録</b> ── は、どれも<b>データを通す前後で整える</b>仕事です。ここがタスク名の後半にある「正規化」です。</p>
 <p class="task" data-t="1.5"><span class="tn">BLUEPRINT 1.5</span><b>Apply Agent SDK hooks for tool call interception and data normalization</b></p>
 
@@ -116,7 +117,6 @@
 
 <h3 class="sub" id="hn-2">返ってきた値の形をそろえる ─ <code>PostToolUse</code></h3>
 <p class="lead">道具を何本も繋ぐと、同じ「日時」が3通りの形で返ってきます。モデルに読ませる前にそろえてしまえば、以降は1つの形しか出てきません。</p>
-<p class="goal"><b>ゴール</b>形のばらつきを、どこで吸収するか言える。</p>
 
 <table class="tbl">
   <thead><tr><th></th><th>プロンプトでお願いする</th><th><code>PostToolUse</code> でそろえる</th></tr></thead>
@@ -160,6 +160,6 @@
   </div>
 </div>
 <script src="../assets/quiz-data.js?v=a940b378"></script>
-<script src="../assets/search-index.js?v=c467798f"></script>
+<script src="../assets/search-index.js?v=1a71e62b"></script>
 <script src="../assets/app.js?v=bfb45e2d"></script>
 </body></html>

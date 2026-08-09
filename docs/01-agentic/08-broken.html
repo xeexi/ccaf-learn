@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/style.css?v=92e9c916">
+<link rel="stylesheet" href="../assets/style.css?v=d09f7a68">
 </head>
 <body data-page="broken">
 <script>(function(){var t=localStorage.getItem('ccarf-theme');if(t)document.documentElement.dataset.theme=t;})();</script>
@@ -77,9 +77,9 @@
 <header class="sec-head">
   <h2>1-8　ループが壊れるとき</h2>
 </header>
+<p class="goal"><b>ゴール</b>壊れ方3つと、最も単純な対処を選べる。</p>
 <p class="lead">止まらない・道具が動かない・答えが途中で切れる。<b>実装ミスの多くはこの3つ</b>で、どれも1周の4手のどこかが崩れた形です。直すのは<b>モデルの側ではなく外側のコード</b>です。</p>
 <p class="task" data-t="1.1"><span class="tn">BLUEPRINT 1.1</span><b>Design and implement agentic loops for autonomous task execution</b></p>
-<p class="goal"><b>ゴール</b>壊れ方3つと、最も単純な対処を選べる。</p>
 
 <table class="tbl">
   <thead><tr><th>壊れ方</th><th>1周のどこが崩れているか</th><th>最も単純な対処</th></tr></thead>
@@ -107,7 +107,7 @@
 <div class="detail">
   <div class="ex"><span class="exl">試験でのねらわれ方</span>
   「エージェントが暴走している。最初に取るべき対処は？」という設問で、<b>「より大きなモデルに変える」「アーキテクチャを作り直す」は誤答</b>になりやすい選択肢です。反復上限のような、小さくて確実な手が正解になります。</div>
-  <div class="ex"><span class="exl">ただし、反復上限は<b>保険</b>であって停止条件ではない</span>
+  <div class="ex"><span class="exl">ただし、反復上限は「保険」であって停止条件ではない</span>
   正常に終わるときの合図は <code>stop_reason</code> が <code>end_turn</code> になることです。
   <b>上限は「壊れたときに無限に回らないようにする」ためのもの</b>で、これを主な止め方に据えると、
   <b>まだ終わっていない仕事を途中で切る</b>ことになります ── 5周で足りる日もあれば12周かかる日もあるのが、確率で動く仕組みです。<br>
@@ -130,6 +130,6 @@
   </div>
 </div>
 <script src="../assets/quiz-data.js?v=a940b378"></script>
-<script src="../assets/search-index.js?v=c467798f"></script>
+<script src="../assets/search-index.js?v=1a71e62b"></script>
 <script src="../assets/app.js?v=bfb45e2d"></script>
 </body></html>

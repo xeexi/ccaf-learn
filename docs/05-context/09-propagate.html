@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/style.css?v=92e9c916">
+<link rel="stylesheet" href="../assets/style.css?v=d09f7a68">
 </head>
 <body data-page="propagate">
 <script>(function(){var t=localStorage.getItem('ccarf-theme');if(t)document.documentElement.dataset.theme=t;})();</script>
@@ -55,6 +55,7 @@
 <a class="itm toc-link" href="../05-context/07-confidence.html"><span class="itm-n">5-7</span><span class="itm-t">確信が持てないときに止める</span></a>
 <a class="itm toc-link" href="../05-context/08-observe.html"><span class="itm-n">5-8</span><span class="itm-t">壊れたことに気づける</span></a>
 <a class="itm toc-link on" href="../05-context/09-propagate.html"><span class="itm-n">5-9</span><span class="itm-t">失敗を親まで届ける</span></a>
+<a class="toc-link toc-sub" href="#prop-2">両端が、どちらも誤り</a>
 <a class="itm toc-link itm-quiz" href="../05-context/10-q2.html"><span class="itm-n">5-10</span><span class="itm-t">理解度チェック ─ 信頼性</span></a></nav>
 </aside>
 <main class="doc">
@@ -65,9 +66,9 @@
 <header class="sec-head">
   <h2>5-9　失敗を親まで届ける</h2>
 </header>
+<p class="goal"><b>ゴール</b>部分的な失敗を落とさない返し方を設計できる。</p>
 <p class="lead"><b>任せた相手が失敗したことを、任せた側はどうやって知るのか。</b>子の失敗は要約に紛れて消えるので、何体か走らせたときに<b>「全部うまくいった」ように見えるのが最も危険</b>です。</p>
 <p class="task" data-t="5.3"><span class="tn">BLUEPRINT 5.3</span><b>Implement error propagation strategies across multi-agent systems</b></p>
-<p class="goal"><b>ゴール</b>部分的な失敗を落とさない返し方を設計できる。</p>
 <div class="figbox"><figure class="fig run">
   <p class="fig-t">3体走らせて、1体だけ失敗した ─ <b>いちばん見つけにくい形</b></p>
   <div class="fig-row s1" style="--cols:3">
@@ -97,12 +98,25 @@
       <span class="t">誤解</span><span>「子が失敗したら、例外や異常終了で親に伝わる」</span>
       <span class="t o">実際は</span><span>子は自分の中で失敗を処理して、<b>要約だけを返します</b>。返す形に欄を作っていなければ、失敗は要約から抜け落ちたまま親に届きます。</span>
     </div>
-  <div class="ex"><span class="exl">両端が、どちらも誤り</span>
-  <b>✗ 黙って握りつぶす</b>　失敗を空の結果として成功で返す。親は「0件だった」と読んで先へ進みます ── <b>アクセスできなかったのか、本当に0件だったのか</b>の区別が消えます。<br>
-  <b>✗ 1体こけたら全体を止める</b>　3体のうち1体が一時的に失敗しただけで、取れていた2体分まで捨てることになります。<br>
-  <b>○ 取れた分と、取れなかった理由を両方返す</b>　親が「やり直す／このまま進める／人に渡す」を選べます。<br>
-  子の側でやるのは<b>一時的な失敗の再試行まで</b>。それで直らないものだけを、何を試したかと途中まで得たものを添えて上げます（Domain 2 の〈失敗は読める形で返す〉）。</div>
   </div>
+
+<h3 class="sub" id="prop-2">両端が、どちらも誤り</h3>
+<p class="goal"><b>ゴール</b>子の失敗を、握りつぶさず・全体も止めずに返せる。</p>
+<p class="lead">失敗をどう返すかは3通りありますが、<b>両端はどちらも情報を捨てています</b>。</p>
+
+<table class="tbl">
+  <thead><tr><th>子の返し方</th><th>親から見てどうなるか</th></tr></thead>
+  <tbody>
+    <tr><td data-l="返し方">黙って握りつぶす<br><span class="n">失敗を空の結果として成功で返す</span></td>
+        <td data-l="親から見て"><span class="ng">誤り</span>　親は「0件だった」と読んで先へ進む。<b>アクセスできなかったのか、本当に0件だったのか</b>の区別が消える</td></tr>
+    <tr><td data-l="返し方">1体こけたら全体を止める</td>
+        <td data-l="親から見て"><span class="ng">誤り</span>　3体のうち1体が一時的に失敗しただけで、<b>取れていた2体分まで捨てる</b>ことになる</td></tr>
+    <tr><td data-l="返し方">取れた分と、取れなかった理由を<b>両方返す</b></td>
+        <td data-l="親から見て"><span class="ok">正しい</span>　親が<b>やり直す／このまま進める／人に渡す</b>を選べる</td></tr>
+  </tbody>
+</table>
+
+<p class="note">※ 子の側でやるのは<b>一時的な失敗の再試行まで</b>。それで直らないものだけを、何を試したかと途中まで得たものを添えて上げます（Domain 2 の〈<a href="../02-tools/04-error.html">失敗は読める形で返す</a>〉）。</p>
 </section>
 <!-- ▲ 本文 -->
 <nav class="secpager btm"><a class="pgv prev" href="../05-context/08-observe.html"><span class="vh">前へ</span></a><a class="pgv next" href="../05-context/10-q2.html"><span class="vh">次へ</span></a></nav>
@@ -116,6 +130,6 @@
   </div>
 </div>
 <script src="../assets/quiz-data.js?v=a940b378"></script>
-<script src="../assets/search-index.js?v=c467798f"></script>
+<script src="../assets/search-index.js?v=1a71e62b"></script>
 <script src="../assets/app.js?v=bfb45e2d"></script>
 </body></html>

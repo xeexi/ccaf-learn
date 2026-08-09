@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/style.css?v=92e9c916">
+<link rel="stylesheet" href="../assets/style.css?v=d09f7a68">
 </head>
 <body data-page="observe">
 <script>(function(){var t=localStorage.getItem('ccarf-theme');if(t)document.documentElement.dataset.theme=t;})();</script>
@@ -65,26 +65,23 @@
 <header class="sec-head">
   <h2>5-8　壊れたことに気づける</h2>
 </header>
+<p class="goal"><b>ゴール</b>後から追えるようにするために何を残すか挙げられる。</p>
 <p class="lead">確率的に動くものは、静かに間違えます。<b>間違えたことが後から分かる形</b>で動かしていないと、直す手がかりが残りません。</p>
 <p class="task" data-t="5.6"><span class="tn">BLUEPRINT 5.6</span><b>Preserve information provenance and handle uncertainty in multi-source synthesis</b></p>
-<p class="goal"><b>ゴール</b>後から追えるようにするために何を残すか挙げられる。</p>
 <table class="tbl">
   <thead><tr><th>1周ぶんの実行で残すもの</th><th>残していないと</th></tr></thead>
   <tbody>
-    <tr><td data-l="1周ぶんの実行で残すもの"><b>どのツールを・どんな引数で呼び、何が返ったか</b><br>
-        <span class="ok">引数まで含める</span></td>
-        <td data-l="残していないと">「検索した」だけでは再現できず、<b>同じ条件で試せない</b></td></tr>
-    <tr><td data-l="1周ぶんの実行で残すもの"><b>結論の出典</b>（どの資料の、どこから）</td>
-        <td data-l="残していないと"><span class="ng">結論が正しいかを人が確かめられない。</span>あとで裏取りするための唯一の手がかりが消える</td></tr>
-    <tr><td data-l="1周ぶんの実行で残すもの">─</td>
-        <td data-l="残していないと"><b>結論だけが残る</b>＝ 合っているかも、どこで曲がったかも分からない。<b>もっともらしく見えるので、間違いに気づく契機そのものがなくなる</b></td></tr>
+    <tr><td data-l="残すもの"><b>ツールの呼び出し</b><br><span class="n">どの道具を・どんな引数で呼び、何が返ったか</span></td>
+        <td data-l="残していないと">「検索した」だけでは<b>同じ条件で試せない</b>。引数まで残して、はじめて再現できる</td></tr>
+    <tr><td data-l="残すもの"><b>結論の出典</b><br><span class="n">どの資料の、どこから</span></td>
+        <td data-l="残していないと">結論が正しいかを<b>人が確かめられない</b>。あとで裏取りするための唯一の手がかりが消える</td></tr>
   </tbody>
 </table>
 
-<p class="point"><b>ポイント</b>結論だけを残すと直せない。<b>呼んだ内容と出典を残し、やり直しても壊れない形</b>にしておく。</p>
+<p class="point"><b>ポイント</b>結論だけを残すと直せない ── <b>もっともらしく見えるので、間違いに気づく契機そのものがなくなる</b>。呼んだ内容と出典を残し、やり直しても壊れない形にしておく。</p>
 
 <div class="detail">
-  <div class="ex"><span class="exl">出典には<b>いつのものか</b>も持たせる</span>
+  <div class="ex"><span class="exl">出典には「いつのものか」も持たせる</span>
   同じ項目に違う数字が並んだとき、<b>矛盾なのか、時点が違うだけなのか</b>は日付がないと分かりません。
   「35%」と「41%」は、2024年と2026年の調査なら<b>どちらも正しい</b>のに、日付を落とすと食い違いに見えます。<br>
   出典の欄には<b>文書名・場所とあわせて、公表日か取得日</b>を入れます。</div>
@@ -111,6 +108,6 @@
   </div>
 </div>
 <script src="../assets/quiz-data.js?v=a940b378"></script>
-<script src="../assets/search-index.js?v=c467798f"></script>
+<script src="../assets/search-index.js?v=1a71e62b"></script>
 <script src="../assets/app.js?v=bfb45e2d"></script>
 </body></html>

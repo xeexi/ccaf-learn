@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/style.css?v=92e9c916">
+<link rel="stylesheet" href="../assets/style.css?v=d09f7a68">
 </head>
 <body data-page="hookreg">
 <script>(function(){var t=localStorage.getItem('ccarf-theme');if(t)document.documentElement.dataset.theme=t;})();</script>
@@ -79,12 +79,12 @@
 <header class="sec-head">
   <h2>1-18　どこに書いて、どう止めるか</h2>
 </header>
+<p class="goal"><b>ゴール</b><code>matcher</code> の書き方で、効く範囲を絞れる。</p>
 <p class="lead">割り込みは<b>設定ファイルに書いて登録します</b>。決めるのは<b>どのツールに効かせるか</b>と<b>そのイベントはそもそも止まるのか</b>の2つです。</p>
 <p class="task" data-t="1.5"><span class="tn">BLUEPRINT 1.5</span><b>Apply Agent SDK hooks for tool call interception and data normalization</b></p>
 
 <h3 class="sub" id="hr-1">どのツールに効かせるか ─ <code>matcher</code></h3>
 <p class="lead">フックは <code>settings.json</code> に<b>3階層</b>で書きます。<b>どのツール呼び出しに効かせるかを決めるのが <code>matcher</code></b> です。</p>
-<p class="goal"><b>ゴール</b><code>matcher</code> の書き方で、効く範囲を絞れる。</p>
 
 <div class="figbox" style="padding:16px 18px">
   <p class="codelabel">settings.json ─ Write と Edit のときだけ走らせる</p>
@@ -127,8 +127,8 @@
 ※ <code>matcher</code> が<b>何を</b>絞るかはイベントによって違います。<code>PreToolUse</code> / <code>PostToolUse</code> はツール名ですが、<code>SessionStart</code> では「どうやって開始したか」（<code>startup</code> / <code>resume</code> / <code>clear</code> / <code>compact</code>）を絞ります。<code>UserPromptSubmit</code> や <code>Stop</code> のように <b>matcher を持たないイベント</b>もあります。</p>
 
 <h3 class="sub" id="hr-2">いつ走らせるか ─ 主なイベントと、止め方</h3>
-<p class="lead">割り込める場所はツールの前後だけではありません。<b>どこで止められるかは、イベントごとに決まっています。</b></p>
 <p class="goal"><b>ゴール</b>主なイベントと、フックが処理を止める仕組みを言える。</p>
+<p class="lead">割り込める場所はツールの前後だけではありません。<b>どこで止められるかは、イベントごとに決まっています。</b></p>
 
 <table class="tbl">
   <thead><tr><th>イベント</th><th>いつ走るか</th><th>止められるか</th></tr></thead>
@@ -152,7 +152,7 @@
 <p class="note">※ ほかにも権限判定・ファイル変更・ワークツリーなどのイベントがあります。設問で問われるのは、上の<b>ツールの前後</b>と<b>セッションの前後</b>です。</p>
 
 <div class="detail">
-  <div class="ex"><span class="exl">止めるかどうかは、フックの<b>終了コード</b>で決まる</span>
+  <div class="ex"><span class="exl">止めるかどうかは、フックの「終了コード」で決まる</span>
   <b><code>0</code></b>　… 正常。標準出力の JSON（上の <code>hookSpecificOutput</code>）が読まれる<br>
   <b><code>exit 2</code></b>　… <b>ブロック。</b>標準出力の JSON は無視され、<b>標準エラーの文字がモデルに返る</b><br>
   <b>それ以外</b>　… 非ブロックの失敗。処理はそのまま進み、記録に残るだけ</div>
@@ -175,6 +175,6 @@
   </div>
 </div>
 <script src="../assets/quiz-data.js?v=a940b378"></script>
-<script src="../assets/search-index.js?v=c467798f"></script>
+<script src="../assets/search-index.js?v=1a71e62b"></script>
 <script src="../assets/app.js?v=bfb45e2d"></script>
 </body></html>

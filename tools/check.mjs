@@ -194,17 +194,31 @@ orphan.forEach(k => bad(`設問キー ${k}（${QUIZ[k].length}問）が、どの
 missing.forEach(k => bad(`data-quiz="${k}" に対応する設問データがない`));
 if (!orphan.length && !missing.length) console.log(`  ✓ ${usedKeys.size} キーすべて対応（設問 ${Object.values(QUIZ).reduce((a, b) => a + b.length, 0)} 問）`);
 
-/* --- 5c. 本文セクションにゴール（.goal）があるか ---------------------
-   「この節を終えたら何が言えるか」がないと、読み手は止めどころが分からない。 */
+/* --- 5c. ゴール（.goal）が、あるか・見出しの直下にあるか ---------------
+   「この節を終えたら何が言えるか」がないと、読み手は止めどころが分からない。
+   **置き場所は見出しのすぐ下**（§4）── 導入や BLUEPRINT ラベルの後ろに回ると、
+   読み手は「何が身につくか」を知る前に本文へ入ることになる。 */
 console.log('\n■ ゴール');
-let goalNg = 0;
+let goalNg = 0, goalN = 0;
 order.forEach(s => {
   if (s.quizOnly) return;
-  if (/class="goal"/.test(s.body)) return;
-  bad(`${s.f} #${(s.body.match(/id="([^"]+)"/) || [])[1]}: ゴール（.goal）がない`);
-  goalNg++;
+  if (!/class="goal"/.test(s.body)) {
+    bad(`${s.f} #${(s.body.match(/id="([^"]+)"/) || [])[1]}: ゴール（.goal）がない`);
+    goalNg++; return;
+  }
+  // 見出し（</header> または </h3>）と .goal のあいだに、他の段落が挟まっていないか
+  const seq = [...s.body.matchAll(/<\/header>|<h3 class="sub"[^>]*>|<p class="(lead|task|goal)"/g)];
+  for (let i = 0; i < seq.length; i++) {
+    if (seq[i][1] !== 'goal') continue;
+    goalN++;
+    const prev = seq[i - 1];
+    if (prev && prev[1]) {
+      bad(`${s.f}: ゴールの前に .${prev[1]} がある（見出しの直下に置く）`);
+      goalNg++;
+    }
+  }
 });
-if (!goalNg) console.log(`  ✓ 本文 ${order.filter(s => !s.quiz).length} 節すべてにあり`);
+if (!goalNg) console.log(`  ✓ 本文 ${order.filter(s => !s.quiz).length} 節すべてにあり、ゴール ${goalN} 件すべて見出しの直下`);
 
 /* --- 5e. 出題タスクの表示（.task）が正しく出ているか ------------------
    対応するタスクがある節には BLUEPRINT ラベルを出す。
@@ -554,6 +568,26 @@ Object.entries(CONCEPT).forEach(([k, res]) => {
   else console.log(`     ${k} → ${[...new Set(wheres.flat())].join(' / ')}`);
 });
 if (!cptNg) console.log(`  ✓ ${Object.keys(CONCEPT).length} 項目すべて本文にあり（公式 §6 の箇条書きと1対1）`);
+
+/* --- 5r. ラベルの中で色を変えて強調していないか -----------------------
+   `.exl`（例のラベル）は色そのものが役割を持つ（アクセント＝ここが区画の頭）。
+   その中で `<b>` を使うと**白に変わり、ラベルの中に2色が並ぶ** ── 強調のつもりが
+   「別の種類のラベル」に見える。強めたいときは色ではなく「」で囲う（§4）。
+   `.point` / `.goal` の先頭ラベルも同じ理由で中に `<b>` を入れない。 */
+console.log(String.fromCharCode(10) + "■ ラベルの中の強調");
+let lblNg = 0, lblN = 0;
+FILES.forEach(f => {
+  const h = fs.readFileSync(path.join(ROOT, f), 'utf8');
+  const body = (h.match(/▼ 本文[^\n]*-->([\s\S]*?)<!-- ▲ 本文/) || [])[1] || '';
+  for (const m of body.matchAll(/<span class="exl">([\s\S]*?)<\/span>/g)) {
+    lblN++;
+    if (/<b>/.test(m[1])) {
+      bad(`${f}: ラベルの中に <b> がある ── 色ではなく「」で囲う → 「${m[1].replace(/<[^>]+>/g, '').slice(0, 30)}」`);
+      lblNg++;
+    }
+  }
+});
+if (!lblNg) console.log(`  ✓ ラベル ${lblN} 件すべて、中で色を変えていない`);
 
 /* --- 5q. CLAUDE.md が書いた節番号が、その節を指しているか ---------------
    節を1つ挿すとドメイン内の番号が全部ずれる。CLAUDE.md には §5 の判定表・

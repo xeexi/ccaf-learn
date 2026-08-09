@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/style.css?v=92e9c916">
+<link rel="stylesheet" href="../assets/style.css?v=d09f7a68">
 </head>
 <body data-page="error">
 <script>(function(){var t=localStorage.getItem('ccarf-theme');if(t)document.documentElement.dataset.theme=t;})();</script>
@@ -71,9 +71,9 @@
 </header>
 
 <h3 class="sub" id="error-1">ツールの失敗は「読める文章」で返す</h3>
+<p class="goal"><b>ゴール</b>失敗をどう返すと再試行につながるか説明できる。</p>
 <p class="lead"><b>道具が失敗したとき、その事実をモデルにどう伝えるか。</b>例外を投げて止めるとループごと死にますが、何が起きたかを言葉で返せば、Claudeは自分で直して再試行できます。</p>
 <p class="task" data-t="2.2"><span class="tn">BLUEPRINT 2.2</span><b>Implement structured error responses for MCP tools</b></p>
-<p class="goal"><b>ゴール</b>失敗をどう返すと再試行につながるか説明できる。</p>
 <div class="figbox"><figure class="fig run">
   <p class="fig-t">同じ失敗を、2通りの返し方で</p>
   <div class="fig-row" style="--cols:2">
@@ -104,8 +104,8 @@
   <p class="point"><b>ポイント</b>返す文には「何が起きたか」と「どう直せるか」を両方入れる。ただし無限に再試行させないよう、回数の上限は外側で持つ。</p>
 
 <h3 class="sub" id="error-3">種類も添える ─ もう一度試して意味があるか</h3>
-<p class="lead">文章だけだと、受け取った側は<b>もう一度試すべきか</b>を毎回読み取ることになります。種類を欄で添えると、そこはコードで決められます。</p>
 <p class="goal"><b>ゴール</b>失敗を4つに分けて、再試行の可否を言える。</p>
+<p class="lead">文章だけだと、受け取った側は<b>もう一度試すべきか</b>を毎回読み取ることになります。種類を欄で添えると、そこはコードで決められます。</p>
 
 <table class="tbl">
   <thead><tr><th>種類</th><th>例</th><th>もう一度試して直るか</th></tr></thead>
@@ -183,6 +183,6 @@
   </div>
 </div>
 <script src="../assets/quiz-data.js?v=a940b378"></script>
-<script src="../assets/search-index.js?v=c467798f"></script>
+<script src="../assets/search-index.js?v=1a71e62b"></script>
 <script src="../assets/app.js?v=bfb45e2d"></script>
 </body></html>

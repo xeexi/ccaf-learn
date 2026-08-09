@@ -634,12 +634,15 @@ html[data-theme="light"] .ann .n{ color:#fff }
 
 /* ---------- 例・誤解・ポイント・注記 ---------- */
 /* 具体例。面は持たせず、左の罫線だけで本文と区別する */
+/* 具体例。面は持たせず、左の罫線だけで本文と区別する。
+   **罫は必ずアクセント色。** グレー（--line）だと地との対比が
+   dark 1.52 / light 1.21 で、罫があること自体が見えない（実測・§7 #75）。 */
 .ex{
-  margin:18px 0; padding:2px 0 2px 16px; border-left:2px solid var(--line);
+  margin:18px 0; padding:2px 0 2px 16px; border-left:2px solid var(--accent);
   font-size:var(--fs-base); line-height:1.9;
 }
 .exl{
-  display:block; font-size:var(--fs-xs); letter-spacing:.1em; color:var(--muted);
+  display:block; font-size:var(--fs-xs); letter-spacing:.1em; color:var(--accent);
   margin-bottom:8px; font-weight:700;
 }
 .myth{
@@ -671,15 +674,14 @@ html[data-theme="light"] .ann .n{ color:#fff }
   color:var(--accent); border:1px solid var(--line); border-radius:5px;
   padding:1px 7px; margin-right:8px;
 }
-/* ゴール（到達基準）。結論ではなく道しるべなので、箱にせず1行の見出し扱いにする */
+/* ゴール（到達基準）。**見出しのすぐ下**に置く1行で、罫も面も持たない。
+   アクセントの左罫は .ex に譲った ── 同じ見た目が2つあると強さの序列が壊れる（§4）。 */
 .goal{
-  margin:0 0 24px; padding:2px 0 2px 16px;
-  border-left:2px solid var(--accent);
-  font-size:var(--fs-base); line-height:1.9;
+  margin:10px 0 22px; font-size:var(--fs-sm); line-height:1.85; color:var(--ink-2);
 }
 .goal > b:first-child{
-  display:block; font-size:var(--fs-xs); letter-spacing:.14em; color:var(--accent);
-  margin-bottom:5px; font-weight:700;
+  font-size:var(--fs-xs); letter-spacing:.14em; color:var(--accent);
+  margin-right:12px; font-weight:700;
 }
 .goal ul{ margin:0; padding-left:1.3em }
 .goal li{ margin:2px 0 }
