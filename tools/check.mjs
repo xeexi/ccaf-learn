@@ -523,6 +523,69 @@ Object.entries(CONCEPT).forEach(([k, res]) => {
 });
 if (!cptNg) console.log(`  ✓ ${Object.keys(CONCEPT).length} 項目すべて本文にあり（公式 §6 の箇条書きと1対1）`);
 
+/* --- 5p. CLAUDE.md に書いた数が、実物と合っているか --------------------
+   CLAUDE.md は毎セッション読み込まれる。**そこに古い数字があると、
+   それを前提に作業が進む。** 監査したら7件ズレていた（項数・図の数・
+   コードの数・設問数・検査の項目数）── どれも「直したときに直し忘れた」もの。
+   §7 の教訓どおり、**決め事は検査に変換しないと守られない**ので、ここで見る。
+
+   直し方は2つ ── 数を直すか、数を書くのをやめるか（後者が理想）。 */
+console.log(String.fromCharCode(10) + "■ CLAUDE.md の数字");
+let mdNg = 0, mdN = 0;
+{
+  const md = fs.readFileSync(path.join(ROOT, '..', 'CLAUDE.md'), 'utf8');
+  const body = order.filter(s => !s.quizOnly).length;
+  const figs = FILES.reduce((a, f) => {
+    const b = (fs.readFileSync(path.join(ROOT, f), 'utf8')
+      .match(/▼ 本文[^\n]*-->([\s\S]*?)<!-- ▲ 本文/) || [])[1] || '';
+    return {
+      fig: a.fig + (b.match(/<figure class="fig/g) || []).length,
+      tbl: a.tbl + (b.match(/<table class="tbl"/g) || []).length,
+      code: a.code + (b.match(/<pre class="code"/g) || []).length,
+      ann: a.ann + (b.match(/<ol class="ann">/g) || []).length,
+    };
+  }, { fig: 0, tbl: 0, code: 0, ann: 0 });
+  const qTotal = Object.values(QUIZ).reduce((a, b) => a + b.length, 0);
+  const checks = (fs.readFileSync(new URL(import.meta.url).pathname, 'utf8')
+    .match(/^console\.log\((?:'\\n■|String\.fromCharCode\(10\) \+ "■)/gm) || []).length;
+  const want = [
+    ['項数',            /全(\d+)項（本文/,                      order.length],
+    ['本文の項数',      /本文(\d+)・理解度チェックだけの項/,     body],
+    ['設問だけの項',    /理解度チェックだけの項(\d+)/,           order.length - body],
+    ['設問の総数',      /\*\*全(\d+)問\*\*/,                    qTotal],
+    ['HTML の図',       /\*\*(\d+)点\*\*（ほかに比較表/,         figs.fig],
+    ['比較表',          /比較表 (\d+)・コード/,                  figs.tbl],
+    ['コード',          /コード (\d+)）/,                        figs.code],
+    ['.ann',            /\| \*\*(\d+)\*\*（すべて `pre\.code`/,  figs.ann],
+    ['本文の節数',      /本文(\d+)節のうち/,                     body],
+    ['検査の項目数',    /全(\d+)項目が「対象が何件あったか」/,   checks],
+  ];
+  want.forEach(([label, re, real]) => {
+    const m = md.match(re);
+    if (!m) { bad(`CLAUDE.md に「${label}」の記載が見つからない（書き方を変えたなら 5p も直す）`); mdNg++; return; }
+    mdN++;
+    if (+m[1] !== real) { bad(`CLAUDE.md の「${label}」が ${m[1]}、実際は ${real}`); mdNg++; }
+  });
+  // §11 の按分表 ─ ドメインごとの設問数
+  const dirOf = { agentic: '01-agentic', tools: '02-tools', code: '03-claude-code', prompt: '04-prompt', context: '05-context' };
+  const jaOf = { agentic: 'エージェント設計', tools: 'ツールと MCP', code: 'Claude Code', prompt: 'プロンプト設計', context: 'コンテキスト管理' };
+  Object.entries(dirOf).forEach(([key, dir]) => {
+    const n = FILES.filter(f => f.startsWith(dir + '/')).reduce((a, f) => {
+      const k = (fs.readFileSync(path.join(ROOT, f), 'utf8').match(/data-quiz="([^"]+)"/) || [])[1];
+      return a + (k && QUIZ[k] ? QUIZ[k].length : 0);
+    }, 0);
+    const m = md.match(new RegExp('\\| \\d+ ' + jaOf[key] + ' \\| \\d+% \\| (\\d+) \\|'));
+    if (!m) { bad(`CLAUDE.md の按分表に「${jaOf[key]}」の行がない`); mdNg++; return; }
+    mdN++;
+    if (+m[1] !== n) { bad(`CLAUDE.md の按分表「${jaOf[key]}」が ${m[1]}問、実際は ${n}問`); mdNg++; }
+    const expect = domainItems(key) * (EXAM.items === 60 ? 100 / EXAM.items : 1);
+    if (n !== Math.round(BP_DOM[key].weight * 100)) {
+      bad(`設問の按分が崩れている ── ${jaOf[key]} は ${n}問、比率どおりなら ${Math.round(BP_DOM[key].weight * 100)}問（§7 #40）`); mdNg++;
+    }
+  });
+}
+if (!mdNg) console.log(`  ✓ CLAUDE.md の数字 ${mdN} 件すべて実物と一致（項数・図・コード・設問・按分）`);
+
 /* --- 5f. 文字サイズが段階（--fs-*）で書かれているか -------------------
    px を直接書くと段階が増えていき、「ばらつきが大きい」状態に戻る。
    段階そのものが増えるのも同じことなので、名前の集合ごと固定する。
