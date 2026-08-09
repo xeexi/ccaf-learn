@@ -52,7 +52,6 @@
 <a class="itm toc-link" href="../04-prompt/04-think.html"><span class="itm-n">4-4</span><span class="itm-t">考えさせる ─ thinking</span></a>
 <a class="itm toc-link on" href="../04-prompt/05-thinkapi.html"><span class="itm-n">4-5</span><span class="itm-t">thinking の実物 ─ 何を送り、何が届くか</span></a>
 <a class="toc-link toc-sub" href="#thinkapi-1">実物を見る ─ 拡張思考のリクエストと応答</a>
-<a class="toc-link toc-sub" href="#thinkapi-2">thinking の最中、アプリには何が届いているのか</a>
 <a class="itm toc-link itm-quiz" href="../04-prompt/06-q0.html"><span class="itm-n">4-6</span><span class="itm-t">理解度チェック ─ 基本</span></a>
 <a class="itm toc-link" href="../04-prompt/07-criteria.html"><span class="itm-n">4-7</span><span class="itm-t">基準を明示する / ゼロ件を許す</span></a>
 <a class="itm toc-link" href="../04-prompt/08-fewshot.html"><span class="itm-n">4-8</span><span class="itm-t">few-shot ─ 例を見せる</span></a>
@@ -97,56 +96,9 @@
   </div>
   <p class="point"><b>ポイント</b>付けるのは <code>thinking</code> フィールドだけ。応答に <code>thinking</code> ブロックが増え、そのぶん出力トークンを食う。</p>
 
-<h3 class="sub" id="thinkapi-2">thinking の最中、アプリには何が届いているのか</h3>
-<p class="lead">ストリーミングを使うかどうかで、答えが正反対になります。</p>
-<div class="figbox"><figure class="fig run">
-  <p class="fig-t">同じリクエストでも、<code>stream</code> の有無で<b>届き方</b>が変わる</p>
-
-  <p class="fig-lbl s1">① <code>stream</code> を使わない ─ 完成するまで、何も届かない</p>
-  <div class="fig-seq">
-    <div class="sq-head"><span class="sq-b s1">アプリ</span><span class="sq-a s1">Claude</span></div>
-    <div class="sq-body">
-      <div class="sq-row to-r s1">
-        <span class="sq-lbl"><span class="sq-n">1</span><code>messages</code> ＋ <code>thinking</code></span>
-      </div>
-      <div class="sq-idle s2"><b>アプリには、まだ何も届いていない</b>
-        <span class="sq-note">Claude はこの間、思考を生成している</span></div>
-      <div class="sq-row to-l s2">
-        <span class="sq-lbl"><span class="sq-n">2</span><code>content[ thinking, text ]</code> ＋ <code>stop_reason</code></span>
-        <span class="sq-note">完成してから、まとめて1回だけ</span>
-      </div>
-    </div>
-  </div>
-
-  <p class="fig-lbl s3">② <code>stream: true</code> ─ 生成しながら、少しずつ届く</p>
-  <div class="fig-seq">
-    <div class="sq-head"><span class="sq-b s3">アプリ</span><span class="sq-a s3">Claude</span></div>
-    <div class="sq-body">
-      <div class="sq-row to-r s3">
-        <span class="sq-lbl"><span class="sq-n">1</span><code>messages</code> ＋ <code>thinking</code> ＋ <code>stream: true</code></span>
-      </div>
-      <div class="sq-row to-l s4">
-        <span class="sq-lbl"><span class="sq-n">2</span><code>message_start</code> → <code>content_block_start</code></span>
-      </div>
-      <div class="sq-row to-l s5">
-        <span class="sq-lbl"><span class="sq-n">3</span><code>thinking_delta</code> ×N</span>
-        <span class="sq-note">思考が少しずつ届く。画面で「考えています…」の中身が流れて見えるのはこれ</span>
-      </div>
-      <div class="sq-row to-l s6">
-        <span class="sq-lbl"><span class="sq-n">4</span><code>content_block_stop</code> → <code>text_delta</code> ×N</span>
-      </div>
-      <div class="sq-row to-l s7">
-        <span class="sq-lbl"><span class="sq-n">5</span><code>message_delta { stop_reason }</code> → <code>message_stop</code></span>
-        <span class="sq-note"><b>stop_reason が来るのはここ。</b>分岐できるのは最後だけ</span>
-      </div>
-    </div>
-  </div>
-
-  <p class="fig-f">②でも<b>矢印はすべて右から左</b>（一方向）。アプリが途中で何かを返すことはなく、<b>往復は1回のまま</b>。呼び出し回数もトークン数も変わらない</p>
-</figure></div>
-  <p class="point"><b>ポイント</b>thinking 中に届くのは、<code>stream: true</code> のときだけ。しかも一方向で、往復は増えない。<code>stop_reason</code> が来るのは最後の <code>message_delta</code>。</p>
-  <p class="note">※ 途中の <code>delta</code> を見て「もう答えが出た」と判断することはできません。<b>アプリが分岐できるのは <code>stop_reason</code> が来てから</b>です（Domain 1〈<code>stop_reason</code> で分岐する〉）。<br>
-※ <code>thinking</code> ブロックの最後には <code>signature_delta</code>（署名）が届き、その直後に <code>content_block_stop</code> になります。この署名は、上で触れた「<code>thinking</code> ブロックをそのまま履歴に戻す」ときの検証に使われるものです。</p>
+<p class="note">※ <b>ストリーミング（<code>stream: true</code>）は試験の範囲外です</b> ── 公式 Exam Guide が「Streaming API implementation or server-sent events」を出題対象外と明記しています。
+生成しながら少しずつ届く形にできますが、<b>届き方が変わるだけ</b>で、往復の回数もトークン数も変わりません。<br>
+押さえるのは1点だけ ── <b>途中で届くものを見て「もう答えが出た」と判断することはできません。</b>アプリが分岐できるのは <code>stop_reason</code> が来てからです（Domain 1〈<code>stop_reason</code> で分岐する〉）。</p>
 </section>
 <!-- ▲ 本文 -->
 <nav class="secpager btm"><a class="pgv prev" href="../04-prompt/04-think.html"><span class="vh">前へ</span></a><a class="pgv next" href="../04-prompt/06-q0.html"><span class="vh">次へ</span></a></nav>
@@ -159,7 +111,7 @@
     <div class="modal-foot"><kbd>Esc</kbd> で閉じる</div>
   </div>
 </div>
-<script src="../assets/quiz-data.js?v=6eea7702"></script>
-<script src="../assets/search-index.js?v=425970a3"></script>
+<script src="../assets/quiz-data.js?v=29cde026"></script>
+<script src="../assets/search-index.js?v=4145437c"></script>
 <script src="../assets/app.js?v=bfb45e2d"></script>
 </body></html>

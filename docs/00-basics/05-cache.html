@@ -53,7 +53,6 @@
 <a class="itm toc-link on" href="../00-basics/05-cache.html"><span class="itm-n">0-5</span><span class="itm-t">プロンプトキャッシュ</span></a>
 <a class="toc-link toc-sub" href="#cache-1">同じ前半は、使い回せる</a>
 <a class="toc-link toc-sub" href="#cache-2">キャッシュが崩れる3つの場合</a>
-<a class="toc-link toc-sub" href="#cache-3">実物を見る ─ cache_control で区切りを打つ</a>
 <a class="itm toc-link" href="../00-basics/06-token.html"><span class="itm-n">0-6</span><span class="itm-t">確率で次の1トークンを選ぶ</span></a>
 <a class="itm toc-link itm-quiz" href="../00-basics/07-q.html"><span class="itm-n">0-7</span><span class="itm-t">理解度チェック ─ 形・窓・キャッシュ・確率</span></a></nav>
 </aside>
@@ -102,31 +101,10 @@
   </div>
   <p class="point"><b>ポイント</b>キャッシュは「先頭から一致している範囲」だけ効く。1文字でも前を書き換えると、そこから後ろは全部作り直しになる。だからDomain 4の「長い資料は先、指示は後」は、精度だけでなくコストの話でもある。</p>
 
-<h3 class="sub" id="cache-3">実物を見る ─ <code>cache_control</code> で区切りを打つ</h3>
-<p class="lead">「ここまでを使い回す」と明示するためのフィールドです。効いたかどうかは <code>usage</code> を見て判断します。</p>
-  <div class="figbox" style="padding:16px 18px">
-    <p class="codelabel">リクエスト ─ 長い資料の末尾に区切りを打つ</p>
-    <pre class="code">{
-  <span class="k">"system"</span>: [
-    { <span class="k">"type"</span>: <span class="s">"text"</span>,
-      <span class="k">"text"</span>: <span class="s">"…長い社内マニュアル…"</span>,
-      <span class="hl"><span class="k">"cache_control"</span>: { <span class="k">"type"</span>: <span class="s">"ephemeral"</span> }</span> }<span class="n">1</span>
-  ],
-  <span class="k">"messages"</span>: [ { <span class="k">"role"</span>: <span class="s">"user"</span>, <span class="k">"content"</span>: <span class="s">"返品の期限は？"</span> } ]
-}</pre>
-    <p class="codelabel">応答の usage ─ ここで効き目を確かめる</p>
-    <pre class="code"><span class="k">"usage"</span>: {
-  <span class="hl"><span class="k">"cache_creation_input_tokens"</span>: <span class="v">5120</span>,</span><span class="n">2</span>
-  <span class="hl"><span class="k">"cache_read_input_tokens"</span>: <span class="v">0</span>,</span><span class="n">3</span>
-  <span class="k">"input_tokens"</span>: <span class="v">50</span> }</pre>
-    <ol class="ann">
-      <li><span class="n">1</span><span><code>system</code> も <code>content</code> と同じくブロックの配列で書けます。<b>ここまでが</b>まとめて対象になり、区切りは1リクエストにつき<b>最大4つ</b>まで。</span></li>
-      <li><span class="n">2</span><span><b>作った</b>トークン数。1回目はここに数字が出ます。書き込みは通常の入力より割高です。</span></li>
-      <li><span class="n">3</span><span><b>読めた</b>トークン数。2回目以降ここに数字が入り、<code>input_tokens</code> が小さくなります。<b>効いたかどうかはこの値で判断します</b>。</span></li>
-    </ol>
-  </div>
-  <p class="point"><b>ポイント</b>効いたかどうかは <code>usage.cache_read_input_tokens</code> で確かめる。区切りは最大4つ、既定の有効期限は5分。</p>
-  <p class="note">※ 有効期限は<b>既定で5分</b>。<code>"ttl": "1h"</code> を足せば1時間保ちますが、そのぶん単価が上がります。<br>※ 短いプロンプトはそもそもキャッシュされません（モデルごとに最小トークン数が決まっています）。また、会話をふつうに続けている場合は明示しなくても自動で効きます。<code>cache_control</code> を自分で打つのは、<b>同じ長い前半に対して1回きりのリクエストを何本も投げる</b>ときです。</p>
+<p class="note">※ <b>キャッシュの細かい仕様は試験の範囲外です</b> ── 公式 Exam Guide が「Prompt caching implementation details（あることを知る以上）」を出題対象外と明記しています。
+区切りを明示するフィールドや、効いたかどうかを見る欄、有効期限の長さは覚えなくてかまいません。<br>
+ここで要るのは<b>性質だけ</b>です ── <b>前半が前回と同じなら計算をやり直さない。1文字でも前を書き換えると、そこから後ろは全部作り直しになる。</b>
+この性質が、Domain 4 の「長い資料は先、指示は後」と、Domain 5 の「圧縮するとキャッシュも捨てる」につながります。</p>
 </section>
 <!-- ▲ 本文 -->
 <nav class="secpager btm"><a class="pgv prev" href="../00-basics/04-window.html"><span class="vh">前へ</span></a><a class="pgv next" href="../00-basics/06-token.html"><span class="vh">次へ</span></a></nav>
@@ -139,7 +117,7 @@
     <div class="modal-foot"><kbd>Esc</kbd> で閉じる</div>
   </div>
 </div>
-<script src="../assets/quiz-data.js?v=6eea7702"></script>
-<script src="../assets/search-index.js?v=425970a3"></script>
+<script src="../assets/quiz-data.js?v=29cde026"></script>
+<script src="../assets/search-index.js?v=4145437c"></script>
 <script src="../assets/app.js?v=bfb45e2d"></script>
 </body></html>

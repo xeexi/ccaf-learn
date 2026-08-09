@@ -5,7 +5,7 @@
    ========================================================= */
 import fs from 'fs';
 import path from 'path';
-import { GUIDE, EXAM, DOMAINS as BP_DOM, SCENARIOS, TASKS as BP, domainItems, scenarioCount } from './blueprint.mjs';
+import { GUIDE, EXAM, DOMAINS as BP_DOM, SCENARIOS, SCOPE, TASKS as BP, domainItems, scenarioCount } from './blueprint.mjs';
 
 /* 成果物（HTML と assets）は docs/ の下 ─ GitHub Pages がそのまま公開できる名前。tools/ と CLAUDE.md はリポジトリ直下 */
 const ROOT = path.join(path.resolve(new URL('..', import.meta.url).pathname), 'docs');
@@ -244,6 +244,30 @@ order.forEach(s => {
   if (!/class="task"/.test(s.body)) { bad(`${s.f} #${id}: 対応タスクがあるのに BLUEPRINT ラベルがない`); covNg++; }
 });
 if (!covNg) console.log(`  ✓ ${Object.keys(TASKS).length} タスクすべてに対応する節あり（ラベルも欠落なし）`);
+
+/* --- 5o. 範囲外を厚く教えていないか --------------------------------
+   公式 §17 Appendix は「出るもの」と**「出ないもの」**を明記している。
+   穴（出るのに教えていない）ばかり見ていたが、**範囲外を厚く教えるのも
+   同じくらい悪い** ── 最上位の方針は「短時間で理解できること」で、
+   出ない内容に割いた行数はそのまま損になる（§7 #62）。
+   実際、ストリーミングのイベント列を図2本で、キャッシュの実装詳細を
+   1節まるごと教えていた。どちらも公式が明示的に out としている。
+
+   allow は「触れてよい節の数」。0 なら一切書かない、1 なら1節で
+   「あることを知る」まで。**増やすときは、なぜ要るかを添えること。** */
+console.log(String.fromCharCode(10) + "■ 範囲外の扱い（公式 §17 Out-of-Scope）");
+let outNg = 0;
+SCOPE.out.forEach(o => {
+  const re = new RegExp(o.re);
+  const where = order.filter(s => !s.quiz)
+    .map(s => ({ id: (s.body.match(/id="([^"]+)"/) || [])[1], t: s.body.replace(/<[^>]+>/g, ' ') }))
+    .filter(s => re.test(s.t)).map(s => s.id);
+  if (where.length > o.allow) {
+    bad(`範囲外「${o.en.slice(0, 52)}」が ${where.length} 節（許容 ${o.allow}）→ ${where.join(' / ')}`);
+    outNg++;
+  }
+});
+if (!outNg) console.log(`  ✓ 範囲外 ${SCOPE.out.length} 項目、いずれも許容の範囲内`);
 
 /* --- 5m. ブループリントの内部整合 ---------------------------------
    blueprint.mjs は手で直すファイルなので、**直したときに辻褄が合うか**を見る。

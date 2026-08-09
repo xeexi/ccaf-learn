@@ -50,6 +50,45 @@ export const SCENARIOS = [
   { n: 6, en: "Structured Data Extraction",            ja: "書類から構造化して抜き出す",   domains: ["prompt", "context"] },
 ];
 
+/** 17. Appendix ─ 出題範囲。**出るものと、出ないものの公式リスト。**
+ *  out は「試験に出ない」と明記されたもの。**厚く教えると、読む時間を無駄に使う。**
+ *  allow は「触れてよい節の数」── 0 なら一切書かない、1 なら1節で「あることを知る」まで。 */
+export const SCOPE = {
+  in: [
+    "Agentic loop implementation: control flow based on stop_reason, tool result handling, loop termination conditions",
+    "Multi-agent orchestration: coordinator-subagent patterns, task decomposition, parallel subagent execution, iterative refinement loops",
+    "Subagent context management: explicit context passing, structured state persistence, crash recovery using manifests",
+    "Tool interface design: writing effective tool descriptions, splitting vs consolidating tools, tool naming to reduce ambiguity",
+    "MCP tool and resource design: resources for content catalogs, tools for actions, description quality for adoption",
+    "MCP server configuration: project vs user scope, environment variable expansion, multi-server simultaneous access",
+    "Error handling and propagation: structured error responses, transient vs business vs permission errors, local recovery before escalation",
+    "Escalation decision-making: explicit criteria, honoring customer preferences, policy gap identification",
+    "CLAUDE.md configuration: hierarchy (user/project/directory), @import patterns, .claude/rules/ with glob patterns",
+    "Custom commands and skills: project vs user scope, context: fork, allowed-tools, argument-hint frontmatter",
+    "Plan mode vs direct execution: complexity assessment, architectural decisions, single-file changes",
+    "Iterative refinement: input/output examples, test-driven iteration, interview pattern, sequential vs parallel issue resolution",
+    "Structured output via tool_use: schema design, tool_choice configuration, nullable fields to prevent hallucination",
+    "Few-shot prompting: ambiguous scenario targeting, format consistency, false positive reduction",
+    "Batch processing: Message Batches API appropriateness, latency tolerance assessment, failure handling by custom_id",
+    "Context window optimization: trimming verbose tool outputs, structured fact extraction, position-aware input ordering",
+    "Human review workflows: confidence calibration, stratified sampling, accuracy segmentation by document type and field",
+    "Information provenance: claim-source mappings, temporal data handling, conflict annotation, coverage gap reporting",
+  ],
+  out: [
+    { en: "Streaming API implementation or server-sent events", re: "stream: true|server-sent|message_delta|thinking_delta", allow: 2 },
+    { en: "Prompt caching implementation details (beyond knowing it exists)", re: "cache_control|cache_read_input_tokens|cache_creation", allow: 1 },
+    { en: "Token counting algorithms or tokenization specifics", re: "トークナイザ", allow: 1 },
+    { en: "Computer use (browser automation, desktop interaction)", re: "computer use|ブラウザ操作|デスクトップ操作", allow: 0 },
+    { en: "Vision/image analysis capabilities", re: "画像の解析|vision", allow: 0 },
+    { en: "Fine-tuning Claude models or training custom models", re: "ファインチューニング|fine-tun|再学習", allow: 0 },
+    { en: "Claude API authentication, billing, or account management", re: "APIキーの発行|課金プラン|請求先", allow: 0 },
+    { en: "Rate limiting, quotas, or API pricing calculations", re: "レート制限|クォータ|単価を計算", allow: 0 },
+    { en: "Embedding models or vector database implementation details", re: "埋め込みモデル|ベクトル(検索|DB|データベース)", allow: 0 },
+    { en: "Constitutional AI, RLHF, or safety training methodologies", re: "RLHF|Constitutional", allow: 0 },
+    { en: "Deploying or hosting MCP servers", re: "MCP サーバを(立て|デプロイ|ホスティング)", allow: 0 },
+  ],
+};
+
 /** 6. Detailed Objectives by Domain ─ 30タスク。
  *  name      … Task Statement の原文（訳さない。設問は英語で書かれる）
  *  sections  … この教材で対応する節の id
@@ -81,7 +120,7 @@ export const TASKS = {
       ["K1 ハブ ─ 親が全部の通信を握る"]: "子(どうし|同士)[^。]{0,24}直接",
       ["K2 子は親の履歴を自動では引き継がない"]: "(子|サブエージェント)[^。]{0,60}(履歴|やり取り)[^。]{0,40}(引き継が|見て)",
       ["K3 親の役割 ─ 分解・委任・集約・呼ぶ子の選択"]: "親[^。]{0,60}(段取り|まとめ|集約)|全体を知っている",
-      ["K4 分け方が狭すぎると取りこぼす"]: "(細かく|狭く|分けるほど)[^。]{0,60}(抜け|取りこぼ|漏れ|失敗)",
+      ["K4 分け方が狭すぎると取りこぼす"]: "割り当てられた範囲しか見ません|親の分け方",
       ["S1 毎回全部通さず、必要な子だけ呼ぶ"]: "(毎回|すべて)[^。]{0,60}(通す必要|通さ)",
       ["S2 重複しないよう範囲を割る"]: "(重複|かぶ|二重)[^。]{0,80}(割|分け|なら)",
       ["S3 抜けがあれば的を絞って再委任"]: "(抜け|空欄)[^。]{0,80}(投げ直|もう一度)",
@@ -395,7 +434,7 @@ export const TASKS = {
     ja: "検証・再試行・フィードバック",
     name: "Implement validation, retry, and feedback loops for extraction quality",
     sections: ["verify"],
-    vocab: ["detected_pattern"],
+    vocab: ["detected_pattern", "Pydantic"],
     concepts: {
       ["K1 落ちた理由を付けて投げ直す"]: "(理由|指摘)[^。]{0,60}(足し|添え|付け)[^。]{0,50}(再|もう一度)",
       ["K2 情報が無いなら再試行しても無駄"]: "通らない入力",
@@ -411,7 +450,7 @@ export const TASKS = {
     ja: "バッチ処理",
     name: "Design efficient batch processing strategies",
     sections: ["batch"],
-    vocab: ["custom_id", "Message Batches"],
+    vocab: ["custom_id", "Message Batches", "ポーリング"],
     concepts: {
       ["K1 Message Batches API"]: "Message Batches",
       ["K2 50%・24時間・SLA なし"]: "50\\s*%|半額|半分",
@@ -492,7 +531,7 @@ export const TASKS = {
     ja: "大規模コードベース探索での文脈管理",
     name: "Manage context effectively in large codebase exploration",
     sections: ["sub", "shape"],
-    vocab: ["サブエージェント", "/compact"],
+    vocab: ["サブエージェント", "/compact", "manifest"],
     concepts: {
       ["K1 長く続けると答えがぼやける"]: "(長く|長時間|続けている)[^。]{0,50}(ぼやけ|曖昧|一般的な話)",
       ["K2 作業メモで窓の外に残す"]: "作業メモ|メモをファイル|scratchpad",
