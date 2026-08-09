@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>0-2　会話は毎回、まるごと送り直している ─ 前提 ─ CCAR-F 学習ノート</title>
+<title>0-3　送っているものの形 ─ 前提 ─ CCAR-F 学習ノート</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/style.css?v=d673ee43">
 </head>
-<body data-page="resend">
+<body data-page="msg">
 <script>(function(){var t=localStorage.getItem('ccarf-theme');if(t)document.documentElement.dataset.theme=t;})();</script>
 <nav class="domnav">
   <a class="brand" href="../index.html"><span class="brand-mark">CCAR-F</span><span class="brand-sub">学習ノート</span></a>
@@ -47,8 +47,9 @@
 <aside class="toc">
   <div class="toc-head">前提</div>
   <nav class="toc-list"><a class="itm toc-link" href="../00-basics/01-flow.html"><span class="itm-n">0-1</span><span class="itm-t">まず、全体の流れ</span></a>
-<a class="itm toc-link on" href="../00-basics/02-resend.html"><span class="itm-n">0-2</span><span class="itm-t">会話は毎回、まるごと送り直している</span></a>
-<a class="itm toc-link" href="../00-basics/03-msg.html"><span class="itm-n">0-3</span><span class="itm-t">送っているものの形</span></a>
+<a class="itm toc-link" href="../00-basics/02-resend.html"><span class="itm-n">0-2</span><span class="itm-t">会話は毎回、まるごと送り直している</span></a>
+<a class="itm toc-link on" href="../00-basics/03-msg.html"><span class="itm-n">0-3</span><span class="itm-t">送っているものの形</span></a>
+<a class="toc-link toc-sub" href="#msg-2">content は「ブロック」の入れ物</a>
 <a class="itm toc-link" href="../00-basics/04-window.html"><span class="itm-n">0-4</span><span class="itm-t">トークンとコンテキストウィンドウ</span></a>
 <a class="itm toc-link" href="../00-basics/05-cache.html"><span class="itm-n">0-5</span><span class="itm-t">プロンプトキャッシュ</span></a>
 <a class="itm toc-link" href="../00-basics/06-token.html"><span class="itm-n">0-6</span><span class="itm-t">確率で次の1トークンを選ぶ</span></a>
@@ -56,69 +57,70 @@
 </aside>
 <main class="doc">
 <p class="crumb" data-domain="basics"><b>前提</b><span>会話の実体</span></p>
-<nav class="secpager top"><a class="pgv prev" href="../00-basics/01-flow.html"><span class="vh">前へ</span></a><a class="pgv next" href="../00-basics/03-msg.html"><span class="vh">次へ</span></a></nav>
+<nav class="secpager top"><a class="pgv prev" href="../00-basics/02-resend.html"><span class="vh">前へ</span></a><a class="pgv next" href="../00-basics/04-window.html"><span class="vh">次へ</span></a></nav>
 <!-- ▼ 本文 ─ ここだけを編集する。この前後は node tools/reindex.mjs が書き出す -->
-<section class="sec" id="resend">
+<section class="sec" id="msg">
 <header class="sec-head">
-  <h2>0-2　会話は毎回、まるごと送り直している</h2>
+  <h2>0-3　送っているものの形</h2>
 </header>
-<p class="lead">Claudeは前回の会話を覚えていません。「覚えているように見える」のは、毎回これまでの全メッセージを送り直しているからです。</p>
-<p class="goal"><b>ゴール</b>「覚えている」ように見える理由を説明できる。</p>
+<p class="lead">前の節の「まるごと」の中身です。やり取りは JSON で、この形は最後まで変わりません。ここで掴んでおくと、以降に出てくる名前は<b>どこに入るか</b>だけで意味が取れます。</p>
+<p class="goal"><b>ゴール</b><code>messages</code> の形を読めて、<code>content</code> が2通りに書けることを言える。</p>
 
-<div class="figbox"><figure class="fig run">
-  <p class="fig-t">3回のやり取りで、毎回 API に何を送っているか</p>
-  <div class="fig-turn s1">
-    <span class="t-lbl">1回目</span>
-    <span class="fig-msgs"><span class="m m-u now">user こんにちは</span></span>
-    <span class="t-n">1件</span>
-  </div>
-  <div class="fig-turn s2">
-    <span class="t-lbl">2回目</span>
-    <span class="fig-msgs">
-      <span class="m m-u">user こんにちは</span>
-      <span class="m m-a">assistant どうも</span>
-      <span class="m m-u now">user 続きを</span>
-    </span>
-    <span class="t-n">3件</span>
-  </div>
-  <div class="fig-turn s3">
-    <span class="t-lbl">3回目</span>
-    <span class="fig-msgs">
-      <span class="m m-u">user こんにちは</span>
-      <span class="m m-a">assistant どうも</span>
-      <span class="m m-u">user 続きを</span>
-      <span class="m m-a">assistant では…</span>
-      <span class="m m-u now">user もっと詳しく</span>
-    </span>
-    <span class="t-n">5件</span>
-  </div>
-  <div class="fig-row s4" style="--cols:1">
-    <div class="fig-card">
-      <b class="fig-h">サーバ側は毎回まっさら</b>
-      <span class="fig-note">前回の続きから再開しているのではない。<b>送られてきた <code>messages</code> を、その場で丸ごと読んでいる</b>だけ</span>
-      <span class="fig-note">だから会話が長くなるほど、<b>毎回の送信量そのものが増える</b></span>
-    </div>
-  </div>
-  <p class="fig-f">枠の太い箱が<b>その回の新しい発言</b>。それ以外は<b>前回までのぶんを、もう一度そのまま送っている</b>もの。省略はされない。</p>
-</figure></div>
+<div class="figbox" style="padding:16px 18px">
+  <p class="codelabel">送るもの ─ ここまでの会話</p>
+  <pre class="code"><span class="k">"messages"</span>: [<span class="n">1</span>
+  { <span class="k">"role"</span>: <span class="s">"user"</span>,
+    <span class="k">"content"</span>: <span class="s">"こんにちは"</span> },<span class="n">2</span>
+  { <span class="k">"role"</span>: <span class="s">"assistant"</span>,
+    <span class="k">"content"</span>: <span class="s">"どうも"</span> },
+  { <span class="k">"role"</span>: <span class="s">"user"</span>,
+    <span class="k">"content"</span>: <span class="s">"続きを"</span> }
+]</pre>
+  <p class="codelabel">返るもの ─ 1件ぶん</p>
+  <pre class="code">{
+  <span class="k">"role"</span>: <span class="s">"assistant"</span>,
+  <span class="k">"content"</span>: [<span class="n">3</span>
+    { <span class="k">"type"</span>: <span class="s">"text"</span>,
+      <span class="k">"text"</span>: <span class="s">"では…"</span> }
+  ],
+  <span class="k">"stop_reason"</span>: <span class="s">"end_turn"</span><span class="n">4</span>
+}</pre>
+  <ol class="ann">
+    <li><span class="n">1</span><span>履歴は<b>配列</b>です。前の節で見た「厚くなる紙の束」は、この配列が伸びること。</span></li>
+    <li><span class="n">2</span><span>1件に入るのは <code>role</code> と <code>content</code> の2つだけ。<code>role</code> は <code>user</code> か <code>assistant</code> のどちらかです。</span></li>
+    <li><span class="n">3</span><span>返ってきた1件は、<b>そのまま次回の末尾に足せます</b>。送る形と返る形が同じなので、積むだけで会話になります。</span></li>
+    <li><span class="n">4</span><span><code>content</code> の<b>外側</b>にも値が付きます。外側のものは<b>次回に送り返しません</b>（値の意味は Domain 1）。</span></li>
+  </ol>
+</div>
 
-<p class="point"><b>ポイント</b>「記憶」は仕組みではなく、送り直しの結果。会話履歴は資産であると同時にコストでもある。</p>
+<p class="point"><b>ポイント</b>会話の実体は <code>{role, content}</code> の配列。返ってきたものを末尾に足すだけで履歴になる。</p>
+
+<h3 class="sub" id="msg-2"><code>content</code> は「ブロック」の入れ物</h3>
+<p class="lead">同じ内容を2通りに書けます。送る側は短いほうで済みますが、<b>返る側はいつも配列</b>です。</p>
+
+<div class="figbox" style="padding:16px 18px">
+  <p class="codelabel">短い書き方 ─ 送る側だけ</p>
+  <pre class="code"><span class="k">"content"</span>: <span class="s">"こんにちは"</span></pre>
+  <p class="codelabel">ブロックの配列 ─ 返る側はこちら</p>
+  <pre class="code"><span class="k">"content"</span>: [
+  { <span class="k">"type"</span>: <span class="s">"text"</span>,
+    <span class="k">"text"</span>: <span class="s">"こんにちは"</span> }
+]</pre>
+</div>
+
+<p class="point"><b>ポイント</b>返ってくるのは文章ではなくブロックの列。中身が何かは <code>type</code> が決めるので、種類が増えても読み方は変わらない。</p>
 
 <div class="detail">
-  <h3>たとえるなら</h3>
-  <p><b>会うたびに記憶がゼロに戻る相談相手</b>に、これまでの経緯を書いた<b>紙の束を毎回渡し直している</b>状態です。会話が進むほど束は厚くなり、相手はそれを毎回最初から読み直します。</p>
-  <h3>ここから3つのことが説明できる</h3>
-  <p>・<b>会話が長くなるほど、遅く・高くなる</b>　毎回の紙束が厚くなるので当然です。<br>
-  ・<b>長い作業の途中で、最初の指示を忘れたように見える</b>　束が厚くなり、大事な1枚が埋もれるからです（Domain 5で扱います）。<br>
-  ・<b>別のセッションを開くと何も引き継がれない</b>　紙束を渡していないので、相手にとっては初対面です。</p>
+  <p>いまは <code>text</code> しか出てきませんが、<code>type</code> の種類はこの先で増えます ── 画像、道具を使いたいという要求、その結果。<b>どれも同じ配列に並びます。</b>「文章が返る」と覚えると、道具の話に入ったところで必ず躓きます。</p>
   <div class="myth">
-    <span class="t">誤解</span><span>「Claude がこちらの会話を覚えていてくれる」</span>
-    <span class="t o">実際は</span><span>覚えているのは<b>アプリ側</b>。モデルは毎回、渡された束をその場で読んでいるだけ。</span>
+    <span class="t">誤解</span><span>「JSON を書けるようにならないと理解できない」</span>
+    <span class="t o">実際は</span><span>試験でコードは書きません。要るのは<b>どの名前が何を指すか</b>だけです。設問はこの語彙で書かれます。</span>
   </div>
 </div>
+<p class="note">※ 実際のリクエストには <code>model</code> などの指定も要ります。1回ぶんの全体は Domain 1「実物を見る」でまとめて見ます。</p>
 </section>
 <!-- ▲ 本文 -->
-<nav class="secpager btm"><a class="pgv prev" href="../00-basics/01-flow.html"><span class="vh">前へ</span></a><a class="pgv next" href="../00-basics/03-msg.html"><span class="vh">次へ</span></a></nav>
+<nav class="secpager btm"><a class="pgv prev" href="../00-basics/02-resend.html"><span class="vh">前へ</span></a><a class="pgv next" href="../00-basics/04-window.html"><span class="vh">次へ</span></a></nav>
 </main>
 </div>
 <div class="modal" id="searchModal" hidden>

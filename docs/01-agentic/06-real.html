@@ -110,18 +110,13 @@
     <div class="ex"><span class="exl"><span class="rng">緑がかった色を付けた部分</span>について</span>
     <b>こちらが変えない限り</b>毎回そっくり同じになります。だから<b>プロンプトキャッシュが効くのはそこまで</b>（前提編「同じ前半は使い回せる」）。<b>逆に言えば、ここは固定ではありません。</b><code>tools</code> を1つ足す、MCPサーバを繋ぐ、<code>system</code> を書き換える ── どれをやっても、<b>そこから後ろは全部作り直し</b>になります。</div>
   </div>
-  <div class="detail"><h3>綴りが決まっているもの／自分で決めるもの</h3>
-    <p>紛らわしいので分けておきます。<b><code>model</code> <code>system</code> <code>messages</code> <code>tools</code> <code>name</code> <code>description</code> <code>input_schema</code> <code>role</code> <code>content</code> は API が決めた綴り</b>で、変えられません。</p>
-    <p>一方 <code>search_files</code> という名前、その説明文、<code>pattern</code> という引数名は<b>すべて自分で決めるもの</b>です。この教材に出てくる道具の名前は、説明のために私が作った架空のものです。</p>
-    </div>
+  <p class="point"><b>ポイント</b>1回のリクエストに、指示・道具・会話が全部入っている。この全部が同じコンテキストウィンドウに載る。</p>
 
 <h3 class="sub" id="real-2">綴りが決まっているもの／自分で決めるもの</h3>
-<div class="detail"><div class="myth">
-      <span class="t">誤解</span><span>「JSON を書けるようにならないと理解できない」</span>
-      <span class="t o">実際は</span><span>試験でコードは書きません。必要なのは<b>どのフィールドが何を意味するか</b>だけです。設問はこの語彙で書かれます。</span>
-    </div>
+<div class="detail">
+    <p>紛らわしいので分けておきます。<b><code>model</code> <code>system</code> <code>messages</code> <code>tools</code> <code>name</code> <code>description</code> <code>input_schema</code> <code>role</code> <code>content</code> は API が決めた綴り</b>で、変えられません。</p>
+    <p>一方 <code>search_files</code> という名前、その説明文、<code>pattern</code> という引数名は<b>すべて自分で決めるもの</b>です。この教材に出てくる道具の名前は、説明のために私が作った架空のものです。</p>
   </div>
-  <p class="point"><b>ポイント</b>1回のリクエストに、指示・道具・会話が全部入っている。この全部が同じコンテキストウィンドウに載る。</p>
 
 <h3 class="sub" id="real-3">実物を見る ② 返ってくるもの</h3>
 <p class="lead">シーケンス図の <b>②（Claude → アプリ の橙の矢印）</b> の中身です。</p>
@@ -139,13 +134,13 @@
   <span class="k">"usage"</span>: { <span class="k">"input_tokens"</span>: <span class="v">412</span>, <span class="k">"output_tokens"</span>: <span class="v">68</span> }<span class="n">4</span>
 }</pre>
     <ol class="ann">
-      <li><span class="n">1</span><span>応答は文字列ではなく<b>ブロックの配列</b>。<code>text</code> と <code>tool_use</code> が同時に入ります。</span></li>
+      <li><span class="n">1</span><span>前提編で見たブロックの配列に、<code>text</code> と <code>tool_use</code> が<b>並んで入っています</b>。喋りながら道具を頼めるということです。</span></li>
       <li><span class="n">2</span><span>「この道具を、この引数で使いたい」という<b>要求</b>。検索はまだ走っていません。</span></li>
       <li><span class="n">3</span><span>アプリが分岐に使うのは<b>この値だけ</b>。上の文章では判断しません。</span></li>
       <li><span class="n">4</span><span>使ったトークン数。キャッシュが効いた分も別項目で分かります。</span></li>
     </ol>
   </div>
-  <p class="point"><b>ポイント</b>応答は「文章」ではなくブロックの集まり。その外側に stop_reason が付いている。</p>
+  <p class="point"><b>ポイント</b>道具を使いたいという要求は <code>content</code> の中に並ぶ。アプリが次の一手を決めるのに見るのは、その外側の <code>stop_reason</code>。</p>
 
 <h3 class="sub" id="real-4">実物を見る ③ 返し直すもの</h3>
 <p class="lead">シーケンス図の <b>④と⑤</b> にあたります。ここでループが閉じます。</p>
@@ -191,7 +186,7 @@
     <div class="modal-foot"><kbd>Esc</kbd> で閉じる</div>
   </div>
 </div>
-<script src="../assets/quiz-data.js?v=e66d3b2d"></script>
-<script src="../assets/search-index.js?v=0b107d65"></script>
-<script src="../assets/app.js?v=542dc47c"></script>
+<script src="../assets/quiz-data.js?v=36c91b65"></script>
+<script src="../assets/search-index.js?v=8690ce7e"></script>
+<script src="../assets/app.js?v=e349201e"></script>
 </body></html>

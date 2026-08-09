@@ -163,8 +163,12 @@
     const wrap = sec.querySelector('.qwrap');
     if (!data || !wrap) return;
     wrap.innerHTML = '';
-    const lead = sec.querySelector('.lead');
-    if (lead) lead.textContent = data.length + '問。選択肢をクリックすると、その場で正誤と解説が出ます。';
+    /* 設問数は data から出す。HTML に手で書くと足したときに必ず片方だけ古くなる
+       ── 実際に9件ズレていた。以前はここで .lead を丸ごと差し替えていたが、
+       それだと節ごとの一文（「状況 A・B・C にそれぞれ答えます」など）が消える。
+       いまは .lead の中の空の .qcount にだけ数を入れる。 */
+    const cnt = sec.querySelector('.qcount');
+    if (cnt) cnt.textContent = data.length + '問。';
     data.forEach((item, qi) => {
       const box = document.createElement('div');
       box.className = 'q';

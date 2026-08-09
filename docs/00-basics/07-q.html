@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>0-5　確率で次の1トークンを選ぶ ─ 前提 ─ CCAR-F 学習ノート</title>
+<title>0-7　理解度チェック ─ 形・窓・キャッシュ・確率 ─ 前提 ─ CCAR-F 学習ノート</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/style.css?v=d673ee43">
 </head>
-<body data-page="token">
+<body data-page="q">
 <script>(function(){var t=localStorage.getItem('ccarf-theme');if(t)document.documentElement.dataset.theme=t;})();</script>
 <nav class="domnav">
   <a class="brand" href="../index.html"><span class="brand-mark">CCAR-F</span><span class="brand-sub">学習ノート</span></a>
@@ -48,49 +48,25 @@
   <div class="toc-head">前提</div>
   <nav class="toc-list"><a class="itm toc-link" href="../00-basics/01-flow.html"><span class="itm-n">0-1</span><span class="itm-t">まず、全体の流れ</span></a>
 <a class="itm toc-link" href="../00-basics/02-resend.html"><span class="itm-n">0-2</span><span class="itm-t">会話は毎回、まるごと送り直している</span></a>
-<a class="itm toc-link" href="../00-basics/03-window.html"><span class="itm-n">0-3</span><span class="itm-t">トークンとコンテキストウィンドウ</span></a>
-<a class="itm toc-link" href="../00-basics/04-cache.html"><span class="itm-n">0-4</span><span class="itm-t">プロンプトキャッシュ</span></a>
-<a class="itm toc-link on" href="../00-basics/05-token.html"><span class="itm-n">0-5</span><span class="itm-t">確率で次の1トークンを選ぶ</span></a>
-<a class="toc-link toc-sub" href="#token-1">Claudeは「次の1トークン」を確率で選び続けている</a>
-<a class="toc-link toc-sub" href="#token-2">では、どう付き合うか</a>
-<a class="itm toc-link itm-quiz" href="../00-basics/06-q.html"><span class="itm-n">0-6</span><span class="itm-t">理解度チェック ─ 窓・キャッシュ・確率</span></a></nav>
+<a class="itm toc-link" href="../00-basics/03-msg.html"><span class="itm-n">0-3</span><span class="itm-t">送っているものの形</span></a>
+<a class="itm toc-link" href="../00-basics/04-window.html"><span class="itm-n">0-4</span><span class="itm-t">トークンとコンテキストウィンドウ</span></a>
+<a class="itm toc-link" href="../00-basics/05-cache.html"><span class="itm-n">0-5</span><span class="itm-t">プロンプトキャッシュ</span></a>
+<a class="itm toc-link" href="../00-basics/06-token.html"><span class="itm-n">0-6</span><span class="itm-t">確率で次の1トークンを選ぶ</span></a>
+<a class="itm toc-link on itm-quiz" href="../00-basics/07-q.html"><span class="itm-n">0-7</span><span class="itm-t">理解度チェック ─ 形・窓・キャッシュ・確率</span></a></nav>
 </aside>
 <main class="doc">
 <p class="crumb" data-domain="basics"><b>前提</b><span>会話の実体</span></p>
-<nav class="secpager top"><a class="pgv prev" href="../00-basics/04-cache.html"><span class="vh">前へ</span></a><a class="pgv next" href="../00-basics/06-q.html"><span class="vh">次へ</span></a></nav>
+<nav class="secpager top"><a class="pgv prev" href="../00-basics/06-token.html"><span class="vh">前へ</span></a><a class="pgv next" href="../01-agentic/01-d1about.html"><span class="vh">次へ</span></a></nav>
 <!-- ▼ 本文 ─ ここだけを編集する。この前後は node tools/reindex.mjs が書き出す -->
-<section class="sec" id="token" data-widget="p-token">
+<section class="sec sec-quiz" id="q" data-quiz="q1">
 <header class="sec-head">
-  <h2>0-5　確率で次の1トークンを選ぶ</h2>
+  <h2>0-7　理解度チェック ─ 形・窓・キャッシュ・確率</h2>
 </header>
-
-<h3 class="sub" id="token-1">Claudeは「次の1トークン」を確率で選び続けている</h3>
-<p class="lead">文全体を先に決めているのではなく、1トークンずつ「次に来そうなもの」を選んでは繋げています。実際に選んでみてください。</p>
-<p class="goal"><b>ゴール</b>答えが毎回揺れる理由を説明できる。</p>
-  <div class="play">
-    <div class="head">▶ 候補をひとつ選ぶと、末尾に足されて次の候補が出ます（数値は説明用の例です）</div>
-    <p class="fig-f" style="margin:0 0 10px">枠の中が<b>ここまでの文章</b>。下の4行が<b>次に来る候補と、その「らしさ」</b>で、棒の長さがそのまま確率。選ぶたびに<b>候補は計算し直され</b>、毎回変わります。</p>
-    <div class="sent" id="tk-sent"></div>
-    <div class="cand" id="tk-cand"></div>
-    <div class="answer" id="tk-ans"></div>
-    <div class="ctrl"><button id="tk-reset">最初から</button></div>
-  </div>
-  <div class="detail"><p>3回選ぶと文が終わります。<b>文全体を先に決めたのではなく、3回の選択の結果としてその文になった</b> ─ これが生成の実体です。</p>
-    <p>大事なのは、<b>Claude は「正しさ」ではなく「もっともらしさ」を最大化している</b>ということです。事実を照合してから答えているわけではありません。</p>
-    </div>
-
-<h3 class="sub" id="token-2">では、どう付き合うか</h3>
-<div class="detail"><div class="ex"><span class="exl">これで説明がつくこと</span>
-    ・同じ質問でも答えが毎回少し違う → 選択が確率的だから<br>
-    ・<b>存在しない関数名を、いかにも本物らしく作ってしまう</b> → 「それらしい並び」を選んだ結果であって、嘘をつく意図があるわけではない<br>
-    ・自信ありげな口調と正しさは無関係 → 口調もまた「もっともらしい」から選ばれている</div>
-    <h3>では、どう付き合うか</h3>
-    <p>この性質は消せません。消せない前提で、外側を設計します。<b>事実が要るなら道具で取りに行かせる</b>（Domain 1）、<b>形が要るならスキーマで受け取る</b>（Domain 4）、<b>絶対に守らせたいならコードで塞ぐ</b>（Domain 2・Domain 5）。この教材の残りは、ほぼこの1点への対処と言ってもかまいません。</p>
-  </div>
-  <p class="point"><b>ポイント</b>この選択の繰り返しが生成の実体。だから同じ質問でも答えは毎回わずかに揺れるし、もっともらしい嘘も起こりうる。確実性が要るところは、モデルの外側（コードによる検証など）で担保する。</p>
+<p class="lead"><span class="qcount"></span>選択肢をクリックすると、その場で正誤と解説が出ます。</p>
+  <div class="qwrap"></div>
 </section>
 <!-- ▲ 本文 -->
-<nav class="secpager btm"><a class="pgv prev" href="../00-basics/04-cache.html"><span class="vh">前へ</span></a><a class="pgv next" href="../00-basics/06-q.html"><span class="vh">次へ</span></a></nav>
+<nav class="secpager btm"><a class="pgv prev" href="../00-basics/06-token.html"><span class="vh">前へ</span></a><a class="pgv next" href="../01-agentic/01-d1about.html"><span class="vh">次へ</span></a></nav>
 </main>
 </div>
 <div class="modal" id="searchModal" hidden>
@@ -100,7 +76,7 @@
     <div class="modal-foot"><kbd>Esc</kbd> で閉じる</div>
   </div>
 </div>
-<script src="../assets/quiz-data.js?v=e66d3b2d"></script>
-<script src="../assets/search-index.js?v=0b107d65"></script>
-<script src="../assets/app.js?v=542dc47c"></script>
+<script src="../assets/quiz-data.js?v=36c91b65"></script>
+<script src="../assets/search-index.js?v=8690ce7e"></script>
+<script src="../assets/app.js?v=e349201e"></script>
 </body></html>
