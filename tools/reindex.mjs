@@ -19,7 +19,7 @@
 import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
-import { GUIDE, EXAM, DOMAINS as BP_DOM, SCENARIOS, PREPARE, EXERCISES, TASKS, domainItems, scenarioCount } from './blueprint.mjs';
+import { GUIDE, EXAM, DOMAINS as BP_DOM, SCENARIOS, PREPARE, EXERCISES, TRAPS, SAMPLES, TASKS, domainItems, scenarioCount } from './blueprint.mjs';
 
 /* 成果物（HTML と assets）は docs/ の下 ─ GitHub Pages がそのまま公開できる名前。tools/ と CLAUDE.md はリポジトリ直下 */
 const ROOT = path.join(path.resolve(new URL('..', import.meta.url).pathname), 'docs');
@@ -235,8 +235,64 @@ ${ex}
 </div>`;
 };
 
+/** §9 Sample Questions ─ 公式の例題12問。**設問文・選択肢・解説は載せない**（訳して再配布しない）。
+ *  出すのは「36個の誤答をどう分類できるか」と「間違えたらどの節に戻るか」だけ。
+ *  件数はすべて SAMPLES から数える ── 手で持つと、分類を直したときに古い数が残る（§7 #66）。 */
+const sampleFig = () => {
+  const sec = (ids) => ids.map(id => {
+    const p = pages.find(x => x.id === id);
+    return p ? `<a href="../${p.rel}">${esc(p.num)}</a>` : null;
+  }).filter(Boolean).join(' ');
+  const cnt = {};
+  for (const s of SAMPLES) for (const t of s.traps) cnt[t] = (cnt[t] || 0) + 1;
+  const total = Object.values(cnt).reduce((a, b) => a + b, 0);
+  const keys = Object.keys(TRAPS);
+  const mark = Object.fromEntries(keys.map((k, i) => [k, '①②③④⑤⑥⑦⑧'[i]]));
+  const trapRows = keys.map(k => {
+    const t = TRAPS[k];
+    return `    <tr><td data-l="誤答の型"><b>${mark[k]} ${esc(t.ja)}</b><br><span class="n">${total}個中 ${cnt[k]}個</span></td>
+        <td data-l="こう見える">${t.sign}</td>
+        <td data-l="なぜ誤りか">${t.why}<br><span class="n">公式の解説より ─ &ldquo;${esc(t.en)}&rdquo;</span></td></tr>`;
+  }).join('\n');
+  const qRows = SAMPLES.map(s => {
+    const scn = SCENARIOS.find(x => x.n === s.sc);
+    const c = {};
+    for (const t of s.traps) c[t] = (c[t] || 0) + 1;
+    // 同じ型が重なったらまとめる（「頼んで守らせる ×2」）。3つ揃うと「3つとも」
+    const traps = Object.entries(c).map(([k, v]) =>
+      `${mark[k]} ${esc(TRAPS[k].ja)}${v > 1 ? `<b> ×${v}</b>` : ''}`).join('<br>');
+    // シナリオ名は広い列へ ── 狭い「問」列に入れると 1440px で3行に割れる（実測）
+    return `    <tr><td data-l="問"><b>Q${s.n}</b></td>
+        <td data-l="問われていること">${esc(s.ja)}<br><span class="n">${esc(scn.ja)}</span></td>
+        <td data-l="誤答3つの型">${traps}</td>
+        <td data-l="間違えたら戻る先"><span class="n">${sec(s.sections)}</span></td></tr>`;
+  }).join('\n');
+  const used = [...new Set(SAMPLES.map(s => s.sc))].length;
+  const top = keys.slice().sort((a, b) => cnt[b] - cnt[a])[0];
+  return `<table class="tbl">
+  <thead><tr><th>誤答の型（${total}個ぶんを分類）</th><th>こう見える</th><th>なぜ誤りか</th></tr></thead>
+  <tbody>
+${trapRows}
+  </tbody>
+</table>
+
+<p class="point"><b>ポイント</b>${SAMPLES.length}問の誤答${total}個は、この<b>${keys.length}つで全部説明がつく</b>。最も多いのは<b>${mark[top]} ${esc(TRAPS[top].ja)}（${cnt[top]}個）</b>で、<b>知識だけで消える</b>。残りは「対処の大きさ」と「原因の位置」を見れば絞れる。</p>
+
+<h3 class="sub">間違えたら、どこへ戻るか</h3>
+<p>公式の${SAMPLES.length}問は、この教材が扱っている範囲に全部収まっている。答えが食い違ったら<b>原文が正</b>で、戻る先はここ。</p>
+
+<table class="tbl">
+  <thead><tr><th>問</th><th>問われていること</th><th>誤答3つの型</th><th>間違えたら戻る先</th></tr></thead>
+  <tbody>
+${qRows}
+  </tbody>
+</table>
+<p class="note">※ 「問われていること」は要旨です。<b>設問文・選択肢・解説は載せていません</b> ── 公式の練習問題そのもので、訳すと限定語（<i>first step</i> / <i>most maintainable</i> / <i>root cause</i>）が落ちて正解が変わるためです。原文を英語のまま解いてください。<br>
+※ ${SAMPLES.length}問が扱うのは本番${EXAM.scenariosTotal}シナリオのうち<b>${used}本</b>で、残り${EXAM.scenariosTotal - used}本（${SCENARIOS.filter(s => ![...new Set(SAMPLES.map(x => x.sc))].includes(s.n)).map(s => esc(s.ja)).join('・')}）には例題がありません。そちらはこの教材の模擬で補ってください。</p>`;
+};
+
 const BLOCKS = { weightfig: weightFig, examfmt: examFmt, scenariofig: scenarioFig,
-  examadmin: examAdmin, preparefig: prepareFig, nsec: () => String(pages.length) };
+  examadmin: examAdmin, preparefig: prepareFig, samplefig: sampleFig, nsec: () => String(pages.length) };
 
 /** `<p class="task" data-t="1.1"></p>` に、公式の原文を差し込む。
  *  中身は毎回まるごと作り直すので、何度実行しても同じ結果になる。 */

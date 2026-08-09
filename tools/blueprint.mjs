@@ -164,6 +164,58 @@ export const SCOPE = {
   ],
 };
 
+/** 9. Sample Questions ─ 公式が公開している解説つきの例題12問。
+ *  **設問文・選択肢・解説の訳は持たない。** 公式の練習問題そのものなので、訳して載せない
+ *  （§9 は "drawn from the practice test" と明記している）。ここに持つのは
+ *  「何を問うているか」「誤答がどの型か」「どの節に戻ればよいか」だけ。
+ *
+ *  TRAPS は、12問36個の誤答を**公式の解説の言葉で**分類したもの。36個すべてがこの6つに入る。
+ *  **本番60問の誤答も同じ作られ方をしている**ので、12問だけの話ではない。
+ *  件数は SAMPLES から導出する（ここに書かない ── §7 #66）。 */
+export const TRAPS = {
+  fact: { ja: "事実で消える",
+          sign: "存在しない機能・置き場所の誤り・仕様の誤解",
+          why: "知っていれば読んだ瞬間に消える。<b>考える前に、まずこれを外す</b>",
+          en: "describes a configuration mechanism that doesn't exist" },
+  big:  { ja: "手が大きすぎる",
+          sign: "分類器・学習・ルーティング層・上位モデル・道具の統合",
+          why: "<b>まだ試していない小さい手が残っている</b>",
+          en: "over-engineered, requiring labeled data and ML infrastructure when prompt optimization hasn't been tried" },
+  ask:  { ja: "頼んで守らせる",
+          sign: "<code>system</code> に「必ず〜」と書く／例を足す／推論に任せる",
+          why: "外せない条件は、<b>頼むのではなく機械で止める</b>",
+          en: "rely on probabilistic LLM compliance, which is insufficient when errors have financial consequences" },
+  bet:  { ja: "運任せに賭ける",
+          sign: "「進めれば見えてくる」「たいてい速い」「あとで切り替える」",
+          why: "保証のないものを、<b>保証が要るところに使っている</b>",
+          en: "ignores that the complexity is already stated in the requirements" },
+  far:  { ja: "原因が遠い",
+          sign: "受け取った側を直す／症状の出た場所を直す／別の問題を解く",
+          why: "壊れているのは<b>渡す前</b>。下流は指示どおり動いている",
+          en: "incorrectly blame downstream agents that are working correctly within their assigned scope" },
+  duck: { ja: "逃がす",
+          sign: "握りつぶす／全体を止める／人の運用でしのぐ",
+          why: "その場は収まるが、<b>仕組みは何も良くなっていない</b>",
+          en: "shifts burden to developers without improving the system" },
+};
+
+/** 12問。sc は SCENARIOS の n、sections は戻り先の節 id、traps は誤答3つの型。
+ *  §9 が扱うのは6シナリオ中4本（開発者向けの道具・構造化抽出には例題がない）。 */
+export const SAMPLES = [
+  { n:  1, sc: 1, ja: "返金の前に、本人確認を必ず通させる",        sections: ["hooks"],             traps: ["ask", "ask", "big"] },
+  { n:  2, sc: 1, ja: "似た2つの道具の取り違えを減らす最初の一手",  sections: ["anatomy", "grain"],  traps: ["far", "big", "big"] },
+  { n:  3, sc: 1, ja: "簡単な案件を人に回してしまう",              sections: ["confidence"],        traps: ["ask", "big", "far"] },
+  { n:  4, sc: 2, ja: "全員に配るコマンドの置き場所",              sections: ["cmdskill"],          traps: ["fact", "fact", "fact"] },
+  { n:  5, sc: 2, ja: "数十ファイルの構造変更をどう始めるか",      sections: ["plan"],              traps: ["bet", "bet", "bet"] },
+  { n:  6, sc: 2, ja: "領域ごとに違う規約を自動で当てる",          sections: ["rules"],             traps: ["ask", "ask", "fact"] },
+  { n:  7, sc: 3, ja: "子は全部成功なのに、報告が偏っている",      sections: ["parent"],            traps: ["far", "far", "far"] },
+  { n:  8, sc: 3, ja: "子のタイムアウトを親へどう返すか",          sections: ["propagate", "error"],traps: ["duck", "duck", "duck"] },
+  { n:  9, sc: 3, ja: "裏取りの往復で遅延が増えている",            sections: ["distribute"],        traps: ["bet", "big", "bet"] },
+  { n: 10, sc: 5, ja: "CI で入力待ちのまま止まる",                 sections: ["ci"],                traps: ["fact", "fact", "fact"] },
+  { n: 11, sc: 5, ja: "2つの処理をバッチに寄せるべきか",           sections: ["batch"],             traps: ["bet", "fact", "big"] },
+  { n: 12, sc: 5, ja: "14ファイルの PR で指摘がばらつく",          sections: ["multi", "chain"],    traps: ["duck", "big", "bet"] },
+];
+
 /** 6. Detailed Objectives by Domain ─ 30タスク。
  *  name      … Task Statement の原文（訳さない。設問は英語で書かれる）
  *  sections  … この教材で対応する節の id

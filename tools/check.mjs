@@ -5,7 +5,7 @@
    ========================================================= */
 import fs from 'fs';
 import path from 'path';
-import { GUIDE, EXAM, DOMAINS as BP_DOM, SCENARIOS, SCOPE, TASKS as BP, domainItems, scenarioCount } from './blueprint.mjs';
+import { GUIDE, EXAM, DOMAINS as BP_DOM, SCENARIOS, TRAPS, SAMPLES, SCOPE, TASKS as BP, domainItems, scenarioCount } from './blueprint.mjs';
 
 /* 成果物（HTML と assets）は docs/ の下 ─ GitHub Pages がそのまま公開できる名前。tools/ と CLAUDE.md はリポジトリ直下 */
 const ROOT = path.join(path.resolve(new URL('..', import.meta.url).pathname), 'docs');
@@ -292,12 +292,38 @@ let bpNg = 0;
   const cs = keys.reduce((a, k) => a + scenarioCount(k), 0);
   const ds = SCENARIOS.reduce((a, s) => a + s.domains.length, 0);
   if (cs !== ds) { bad(`ドメイン別のシナリオ本数の合計 ${cs} が、シナリオ側の延べ数 ${ds} と合わない`); bpNg++; }
+  // §9 の例題 ─ 設問文は持たないので、持っている「分類」だけが壊れていないかを見る
+  if (SAMPLES.length !== EXAM.sampleQuestions) { bad(`SAMPLES が ${SAMPLES.length} 問（EXAM.sampleQuestions = ${EXAM.sampleQuestions}）`); bpNg++; }
+  const trapUse = {};
+  SAMPLES.forEach(s => {
+    if (s.traps.length !== 3) { bad(`例題 Q${s.n} の誤答の型が ${s.traps.length} 個（4択なので誤答は3個）`); bpNg++; }
+    s.traps.forEach(k => {
+      if (!TRAPS[k]) { bad(`例題 Q${s.n} が知らない誤答の型「${k}」を指している`); bpNg++; }
+      else trapUse[k] = (trapUse[k] || 0) + 1;
+    });
+    if (!SCENARIOS.some(x => x.n === s.sc)) { bad(`例題 Q${s.n} が知らないシナリオ ${s.sc} を指している`); bpNg++; }
+    s.sections.forEach(id => {
+      if (!allIds.has(id)) { bad(`例題 Q${s.n} の戻り先「${id}」が存在しない`); bpNg++; }
+    });
+  });
+  // 使われていない型が残ると、表に0個の行が出る（分類を直したときに起きる）
+  Object.keys(TRAPS).forEach(k => {
+    if (!trapUse[k]) { bad(`誤答の型「${TRAPS[k].ja}」がどの例題からも指されていない`); bpNg++; }
+  });
+  // 本文に手で書いた「例題12問」が、SAMPLES の実数と合っているか（§7 #66 と同じ趣旨）
+  FILES.concat(['index.html']).forEach(f => {
+    const h = fs.readFileSync(path.join(ROOT, f), 'utf8');
+    const body = (h.match(/▼ 本文[^\n]*-->([\s\S]*?)<!-- ▲ 本文/) || [])[1] || (f === 'index.html' ? h : '');
+    for (const m of body.matchAll(/例題(?:が)?\s*(\d+)\s*問/g)) {
+      if (+m[1] !== SAMPLES.length) { bad(`${f} の「${m[0]}」が SAMPLES の ${SAMPLES.length} 問と合わない`); bpNg++; }
+    }
+  });
   // 各タスクが指す節 id が実在するか（5f は「1つも無い」だけを見ている）
   Object.entries(BP).forEach(([n, tk]) => tk.sections.forEach(id => {
     if (!allIds.has(id)) { bad(`タスク ${n} が指す節 id「${id}」が存在しない`); bpNg++; }
   }));
 }
-if (!bpNg) console.log(`  ✓ 比率 ${Object.keys(BP_DOM).length} 件・シナリオ ${SCENARIOS.length} 本・タスク ${Object.keys(BP).length} 件すべて辻褄が合う（${GUIDE.code} v${GUIDE.version}）`);
+if (!bpNg) console.log(`  ✓ 比率 ${Object.keys(BP_DOM).length} 件・シナリオ ${SCENARIOS.length} 本・例題 ${SAMPLES.length} 問（誤答 ${SAMPLES.length * 3} 個を ${Object.keys(TRAPS).length} 型に分類）・タスク ${Object.keys(BP).length} 件すべて辻褄が合う（${GUIDE.code} v${GUIDE.version}）`);
 
 /* --- 5n. タスク番号が、本文から参照されているか -----------------------
    逆向き（本文にあってブループリントに無い番号）は reindex が throw する。
