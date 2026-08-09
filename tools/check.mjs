@@ -18,56 +18,57 @@ let ng = 0;
 const bad = (msg) => { console.log('  ✗ ' + msg); ng++; };
 
 /* --- 1. 図の色が固定値のまま残っていないか -----------------------
-   SVG の fill/stroke は必ず var(--fig-*) を使うこと。
-   16進を直接書くとテーマ切替で色が変わらない。 */
-console.log('\n■ 図の色（CSS変数になっているか）');
-FILES.forEach(f => {
-  const h = fs.readFileSync(path.join(ROOT, f), 'utf8');
-  const svgs = h.match(/<svg[\s\S]*?<\/svg>/g) || [];
-  const hex = svgs.join('').match(/(fill|stroke)(=|:)"?#[0-9A-Fa-f]{3,8}/g) || [];
-  if (hex.length) bad(`${f}: 固定色が ${hex.length} 箇所（${[...new Set(hex)].slice(0, 3).join(', ')}…）`);
-});
-if (!ng) console.log('  ✓ すべて var() 参照');
+   色は必ず var(--fig-*) で書く。直接書くとテーマ切替で色が変わらない。
 
-/* --- 2. 図のテキストが枠からはみ出していないか（座標の静的判定） ---
-   厳密な判定にはブラウザが要るが、text の x 座標が
-   viewBox の右端を超えているものだけは静的に拾える。 */
-console.log('\n■ 図のテキスト位置');
-let posNg = 0;
+   以前は走査が `<svg>` の中だけだった。図を HTML で組み直して
+   本文から SVG が全廃されたので、**その形では何も見ていない**状態に
+   なっていた（§7 #37）。いまは本文の inline style と SVG 属性の
+   両方から色リテラルを探す。`var(--…)` と `color-mix(…)` は先に伏せる。 */
+console.log('\n■ 図の色（CSS変数になっているか）');
+const COLOR_LIT = /#[0-9A-Fa-f]{3,8}\b|rgba?\(|hsla?\(|\b(?:red|blue|green|orange|yellow|purple|pink|gray|grey|black|white|cyan|magenta|brown|navy|teal|olive|lime|maroon|silver|gold)\b/i;
+const hideVars = v => v.replace(/var\(\s*--[\w-]+\s*(?:,[^()]*)?\)/g, 'VAR');
+let colNg = 0, colN = 0;
 FILES.forEach(f => {
   const h = fs.readFileSync(path.join(ROOT, f), 'utf8');
-  (h.match(/<svg[\s\S]*?<\/svg>/g) || []).forEach(svg => {
-    const vb = (svg.match(/viewBox="0 0 (\d+) (\d+)"/) || []);
-    if (!vb[1]) return;
-    const W = +vb[1], H = +vb[2];
-    [...svg.matchAll(/<text[^>]*\sx="(-?\d+(?:\.\d+)?)"[^>]*\sy="(-?\d+(?:\.\d+)?)"[^>]*>([\s\S]*?)<\/text>/g)]
-      .forEach(m => {
-        const x = +m[1], y = +m[2];
-        if (x > W || y > H || x < 0 || y < 0) {
-          bad(`${f}: 「${m[3].replace(/<[^>]*>/g, '').slice(0, 20)}」が枠外 (x=${x}, y=${y} / ${W}x${H})`);
-          posNg++;
-        }
-      });
+  const body = (h.match(/▼ 本文[^\n]*-->([\s\S]*?)<!-- ▲ 本文/) || [])[1];
+  if (!body) return;
+  // inline style の値と、SVG の fill / stroke 属性の値
+  const vals = [
+    ...[...body.matchAll(/\sstyle="([^"]*)"/g)].map(m => ['style', m[1]]),
+    ...[...body.matchAll(/\s(fill|stroke)="([^"]*)"/g)].map(m => [m[1], m[2]]),
+  ];
+  vals.forEach(([where, v]) => {
+    colN++;
+    const stripped = hideVars(v);
+    const m = stripped.match(COLOR_LIT);
+    if (m) { bad(`${f}: ${where} に固定色「${m[0]}」（var(--fig-*) を使う） → ${v.slice(0, 60)}`); colNg++; }
   });
 });
-if (!posNg) console.log('  ✓ アンカー座標はすべて枠内（実際の描画幅はブラウザで要確認）');
+if (!colNg) console.log(`  ✓ 本文の inline style / SVG 属性 ${colN} 箇所すべて、色は var() 参照`);
 
 /* --- 3. 統合で意味を失った位置参照が残っていないか ----------------
    本文が位置（前ページ・次ページ）に依存すると、節を並べ替えたときに壊れる。
    ページ送り UI そのものは1項ずつ表示として復活したので、"ページ送り" 等は検出対象から外した。 */
 console.log('\n■ 消えた概念への参照');
 let refNg = 0;
-[...FILES, 'index.html'].forEach(f => {
+const REF_FILES = [...FILES, 'index.html'];
+REF_FILES.forEach(f => {
   const h = fs.readFileSync(path.join(ROOT, f), 'utf8');
   (h.match(/前ページ|次ページ|前の章|次の章|1ページ＝|☰/g) || []).forEach(w => {
     bad(`${f}: 「${w}」が残っている`); refNg++;
   });
 });
-if (!refNg) console.log('  ✓ なし');
+if (!refNg) console.log(`  ✓ ${REF_FILES.length} ファイルに残っていない`);
 
-/* --- 4. 番号説明が、図の文言をそのまま繰り返していないか ----------
-   用語（input_schema 等）の重複は正常。日本語の文まるごとが問題。 */
-console.log('\n■ 番号説明と図の重複');
+/* --- 4. 注記が、図やコードの文言をそのまま繰り返していないか --------
+   同じことを2度読ませるだけになる（§7 #3）。
+   用語（`input_schema` 等）の重複は正常で、日本語の文まるごとが問題。
+
+   以前は SVG の `<text>` と突き合わせていた。図を HTML で組み直して
+   本文から SVG が消えたので**対象が0件になり、何も見ていなかった**（§7 #37）。
+   いまは同じ `.figbox` の中の**注記以外の文**（ラベル・注記・タイトル・結び）と
+   突き合わせる。コードそのものは除く ── 注記がコードの識別子を引くのは正常。 */
+console.log('\n■ 注記と図の重複');
 const strip = s => s.replace(/<[^>]*>/g, '').replace(/[\s　]+/g, '');
 const lcs = (a, b) => {
   let best = '';
@@ -80,22 +81,37 @@ const lcs = (a, b) => {
   return best;
 };
 // 18字以上の一致＝丸写し（失格）／14〜17字＝引用で指しているだけの可能性（要確認）
-let dupNg = 0; const gray = [];
+let dupNg = 0, dupN = 0; const gray = [];
 FILES.forEach(f => {
   const h = fs.readFileSync(path.join(ROOT, f), 'utf8');
-  h.split(/(?=<div class="figbox")/).forEach(block => {
-    const svg = (block.match(/<svg[\s\S]*?<\/svg>/) || [''])[0];
-    if (!svg) return;
-    const svgTxt = [...svg.matchAll(/<text[^>]*>([\s\S]*?)<\/text>/g)].map(m => strip(m[1])).join('｜');
-    [...block.matchAll(/<li><span class="n">(\d+)<\/span><span>([\s\S]*?)<\/span><\/li>/g)].forEach(m => {
-      const s = lcs(strip(m[2]), svgTxt);
-      if (!/[ぁ-んァ-ヶ一-龠]{6,}/.test(s)) return;
-      if (s.length >= 18) { bad(`${f}: 番号${m[1]}「${s}」が図と丸かぶり`); dupNg++; }
-      else if (s.length >= 14) gray.push(`${f}: 番号${m[1]}「${s}」`);
+  const body = (h.match(/▼ 本文[^\n]*-->([\s\S]*?)<!-- ▲ 本文/) || [])[1];
+  if (!body) return;
+  body.split(/(?=<div class="figbox")/).forEach(box => {
+    const notes = [...box.matchAll(/<li><span class="n">(\d+)<\/span><span>([\s\S]*?)<\/span><\/li>/g)];
+    if (!notes.length) return;
+    // 突き合わせる相手＝箱の中の「注記以外の文」。
+    // コードの識別子は除くが、**コード内のコメント（.c）は日本語の文なので含める**
+    // ── ここを除いていたせいで、コメントの丸写しを見逃していた。
+    const code = box.match(/<pre class="code">[\s\S]*?<\/pre>/g) || [];
+    const comments = code.flatMap(c => [...c.matchAll(/<span class="c">([\s\S]*?)<\/span>/g)].map(m => strip(m[1])));
+    const others = box
+      .replace(/<ol class="ann">[\s\S]*?<\/ol>/g, '')
+      .replace(/<pre class="code">[\s\S]*?<\/pre>/g, '');
+    const otherTxt = [
+      ...[...others.matchAll(/<(?:b|span|p)\s+class="(?:fig-h|fig-note|fig-t|fig-f|fig-lbl|codelabel|sq-lbl|sq-note|fig-do)"[^>]*>([\s\S]*?)<\/(?:b|span|p)>/g)].map(m => strip(m[1])),
+      ...comments,
+    ].join('｜');
+    if (!otherTxt) return;
+    notes.forEach(m => {
+      dupN++;
+      const s2 = lcs(strip(m[2]), otherTxt);
+      if (!/[ぁ-んァ-ヶ一-龠]{6,}/.test(s2)) return;
+      if (s2.length >= 18) { bad(`${f}: 番号${m[1]}「${s2}」が図と丸かぶり`); dupNg++; }
+      else if (s2.length >= 14) gray.push(`${f}: 番号${m[1]}「${s2}」`);
     });
   });
 });
-if (!dupNg) console.log('  ✓ 丸写しなし');
+if (!dupNg) console.log(`  ✓ 注記 ${dupN} 件に丸写しなし`);
 if (gray.length) {
   console.log(`  △ 要確認 ${gray.length} 件（図の語句を引用して指しているだけなら問題なし）`);
   gray.forEach(g => console.log('     ' + g));
@@ -259,6 +275,40 @@ order.forEach(s => {
   if (!/class="task"/.test(s.body)) { bad(`${s.f} #${id}: 対応タスクがあるのに BLUEPRINT ラベルがない`); covNg++; }
 });
 if (!covNg) console.log(`  ✓ ${Object.keys(TASKS).length} タスクすべてに対応する節あり（ラベルも欠落なし）`);
+
+/* --- 5k. 図の中に、文が入り込んでいないか ----------------------------
+   ラベルであるべき場所に文章が入ると、図の速さ（一目で分かる）が失われる
+   （§7 #11）。ただし §5 の目安（箱ラベル10字・注記16字）を
+   そのまま閾値にすると落ちすぎる ── 実測は `.fig-h` 中央7字・`.fig-note`
+   中央17字で、注記のほうは目安が現実と合っていなかった（§7 #38）。
+   ここで見るのは「明確に文が入った」ものだけ。閾値は実測の分布から決めた
+   （`.fig-h` は90%が16字以内、`.fig-note` は90%が37字以内）。
+
+   API の値のように短くできない識別子は除く ── ラベルが `<code>` だけで
+   できている場合は対象外（`model_context_window_exceeded` など）。 */
+console.log('\n■ 図の中の文の長さ');
+const LEN_MAX = { 'fig-h': 24, 'fig-note': 48, 'fig-do': 48, 'sq-note': 60 };
+let lenNg = 0, lenN = 0;
+FILES.forEach(f => {
+  const h = fs.readFileSync(path.join(ROOT, f), 'utf8');
+  const body = (h.match(/▼ 本文[^\n]*-->([\s\S]*?)<!-- ▲ 本文/) || [])[1];
+  if (!body) return;
+  Object.entries(LEN_MAX).forEach(([cls, max]) => {
+    const re = new RegExp('<(?:b|span)\\s+class="' + cls + '"[^>]*>([\\s\\S]*?)</(?:b|span)>', 'g');
+    [...body.matchAll(re)].forEach(m => {
+      lenN++;
+      // <code> だけでできているなら、短くできない識別子なので対象外
+      const outsideCode = m[1].replace(/<code>[\s\S]*?<\/code>/g, '').replace(/<[^>]*>/g, '').replace(/[\s　]+/g, '');
+      if (!outsideCode) return;
+      const n = [...m[1].replace(/<[^>]*>/g, '').replace(/[\s　]+/g, '')].length;
+      if (n > max) {
+        bad(`${f}: .${cls} が ${n}字（上限 ${max}字）── 文になっている → 「${m[1].replace(/<[^>]*>/g, '').slice(0, 30)}…」`);
+        lenNg++;
+      }
+    });
+  });
+});
+if (!lenNg) console.log(`  ✓ 図の中の ${lenN} 箇所すべて上限内（.fig-h ${LEN_MAX['fig-h']}字 / .fig-note ${LEN_MAX['fig-note']}字 / .sq-note ${LEN_MAX['sq-note']}字）`);
 
 /* --- 5j. 丸番号が、指す先を持っているか ------------------------------
    `pre.code` に打った <span class="n">N</span> は、直後の <ol class="ann"> の
