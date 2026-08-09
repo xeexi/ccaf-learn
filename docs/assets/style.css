@@ -961,7 +961,6 @@ html[data-theme="light"] .opt:hover:not(.done) .ol{ color:#fff }
   flex:none; font-size:var(--fs-xs); letter-spacing:.16em; color:var(--accent); font-weight:700;
   padding:2px 9px; border-radius:99px; background:var(--surface-2); border:1px solid var(--line);
 }
-.al-c{ margin-left:auto; flex:none; font-size:var(--fs-xs); color:var(--muted); font-family:var(--mono); font-weight:400 }
 .al-list{
   margin:12px 0 0; padding:6px 0 0; list-style:none;
   border-top:1px solid var(--line-soft);

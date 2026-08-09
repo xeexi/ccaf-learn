@@ -254,7 +254,10 @@ if (fs.existsSync(idxPath)) {
     const items = list.map(p =>
       `<li>${itemLink(p, { href: p.rel, cls: 'al-link' })}</li>`).join('');
     return `<section class="al-dom" data-domain="${d.key}">
-  <h3><span class="al-num">${esc(d.num)}</span><a href="${entry[d.dir]}">${esc(d.h1)}</a><span class="al-c">${list.length}項</span></h3>
+  <!-- 項数は出さない。すぐ下に項目が並んでいて数えられるし、同じページの
+       配点の図が「Domain 1 … 16問」と出しているので、「18項」と並ぶと
+       2つの数字を混同する（§7 #39）。 -->
+  <h3><span class="al-num">${esc(d.num)}</span><a href="${entry[d.dir]}">${esc(d.h1)}</a></h3>
   <ul class="al-list">${items}</ul>
 </section>`;
   }).join('\n');
