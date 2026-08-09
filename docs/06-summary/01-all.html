@@ -75,39 +75,44 @@
 </header>
 <p class="lead">最初の図に、学んだ要素を書き込むとこうなります。</p>
 <p class="goal"><b>ゴール</b>初見の設問が「どこの話か」を特定できる。</p>
-  <div class="figbox"><div class="diagram run">
-  <svg viewBox="0 0 760 300">
-    <g class="s1"><rect x="16" y="40" width="150" height="70" rx="10" fill="var(--fig-fill-amber)" stroke="var(--fig-line-amber)"/>
-      <text class="ttl" x="91" y="70" text-anchor="middle" style="fill:var(--fig-amber)">プロンプト</text>
-      <text class="sm" x="91" y="90" text-anchor="middle">system / user</text>
-      <text class="sm" x="91" y="104" text-anchor="middle">順番・例示</text></g>
-    <g class="s2"><line x1="172" y1="75" x2="212" y2="75" stroke="var(--fig-muted)" stroke-width="2" marker-end="url(#ar)"/>
-      <rect x="220" y="30" width="170" height="90" rx="10" fill="var(--fig-surface)" stroke="var(--fig-amber)" stroke-width="2"/>
-      <text class="ttl" x="305" y="60" text-anchor="middle" style="fill:var(--fig-amber)">Claude</text>
-      <text class="sm" x="305" y="82" text-anchor="middle">確率的に次を選ぶ</text>
-      <text class="sm" x="305" y="100" text-anchor="middle">stop_reason を返す</text></g>
-    <g class="s3"><line x1="396" y1="75" x2="436" y2="75" stroke="var(--fig-amber)" stroke-width="2" marker-end="url(#ara)"/>
-      <rect x="444" y="40" width="150" height="70" rx="10" fill="var(--fig-fill-blue)" stroke="var(--fig-line-blue)"/>
-      <text class="ttl" x="519" y="70" text-anchor="middle" style="fill:var(--fig-blue)">ツール / MCP</text>
-      <text class="sm" x="519" y="90" text-anchor="middle">読む＝自動</text>
-      <text class="sm" x="519" y="104" text-anchor="middle">変える＝関門つき</text></g>
-    <g class="s4"><path d="M519 116 C 519 160, 320 160, 305 126" fill="none" stroke="var(--fig-green)" stroke-width="2" marker-end="url(#ar)"/>
-      <text class="sm" x="412" y="174" text-anchor="middle" style="fill:var(--fig-green)">tool_result を返してループ</text></g>
-    <g class="s5"><rect x="620" y="30" width="124" height="90" rx="10" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)"/>
-      <text class="ttl" x="682" y="60" text-anchor="middle" style="fill:var(--fig-green)">フック</text>
-      <text class="sm" x="682" y="82" text-anchor="middle">必ず走らせる</text>
-      <text class="sm" x="682" y="100" text-anchor="middle">決定的な処理</text>
-      <line x1="600" y1="75" x2="614" y2="75" stroke="var(--fig-green)" stroke-width="2" marker-end="url(#ar)"/></g>
-    <g class="s6"><rect x="16" y="180" width="728" height="46" rx="10" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
-      <text class="lbl" x="40" y="200">コンテキストウィンドウ：ここに全部が乗る。溢れそうなら要約する／サブエージェントに逃がす</text>
-      <text class="sm" x="40" y="218">↑ 前提編とDomain 5は、同じ「窓」の話でつながっている</text></g>
-    <g class="s7"><rect x="16" y="240" width="728" height="46" rx="10" fill="var(--fig-fill-amber)" stroke="var(--fig-line-amber)"/>
-      <text class="lbl" x="40" y="262" style="fill:var(--fig-amber)">設計の原則：判断が要ることはモデルへ、要らないことはコードへ。そして「効く一番単純な手」を選ぶ。</text>
-      <text class="sm" x="40" y="280">CCAR-F では、過剰に凝った選択肢はたいてい誤答になる</text></g>
-  </svg>
-  </div></div>
-  <div class="detail">
-    <h3>この1枚を、言葉で辿ってみる</h3>
+<div class="figbox"><figure class="fig run">
+  <p class="fig-t">1周を左から右へ ─ <b>設問はこのどこかを指している</b></p>
+  <div class="fig-row flow s1" style="--cols:4">
+    <div class="fig-card blue">
+      <b class="fig-h">プロンプト</b>
+      <span class="fig-note"><code>system</code> / <code>user</code><br>順番・例示（Domain 4）</span>
+    </div>
+    <div class="fig-card amber">
+      <b class="fig-h">Claude</b>
+      <span class="fig-note">確率的に次を選ぶ<br><code>stop_reason</code> を返す（Domain 1）</span>
+    </div>
+    <div class="fig-card">
+      <b class="fig-h">ツール / MCP</b>
+      <span class="fig-note">読む＝自動<br>変える＝関門つき（Domain 2）</span>
+    </div>
+    <div class="fig-card blue">
+      <b class="fig-h">アプリが返す</b>
+      <span class="fig-note"><code>tool_result</code> を足して、<b>もう一度ここから</b></span>
+    </div>
+  </div>
+  <p class="fig-lbl s2">この1周に、外から効くものが2つ</p>
+  <div class="fig-row s2" style="--cols:2">
+    <div class="fig-card green">
+      <b class="fig-h">フック（Domain 1・3）</b>
+      <span class="fig-note">ツールの前後で<b>必ず走らせる</b>。判断の要らない処理はここ</span>
+    </div>
+    <div class="fig-card key">
+      <b class="fig-h">コンテキストウィンドウ（前提・Domain 5）</b>
+      <span class="fig-note"><b>ここに全部が乗る。</b>溢れそうなら要約する／サブエージェントに逃がす</span>
+    </div>
+  </div>
+  <p class="fig-f">前提編と Domain 5 は、<b>同じ「窓」の話</b>でつながっている。Domain 3 は、この1周を Claude Code の設定で組む話</p>
+</figure></div>
+
+<p class="point"><b>ポイント</b>個々の用語ではなく、<b>この1枚の関係</b>が頭に入っていれば、初見の設問でも「どこの話か」を特定できる。</p>
+
+<div class="detail">
+      <h3>この1枚を、言葉で辿ってみる</h3>
     <p>左から。<b>プロンプト</b>には、ずっと効かせたいことを system に、その回の入力を user に置きます。長い資料は前、指示は後ろ（Domain 4）。この並びは同時にキャッシュも効かせます（前提編）。</p>
     <p>中央の <b>Claude</b> は、渡されたものを毎回まるごと読み、次の1トークンを確率で選び続けます（前提編）。答え終わると <code>stop_reason</code> を付けて返します（Domain 1）。</p>
     <p>右へ。<code>tool_use</code> が返ってきたら、アプリが<b>ツールや MCP サーバ</b>を実行します（Domain 2）。読むだけの操作はそのまま、変える操作は関門を通して。結果は <code>tool_result</code> として会話に戻り、また Claude へ ─ これがループです（Domain 1）。1体で足りなければ、ここを子に切り出します（Domain 1）。</p>
@@ -116,7 +121,6 @@
     <b>判断が要ることはモデルへ、要らないことはコードへ。そして、効く一番単純な手を選ぶ。</b><br>
     CCAR-F の設問で選択肢に迷ったら、この基準で切ると、たいてい残るものが正解です。</div>
   </div>
-  <p class="point"><b>ポイント</b>個々の用語ではなく、この1枚の関係が頭に入っていれば、初見の設問でも「どこの話か」を特定できる。</p>
 </section>
 <!-- ▲ 本文 -->
 <nav class="secpager btm"><a class="pgv prev" href="../05-context/10-q2.html"><span class="vh">前へ</span></a><a class="pgv next" href="../06-summary/02-weight.html"><span class="vh">次へ</span></a></nav>
@@ -130,6 +134,6 @@
   </div>
 </div>
 <script src="../assets/quiz-data.js?v=47ac7a88"></script>
-<script src="../assets/search-index.js?v=89870b9e"></script>
+<script src="../assets/search-index.js?v=69c5c1e9"></script>
 <script src="../assets/app.js?v=542dc47c"></script>
 </body></html>

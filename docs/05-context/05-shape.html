@@ -68,48 +68,39 @@
 <p class="lead">窓を守るいちばん確実な手は、載せてから減らすことではなく、<b>載せる前に減らす</b>ことです。減らす場所はツールの返り値です。</p>
 <p class="task"><span class="tn">BLUEPRINT 5.4</span><b>大規模コードベース探索での文脈管理</b></p>
 <p class="goal"><b>ゴール</b>ツールの返し方で窓の消費が決まることを説明できる。</p>
-  <div class="figbox"><div class="diagram run">
-  <svg viewBox="0 0 760 330">
-    <g class="s1"><rect x="16" y="40" width="150" height="58" rx="10" fill="var(--fig-fill-blue)" stroke="var(--fig-line-blue)"/>
-      <text class="lbl" x="91" y="66" text-anchor="middle" style="fill:var(--fig-blue)">ツールを実行</text>
-      <text class="sm" x="91" y="86" text-anchor="middle">ログ・検索結果</text>
-      <line x1="172" y1="68" x2="204" y2="68" stroke="var(--fig-muted)" stroke-width="2" marker-end="url(#ar)"/></g>
-    <g class="s2"><rect x="210" y="30" width="180" height="78" rx="10" fill="var(--fig-fill-neutral)" stroke="var(--fig-line)"/>
-      <text class="lbl" x="300" y="56" text-anchor="middle">生の結果</text>
-      <text class="sm" x="300" y="78" text-anchor="middle">5万行</text>
-      <text class="sm" x="300" y="96" text-anchor="middle">まだ履歴には入っていない</text></g>
+<div class="figbox"><figure class="fig run">
+  <p class="fig-t">ツールが5万行を返してきた。<b>履歴に入る前が、唯一「捨てても無料」な地点</b></p>
+  <div class="fig-row s1" style="--cols:1">
+    <div class="fig-card">
+      <b class="fig-h">生の結果 ─ ログ・検索結果 5万行</b>
+      <span class="fig-note">まだ履歴には入っていない</span>
+    </div>
+  </div>
+  <div class="fig-row" style="--cols:2">
+    <div class="fig-card red s2">
+      <b class="fig-h">そのまま返す</b>
+      <span class="fig-note">1周ごとに窓が埋まり、<b>以降ずっと載り続ける</b></span>
+      <span class="fig-note">効くのは1周だけではない ── <b>以降のすべての周回で送り直される</b>（前提編）。1回の油断が最後まで残る</span>
+    </div>
+    <div class="fig-card green s3">
+      <b class="fig-h">返す前に形を決める</b>
+      <span class="fig-note">・必要な行だけ返す（件数の上限・絞り込み条件）<br>
+      ・要約して返す（判断に要る点だけ）<br>
+      ・<b>置き場所だけ返す</b>（パスや ID。読むのは必要になってから）</span>
+      <span class="fig-note">履歴に載るのは<b>数十行。</b>次の1周も軽いまま</span>
+    </div>
+  </div>
+  <p class="fig-f">3つのうち<b>置き場所だけ返すのがいちばん軽い</b> ── 読むかどうかをモデルに選ばせられるので、要らなければ0行で済む</p>
+</figure></div>
 
-    <g class="s3"><path d="M396 58 L440 58" fill="none" stroke="var(--fig-red)" stroke-width="2" marker-end="url(#arr)"/>
-      <rect x="446" y="30" width="298" height="58" rx="10" fill="var(--fig-fill-red)" stroke="var(--fig-line-red)"/>
-      <text class="lbl" x="466" y="54" style="fill:var(--fig-red)">そのまま返す</text>
-      <text class="sm" x="466" y="76">1周ごとに窓が埋まり、以降ずっと載り続ける</text></g>
+<p class="point"><b>ポイント</b>減らす場所は「履歴に入る前」。<b>返す量はツールの設計で決める。</b>絞る条件はツールの引数として持たせる ── 「短く返して」と頼む形にすると、守られるかどうかが確率になる。</p>
 
-    <g class="s4"><path d="M300 114 L300 152" fill="none" stroke="var(--fig-green)" stroke-width="2" marker-end="url(#arg)"/>
-      <rect x="16" y="158" width="374" height="112" rx="10" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)" stroke-width="2"/>
-      <text class="lbl" x="36" y="184" style="fill:var(--fig-green)">返す前に形を決める</text>
-      <text class="sm" x="36" y="210">・必要な行だけ返す（件数の上限・絞り込み条件）</text>
-      <text class="sm" x="36" y="232">・要約して返す（判断に要る点だけ）</text>
-      <text class="sm" x="36" y="254">・置き場所だけ返す（パスや ID。読むのは必要になってから）</text>
-      <line x1="396" y1="214" x2="436" y2="214" stroke="var(--fig-green)" stroke-width="2" marker-end="url(#arg)"/></g>
-    <g class="s5"><rect x="442" y="186" width="302" height="56" rx="10" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)"/>
-      <text class="lbl" x="462" y="210" style="fill:var(--fig-green)">履歴に載るのはこれだけ</text>
-      <text class="sm" x="462" y="230">数十行。次の1周も軽いまま</text></g>
-    <text class="sm s6" x="380" y="306" text-anchor="middle">同じ情報量でも、返し方を変えるだけで以降すべての周回のコストが変わる</text>
-  </svg>
-  </div></div>
-  <div class="detail"><h3>図の読み方</h3>
-    <ol class="ann">
-      <li><span class="n">1</span><span><b>生の結果</b>の段階では、まだ履歴に入っていません。ここが唯一「捨てても無料」な地点です。</span></li>
-      <li><span class="n">2</span><span>赤い <b>そのまま返す</b>が効くのは1周だけではありません。<b>以降のすべての周回で送り直されます</b>（前提編）。1回の油断が最後まで残ります。</span></li>
-      <li><span class="n">3</span><span>3つの手のうち<b>置き場所だけ返す</b>がいちばん軽い。読むかどうかをモデルに選ばせられるので、要らなければ0行で済みます。</span></li>
-      <li><span class="n">4</span><span>絞る条件は<b>ツールの引数として持たせます</b>。「短く返して」と頼む形にすると、守られるかどうかが確率になります（前節）。</span></li>
-    </ol>
-    <div class="myth">
+<div class="detail">
+      <div class="myth">
       <span class="t">誤解</span><span>「窓が大きいモデルを使えば、返す量は気にしなくてよい」</span>
       <span class="t o">実際は</span><span>窓は入力と出力で食い合う共有資源です。埋まるほど<b>1周あたりの費用と待ち時間も増えます</b>。大きい窓は余裕であって、無料ではありません。</span>
     </div>
   </div>
-<p class="point"><b>ポイント</b>減らす場所は「履歴に入る前」。返す量はツールの設計で決める。</p>
 </section>
 <!-- ▲ 本文 -->
 <nav class="secpager btm"><a class="pgv prev" href="../05-context/04-hooks.html"><span class="vh">前へ</span></a><a class="pgv next" href="../05-context/06-confidence.html"><span class="vh">次へ</span></a></nav>
@@ -123,6 +114,6 @@
   </div>
 </div>
 <script src="../assets/quiz-data.js?v=47ac7a88"></script>
-<script src="../assets/search-index.js?v=89870b9e"></script>
+<script src="../assets/search-index.js?v=69c5c1e9"></script>
 <script src="../assets/app.js?v=542dc47c"></script>
 </body></html>

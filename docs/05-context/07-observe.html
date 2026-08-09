@@ -68,46 +68,28 @@
 <p class="lead">確率的に動くものは、静かに間違えます。<b>間違えたことが後から分かる形</b>で動かしていないと、直す手がかりが残りません。</p>
 <p class="task"><span class="tn">BLUEPRINT 5.6</span><b>出典の保持と多源統合での不確実性の扱い</b></p>
 <p class="goal"><b>ゴール</b>後から追えるようにするために何を残すか挙げられる。</p>
-  <div class="figbox"><div class="diagram run">
-  <svg viewBox="0 0 760 306">
-    <g class="s1"><rect x="16" y="36" width="160" height="62" rx="10" fill="var(--fig-fill-blue)" stroke="var(--fig-line-blue)"/>
-      <text class="lbl" x="96" y="62" text-anchor="middle" style="fill:var(--fig-blue)">1周ぶんの実行</text>
-      <text class="sm" x="96" y="84" text-anchor="middle">判断と、その結果</text>
-      <line x1="182" y1="66" x2="216" y2="66" stroke="var(--fig-muted)" stroke-width="2" marker-end="url(#ar)"/></g>
-    <g class="s2"><rect x="222" y="26" width="300" height="82" rx="10" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)" stroke-width="2"/>
-      <text class="lbl" x="242" y="52" style="fill:var(--fig-green)">残すもの</text>
-      <text class="sm" x="242" y="74">どのツールを・どんな引数で呼び、何が返ったか</text>
-      <text class="sm" x="242" y="96">結論の出典（どの資料の、どこから）</text>
-      <line x1="528" y1="66" x2="562" y2="66" stroke="var(--fig-green)" stroke-width="2" marker-end="url(#arg)"/></g>
-    <g class="s3"><rect x="568" y="36" width="176" height="62" rx="10" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)"/>
-      <text class="lbl" x="656" y="62" text-anchor="middle" style="fill:var(--fig-green)">後から追える</text>
-      <text class="sm" x="656" y="84" text-anchor="middle">どこで曲がったか分かる</text></g>
+<table class="tbl">
+  <thead><tr><th>1周ぶんの実行で残すもの</th><th>残していないと</th></tr></thead>
+  <tbody>
+    <tr><td data-l="1周ぶんの実行で残すもの"><b>どのツールを・どんな引数で呼び、何が返ったか</b><br>
+        <span class="ok">引数まで含める</span></td>
+        <td data-l="残していないと">「検索した」だけでは再現できず、<b>同じ条件で試せない</b></td></tr>
+    <tr><td data-l="1周ぶんの実行で残すもの"><b>結論の出典</b>（どの資料の、どこから）</td>
+        <td data-l="残していないと"><span class="ng">結論が正しいかを人が確かめられない。</span>あとで裏取りするための唯一の手がかりが消える</td></tr>
+    <tr><td data-l="1周ぶんの実行で残すもの">─</td>
+        <td data-l="残していないと"><b>結論だけが残る</b>＝ 合っているかも、どこで曲がったかも分からない。<b>もっともらしく見えるので、間違いに気づく契機そのものがなくなる</b></td></tr>
+  </tbody>
+</table>
 
-    <g class="s4"><rect x="222" y="140" width="300" height="82" rx="10" fill="var(--fig-fill-red)" stroke="var(--fig-line-red)"/>
-      <text class="lbl" x="242" y="166" style="fill:var(--fig-red)">残していないと</text>
-      <text class="sm" x="242" y="188">結論だけが残る</text>
-      <text class="sm" x="242" y="210">＝ 合っているかも、どこで曲がったかも分からない</text>
-      <line x1="528" y1="180" x2="562" y2="180" stroke="var(--fig-red)" stroke-width="2" marker-end="url(#arr)"/>
-      <rect x="568" y="150" width="176" height="62" rx="10" fill="var(--fig-fill-red)" stroke="var(--fig-line-red)"/>
-      <text class="sm" x="656" y="176" text-anchor="middle" style="fill:var(--fig-red)">やり直すしかない</text>
-      <text class="sm" x="656" y="198" text-anchor="middle">同じ失敗を繰り返す</text>
-      <path d="M96 104 L96 180 L216 180" fill="none" stroke="var(--fig-red)" stroke-width="2" stroke-dasharray="4 3" marker-end="url(#arr)"/></g>
-    <text class="sm s5" x="380" y="266" text-anchor="middle">記録は判断の要らない処理。だから仕組み側（フック等）に置ける</text>
-    <text class="sm s6" x="380" y="292" text-anchor="middle">同じ操作を2回走らせても壊れない形にしておくと、記録を見て安全にやり直せる</text>
-  </svg>
-  </div></div>
-  <div class="detail"><h3>図の読み方</h3>
-    <ol class="ann">
-      <li><span class="n">1</span><span><b>残すもの</b>の1行目は引数まで含めます。「検索した」だけでは再現できず、<b>同じ条件で試せません</b>。</span></li>
-      <li><span class="n">2</span><span>2行目の<b>出典</b>（provenance）が抜けると、結論が正しいかを人が確かめられません。あとで裏取りするための唯一の手がかりです。</span></li>
-      <li><span class="n">3</span><span>赤の側で残っているのは<b>結論だけ</b>です。もっともらしく見えるので、間違いに気づく契機そのものがなくなります。</span></li>
-      <li><span class="n">4</span><span>下の注記のとおり、記録は<b>判断が要らない処理</b>です。だから前節の線引きに従って、モデルに頼まず仕組み側に置けます。</span></li>
-    </ol>
-    <div class="ex"><span class="exl">やり直しを安全にする</span>
+<p class="point"><b>ポイント</b>結論だけを残すと直せない。<b>呼んだ内容と出典を残し、やり直しても壊れない形</b>にしておく。</p>
+
+<div class="detail">
+  <div class="ex"><span class="exl">記録は仕組み側に置ける</span>
+  記録は<b>判断が要らない処理</b>です。だから前節の線引きに従って、モデルに頼まず<b>フックなど仕組み側</b>に置けます。</div>
+      <div class="ex"><span class="exl">やり直しを安全にする</span>
     同じ操作を2回走らせても結果が変わらない形（同じ ID で登録し直すと上書きになる、など）にしておくと、途中で失敗しても<b>記録を見て途中から再実行できます</b>。<br>
     逆に「呼ぶたびに1件増える」形だと、再実行が二重登録になり、記録があっても直せません。</div>
   </div>
-<p class="point"><b>ポイント</b>結論だけを残すと直せない。呼んだ内容と出典を残し、やり直しても壊れない形にしておく。</p>
 </section>
 <!-- ▲ 本文 -->
 <nav class="secpager btm"><a class="pgv prev" href="../05-context/06-confidence.html"><span class="vh">前へ</span></a><a class="pgv next" href="../05-context/08-propagate.html"><span class="vh">次へ</span></a></nav>
@@ -121,6 +103,6 @@
   </div>
 </div>
 <script src="../assets/quiz-data.js?v=47ac7a88"></script>
-<script src="../assets/search-index.js?v=89870b9e"></script>
+<script src="../assets/search-index.js?v=69c5c1e9"></script>
 <script src="../assets/app.js?v=542dc47c"></script>
 </body></html>

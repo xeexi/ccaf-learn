@@ -68,57 +68,36 @@
 <p class="lead">子の失敗は要約に紛れて消えます。何体か走らせたときに<b>「全部うまくいった」ように見えるのが最も危険</b>です。</p>
 <p class="task"><span class="tn">BLUEPRINT 5.3</span><b>複数エージェント間のエラー伝播</b></p>
 <p class="goal"><b>ゴール</b>部分的な失敗を落とさない返し方を設計できる。</p>
-  <div class="figbox"><div class="diagram run">
-  <svg viewBox="0 0 760 356">
-    <g class="s1"><rect x="16" y="30" width="150" height="44" rx="8" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)"/>
-      <text class="sm" x="91" y="58" text-anchor="middle" style="fill:var(--fig-green)">子A 成功</text>
-      <rect x="16" y="86" width="150" height="44" rx="8" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)"/>
-      <text class="sm" x="91" y="114" text-anchor="middle" style="fill:var(--fig-green)">子B 成功</text>
-      <rect x="16" y="142" width="150" height="44" rx="8" fill="var(--fig-fill-red)" stroke="var(--fig-line-red)"/>
-      <text class="sm" x="91" y="170" text-anchor="middle" style="fill:var(--fig-red)">子C 失敗</text>
-      <path d="M172 52 L200 52 L200 108 L216 108" fill="none" stroke="var(--fig-muted)" stroke-width="2"/>
-      <path d="M172 108 L216 108" fill="none" stroke="var(--fig-muted)" stroke-width="2"/>
-      <path d="M172 164 L200 164 L200 108 L216 108" fill="none" stroke="var(--fig-red)" stroke-width="2"/></g>
+<div class="figbox"><figure class="fig run">
+  <p class="fig-t">3体走らせて、1体だけ失敗した ─ <b>いちばん見つけにくい形</b></p>
+  <div class="fig-row s1" style="--cols:3">
+    <div class="fig-card green"><b class="fig-h">子A</b><span class="fig-note">成功</span></div>
+    <div class="fig-card green"><b class="fig-h">子B</b><span class="fig-note">成功</span></div>
+    <div class="fig-card red"><b class="fig-h">子C</b><span class="fig-note">失敗</span></div>
+  </div>
+  <div class="fig-row" style="--cols:2">
+    <div class="fig-card red s2">
+      <b class="fig-h">要約だけを返す</b>
+      <span class="fig-note">「調査しました。結論は…」<br><b>失敗した1体の分が言及されない</b></span>
+      <span class="fig-note">親は全部揃ったと思う ＝ <b>3分の2の材料で結論が出る。</b>嘘はついていない ── <b>書かれていないことがあるだけ</b>なので、読んでも違和感が出ない</span>
+    </div>
+    <div class="fig-card green s3">
+      <b class="fig-h">成否の欄を持たせる</b>
+      <span class="fig-note">・できたこと<br>・<b>できなかったこと・その理由</b><br>・結論の確かさ（何が欠けているか）</span>
+      <span class="fig-note"><b>空欄かどうかで機械的に判定できる</b>（引き継ぎ票と同じ考え方）</span>
+    </div>
+  </div>
+  <p class="fig-f"><b>打ち切るかどうかを子に決めさせない</b> ── 子は自分の範囲しか見えていない。やり直す／このまま進める／人に渡すを決めるのは親</p>
+</figure></div>
 
-    <g class="s2"><rect x="222" y="30" width="250" height="112" rx="10" fill="var(--fig-fill-red)" stroke="var(--fig-line-red)"/>
-      <text class="lbl" x="242" y="56" style="fill:var(--fig-red)">要約だけを返す</text>
-      <text class="sm" x="242" y="80">「調査しました。結論は…」</text>
-      <text class="sm" x="242" y="104">失敗した1体の分が言及されない</text>
-      <text class="sm" x="242" y="128">＝ 3分の2の材料で結論が出る</text>
-      <path d="M478 86 L510 86" fill="none" stroke="var(--fig-red)" stroke-width="2" marker-end="url(#arr)"/>
-      <rect x="516" y="58" width="228" height="56" rx="10" fill="var(--fig-fill-red)" stroke="var(--fig-line-red)"/>
-      <text class="sm" x="630" y="82" text-anchor="middle" style="fill:var(--fig-red)">親は全部揃ったと思う</text>
-      <text class="sm" x="630" y="102" text-anchor="middle">欠けに気づけない</text></g>
+<p class="point"><b>ポイント</b>部分的な失敗がいちばん危ない。<b>返す形に「できなかったこと」の欄を作り、続行の判断は親が持つ。</b></p>
 
-    <g class="s3"><rect x="222" y="176" width="250" height="136" rx="10" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)" stroke-width="2"/>
-      <text class="lbl" x="242" y="202" style="fill:var(--fig-green)">成否の欄を持たせる</text>
-      <rect x="242" y="214" width="210" height="24" rx="4" fill="var(--fig-surface)" stroke="var(--fig-line)"/>
-      <text class="sm" x="254" y="231">できたこと</text>
-      <rect x="242" y="242" width="210" height="24" rx="4" fill="var(--fig-surface)" stroke="var(--fig-line-red)"/>
-      <text class="sm" x="254" y="259">できなかったこと・その理由</text>
-      <rect x="242" y="270" width="210" height="24" rx="4" fill="var(--fig-surface)" stroke="var(--fig-line)"/>
-      <text class="sm" x="254" y="287">結論の確かさ（何が欠けているか）</text>
-      <path d="M478 244 L510 244" fill="none" stroke="var(--fig-green)" stroke-width="2" marker-end="url(#arg)"/></g>
-    <g class="s4"><rect x="516" y="200" width="228" height="88" rx="10" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)"/>
-      <text class="sm" x="630" y="228" text-anchor="middle" style="fill:var(--fig-green)">親が判断できる</text>
-      <text class="sm" x="630" y="250" text-anchor="middle">やり直す／このまま進める</text>
-      <text class="sm" x="630" y="272" text-anchor="middle">／人に渡す</text></g>
-    <text class="sm s5" x="380" y="340" text-anchor="middle">1体の失敗で全部やめるのか、残りで進めるのか ── 決めるのは親。子は事実を返すだけ</text>
-  </svg>
-  </div></div>
-  <div class="detail"><h3>図の読み方</h3>
-    <ol class="ann">
-      <li><span class="n">1</span><span>左の3体のうち1体だけが失敗しています。この形が<b>いちばん見つけにくい失敗</b>です ── 全滅なら誰でも気づきます。</span></li>
-      <li><span class="n">2</span><span>上（赤）が危ういのは、嘘をついていないところです。<b>書かれていることは正しく、書かれていないことがある</b>だけ。だから読んでも違和感が出ません。</span></li>
-      <li><span class="n">3</span><span>下（緑）の2つ目の欄が要点です。<b>できなかったことを書く場所を先に作る</b>と、空欄かどうかで機械的に判定できます（引き継ぎ票と同じ考え方）。</span></li>
-      <li><span class="n">4</span><span>いちばん下の一文が役割分担です。<b>打ち切るかどうかを子に決めさせない</b> ── 子は自分の範囲しか見えていないので、全体の判断ができません。</span></li>
-    </ol>
-    <div class="myth">
+<div class="detail">
+      <div class="myth">
       <span class="t">誤解</span><span>「子が失敗したら、例外や異常終了で親に伝わる」</span>
       <span class="t o">実際は</span><span>子は自分の中で失敗を処理して、<b>要約だけを返します</b>。返す形に欄を作っていなければ、失敗は要約から抜け落ちたまま親に届きます。</span>
     </div>
   </div>
-<p class="point"><b>ポイント</b>部分的な失敗がいちばん危ない。返す形に「できなかったこと」の欄を作り、続行の判断は親が持つ。</p>
 </section>
 <!-- ▲ 本文 -->
 <nav class="secpager btm"><a class="pgv prev" href="../05-context/07-observe.html"><span class="vh">前へ</span></a><a class="pgv next" href="../05-context/09-q.html"><span class="vh">次へ</span></a></nav>
@@ -132,6 +111,6 @@
   </div>
 </div>
 <script src="../assets/quiz-data.js?v=47ac7a88"></script>
-<script src="../assets/search-index.js?v=89870b9e"></script>
+<script src="../assets/search-index.js?v=69c5c1e9"></script>
 <script src="../assets/app.js?v=542dc47c"></script>
 </body></html>

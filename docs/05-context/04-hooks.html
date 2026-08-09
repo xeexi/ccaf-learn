@@ -72,35 +72,25 @@
 <p class="lead">お願いは守られないことがあります。必ず実行したい処理は、仕組み側（フック等）で自動的に走らせます。</p>
 <p class="task"><span class="tn">BLUEPRINT 1.5</span><b>hooks によるツール呼び出しの介入とデータ正規化</b>　── 出題は Domain 1 のタスクですが、<b>「長く動かしても崩れない作り」の話</b>としてここで扱います。割り込み口の中身そのものは <a href="../01-agentic/15-intercept.html">1-15</a> にあります。</p>
 <p class="goal"><b>ゴール</b>お願いと仕組みの違いを言える。</p>
-  <div class="figbox"><div class="diagram run">
-  <svg viewBox="0 0 760 250">
-    <g class="s1"><rect x="16" y="26" width="350" height="196" rx="12" fill="var(--fig-fill-red)" stroke="var(--fig-line-red)"/>
-      <text class="ttl" x="191" y="56" text-anchor="middle" style="fill:var(--fig-red)">確率的：お願いする</text>
-      <rect x="40" y="76" width="302" height="40" rx="8" fill="var(--fig-surface)" stroke="var(--fig-line)"/>
-      <text class="mono" x="56" y="101">「編集したら必ず整形して」</text>
-      <text class="lbl" x="56" y="146">・だいたい守る</text>
-      <text class="lbl" x="56" y="170">・忘れることがある</text>
-      <text class="lbl" x="56" y="194">・回数が増えるほど取りこぼす</text></g>
-    <g class="s2"><rect x="394" y="26" width="350" height="196" rx="12" fill="var(--fig-fill-green)" stroke="var(--fig-line-green)"/>
-      <text class="ttl" x="569" y="56" text-anchor="middle" style="fill:var(--fig-green)">決定的：仕組みで走らせる</text>
-      <rect x="418" y="76" width="302" height="40" rx="8" fill="var(--fig-surface)" stroke="var(--fig-line-green)"/>
-      <text class="mono" x="434" y="101">編集ツールの実行後 → 整形を起動</text>
-      <text class="lbl" x="434" y="146">・100%走る</text>
-      <text class="lbl" x="434" y="170">・モデルの気分に左右されない</text>
-      <text class="lbl" x="434" y="194">・ログにも残る</text></g>
-  </svg>
-  </div></div>
-  <div class="detail"><h3>図の読み方</h3>
-    <ol class="ann">
-      <li><span class="n">1</span><span>左（赤）が<b>お願いする</b>やり方。「編集したら必ず整形して」とプロンプトに書きます。</span></li>
-      <li><span class="n">2</span><span>結果は下の3行のとおり。<b>だいたい守るが、忘れることがあり、回数が増えるほど取りこぼす</b>。100回編集すれば数回は抜けます。</span></li>
-      <li><span class="n">3</span><span>右（緑）が<b>仕組みで走らせる</b>やり方。「編集ツールの実行後に整形を起動」という形で、モデルの判断を通しません。Claude Code ではこれを <b>hooks（フック）</b> と呼びます（Domain 3）。</span></li>
-      <li><span class="n">4</span><span>結果は<b>100%走る・気分に左右されない・ログにも残る</b>。判断が要らない処理を、判断できる相手に頼む必要はありません。</span></li>
-    </ol>
-    </div>
+<table class="tbl">
+  <thead><tr><th></th><th>確率的 ─ お願いする</th><th>決定的 ─ 仕組みで走らせる</th></tr></thead>
+  <tbody>
+    <tr><td data-l="">書き方</td>
+        <td data-l="確率的 ─ お願いする">「編集したら必ず整形して」と<b>指示に書く</b></td>
+        <td data-l="決定的 ─ 仕組みで走らせる"><b>編集ツールの実行後に、整形を起動する</b>（フック）</td></tr>
+    <tr><td data-l="">どうなるか</td>
+        <td data-l="確率的 ─ お願いする"><span class="ng">だいたい守る</span>　忘れることがあり、<b>回数が増えるほど取りこぼす</b></td>
+        <td data-l="決定的 ─ 仕組みで走らせる"><span class="ok">100% 走る</span>　モデルの気分に左右されない</td></tr>
+    <tr><td data-l="">気づけるか</td>
+        <td data-l="確率的 ─ お願いする"><b>飛ばしたことが記録に残らない</b></td>
+        <td data-l="決定的 ─ 仕組みで走らせる">ログに残る</td></tr>
+  </tbody>
+</table>
 
-<h3 class="sub" id="hooks-2">仕組み側に移すもの</h3>
-<div class="detail"><h3>たとえるなら</h3>
+<p class="point"><b>ポイント</b>お願いは<b>高確率で守られるが100%ではない</b>。長く動かすほど、その差が積み上がる。</p>
+
+  <h3 class="sub" id="hooks-2">仕組み側に移すもの</h3>
+<div class="detail">
     <p><b>「退室時は施錠してください」の貼り紙</b>と<b>オートロック</b>の違いです。貼り紙はほとんどの人が守りますが、急いでいる日に忘れる人が出ます。オートロックは忘れることができません。</p>
     <div class="ex"><span class="exl">仕組み側に移すもの</span>
     ・編集したら整形する／リンタをかける<br>
@@ -124,6 +114,6 @@
   </div>
 </div>
 <script src="../assets/quiz-data.js?v=47ac7a88"></script>
-<script src="../assets/search-index.js?v=89870b9e"></script>
+<script src="../assets/search-index.js?v=69c5c1e9"></script>
 <script src="../assets/app.js?v=542dc47c"></script>
 </body></html>
