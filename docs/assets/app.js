@@ -350,20 +350,13 @@
   const input = document.getElementById('searchInput');
   const results = document.getElementById('searchResults');
   const openBtn = document.getElementById('openSearch');
+  let openSearch = null, closeSearch = null;
   if (modal && input && results) {
     const esc = s => s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-    const open = () => { modal.hidden = false; input.value = ''; results.innerHTML = ''; input.focus(); render(''); };
-    const close = () => { modal.hidden = true; };
-    if (openBtn) openBtn.onclick = open;
-    modal.onclick = e => { if (e.target === modal) close(); };
-    document.addEventListener('keydown', e => {
-      if (e.key === 'Escape') close();
-      else if ((e.key === '/' || (e.key === 'k' && (e.metaKey || e.ctrlKey))) && modal.hidden) {
-        const tag = (document.activeElement || {}).tagName;
-        if (tag === 'INPUT' || tag === 'TEXTAREA') return;
-        e.preventDefault(); open();
-      }
-    });
+    openSearch = () => { modal.hidden = false; input.value = ''; results.innerHTML = ''; input.focus(); render(''); };
+    closeSearch = () => { modal.hidden = true; };
+    if (openBtn) openBtn.onclick = openSearch;
+    modal.onclick = e => { if (e.target === modal) closeSearch(); };
     function render(q) {
       q = q.trim();
       if (!q) {
@@ -398,4 +391,39 @@
     let tm;
     input.oninput = () => { clearTimeout(tm); tm = setTimeout(() => render(input.value), 90); };
   }
+
+  /* ---------- キー操作 ─ ここに集約する ----------
+     待ち受けを分けると「入力中か」の判定が複数箇所に散り、片方だけ直す事故になる。
+     足すときは、この1つの中に足す。
+
+       /  ・Cmd/Ctrl+K … 検索を開く
+       Esc              … 検索を閉じる
+       ← →              … 前後の項へ（PC）
+
+     ← / → は本来ページの横スクロールだが、この教材はどの幅でも横溢れ0
+     （measure が常時検査）なので、取り上げても失われる操作がない。 */
+  const typing = () => {
+    const el = document.activeElement;
+    return !!el && (/^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName) || el.isContentEditable);
+  };
+  const searchOpen = () => !!modal && !modal.hidden;
+  /** 前後の項へのリンク。最初と最後は片方が <span> なので href で絞る */
+  const pager = (dir) =>
+    document.querySelector('.secpager .pgv.' + (dir < 0 ? 'prev' : 'next') + '[href]');
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') { if (closeSearch) closeSearch(); return; }
+    if (typing()) return;
+    if ((e.key === '/' || (e.key === 'k' && (e.metaKey || e.ctrlKey))) && !searchOpen()) {
+      if (!openSearch) return;
+      e.preventDefault(); openSearch(); return;
+    }
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+      if (searchOpen()) return;
+      if (e.altKey || e.metaKey || e.ctrlKey || e.shiftKey) return;   // Alt+← はブラウザの「戻る」
+      const link = pager(e.key === 'ArrowLeft' ? -1 : 1);
+      if (!link) return;                                              // 最初と最後は送り先がない
+      e.preventDefault(); location.href = link.href;
+    }
+  });
 })();

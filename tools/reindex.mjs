@@ -360,10 +360,10 @@ const pager = (i, where) => {
   const prev = pages[i - 1], next = pages[i + 1];
   // 見えるのは矢印だけ。文字は clip-path で視覚的に隠すが、読み上げには残す
   const pv = prev
-    ? `<a class="pgv prev" href="../${prev.rel}"><span class="vh">前へ</span></a>`
-    : `<a class="pgv prev" href="../index.html"><span class="vh">トップへ</span></a>`;
+    ? `<a class="pgv prev" href="../${prev.rel}" title="前へ（← キー）"><span class="vh">前へ</span></a>`
+    : `<a class="pgv prev" href="../index.html" title="トップへ（← キー）"><span class="vh">トップへ</span></a>`;
   const nx = next
-    ? `<a class="pgv next" href="../${next.rel}"><span class="vh">次へ</span></a>`
+    ? `<a class="pgv next" href="../${next.rel}" title="次へ（→ キー）"><span class="vh">次へ</span></a>`
     : `<span class="pgv next end"><span class="vh">ここで終わり</span></span>`;
   return `<nav class="secpager ${where}">${pv}${nx}</nav>`;
 };

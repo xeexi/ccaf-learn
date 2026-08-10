@@ -586,6 +586,18 @@ Object.entries(CONCEPT).forEach(([k, res]) => {
 });
 if (!cptNg) console.log(`  ✓ ${Object.keys(CONCEPT).length} 項目すべて本文にあり（公式 §6 の箇条書きと1対1）`);
 
+/* --- 5t. キー操作が1か所にまとまっているか ----------------------------
+   `document` への `keydown` を機能ごとに足すと、「入力中か」「検索が開いているか」の
+   判定が同じ数だけ増える。矢印キーを足したとき実際に2つになり、判定が二重になった。
+   足すときは既にある1つの中に足す（app.js の「キー操作 ─ ここに集約する」）。 */
+console.log(String.fromCharCode(10) + "■ キー操作の集約");
+{
+  const js = fs.readFileSync(path.join(ROOT, 'assets/app.js'), 'utf8');
+  const n = (js.match(/document\.addEventListener\(\s*['"]keydown['"]/g) || []).length;
+  if (n === 1) console.log('  ✓ document への keydown は 1 か所');
+  else bad(`app.js の document への keydown が ${n} か所（1 か所にまとめる）`);
+}
+
 /* --- 5s. 丸の中の数字が、行送りで下にずれていないか --------------------
    丸番号は `border-radius:50%` ＋ `place-items:center` で組んでいる。
    ここに `line-height` を書かないと**親の行送りをそのまま継ぐ**ので、
