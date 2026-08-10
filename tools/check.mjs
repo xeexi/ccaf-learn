@@ -736,6 +736,23 @@ console.log(String.fromCharCode(10) + "■ CLAUDE.md の数字");
 let mdNg = 0, mdN = 0;
 {
   const md = fs.readFileSync(path.join(ROOT, '..', 'CLAUDE.md'), 'utf8');
+  // §7 の番号 ─ 追記のたびに末尾へ足すので、**飛んでも乱れても気づけない**。
+  // 実際に #84 が丸ごと落ち（書き出す前にファイルを読み直していた）、
+  // #60 が #61 の後ろに入っていた。番号は「あとで参照する住所」なので連番で昇順にする。
+  {
+    const s7 = md.slice(md.indexOf('## 7.'), md.indexOf('## 8.'));
+    const ns = [...s7.matchAll(/^\| (\d+) \|/gm)].map(x => +x[1]);
+    const want = ns.map((_, i) => i + 1).join();
+    if (ns.join() !== want) {
+      const miss = [];
+      for (let i = 1; i <= Math.max(...ns); i++) if (!ns.includes(i)) miss.push(i);
+      const desc = ns.filter((n, i) => i > 0 && n < ns[i - 1]);
+      bad('CLAUDE.md §7 の番号が 1..' + ns.length + ' の連番・昇順でない'
+        + (miss.length ? `（欠番 ${miss.join(',')}）` : '')
+        + (desc.length ? `（${desc.join(',')} が前より小さい）` : ''));
+      mdNg++;
+    } else mdN++;
+  }
   const body = order.filter(s => !s.quizOnly).length;
   const figs = FILES.reduce((a, f) => {
     const b = (fs.readFileSync(path.join(ROOT, f), 'utf8')
