@@ -639,6 +639,47 @@ let gloNg = 0;
 }
 if (!gloNg) console.log(`  ✓ 対訳 ${GLOSSARY.length} 組すべて、英語は公式の原文にあり、日本語も名詞句`);
 
+/* --- 5v. 「使わない」と決めた書き方が復活していないか --------------------
+   §7 で理由つきでやめたものを、まとめて見張る。どれも**入れても表示は壊れない**ので、
+   目視でも `measure` でも気づけない ── だから検査でしか止められない。
+
+     ① <details>       学習に有用な情報を折りたたまない（#7）
+     ② 個別の max-width 読み幅は容器側で1回だけ決める（#16）
+     ③ text-wrap       pretty は iPhone で行末が空き、balance は行が短くなる（#19 #50）
+     ④ columns         段組みは読む順が縦→横に折れて追えない（#25）
+     ⑤ 2列の表の data-l 左が語・右が説明なら、ラベルは繰り返すだけ（#74 #83）
+     ⑥ 設問数の手書き   数は data から。`.lead` には <span class="qcount"></span> を置く（#45） */
+console.log(String.fromCharCode(10) + "■ やめた書き方の復活");
+let banNg = 0;
+{
+  const idx = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+  const cssRaw = fs.readFileSync(path.join(ROOT, 'assets/style.css'), 'utf8');
+  const cssNoComment = cssRaw.replace(/\/\*[\s\S]*?\*\//g, ' ');   // 「使わない」と書いた注釈は対象外
+  const bodies = FILES.map(f => [f, (fs.readFileSync(path.join(ROOT, f), 'utf8')
+    .match(/▼ 本文[^\n]*-->([\s\S]*?)<!-- ▲ 本文/) || [])[1] || '']);
+  const all = [...bodies, ['index.html', idx]];
+  const hit = (label, list) => list.forEach(f => { bad(`${f}: ${label}`); banNg++; });
+
+  hit('<details> で折りたたんでいる（学習に有用な情報は折りたたまない・§7 #7）',
+    all.filter(([, b]) => /<details[\s>]/.test(b)).map(([f]) => f));
+  hit('本文の要素に max-width がある（読み幅は容器側で1回だけ・§7 #16）',
+    bodies.filter(([, b]) => /style="[^"]*max-width/.test(b)).map(([f]) => f));
+  if (/text-wrap:\s*(pretty|balance)/.test(cssNoComment)) {
+    bad('style.css に text-wrap: pretty / balance がある（§7 #19 #50）'); banNg++;
+  }
+  if (/[^-\w]columns\s*:/.test(cssNoComment)) {
+    bad('style.css に CSS の段組み columns がある（読む順が縦→横に折れる・§7 #25）'); banNg++;
+  }
+  hit('2列の表（.tbl.pair）に data-l がある（左が語・右が説明ならラベルは要らない・§7 #74 #83）',
+    all.filter(([, b]) => [...b.matchAll(/<table class="tbl pair">[\s\S]*?<\/table>/g)]
+      .some(m => /data-l=/.test(m[0]))).map(([f]) => f));
+  // 設問の項の .lead に「N問」を手書きしていないか（本番の問数を語る本文は対象外）
+  hit('設問の項の .lead に問数を手書きしている（<span class="qcount"></span> を使う・§7 #45）',
+    bodies.filter(([, b]) => /data-quiz=/.test(b)
+      && /<p class="lead">(?:(?!<\/p>)[\s\S])*?\d+\s*問/.test(b)).map(([f]) => f));
+}
+if (!banNg) console.log('  ✓ やめた6つの書き方は、どれも復活していない');
+
 /* --- 5s. 丸の中の数字が、行送りで下にずれていないか --------------------
    丸番号は `border-radius:50%` ＋ `place-items:center` で組んでいる。
    ここに `line-height` を書かないと**親の行送りをそのまま継ぐ**ので、
