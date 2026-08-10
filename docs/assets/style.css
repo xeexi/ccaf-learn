@@ -970,8 +970,11 @@ html[data-theme="light"] .opt:hover:not(.done) .ol{ color:#fff }
    説明の開始位置が表ごとにずれる（実測 215 / 315 / 190px。§7 #52 と同じ形）。
    **必ず min-width で囲う** ── 指定が下の 'max-width:640px' より強いので、
    囲わないと狭い画面でも 34%（＝121px）が効いて名前が3行に折れる（実際に踏んだ・§7 #74）。 */
+/* 折り返しは**全幅で**外す。'.tbl tbody th' は nowrap なので、
+   左の列に長い英語を置くと 390px ではみ出す（列を入れ替えて実際に出た）。 */
+.tbl.pair tbody th{ white-space:normal }
 @media (min-width:641px){
-  .tbl.pair tbody th{ width:34%; white-space:normal }
+  .tbl.pair tbody th{ width:34% }
 }
 .tbl tbody tr:hover td{ background:var(--surface) }
 .tbl b{ color:var(--ink) }
