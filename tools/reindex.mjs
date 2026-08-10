@@ -19,7 +19,7 @@
 import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
-import { GUIDE, EXAM, DOMAINS as BP_DOM, SCENARIOS, PREPARE, EXERCISES, TRAPS, SAMPLES, TASKS, domainItems, scenarioCount } from './blueprint.mjs';
+import { GUIDE, EXAM, DOMAINS as BP_DOM, SCENARIOS, PREPARE, EXERCISES, TRAPS, SAMPLES, TECH, QUALIFIERS, GLOSSARY, TASKS, domainItems, scenarioCount } from './blueprint.mjs';
 
 /* 成果物（HTML と assets）は docs/ の下 ─ GitHub Pages がそのまま公開できる名前。tools/ と CLAUDE.md はリポジトリ直下 */
 const ROOT = path.join(path.resolve(new URL('..', import.meta.url).pathname), 'docs');
@@ -291,8 +291,88 @@ ${qRows}
 ※ ${SAMPLES.length}問が扱うのは本番${EXAM.scenariosTotal}シナリオのうち<b>${used}本</b>で、残り${EXAM.scenariosTotal - used}本（${SCENARIOS.filter(s => ![...new Set(SAMPLES.map(x => x.sc))].includes(s.n)).map(s => esc(s.ja)).join('・')}）には例題がありません。そちらはこの教材の模擬で補ってください。</p>`;
 };
 
+/** §17 の技術一覧・§9 の限定語・教材の対訳 ─ 英語で読むための語。
+ *  **動詞の一覧は TASKS から導出する。** 手で持つと、タスクが変わったとき古くなる。
+ *  日本語の語釈だけは editorial なのでここに持つ ── 知らない動詞が来たら throw する。 */
+const VERB_JA = {
+  Design:      ['設計する',        'どう組むかを決める'],
+  Implement:   ['実装する',        '動く形にする'],
+  Apply:       ['当てる・効かせる', '既にある仕組みを使う'],
+  Manage:      ['やりくりする',    '量や状態を保つ'],
+  Configure:   ['設定する',        'ファイルに書いて効かせる'],
+  Integrate:   ['繋ぎ込む',        '外のものを取り込む'],
+  Orchestrate: ['差配する',        '複数を組み合わせて動かす'],
+  Distribute:  ['配る',            '誰に何を渡すかを決める'],
+  Select:      ['選び分ける',      '候補から適切なものを選ぶ'],
+  Create:      ['作る',            '新しく置く'],
+  Determine:   ['見極める',        'どちらかを判断する'],
+  Enforce:     ['守らせる',        '破れないようにする'],
+  Preserve:    ['失わせない',      '消えないように残す'],
+};
+
+const vocabFig = () => {
+  /* ① タスク名の先頭の動詞 ─ TASKS から導出 */
+  const byVerb = {};
+  Object.entries(TASKS).forEach(([n, t]) => {
+    const v = t.name.split(/\s+/)[0];
+    if (!VERB_JA[v]) throw new Error(`vocabFig: 知らない動詞「${v}」（タスク ${n}）── VERB_JA に足す`);
+    (byVerb[v] = byVerb[v] || []).push(n);
+  });
+  const verbs = Object.entries(byVerb).sort((a, b) => b[1].length - a[1].length || a[0].localeCompare(b[0]));
+  const verbRows = verbs.map(([v, ns]) => {
+    const [ja, note] = VERB_JA[v];
+    return `    <tr><th><code>${v}</code><br><span class="n">${ns.length} タスク</span></th>
+        <td><b>${ja}</b> ── ${note}<br><span class="n">${ns.join(' ／ ')}</span></td></tr>`;
+  }).join('\n');
+  const top = verbs[0];
+
+  /* ② 正解を決める限定語 */
+  const qRows = QUALIFIERS.map(q =>
+    `    <tr><th>${q.en}</th>
+        <td><b>${esc(q.ja)}</b> ── ${q.note}</td></tr>`).join('\n');
+
+  return `<h3>タスク名の動詞 ─ ${verbs.length} 語で ${Object.keys(TASKS).length} タスク全部</h3>
+<p>出題タスクの名前は<b>すべて動詞から始まります</b>。動詞を見れば、その設問が何を聞いているかが先に分かります。</p>
+<table class="tbl pair">
+  <tbody>
+${verbRows}
+  </tbody>
+</table>
+<p class="point"><b>ポイント</b><code>${top[0]}</code> だけで <b>${top[1].length} タスク</b> ── 設問の多くは「どう組むか」を聞いている。実装の細部ではない。</p>
+
+<h3 class="sub" id="vocab-2">正解を決める限定語</h3>
+<p class="goal"><b>ゴール</b>設問文の限定語から、何を要求されているかを言える。</p>
+<p class="lead">公式の例題では、<b>この語ひとつで正解が変わります</b>。妥当な選択肢でも、限定語に合わなければ誤答です。</p>
+<table class="tbl pair">
+  <tbody>
+${qRows}
+  </tbody>
+</table>
+<p class="point"><b>ポイント</b>選択肢を比べる前に、<b>設問文の限定語を先に押さえる</b>。「正しいか」ではなく「その語に合うか」で選ぶ。</p>
+
+<p class="note">※ 動詞は「6. Detailed Objectives」のタスク名30件から、限定語は「9. Sample Questions」の設問文から取っています。</p>`;
+};
+
+/** 教材の日本語 ⇄ 公式の英語。**英語は原文からしか取らない**（check.mjs 5u が照合する） */
+const glossFig = () => {
+  const groups = [['basics', '前提'], ...scored().map(d => [d.key, `${d.num}　${d.nav}`])];
+  const glo = groups.map(([key, label]) => {
+    const rows = GLOSSARY.filter(g => g.d === key);
+    if (!rows.length) return '';
+    return `<h3>${esc(label)}</h3>
+<table class="tbl pair">
+  <tbody>
+${rows.map(g => `    <tr><th>${esc(g.ja)}</th><td><code>${esc(g.en)}</code></td></tr>`).join('\n')}
+  </tbody>
+</table>`;
+  }).filter(Boolean).join('\n\n');
+  return `${glo}
+
+<p class="note">※ 英語は Exam Guide の「6. Detailed Objectives」のタスク名・「17. Appendix」の技術一覧・In-Scope / Out-of-Scope から取っています。<b>こちらで作った訳語はありません</b> ── 原文に無い英語が混ざっていないかは <code>check</code> が毎回照合します（${GLOSSARY.length} 組）。</p>`;
+};
+
 const BLOCKS = { weightfig: weightFig, examfmt: examFmt, scenariofig: scenarioFig,
-  examadmin: examAdmin, preparefig: prepareFig, samplefig: sampleFig, nsec: () => String(pages.length) };
+  examadmin: examAdmin, preparefig: prepareFig, samplefig: sampleFig, vocabfig: vocabFig, glossfig: glossFig, nsec: () => String(pages.length) };
 
 /** `<p class="task" data-t="1.1"></p>` に、公式の原文を差し込む。
  *  中身は毎回まるごと作り直すので、何度実行しても同じ結果になる。 */

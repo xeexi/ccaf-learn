@@ -216,6 +216,103 @@ export const SAMPLES = [
   { n: 12, sc: 5, ja: "14ファイルの PR で指摘がばらつく",          sections: ["multi", "chain"],    traps: ["duck", "big", "bet"] },
 ];
 
+/** 17. Appendix ─ Technologies and Concepts。**公式の英語をそのまま写す**（訳さない）。
+ *  設問はこの語彙で書かれるので、日本語で覚えた中身を英語へ戻すときの出所になる。 */
+export const TECH = [
+  { en: "Claude Agent SDK", detail: "agent definitions, agentic loops, stop_reason handling, hooks (PostToolUse, tool call interception), subagent spawning via Task tool, allowedTools configuration" },
+  { en: "Model Context Protocol (MCP)", detail: "MCP servers, MCP tools, MCP resources, isError flag, tool descriptions, tool distribution, .mcp.json configuration, environment variable expansion" },
+  { en: "Claude Code", detail: "CLAUDE.md configuration hierarchy (user/project/directory), .claude/rules/ with YAML frontmatter path-scoping, .claude/commands/ for slash commands, .claude/skills/ with SKILL.md frontmatter (context: fork, allowed-tools, argument-hint), plan mode, direct execution, /memory command, /compact, --resume, fork_session, Explore subagent" },
+  { en: "Claude Code CLI", detail: "-p / --print flag for non-interactive mode, --output-format json, --json-schema for structured CI output" },
+  { en: "Claude API", detail: "tool_use with JSON schemas, tool_choice options (\"auto\", \"any\", forced tool selection), stop_reason values (\"tool_use\", \"end_turn\"), max_tokens, system prompts" },
+  { en: "Message Batches API", detail: "50% cost savings, up to 24-hour processing window, custom_id for request/response correlation, polling for completion, no multi-turn tool calling support" },
+  { en: "JSON Schema", detail: "required vs optional fields, enum types, nullable fields, \"other\" + detail string patterns, strict mode for syntax error elimination" },
+  { en: "Pydantic", detail: "schema validation, semantic validation errors, validation-retry loops" },
+  { en: "Built-in tools", detail: "Read, Write, Edit, Bash, Grep, Glob — their purposes and selection criteria" },
+  { en: "Few-shot prompting", detail: "targeted examples for ambiguous scenarios, format demonstration, generalization to novel patterns" },
+  { en: "Prompt chaining", detail: "sequential task decomposition into focused passes" },
+  { en: "Context window management", detail: "token budgets, progressive summarization, lost-in-the-middle effects, context extraction, scratchpad files" },
+  { en: "Session management", detail: "session resumption, fork_session, named sessions, session context isolation" },
+  { en: "Confidence scoring", detail: "field-level confidence, calibration with labeled validation sets, stratified sampling for error rate measurement" },
+];
+
+/** 9. Sample Questions の設問文から抜いた、**正解を決める限定語**。
+ *  訳ではなく「何を要求しているか」を書く ── ここを取り違えると、
+ *  妥当な選択肢でも誤答になる（Q2 の D がそれ）。 */
+export const QUALIFIERS = [
+  { en: "most effective <b>first step</b>", ja: "まず打つ一手", note: "<b>大きい手は first step ではない</b>。妥当な設計でも、最初の一手としては重すぎると誤答になる" },
+  { en: "<b>most maintainable</b> way", ja: "いちばん保ちやすいやり方", note: "軸は保守しやすさ。速さでも安さでも、動くかどうかでもない" },
+  { en: "most likely <b>root cause</b>", ja: "いちばんありそうな根本原因", note: "症状が出た場所ではなく、<b>壊れている場所</b>を答える" },
+  { en: "How should you <b>evaluate this proposal</b>", ja: "この提案をどう評価するか", note: "採否そのものではなく、<b>評価の仕方</b>を問うている" },
+  { en: "<b>best enables</b> intelligent recovery", ja: "立て直しをいちばん可能にするのは", note: "手段ではなく<b>その後に何ができるようになるか</b>で選ぶ" },
+  { en: "What change would <b>most effectively address</b>", ja: "いちばん効く変更は", note: "効くかどうか。<b>正しいかどうかではない</b> ── 正しいが効かない選択肢が混ざる" },
+];
+
+/** この教材の日本語 ⇄ 公式の英語。
+ *  **英語は必ず原文（TASKS の name ／ TECH ／ SCOPE）から取る。** 私が英語を作らない。
+ *  check.mjs 5u が、ここの英語が原文のどこにも無ければ落とす。
+ *  d は所属ドメイン（'basics' | 'agentic' | 'tools' | 'code' | 'prompt' | 'context'）。 */
+export const GLOSSARY = [
+  { d: "basics", ja: "窓（コンテキストウィンドウ）", en: "context window" },
+  { d: "basics", ja: "窓の予算配分",                 en: "token budgets" },
+  { d: "basics", ja: "真ん中が読み落とされる",       en: "lost-in-the-middle effects" },
+  { d: "basics", ja: "少しずつ要約して詰める",       en: "progressive summarization" },
+  { d: "basics", ja: "作業メモを外に置く",           en: "scratchpad files" },
+
+  { d: "agentic", ja: "エージェントループ",           en: "agentic loop" },
+  { d: "agentic", ja: "なぜ止まったかで分岐する",     en: "stop_reason handling" },
+  { d: "agentic", ja: "打ち切りの条件",               en: "loop termination conditions" },
+  { d: "agentic", ja: "親子の形",                     en: "coordinator-subagent patterns" },
+  { d: "agentic", ja: "仕事の分け方",                 en: "task decomposition" },
+  { d: "agentic", ja: "並列に起こす",                 en: "parallel subagent execution" },
+  { d: "agentic", ja: "回して寄せる",                 en: "iterative refinement loops" },
+  { d: "agentic", ja: "子を起こす",                   en: "subagent spawning" },
+  { d: "agentic", ja: "前提を指示で明示して渡す",     en: "explicit context passing" },
+  { d: "agentic", ja: "状態を形にして残す",           en: "structured state persistence" },
+  { d: "agentic", ja: "落ちたあとの復帰",             en: "crash recovery using manifests" },
+  { d: "agentic", ja: "ツール呼び出しに割り込む",     en: "tool call interception" },
+
+  { d: "tools", ja: "ツールの説明文",                 en: "tool descriptions" },
+  { d: "tools", ja: "分けるか、まとめるか",           en: "splitting vs consolidating tools" },
+  { d: "tools", ja: "取り違えを減らす名前",           en: "tool naming to reduce ambiguity" },
+  { d: "tools", ja: "誰にどのツールを配るか",         en: "tool distribution" },
+  { d: "tools", ja: "読める資料として出す",           en: "resources for content catalogs" },
+  { d: "tools", ja: "失敗を読める形で返す",           en: "structured error responses" },
+  { d: "tools", ja: "一時的／業務／権限の別",         en: "transient vs business vs permission errors" },
+  { d: "tools", ja: "渡す前に自分で立て直す",         en: "local recovery before escalation" },
+  { d: "tools", ja: "環境変数で秘密を渡す",           en: "environment variable expansion" },
+
+  { d: "code", ja: "設定の階層",                      en: "configuration hierarchy" },
+  { d: "code", ja: "パスで効かせる範囲を絞る",        en: "path-scoping" },
+  { d: "code", ja: "取り込んで分割する",              en: "@import patterns" },
+  { d: "code", ja: "別の文脈で走らせる",              en: "context: fork" },
+  { d: "code", ja: "計画してから／直接やる",          en: "plan mode vs direct execution" },
+  { d: "code", ja: "対話せずに走らせる",              en: "non-interactive mode" },
+  { d: "code", ja: "入出力の例で直す",                en: "input/output examples" },
+  { d: "code", ja: "テストを先に書いて回す",          en: "test-driven iteration" },
+  { d: "code", ja: "聞き取りながら詰める",            en: "interview pattern" },
+
+  { d: "prompt", ja: "型で受け取る",                  en: "structured output via tool_use" },
+  { d: "prompt", ja: "無いものを作らせない欄",        en: "nullable fields to prevent hallucination" },
+  { d: "prompt", ja: "例を見せる",                    en: "few-shot prompting" },
+  { d: "prompt", ja: "誤検知を減らす",                en: "false positive reduction" },
+  { d: "prompt", ja: "多段に割る",                    en: "sequential task decomposition into focused passes" },
+  { d: "prompt", ja: "検証して差し戻す",              en: "validation-retry loops" },
+  { d: "prompt", ja: "締め切りに間に合うか",          en: "latency tolerance assessment" },
+  { d: "prompt", ja: "取り違えない対応づけ",          en: "custom_id for request/response correlation" },
+
+  { d: "context", ja: "長い返り値を削る",             en: "trimming verbose tool outputs" },
+  { d: "context", ja: "事実だけ抜き出す",             en: "structured fact extraction" },
+  { d: "context", ja: "置く順番で効きが変わる",       en: "position-aware input ordering" },
+  { d: "context", ja: "人へ渡す明示的な基準",         en: "escalation decision-making" },
+  { d: "context", ja: "規約に定めがない",             en: "policy gap identification" },
+  { d: "context", ja: "確信度をしきい値に合わせ込む", en: "confidence calibration" },
+  { d: "context", ja: "種別ごとに抜き取って測る",     en: "stratified sampling" },
+  { d: "context", ja: "出典を保つ",                   en: "information provenance" },
+  { d: "context", ja: "食い違いに注記を付ける",       en: "conflict annotation" },
+  { d: "context", ja: "欠けを報告する",               en: "coverage gap reporting" },
+  { d: "context", ja: "失敗を上へ伝える",             en: "error propagation" },
+];
+
 /** 6. Detailed Objectives by Domain ─ 30タスク。
  *  name      … Task Statement の原文（訳さない。設問は英語で書かれる）
  *  sections  … この教材で対応する節の id

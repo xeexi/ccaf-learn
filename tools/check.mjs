@@ -5,7 +5,7 @@
    ========================================================= */
 import fs from 'fs';
 import path from 'path';
-import { GUIDE, EXAM, DOMAINS as BP_DOM, SCENARIOS, TRAPS, SAMPLES, SCOPE, TASKS as BP, domainItems, scenarioCount } from './blueprint.mjs';
+import { GUIDE, EXAM, DOMAINS as BP_DOM, SCENARIOS, TECH, GLOSSARY, TRAPS, SAMPLES, SCOPE, TASKS as BP, domainItems, scenarioCount } from './blueprint.mjs';
 
 /* 成果物（HTML と assets）は docs/ の下 ─ GitHub Pages がそのまま公開できる名前。tools/ と CLAUDE.md はリポジトリ直下 */
 const ROOT = path.join(path.resolve(new URL('..', import.meta.url).pathname), 'docs');
@@ -597,6 +597,34 @@ console.log(String.fromCharCode(10) + "■ キー操作の集約");
   if (n === 1) console.log('  ✓ document への keydown は 1 か所');
   else bad(`app.js の document への keydown が ${n} か所（1 か所にまとめる）`);
 }
+
+/* --- 5u. 対訳表の英語が、公式の原文から来ているか ----------------------
+   6-14 の「この教材の言い方 ⇄ 公式の英語」は、**私が英語を作ってはいけない**。
+   それらしい訳語を置くと、本番で出ない語を覚えることになる。
+   照合先は原文だけ ── タスク名（§6）・技術一覧（§17）・In/Out of Scope（§17）・
+   シナリオ名（§5）。どれにも無い英語があれば落とす。 */
+console.log(String.fromCharCode(10) + "■ 対訳表の英語の出どころ");
+let gloNg = 0;
+{
+  const corpus = [
+    ...Object.values(BP).map(x => x.name),
+    ...TECH.map(x => x.en + ' ' + x.detail),
+    ...SCOPE.in.map(x => typeof x === 'string' ? x : x.en),
+    ...SCOPE.out.map(x => typeof x === 'string' ? x : x.en),
+    ...SCENARIOS.map(x => x.en),
+  ].join(' ').toLowerCase();
+  GLOSSARY.forEach(g => {
+    if (!corpus.includes(g.en.toLowerCase())) {
+      bad(`対訳「${g.ja}」の英語 "${g.en}" が公式の原文にない（原文から取る）`);
+      gloNg++;
+    }
+  });
+  const doms = new Set(['basics', ...Object.keys(BP_DOM)]);
+  GLOSSARY.forEach(g => {
+    if (!doms.has(g.d)) { bad(`対訳「${g.ja}」が知らないドメイン「${g.d}」を指している`); gloNg++; }
+  });
+}
+if (!gloNg) console.log(`  ✓ 対訳 ${GLOSSARY.length} 組すべて、英語は公式の原文にある（§6 タスク名 ／ §17 技術一覧・In/Out of Scope ／ §5 シナリオ）`);
 
 /* --- 5s. 丸の中の数字が、行送りで下にずれていないか --------------------
    丸番号は `border-radius:50%` ＋ `place-items:center` で組んでいる。

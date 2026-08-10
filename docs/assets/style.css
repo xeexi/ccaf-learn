@@ -965,13 +965,13 @@ html[data-theme="light"] .opt:hover:not(.done) .ol{ color:#fff }
   white-space:nowrap; background:var(--surface-2);
 }
 .tbl tbody td{ color:var(--ink-2) }
-/* トップ最下部の〈参考資料〉は、見出しでグループに分けた3つの表で1つの一覧になる。
-   幅を指定しないと表ごとに1列目が自動で伸び、説明の開始位置が表ごとにずれる
-   （実測 215 / 315 / 190px。帯の長さが行ごとに違った §7 #52 と同じ形）。
-   **必ず min-width で囲う** ── id 指定は下の 'max-width:640px' より強いので、
-   囲わないと狭い画面でも 30%（＝107px）が効いて資料名が3行に折れる（実際に踏んだ）。 */
+/* 2列の一覧（'.tbl.pair'）── 見出しでグループに分けた表を並べて1つの一覧にする形。
+   〈参考資料〉と〈英語で読む〉で使う。幅を指定しないと表ごとに1列目が自動で伸び、
+   説明の開始位置が表ごとにずれる（実測 215 / 315 / 190px。§7 #52 と同じ形）。
+   **必ず min-width で囲う** ── 指定が下の 'max-width:640px' より強いので、
+   囲わないと狭い画面でも 34%（＝121px）が効いて名前が3行に折れる（実際に踏んだ・§7 #74）。 */
 @media (min-width:641px){
-  #src .tbl tbody th{ width:30%; white-space:normal }
+  .tbl.pair tbody th{ width:34%; white-space:normal }
 }
 .tbl tbody tr:hover td{ background:var(--surface) }
 .tbl b{ color:var(--ink) }

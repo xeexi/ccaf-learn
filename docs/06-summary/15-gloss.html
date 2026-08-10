@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="ja" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>6-15　日本語 ⇄ 公式の英語 ─ まとめ ─ CCAR-F 学習ノート</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css?v=ff035ad1">
+</head>
+<body data-page="gloss">
+<script>(function(){var t=localStorage.getItem('ccarf-theme');if(t)document.documentElement.dataset.theme=t;})();</script>
+<nav class="domnav">
+  <a class="brand" href="../index.html"><span class="brand-mark">CCAR-F</span><span class="brand-sub">学習ノート</span></a>
+  <div class="nav-list"><a class="nav-item" data-domain="basics" href="../00-basics/01-flow.html" title="会話の実体">
+       <span class="nav-num">前提</span><span class="nav-title">会話の実体</span></a>
+<a class="nav-item" data-domain="agentic" href="../01-agentic/01-d1about.html" title="エージェント設計とオーケストレーション">
+       <span class="nav-num">Domain 1</span><span class="nav-title">エージェント設計</span></a>
+<a class="nav-item" data-domain="tools" href="../02-tools/01-d2about.html" title="ツール設計と MCP 連携">
+       <span class="nav-num">Domain 2</span><span class="nav-title">ツールと MCP</span></a>
+<a class="nav-item" data-domain="code" href="../03-claude-code/01-about.html" title="Claude Code の設定とワークフロー">
+       <span class="nav-num">Domain 3</span><span class="nav-title">Claude Code</span></a>
+<a class="nav-item" data-domain="prompt" href="../04-prompt/01-d4about.html" title="プロンプト設計と構造化出力">
+       <span class="nav-num">Domain 4</span><span class="nav-title">プロンプト設計</span></a>
+<a class="nav-item" data-domain="context" href="../05-context/01-d5about.html" title="コンテキスト管理と信頼性">
+       <span class="nav-num">Domain 5</span><span class="nav-title">コンテキスト管理</span></a>
+<a class="nav-item on" data-domain="summary" href="../06-summary/01-all.html" title="全体をもう一度">
+       <span class="nav-num">まとめ</span><span class="nav-title">全体をもう一度</span></a></div>
+  <div class="search-wrap">
+  <button class="search-btn" id="openSearch" aria-label="検索"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span>検索</span><kbd>/</kbd></button>
+</div>
+</nav>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-muted)"/></marker>
+  <marker id="ara" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-amber)"/></marker>
+  <marker id="arb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-blue)"/></marker>
+  <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-red)"/></marker>
+  <marker id="arg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="var(--fig-green)"/></marker>
+</defs></svg>
+<div class="shell">
+<aside class="toc">
+  <div class="toc-head">まとめ</div>
+  <nav class="toc-list"><a class="itm toc-link" href="../06-summary/01-all.html"><span class="itm-n">6-1</span><span class="itm-t">1枚で全体を見る</span></a>
+<a class="itm toc-link" href="../06-summary/02-weight.html"><span class="itm-n">6-2</span><span class="itm-t">本番はシナリオで出る</span></a>
+<a class="itm toc-link itm-quiz" href="../06-summary/03-q.html"><span class="itm-n">6-3</span><span class="itm-t">理解度チェック ─ 全ドメイン総合</span></a>
+<a class="itm toc-link" href="../06-summary/04-mockabout.html"><span class="itm-n">6-4</span><span class="itm-t">シナリオで解く</span></a>
+<a class="itm toc-link" href="../06-summary/05-mock1.html"><span class="itm-n">6-5</span><span class="itm-t">① 社内の問い合わせに答えるエージェント</span></a>
+<a class="itm toc-link" href="../06-summary/06-mock2.html"><span class="itm-n">6-6</span><span class="itm-t">② 未知のコードベースの不具合調査</span></a>
+<a class="itm toc-link" href="../06-summary/07-mock3.html"><span class="itm-n">6-7</span><span class="itm-t">③ 5人のチームに導入する</span></a>
+<a class="itm toc-link" href="../06-summary/08-mock4.html"><span class="itm-n">6-8</span><span class="itm-t">④ 請求書から項目を抜き出す</span></a>
+<a class="itm toc-link" href="../06-summary/09-mock5.html"><span class="itm-n">6-9</span><span class="itm-t">⑤ 社外サービスを繋ぐ</span></a>
+<a class="itm toc-link" href="../06-summary/10-mock6.html"><span class="itm-n">6-10</span><span class="itm-t">⑥ 300ファイルの一括移行</span></a>
+<a class="itm toc-link" href="../06-summary/11-mock7.html"><span class="itm-n">6-11</span><span class="itm-t">⑦ CI に自動レビューを組み込む</span></a>
+<a class="itm toc-link" href="../06-summary/12-prepare.html"><span class="itm-n">6-12</span><span class="itm-t">読むだけで足りるか ─ 公式が勧める準備</span></a>
+<a class="itm toc-link" href="../06-summary/13-samples.html"><span class="itm-n">6-13</span><span class="itm-t">誤りの選択肢には型がある</span></a>
+<a class="itm toc-link" href="../06-summary/14-vocab.html"><span class="itm-n">6-14</span><span class="itm-t">英語で読む ─ 設問に出る語</span></a>
+<a class="itm toc-link on" href="../06-summary/15-gloss.html"><span class="itm-n">6-15</span><span class="itm-t">日本語 ⇄ 公式の英語</span></a></nav>
+</aside>
+<main class="doc">
+<p class="crumb" data-domain="summary"><b>まとめ</b><span>全体をもう一度</span></p>
+<nav class="secpager top"><a class="pgv prev" href="../06-summary/14-vocab.html" title="前へ（← キー）"><span class="vh">前へ</span></a><span class="pgv next end"><span class="vh">ここで終わり</span></span></nav>
+<!-- ▼ 本文 ─ ここだけを編集する。この前後は node tools/reindex.mjs が書き出す -->
+<section class="sec" id="gloss">
+<header class="sec-head">
+  <h2>6-15　日本語 ⇄ 公式の英語</h2>
+</header>
+<p class="goal"><b>ゴール</b>日本語で覚えた中身を、公式の英語に戻せる。</p>
+<p class="lead">全部日本語で読んできたので、<b>英語に戻す道</b>を作っておきます。右の英語は<b>すべて公式ガイドの原文</b>から取ったもので、こちらで作った訳語はありません。</p>
+
+<!--#glossfig--><h3>前提</h3>
+<table class="tbl pair">
+  <tbody>
+    <tr><th>窓（コンテキストウィンドウ）</th><td><code>context window</code></td></tr>
+    <tr><th>窓の予算配分</th><td><code>token budgets</code></td></tr>
+    <tr><th>真ん中が読み落とされる</th><td><code>lost-in-the-middle effects</code></td></tr>
+    <tr><th>少しずつ要約して詰める</th><td><code>progressive summarization</code></td></tr>
+    <tr><th>作業メモを外に置く</th><td><code>scratchpad files</code></td></tr>
+  </tbody>
+</table>
+
+<h3>Domain 1　エージェント設計</h3>
+<table class="tbl pair">
+  <tbody>
+    <tr><th>エージェントループ</th><td><code>agentic loop</code></td></tr>
+    <tr><th>なぜ止まったかで分岐する</th><td><code>stop_reason handling</code></td></tr>
+    <tr><th>打ち切りの条件</th><td><code>loop termination conditions</code></td></tr>
+    <tr><th>親子の形</th><td><code>coordinator-subagent patterns</code></td></tr>
+    <tr><th>仕事の分け方</th><td><code>task decomposition</code></td></tr>
+    <tr><th>並列に起こす</th><td><code>parallel subagent execution</code></td></tr>
+    <tr><th>回して寄せる</th><td><code>iterative refinement loops</code></td></tr>
+    <tr><th>子を起こす</th><td><code>subagent spawning</code></td></tr>
+    <tr><th>前提を指示で明示して渡す</th><td><code>explicit context passing</code></td></tr>
+    <tr><th>状態を形にして残す</th><td><code>structured state persistence</code></td></tr>
+    <tr><th>落ちたあとの復帰</th><td><code>crash recovery using manifests</code></td></tr>
+    <tr><th>ツール呼び出しに割り込む</th><td><code>tool call interception</code></td></tr>
+  </tbody>
+</table>
+
+<h3>Domain 2　ツールと MCP</h3>
+<table class="tbl pair">
+  <tbody>
+    <tr><th>ツールの説明文</th><td><code>tool descriptions</code></td></tr>
+    <tr><th>分けるか、まとめるか</th><td><code>splitting vs consolidating tools</code></td></tr>
+    <tr><th>取り違えを減らす名前</th><td><code>tool naming to reduce ambiguity</code></td></tr>
+    <tr><th>誰にどのツールを配るか</th><td><code>tool distribution</code></td></tr>
+    <tr><th>読める資料として出す</th><td><code>resources for content catalogs</code></td></tr>
+    <tr><th>失敗を読める形で返す</th><td><code>structured error responses</code></td></tr>
+    <tr><th>一時的／業務／権限の別</th><td><code>transient vs business vs permission errors</code></td></tr>
+    <tr><th>渡す前に自分で立て直す</th><td><code>local recovery before escalation</code></td></tr>
+    <tr><th>環境変数で秘密を渡す</th><td><code>environment variable expansion</code></td></tr>
+  </tbody>
+</table>
+
+<h3>Domain 3　Claude Code</h3>
+<table class="tbl pair">
+  <tbody>
+    <tr><th>設定の階層</th><td><code>configuration hierarchy</code></td></tr>
+    <tr><th>パスで効かせる範囲を絞る</th><td><code>path-scoping</code></td></tr>
+    <tr><th>取り込んで分割する</th><td><code>@import patterns</code></td></tr>
+    <tr><th>別の文脈で走らせる</th><td><code>context: fork</code></td></tr>
+    <tr><th>計画してから／直接やる</th><td><code>plan mode vs direct execution</code></td></tr>
+    <tr><th>対話せずに走らせる</th><td><code>non-interactive mode</code></td></tr>
+    <tr><th>入出力の例で直す</th><td><code>input/output examples</code></td></tr>
+    <tr><th>テストを先に書いて回す</th><td><code>test-driven iteration</code></td></tr>
+    <tr><th>聞き取りながら詰める</th><td><code>interview pattern</code></td></tr>
+  </tbody>
+</table>
+
+<h3>Domain 4　プロンプト設計</h3>
+<table class="tbl pair">
+  <tbody>
+    <tr><th>型で受け取る</th><td><code>structured output via tool_use</code></td></tr>
+    <tr><th>無いものを作らせない欄</th><td><code>nullable fields to prevent hallucination</code></td></tr>
+    <tr><th>例を見せる</th><td><code>few-shot prompting</code></td></tr>
+    <tr><th>誤検知を減らす</th><td><code>false positive reduction</code></td></tr>
+    <tr><th>多段に割る</th><td><code>sequential task decomposition into focused passes</code></td></tr>
+    <tr><th>検証して差し戻す</th><td><code>validation-retry loops</code></td></tr>
+    <tr><th>締め切りに間に合うか</th><td><code>latency tolerance assessment</code></td></tr>
+    <tr><th>取り違えない対応づけ</th><td><code>custom_id for request/response correlation</code></td></tr>
+  </tbody>
+</table>
+
+<h3>Domain 5　コンテキスト管理</h3>
+<table class="tbl pair">
+  <tbody>
+    <tr><th>長い返り値を削る</th><td><code>trimming verbose tool outputs</code></td></tr>
+    <tr><th>事実だけ抜き出す</th><td><code>structured fact extraction</code></td></tr>
+    <tr><th>置く順番で効きが変わる</th><td><code>position-aware input ordering</code></td></tr>
+    <tr><th>人へ渡す明示的な基準</th><td><code>escalation decision-making</code></td></tr>
+    <tr><th>規約に定めがない</th><td><code>policy gap identification</code></td></tr>
+    <tr><th>確信度をしきい値に合わせ込む</th><td><code>confidence calibration</code></td></tr>
+    <tr><th>種別ごとに抜き取って測る</th><td><code>stratified sampling</code></td></tr>
+    <tr><th>出典を保つ</th><td><code>information provenance</code></td></tr>
+    <tr><th>食い違いに注記を付ける</th><td><code>conflict annotation</code></td></tr>
+    <tr><th>欠けを報告する</th><td><code>coverage gap reporting</code></td></tr>
+    <tr><th>失敗を上へ伝える</th><td><code>error propagation</code></td></tr>
+  </tbody>
+</table>
+
+<p class="note">※ 英語は Exam Guide の「6. Detailed Objectives」のタスク名・「17. Appendix」の技術一覧・In-Scope / Out-of-Scope から取っています。<b>こちらで作った訳語はありません</b> ── 原文に無い英語が混ざっていないかは <code>check</code> が毎回照合します（54 組）。</p><!--/#glossfig-->
+</section>
+<!-- ▲ 本文 -->
+<nav class="secpager btm"><a class="pgv prev" href="../06-summary/14-vocab.html" title="前へ（← キー）"><span class="vh">前へ</span></a><span class="pgv next end"><span class="vh">ここで終わり</span></span></nav>
+</main>
+</div>
+<div class="modal" id="searchModal" hidden>
+  <div class="modal-box">
+    <input id="searchInput" type="search" placeholder="用語・見出し・本文を検索（例: input_schema、キャッシュ）" autocomplete="off">
+    <div id="searchResults" class="results"></div>
+    <div class="modal-foot"><kbd>Esc</kbd> で閉じる</div>
+  </div>
+</div>
+<script src="../assets/quiz-data.js?v=a940b378"></script>
+<script src="../assets/search-index.js?v=f4d97808"></script>
+<script src="../assets/app.js?v=f6bc691d"></script>
+</body></html>
