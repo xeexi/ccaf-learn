@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>6-15　日本語 ⇄ 公式の英語 ─ まとめ ─ CCAR-F 学習ノート</title>
+<title>6-15　公式の英語 ⇄ 日本語 ─ まとめ ─ CCAR-F 学習ノート</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -60,7 +60,7 @@
 <a class="itm toc-link" href="../06-summary/12-prepare.html"><span class="itm-n">6-12</span><span class="itm-t">読むだけで足りるか ─ 公式が勧める準備</span></a>
 <a class="itm toc-link" href="../06-summary/13-samples.html"><span class="itm-n">6-13</span><span class="itm-t">誤りの選択肢には型がある</span></a>
 <a class="itm toc-link" href="../06-summary/14-vocab.html"><span class="itm-n">6-14</span><span class="itm-t">英語で読む ─ 設問に出る語</span></a>
-<a class="itm toc-link on" href="../06-summary/15-gloss.html"><span class="itm-n">6-15</span><span class="itm-t">日本語 ⇄ 公式の英語</span></a></nav>
+<a class="itm toc-link on" href="../06-summary/15-gloss.html"><span class="itm-n">6-15</span><span class="itm-t">公式の英語 ⇄ 日本語</span></a></nav>
 </aside>
 <main class="doc">
 <p class="crumb" data-domain="summary"><b>まとめ</b><span>全体をもう一度</span></p>
@@ -68,102 +68,102 @@
 <!-- ▼ 本文 ─ ここだけを編集する。この前後は node tools/reindex.mjs が書き出す -->
 <section class="sec" id="gloss">
 <header class="sec-head">
-  <h2>6-15　日本語 ⇄ 公式の英語</h2>
+  <h2>6-15　公式の英語 ⇄ 日本語</h2>
 </header>
-<p class="goal"><b>ゴール</b>日本語で覚えた中身を、公式の英語に戻せる。</p>
-<p class="lead">全部日本語で読んできたので、<b>英語に戻す道</b>を作っておきます。右の英語は<b>すべて公式ガイドの原文</b>から取ったもので、こちらで作った訳語はありません。</p>
+<p class="goal"><b>ゴール</b>設問に出る英語を見て、この教材のどの話かが分かる。</p>
+<p class="lead">本番で目に入るのは<b>左の英語</b>のほうです。すべて公式ガイドの原文から写したもので、こちらで作った訳語はありません。</p>
 
 <!--#glossfig--><h3>前提</h3>
 <table class="tbl pair">
   <tbody>
-    <tr><th>窓（コンテキストウィンドウ）</th><td><code>context window</code></td></tr>
-    <tr><th>窓の予算配分</th><td><code>token budgets</code></td></tr>
-    <tr><th>真ん中が読み落とされる</th><td><code>lost-in-the-middle effects</code></td></tr>
-    <tr><th>少しずつ要約して詰める</th><td><code>progressive summarization</code></td></tr>
-    <tr><th>作業メモを外に置く</th><td><code>scratchpad files</code></td></tr>
+    <tr><th><code>context window</code></th><td>窓（会話に入る量の上限）</td></tr>
+    <tr><th><code>token budgets</code></th><td>窓の割り当て</td></tr>
+    <tr><th><code>lost-in-the-middle effects</code></th><td>中ほどの読み落とし</td></tr>
+    <tr><th><code>progressive summarization</code></th><td>段階的な要約</td></tr>
+    <tr><th><code>scratchpad files</code></th><td>作業メモのファイル</td></tr>
   </tbody>
 </table>
 
 <h3>Domain 1　エージェント設計</h3>
 <table class="tbl pair">
   <tbody>
-    <tr><th>エージェントループ</th><td><code>agentic loop</code></td></tr>
-    <tr><th>なぜ止まったかで分岐する</th><td><code>stop_reason handling</code></td></tr>
-    <tr><th>打ち切りの条件</th><td><code>loop termination conditions</code></td></tr>
-    <tr><th>親子の形</th><td><code>coordinator-subagent patterns</code></td></tr>
-    <tr><th>仕事の分け方</th><td><code>task decomposition</code></td></tr>
-    <tr><th>並列に起こす</th><td><code>parallel subagent execution</code></td></tr>
-    <tr><th>回して寄せる</th><td><code>iterative refinement loops</code></td></tr>
-    <tr><th>子を起こす</th><td><code>subagent spawning</code></td></tr>
-    <tr><th>前提を指示で明示して渡す</th><td><code>explicit context passing</code></td></tr>
-    <tr><th>状態を形にして残す</th><td><code>structured state persistence</code></td></tr>
-    <tr><th>落ちたあとの復帰</th><td><code>crash recovery using manifests</code></td></tr>
-    <tr><th>ツール呼び出しに割り込む</th><td><code>tool call interception</code></td></tr>
+    <tr><th><code>agentic loop</code></th><td>エージェントのループ</td></tr>
+    <tr><th><code>stop_reason handling</code></th><td>止まった理由の扱い</td></tr>
+    <tr><th><code>loop termination conditions</code></th><td>打ち切りの条件</td></tr>
+    <tr><th><code>coordinator-subagent patterns</code></th><td>親子の形</td></tr>
+    <tr><th><code>task decomposition</code></th><td>仕事の分け方</td></tr>
+    <tr><th><code>parallel subagent execution</code></th><td>子の並列実行</td></tr>
+    <tr><th><code>iterative refinement loops</code></th><td>繰り返して寄せる輪</td></tr>
+    <tr><th><code>subagent spawning</code></th><td>子の起動</td></tr>
+    <tr><th><code>explicit context passing</code></th><td>前提の明示的な受け渡し</td></tr>
+    <tr><th><code>structured state persistence</code></th><td>状態の構造化された保存</td></tr>
+    <tr><th><code>crash recovery using manifests</code></th><td>落ちたあとの復帰</td></tr>
+    <tr><th><code>tool call interception</code></th><td>ツール呼び出しへの割り込み</td></tr>
   </tbody>
 </table>
 
 <h3>Domain 2　ツールと MCP</h3>
 <table class="tbl pair">
   <tbody>
-    <tr><th>ツールの説明文</th><td><code>tool descriptions</code></td></tr>
-    <tr><th>分けるか、まとめるか</th><td><code>splitting vs consolidating tools</code></td></tr>
-    <tr><th>取り違えを減らす名前</th><td><code>tool naming to reduce ambiguity</code></td></tr>
-    <tr><th>誰にどのツールを配るか</th><td><code>tool distribution</code></td></tr>
-    <tr><th>読める資料として出す</th><td><code>resources for content catalogs</code></td></tr>
-    <tr><th>失敗を読める形で返す</th><td><code>structured error responses</code></td></tr>
-    <tr><th>一時的／業務／権限の別</th><td><code>transient vs business vs permission errors</code></td></tr>
-    <tr><th>渡す前に自分で立て直す</th><td><code>local recovery before escalation</code></td></tr>
-    <tr><th>環境変数で秘密を渡す</th><td><code>environment variable expansion</code></td></tr>
+    <tr><th><code>tool descriptions</code></th><td>ツールの説明文</td></tr>
+    <tr><th><code>splitting vs consolidating tools</code></th><td>分割と統合</td></tr>
+    <tr><th><code>tool naming to reduce ambiguity</code></th><td>取り違えを減らす命名</td></tr>
+    <tr><th><code>tool distribution</code></th><td>ツールの配り方</td></tr>
+    <tr><th><code>resources for content catalogs</code></th><td>読み物としての資料</td></tr>
+    <tr><th><code>structured error responses</code></th><td>構造化した失敗の応答</td></tr>
+    <tr><th><code>transient vs business vs permission errors</code></th><td>一時的／業務／権限の別</td></tr>
+    <tr><th><code>local recovery before escalation</code></th><td>渡す前の自力復帰</td></tr>
+    <tr><th><code>environment variable expansion</code></th><td>環境変数の展開</td></tr>
   </tbody>
 </table>
 
 <h3>Domain 3　Claude Code</h3>
 <table class="tbl pair">
   <tbody>
-    <tr><th>設定の階層</th><td><code>configuration hierarchy</code></td></tr>
-    <tr><th>パスで効かせる範囲を絞る</th><td><code>path-scoping</code></td></tr>
-    <tr><th>取り込んで分割する</th><td><code>@import patterns</code></td></tr>
-    <tr><th>別の文脈で走らせる</th><td><code>context: fork</code></td></tr>
-    <tr><th>計画してから／直接やる</th><td><code>plan mode vs direct execution</code></td></tr>
-    <tr><th>対話せずに走らせる</th><td><code>non-interactive mode</code></td></tr>
-    <tr><th>入出力の例で直す</th><td><code>input/output examples</code></td></tr>
-    <tr><th>テストを先に書いて回す</th><td><code>test-driven iteration</code></td></tr>
-    <tr><th>聞き取りながら詰める</th><td><code>interview pattern</code></td></tr>
+    <tr><th><code>configuration hierarchy</code></th><td>設定の階層</td></tr>
+    <tr><th><code>path-scoping</code></th><td>パスによる範囲の絞り込み</td></tr>
+    <tr><th><code>@import patterns</code></th><td>取り込みの書き方</td></tr>
+    <tr><th><code>context: fork</code></th><td>別の文脈での実行</td></tr>
+    <tr><th><code>plan mode vs direct execution</code></th><td>計画してからと直接実行</td></tr>
+    <tr><th><code>non-interactive mode</code></th><td>非対話の実行</td></tr>
+    <tr><th><code>input/output examples</code></th><td>入出力の例</td></tr>
+    <tr><th><code>test-driven iteration</code></th><td>テストを先に書く回し方</td></tr>
+    <tr><th><code>interview pattern</code></th><td>聞き取り方式</td></tr>
   </tbody>
 </table>
 
 <h3>Domain 4　プロンプト設計</h3>
 <table class="tbl pair">
   <tbody>
-    <tr><th>型で受け取る</th><td><code>structured output via tool_use</code></td></tr>
-    <tr><th>無いものを作らせない欄</th><td><code>nullable fields to prevent hallucination</code></td></tr>
-    <tr><th>例を見せる</th><td><code>few-shot prompting</code></td></tr>
-    <tr><th>誤検知を減らす</th><td><code>false positive reduction</code></td></tr>
-    <tr><th>多段に割る</th><td><code>sequential task decomposition into focused passes</code></td></tr>
-    <tr><th>検証して差し戻す</th><td><code>validation-retry loops</code></td></tr>
-    <tr><th>締め切りに間に合うか</th><td><code>latency tolerance assessment</code></td></tr>
-    <tr><th>取り違えない対応づけ</th><td><code>custom_id for request/response correlation</code></td></tr>
+    <tr><th><code>structured output via tool_use</code></th><td>型での受け取り</td></tr>
+    <tr><th><code>nullable fields to prevent hallucination</code></th><td>無いものを作らせない欄</td></tr>
+    <tr><th><code>few-shot prompting</code></th><td>例を見せる書き方</td></tr>
+    <tr><th><code>false positive reduction</code></th><td>誤検知の削減</td></tr>
+    <tr><th><code>sequential task decomposition into focused passes</code></th><td>多段への割り方</td></tr>
+    <tr><th><code>validation-retry loops</code></th><td>検証と差し戻しの輪</td></tr>
+    <tr><th><code>latency tolerance assessment</code></th><td>待てる時間の見積もり</td></tr>
+    <tr><th><code>custom_id for request/response correlation</code></th><td>取り違えない対応づけ</td></tr>
   </tbody>
 </table>
 
 <h3>Domain 5　コンテキスト管理</h3>
 <table class="tbl pair">
   <tbody>
-    <tr><th>長い返り値を削る</th><td><code>trimming verbose tool outputs</code></td></tr>
-    <tr><th>事実だけ抜き出す</th><td><code>structured fact extraction</code></td></tr>
-    <tr><th>置く順番で効きが変わる</th><td><code>position-aware input ordering</code></td></tr>
-    <tr><th>人へ渡す明示的な基準</th><td><code>escalation decision-making</code></td></tr>
-    <tr><th>規約に定めがない</th><td><code>policy gap identification</code></td></tr>
-    <tr><th>確信度をしきい値に合わせ込む</th><td><code>confidence calibration</code></td></tr>
-    <tr><th>種別ごとに抜き取って測る</th><td><code>stratified sampling</code></td></tr>
-    <tr><th>出典を保つ</th><td><code>information provenance</code></td></tr>
-    <tr><th>食い違いに注記を付ける</th><td><code>conflict annotation</code></td></tr>
-    <tr><th>欠けを報告する</th><td><code>coverage gap reporting</code></td></tr>
-    <tr><th>失敗を上へ伝える</th><td><code>error propagation</code></td></tr>
+    <tr><th><code>trimming verbose tool outputs</code></th><td>長い返り値の切り詰め</td></tr>
+    <tr><th><code>structured fact extraction</code></th><td>事実だけの抜き出し</td></tr>
+    <tr><th><code>position-aware input ordering</code></th><td>位置を意識した並べ方</td></tr>
+    <tr><th><code>escalation decision-making</code></th><td>人へ渡す判断</td></tr>
+    <tr><th><code>policy gap identification</code></th><td>規約の穴の見つけ方</td></tr>
+    <tr><th><code>confidence calibration</code></th><td>確信度の較正</td></tr>
+    <tr><th><code>stratified sampling</code></th><td>層化抽出（種別ごとの抜き取り）</td></tr>
+    <tr><th><code>information provenance</code></th><td>出典（どこから来たか）</td></tr>
+    <tr><th><code>conflict annotation</code></th><td>食い違いへの注記</td></tr>
+    <tr><th><code>coverage gap reporting</code></th><td>欠けの報告</td></tr>
+    <tr><th><code>error propagation</code></th><td>失敗の伝わり方</td></tr>
   </tbody>
 </table>
 
-<p class="note">※ 英語は Exam Guide の「6. Detailed Objectives」のタスク名・「17. Appendix」の技術一覧・In-Scope / Out-of-Scope から取っています。<b>こちらで作った訳語はありません</b> ── 原文に無い英語が混ざっていないかは <code>check</code> が毎回照合します（54 組）。</p><!--/#glossfig-->
+<p class="note">※ 英語は Exam Guide の「6. Detailed Objectives」のタスク名・「17. Appendix」の技術一覧・In-Scope / Out-of-Scope から写した 54 組です。<b>こちらで作った訳語はありません。</b></p><!--/#glossfig-->
 </section>
 <!-- ▲ 本文 -->
 <nav class="secpager btm"><a class="pgv prev" href="../06-summary/14-vocab.html" title="前へ（← キー）"><span class="vh">前へ</span></a><span class="pgv next end"><span class="vh">ここで終わり</span></span></nav>
@@ -177,6 +177,6 @@
   </div>
 </div>
 <script src="../assets/quiz-data.js?v=a940b378"></script>
-<script src="../assets/search-index.js?v=f4d97808"></script>
+<script src="../assets/search-index.js?v=447c2cb5"></script>
 <script src="../assets/app.js?v=f6bc691d"></script>
 </body></html>

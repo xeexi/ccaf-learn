@@ -362,13 +362,13 @@ const glossFig = () => {
     return `<h3>${esc(label)}</h3>
 <table class="tbl pair">
   <tbody>
-${rows.map(g => `    <tr><th>${esc(g.ja)}</th><td><code>${esc(g.en)}</code></td></tr>`).join('\n')}
+${rows.map(g => `    <tr><th><code>${esc(g.en)}</code></th><td>${esc(g.ja)}</td></tr>`).join('\n')}
   </tbody>
 </table>`;
   }).filter(Boolean).join('\n\n');
   return `${glo}
 
-<p class="note">※ 英語は Exam Guide の「6. Detailed Objectives」のタスク名・「17. Appendix」の技術一覧・In-Scope / Out-of-Scope から取っています。<b>こちらで作った訳語はありません</b> ── 原文に無い英語が混ざっていないかは <code>check</code> が毎回照合します（${GLOSSARY.length} 組）。</p>`;
+<p class="note">※ 英語は Exam Guide の「6. Detailed Objectives」のタスク名・「17. Appendix」の技術一覧・In-Scope / Out-of-Scope から写した ${GLOSSARY.length} 組です。<b>こちらで作った訳語はありません。</b></p>`;
 };
 
 const BLOCKS = { weightfig: weightFig, examfmt: examFmt, scenariofig: scenarioFig,

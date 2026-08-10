@@ -56,16 +56,21 @@ if (!colNg) console.log(`  ✓ 本文の inline style / SVG 属性 ${colN} 箇�
    11件残っていて、節を挿すたびに指す先がずれていた（実際 Domain 1・2・5 を
    振り直した回に全部ずれた）。いまは**本文全体**を見る。
    指したいときは**節の名前でリンクする** ── ファイル名が変われば 5l が捕まえる。 */
-console.log('\n■ 消えた概念への参照');
+console.log('\n■ 位置参照と、実装の話');
 let refNg = 0;
 const REF_FILES = [...FILES, 'index.html'];
+// 位置で指す語（節を並べ替えると壊れる） ＋ 道具の話（読み手に意味がない・§7 #14 #84）
+const NG_WORDS = /前ページ|次ページ|前の章|次の章|1ページ＝|☰|前節|次節|前の節|次の節|直前の節|上の節|下の節|最初の図|前の図|reindex|blueprint|check\.mjs|照合します/g;
 REF_FILES.forEach(f => {
   const h = fs.readFileSync(path.join(ROOT, f), 'utf8');
-  (h.match(/前ページ|次ページ|前の章|次の章|1ページ＝|☰|前節|次節|前の節|次の節|直前の節|上の節|下の節|最初の図|前の図/g) || []).forEach(w => {
-    bad(`${f}: 「${w}」が残っている`); refNg++;
+  // **本文だけを見る**（ファイル冒頭の編集マーカーには tools/reindex.mjs と書いてある）
+  const body = (h.match(/▼ 本文[^\n]*-->([\s\S]*?)<!-- ▲ 本文/) || [])[1]
+    || h.replace(/<!--[\s\S]*?-->/g, ' ');
+  (body.match(NG_WORDS) || []).forEach(w => {
+    bad(`${f}: 「${w}」が本文に残っている`); refNg++;
   });
 });
-if (!refNg) console.log(`  ✓ ${REF_FILES.length} ファイルに残っていない`);
+if (!refNg) console.log(`  ✓ ${REF_FILES.length} ファイルの本文に、位置参照も道具の話もない`);
 
 /* --- 4. 注記が、図やコードの文言をそのまま繰り返していないか --------
    同じことを2度読ませるだけになる（§7 #3）。
@@ -603,7 +608,7 @@ console.log(String.fromCharCode(10) + "■ キー操作の集約");
    それらしい訳語を置くと、本番で出ない語を覚えることになる。
    照合先は原文だけ ── タスク名（§6）・技術一覧（§17）・In/Out of Scope（§17）・
    シナリオ名（§5）。どれにも無い英語があれば落とす。 */
-console.log(String.fromCharCode(10) + "■ 対訳表の英語の出どころ");
+console.log(String.fromCharCode(10) + "■ 対訳表（英語の出どころ・品詞）");
 let gloNg = 0;
 {
   const corpus = [
@@ -619,12 +624,20 @@ let gloNg = 0;
       gloNg++;
     }
   });
+  // 英語が名詞句なので、日本語も名詞句にそろえる（動詞で終わらせない）
+  const VERB_END = /[うくぐすずつぬふぶむる]$/;
+  GLOSSARY.forEach(g => {
+    if (VERB_END.test(g.ja.replace(/（[^）]*）$/, ''))) {
+      bad(`対訳「${g.ja}」が動詞で終わっている ── 英語 "${g.en}" は名詞句なので、日本語も名詞句にする`);
+      gloNg++;
+    }
+  });
   const doms = new Set(['basics', ...Object.keys(BP_DOM)]);
   GLOSSARY.forEach(g => {
     if (!doms.has(g.d)) { bad(`対訳「${g.ja}」が知らないドメイン「${g.d}」を指している`); gloNg++; }
   });
 }
-if (!gloNg) console.log(`  ✓ 対訳 ${GLOSSARY.length} 組すべて、英語は公式の原文にある（§6 タスク名 ／ §17 技術一覧・In/Out of Scope ／ §5 シナリオ）`);
+if (!gloNg) console.log(`  ✓ 対訳 ${GLOSSARY.length} 組すべて、英語は公式の原文にあり、日本語も名詞句`);
 
 /* --- 5s. 丸の中の数字が、行送りで下にずれていないか --------------------
    丸番号は `border-radius:50%` ＋ `place-items:center` で組んでいる。
