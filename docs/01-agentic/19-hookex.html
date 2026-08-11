@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>1-19　実物を見る ─ テストが通るまで commit させない ─ Domain 1 ─ CCAR-F 学習ノート</title>
+<title>1-19　実物を見る ─ commit をテストで止める ─ Domain 1 ─ CCAR-F 学習ノート</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -64,7 +64,7 @@
 <a class="itm toc-link itm-quiz" href="../01-agentic/16-q4.html"><span class="itm-n">1-16</span><span class="itm-t">理解度チェック ─ 子の起こし方と関門</span></a>
 <a class="itm toc-link" href="../01-agentic/17-intercept.html"><span class="itm-n">1-17</span><span class="itm-t">ツール呼び出しに割り込む</span></a>
 <a class="itm toc-link" href="../01-agentic/18-hookreg.html"><span class="itm-n">1-18</span><span class="itm-t">どこに書いて、どう止めるか</span></a>
-<a class="itm toc-link on" href="../01-agentic/19-hookex.html"><span class="itm-n">1-19</span><span class="itm-t">実物を見る ─ テストが通るまで commit させない</span></a>
+<a class="itm toc-link on" href="../01-agentic/19-hookex.html"><span class="itm-n">1-19</span><span class="itm-t">実物を見る ─ commit をテストで止める</span></a>
 <a class="itm toc-link" href="../01-agentic/20-hooknorm.html"><span class="itm-n">1-20</span><span class="itm-t">割り込みで、形をそろえる</span></a>
 <a class="itm toc-link itm-quiz" href="../01-agentic/21-q5.html"><span class="itm-n">1-21</span><span class="itm-t">理解度チェック ─ フックの効かせ方</span></a>
 <a class="itm toc-link" href="../01-agentic/22-session.html"><span class="itm-n">1-22</span><span class="itm-t">セッションをまたぐ</span></a>
@@ -76,7 +76,7 @@
 <!-- ▼ 本文 ─ ここだけを編集する。この前後は node tools/reindex.mjs が書き出す -->
 <section class="sec" id="hookex">
 <header class="sec-head">
-  <h2>1-19　実物を見る ─ テストが通るまで commit させない</h2>
+  <h2>1-19　実物を見る ─ commit をテストで止める</h2>
 </header>
 <p class="goal"><b>ゴール</b>フックに何が届き、何を返すと止まるかを言える。</p>
 <p class="lead">ここまでは<b>登録の仕方</b>でした。走らせるプログラムの中身も見ておきます。「コミットの前にテストを通して」と<b>頼む</b>代わりに、<b>通らなければ commit そのものを実行させない</b>形にします。</p>
@@ -143,7 +143,7 @@ echo <span class="s">"テストが落ちています。直してから commit �
     <div class="modal-foot"><kbd>Esc</kbd> で閉じる</div>
   </div>
 </div>
-<script src="../assets/quiz-data.js?v=a940b378"></script>
-<script src="../assets/search-index.js?v=8436c3b8"></script>
+<script src="../assets/quiz-data.js?v=afe4407d"></script>
+<script src="../assets/search-index.js?v=c8c0b6c2"></script>
 <script src="../assets/app.js?v=f6bc691d"></script>
 </body></html>

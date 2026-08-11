@@ -53,10 +53,10 @@
 <a class="itm toc-link itm-quiz" href="../01-agentic/05-q1.html"><span class="itm-n">1-5</span><span class="itm-t">理解度チェック ─ ループと止まり方</span></a>
 <a class="itm toc-link" href="../01-agentic/06-seq.html"><span class="itm-n">1-6</span><span class="itm-t">誰が、何を送っているのか</span></a>
 <a class="itm toc-link on" href="../01-agentic/07-real.html"><span class="itm-n">1-7</span><span class="itm-t">実物を見る ─ 往復のJSON</span></a>
-<a class="toc-link toc-sub" href="#real-1">実物を見る ① こちらから送るもの</a>
+<a class="toc-link toc-sub" href="#real-1">① こちらから送るもの</a>
 <a class="toc-link toc-sub" href="#real-2">綴りが決まっているもの／自分で決めるもの</a>
-<a class="toc-link toc-sub" href="#real-3">実物を見る ② 返ってくるもの</a>
-<a class="toc-link toc-sub" href="#real-4">実物を見る ③ 返し直すもの</a>
+<a class="toc-link toc-sub" href="#real-3">② 返ってくるもの</a>
+<a class="toc-link toc-sub" href="#real-4">③ 返し直すもの</a>
 <a class="itm toc-link" href="../01-agentic/08-broken.html"><span class="itm-n">1-8</span><span class="itm-t">ループが壊れるとき</span></a>
 <a class="itm toc-link itm-quiz" href="../01-agentic/09-q2.html"><span class="itm-n">1-9</span><span class="itm-t">理解度チェック ─ 往復の中身と壊れ方</span></a>
 <a class="itm toc-link" href="../01-agentic/10-split.html"><span class="itm-n">1-10</span><span class="itm-t">1体か、分けるか</span></a>
@@ -68,7 +68,7 @@
 <a class="itm toc-link itm-quiz" href="../01-agentic/16-q4.html"><span class="itm-n">1-16</span><span class="itm-t">理解度チェック ─ 子の起こし方と関門</span></a>
 <a class="itm toc-link" href="../01-agentic/17-intercept.html"><span class="itm-n">1-17</span><span class="itm-t">ツール呼び出しに割り込む</span></a>
 <a class="itm toc-link" href="../01-agentic/18-hookreg.html"><span class="itm-n">1-18</span><span class="itm-t">どこに書いて、どう止めるか</span></a>
-<a class="itm toc-link" href="../01-agentic/19-hookex.html"><span class="itm-n">1-19</span><span class="itm-t">実物を見る ─ テストが通るまで commit させない</span></a>
+<a class="itm toc-link" href="../01-agentic/19-hookex.html"><span class="itm-n">1-19</span><span class="itm-t">実物を見る ─ commit をテストで止める</span></a>
 <a class="itm toc-link" href="../01-agentic/20-hooknorm.html"><span class="itm-n">1-20</span><span class="itm-t">割り込みで、形をそろえる</span></a>
 <a class="itm toc-link itm-quiz" href="../01-agentic/21-q5.html"><span class="itm-n">1-21</span><span class="itm-t">理解度チェック ─ フックの効かせ方</span></a>
 <a class="itm toc-link" href="../01-agentic/22-session.html"><span class="itm-n">1-22</span><span class="itm-t">セッションをまたぐ</span></a>
@@ -83,7 +83,7 @@
   <h2>1-7　実物を見る ─ 往復のJSON</h2>
 </header>
 
-<h3 class="sub" id="real-1">実物を見る ① こちらから送るもの</h3>
+<h3 class="sub" id="real-1">① こちらから送るもの</h3>
 <p class="goal"><b>ゴール</b>1回のリクエストに何が入っているかを挙げられる。</p>
 <p class="lead">アプリが送っている JSON と、返ってくる JSON の実物です。〈<a href="06-seq.html">誰が、何を送っているのか</a>〉の<b>①（アプリ → Claude）</b>にあたります。細かく覚える必要はありません。</p>
 <p class="task" data-t="1.1"><span class="tn">BLUEPRINT 1.1</span><b>Design and implement agentic loops for autonomous task execution</b></p>
@@ -124,7 +124,7 @@
     <p>一方 <code>search_files</code> という名前、その説明文、<code>pattern</code> という引数名は<b>すべて自分で決めるもの</b>です。この教材に出てくる道具の名前は、説明のために私が作った架空のものです。</p>
   </div>
 
-<h3 class="sub" id="real-3">実物を見る ② 返ってくるもの</h3>
+<h3 class="sub" id="real-3">② 返ってくるもの</h3>
 <p class="goal"><b>ゴール</b>応答のどこに <code>tool_use</code> が入るか指せる。</p>
 <p class="lead">シーケンス図の <b>②（Claude → アプリ の橙の矢印）</b> の中身です。</p>
   <div class="figbox" style="padding:12px 16px">
@@ -149,7 +149,7 @@
   </div>
   <p class="point"><b>ポイント</b>道具を使いたいという要求は <code>content</code> の中に並ぶ。アプリが次の一手を決めるのに見るのは、その外側の <code>stop_reason</code>。</p>
 
-<h3 class="sub" id="real-4">実物を見る ③ 返し直すもの</h3>
+<h3 class="sub" id="real-4">③ 返し直すもの</h3>
 <p class="goal"><b>ゴール</b>結果をどの役割で返すか言える。</p>
 <p class="lead">シーケンス図の <b>④と⑤</b> にあたります。ここでループが閉じます。</p>
   <div class="figbox" style="padding:12px 16px">
@@ -194,7 +194,7 @@
     <div class="modal-foot"><kbd>Esc</kbd> で閉じる</div>
   </div>
 </div>
-<script src="../assets/quiz-data.js?v=a940b378"></script>
-<script src="../assets/search-index.js?v=8436c3b8"></script>
+<script src="../assets/quiz-data.js?v=afe4407d"></script>
+<script src="../assets/search-index.js?v=c8c0b6c2"></script>
 <script src="../assets/app.js?v=f6bc691d"></script>
 </body></html>
