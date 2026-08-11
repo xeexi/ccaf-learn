@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>1-20　理解度チェック ─ フックの効かせ方 ─ Domain 1 ─ CCAR-F 学習ノート</title>
+<title>1-22　セッションをまたぐ ─ Domain 1 ─ CCAR-F 学習ノート</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/style.css?v=da5460da">
 </head>
-<body data-page="q5">
+<body data-page="session">
 <script>(function(){var t=localStorage.getItem('ccarf-theme');if(t)document.documentElement.dataset.theme=t;})();</script>
 <nav class="domnav">
   <a class="brand" href="../index.html"><span class="brand-mark">CCAR-F</span><span class="brand-sub">学習ノート</span></a>
@@ -64,24 +64,67 @@
 <a class="itm toc-link itm-quiz" href="../01-agentic/16-q4.html"><span class="itm-n">1-16</span><span class="itm-t">理解度チェック ─ 子の起こし方と関門</span></a>
 <a class="itm toc-link" href="../01-agentic/17-intercept.html"><span class="itm-n">1-17</span><span class="itm-t">ツール呼び出しに割り込む</span></a>
 <a class="itm toc-link" href="../01-agentic/18-hookreg.html"><span class="itm-n">1-18</span><span class="itm-t">どこに書いて、どう止めるか</span></a>
-<a class="itm toc-link" href="../01-agentic/19-hooknorm.html"><span class="itm-n">1-19</span><span class="itm-t">割り込みで、形をそろえる</span></a>
-<a class="itm toc-link on itm-quiz" href="../01-agentic/20-q5.html"><span class="itm-n">1-20</span><span class="itm-t">理解度チェック ─ フックの効かせ方</span></a>
-<a class="itm toc-link" href="../01-agentic/21-session.html"><span class="itm-n">1-21</span><span class="itm-t">セッションをまたぐ</span></a>
-<a class="itm toc-link itm-quiz" href="../01-agentic/22-q6.html"><span class="itm-n">1-22</span><span class="itm-t">理解度チェック ─ セッション</span></a></nav>
+<a class="itm toc-link" href="../01-agentic/19-hookex.html"><span class="itm-n">1-19</span><span class="itm-t">実物を見る ─ テストが通るまで commit させない</span></a>
+<a class="itm toc-link" href="../01-agentic/20-hooknorm.html"><span class="itm-n">1-20</span><span class="itm-t">割り込みで、形をそろえる</span></a>
+<a class="itm toc-link itm-quiz" href="../01-agentic/21-q5.html"><span class="itm-n">1-21</span><span class="itm-t">理解度チェック ─ フックの効かせ方</span></a>
+<a class="itm toc-link on" href="../01-agentic/22-session.html"><span class="itm-n">1-22</span><span class="itm-t">セッションをまたぐ</span></a>
+<a class="itm toc-link itm-quiz" href="../01-agentic/23-q6.html"><span class="itm-n">1-23</span><span class="itm-t">理解度チェック ─ セッション</span></a></nav>
 </aside>
 <main class="doc">
 <p class="crumb" data-domain="agentic"><b>Domain 1</b><span>エージェント設計とオーケストレーション</span></p>
-<nav class="secpager top"><a class="pgv prev" href="../01-agentic/19-hooknorm.html" title="前へ（← キー）"><span class="vh">前へ</span></a><a class="pgv next" href="../01-agentic/21-session.html" title="次へ（→ キー）"><span class="vh">次へ</span></a></nav>
+<nav class="secpager top"><a class="pgv prev" href="../01-agentic/21-q5.html" title="前へ（← キー）"><span class="vh">前へ</span></a><a class="pgv next" href="../01-agentic/23-q6.html" title="次へ（→ キー）"><span class="vh">次へ</span></a></nav>
 <!-- ▼ 本文 ─ ここだけを編集する。この前後は node tools/reindex.mjs が書き出す -->
-<section class="sec sec-quiz" id="q5" data-quiz="q134b">
+<section class="sec" id="session">
 <header class="sec-head">
-  <h2>1-20　理解度チェック ─ フックの効かせ方</h2>
+  <h2>1-22　セッションをまたぐ</h2>
 </header>
-<p class="lead"><span class="qcount"></span>選択肢をクリックすると、その場で正誤と解説が出ます。</p>
-  <div class="qwrap"></div>
+<p class="goal"><b>ゴール</b>再開・枝分かれ・新規の使い分けができる。</p>
+<p class="lead">作業は1回で終わりません。前回の続きから始めるか、途中から枝を作るか、まっさらから始めるかを選びます。</p>
+<p class="task" data-t="1.7"><span class="tn">BLUEPRINT 1.7</span><b>Manage session state, resumption, and forking</b></p>
+
+<table class="tbl">
+  <thead><tr><th></th><th>再開</th><th>枝分かれ</th><th>新規</th></tr></thead>
+  <tbody>
+    <tr><th>コマンド</th>
+      <td data-l="再開"><code>claude --continue</code>（直前）<br><code>claude --resume</code>（一覧から選ぶ）</td>
+      <td data-l="枝分かれ"><code>claude --resume &lt;id&gt; --fork-session</code></td>
+      <td data-l="新規"><code>claude</code></td></tr>
+    <tr><th>もとの会話</th>
+      <td data-l="再開"><b>そのまま伸びる</b></td>
+      <td data-l="枝分かれ"><b>変わらない</b>。別 ID で枝ができる</td>
+      <td data-l="新規">関係しない</td></tr>
+    <tr><th>選ぶ場面</th>
+      <td data-l="再開">続きをやる</td>
+      <td data-l="枝分かれ">同じ地点から<b>複数の案を試して比べる</b></td>
+      <td data-l="新規">前の文脈が<b>邪魔</b>なとき</td></tr>
+    <tr><th>窓の重さ</th>
+      <td data-l="再開"><span class="ng">軽くならない。</span>長くなった会話は長いまま戻る</td>
+      <td data-l="枝分かれ"><span class="ng">軽くならない。</span>枝を切った地点の重さを引き継ぐ</td>
+      <td data-l="新規"><span class="ok">軽い。</span>ただし前提の渡し直しが要る</td></tr>
+  </tbody>
+</table>
+
+<p class="point"><b>ポイント</b>再開は文脈を保つ手、枝は同じ地点から分ける手、新規は文脈を捨てる手。<b>窓を軽くするのはどれでもない。</b></p>
+
+<div class="detail">
+  <p>新規を選ぶと渡し直しの手間が増えるので、<code>CLAUDE.md</code> に書けることは先に書いておくと楽になります。</p>
+  <div class="ex"><span class="exl">再開したら「その間に変わったもの」を必ず伝える</span>
+  履歴には<b>調べた当時のファイルの中身</b>が残っています。そのあとコードを直していると、
+  モデルは<b>古い中身のまま考え続けます</b> ── しかも食い違いに気づく手段がありません。<br>
+  再開したら「<code>src/api.ts</code> と <code>src/db.ts</code> を直した」と<b>変えた場所だけ</b>伝えます。
+  全部を調べ直させるより速く、古い前提も消えます。</div>
+  <div class="ex"><span class="exl">古い結果を抱えたまま再開するより、新規＋要約のほうが確実</span>
+  前の文脈が<b>おおむね生きている</b>なら再開が速い。ですが<b>ツールの結果が軒並み古い</b>なら、
+  再開は「間違った前提を全部持ち込む」ことになります。そのときは<b>新規で始めて、確定した結論だけを要約して渡す</b>ほうが確実です。<br>
+  判断の基準は「<b>履歴のうち、いま読み返しても正しいものが多いかどうか</b>」です。</div>
+  <div class="myth">
+    <span class="t">誤解</span><span>「セッションを再開すれば、軽い状態から始まる」</span>
+    <span class="t o">実際は</span><span>履歴ごと復元されるので、<b>再開した時点の重さがそのまま戻ります</b>。軽くしたいなら圧縮するか、新規で始めて必要な前提だけ渡します。</span>
+  </div>
+</div>
 </section>
 <!-- ▲ 本文 -->
-<nav class="secpager btm"><a class="pgv prev" href="../01-agentic/19-hooknorm.html" title="前へ（← キー）"><span class="vh">前へ</span></a><a class="pgv next" href="../01-agentic/21-session.html" title="次へ（→ キー）"><span class="vh">次へ</span></a></nav>
+<nav class="secpager btm"><a class="pgv prev" href="../01-agentic/21-q5.html" title="前へ（← キー）"><span class="vh">前へ</span></a><a class="pgv next" href="../01-agentic/23-q6.html" title="次へ（→ キー）"><span class="vh">次へ</span></a></nav>
 </main>
 </div>
 <div class="modal" id="searchModal" hidden>
@@ -92,6 +135,6 @@
   </div>
 </div>
 <script src="../assets/quiz-data.js?v=a940b378"></script>
-<script src="../assets/search-index.js?v=447c2cb5"></script>
+<script src="../assets/search-index.js?v=47914271"></script>
 <script src="../assets/app.js?v=f6bc691d"></script>
 </body></html>

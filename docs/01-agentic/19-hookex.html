@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>1-10　1体か、分けるか ─ Domain 1 ─ CCAR-F 学習ノート</title>
+<title>1-19　実物を見る ─ テストが通るまで commit させない ─ Domain 1 ─ CCAR-F 学習ノート</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/style.css?v=da5460da">
 </head>
-<body data-page="split">
+<body data-page="hookex">
 <script>(function(){var t=localStorage.getItem('ccarf-theme');if(t)document.documentElement.dataset.theme=t;})();</script>
 <nav class="domnav">
   <a class="brand" href="../index.html"><span class="brand-mark">CCAR-F</span><span class="brand-sub">学習ノート</span></a>
@@ -55,7 +55,7 @@
 <a class="itm toc-link" href="../01-agentic/07-real.html"><span class="itm-n">1-7</span><span class="itm-t">実物を見る ─ 往復のJSON</span></a>
 <a class="itm toc-link" href="../01-agentic/08-broken.html"><span class="itm-n">1-8</span><span class="itm-t">ループが壊れるとき</span></a>
 <a class="itm toc-link itm-quiz" href="../01-agentic/09-q2.html"><span class="itm-n">1-9</span><span class="itm-t">理解度チェック ─ 往復の中身と壊れ方</span></a>
-<a class="itm toc-link on" href="../01-agentic/10-split.html"><span class="itm-n">1-10</span><span class="itm-t">1体か、分けるか</span></a>
+<a class="itm toc-link" href="../01-agentic/10-split.html"><span class="itm-n">1-10</span><span class="itm-t">1体か、分けるか</span></a>
 <a class="itm toc-link" href="../01-agentic/11-parent.html"><span class="itm-n">1-11</span><span class="itm-t">親子の形</span></a>
 <a class="itm toc-link" href="../01-agentic/12-chain.html"><span class="itm-n">1-12</span><span class="itm-t">固定チェーンか、動的分解か</span></a>
 <a class="itm toc-link itm-quiz" href="../01-agentic/13-q3.html"><span class="itm-n">1-13</span><span class="itm-t">理解度チェック ─ 複数エージェント</span></a>
@@ -64,7 +64,7 @@
 <a class="itm toc-link itm-quiz" href="../01-agentic/16-q4.html"><span class="itm-n">1-16</span><span class="itm-t">理解度チェック ─ 子の起こし方と関門</span></a>
 <a class="itm toc-link" href="../01-agentic/17-intercept.html"><span class="itm-n">1-17</span><span class="itm-t">ツール呼び出しに割り込む</span></a>
 <a class="itm toc-link" href="../01-agentic/18-hookreg.html"><span class="itm-n">1-18</span><span class="itm-t">どこに書いて、どう止めるか</span></a>
-<a class="itm toc-link" href="../01-agentic/19-hookex.html"><span class="itm-n">1-19</span><span class="itm-t">実物を見る ─ テストが通るまで commit させない</span></a>
+<a class="itm toc-link on" href="../01-agentic/19-hookex.html"><span class="itm-n">1-19</span><span class="itm-t">実物を見る ─ テストが通るまで commit させない</span></a>
 <a class="itm toc-link" href="../01-agentic/20-hooknorm.html"><span class="itm-n">1-20</span><span class="itm-t">割り込みで、形をそろえる</span></a>
 <a class="itm toc-link itm-quiz" href="../01-agentic/21-q5.html"><span class="itm-n">1-21</span><span class="itm-t">理解度チェック ─ フックの効かせ方</span></a>
 <a class="itm toc-link" href="../01-agentic/22-session.html"><span class="itm-n">1-22</span><span class="itm-t">セッションをまたぐ</span></a>
@@ -72,43 +72,68 @@
 </aside>
 <main class="doc">
 <p class="crumb" data-domain="agentic"><b>Domain 1</b><span>エージェント設計とオーケストレーション</span></p>
-<nav class="secpager top"><a class="pgv prev" href="../01-agentic/09-q2.html" title="前へ（← キー）"><span class="vh">前へ</span></a><a class="pgv next" href="../01-agentic/11-parent.html" title="次へ（→ キー）"><span class="vh">次へ</span></a></nav>
+<nav class="secpager top"><a class="pgv prev" href="../01-agentic/18-hookreg.html" title="前へ（← キー）"><span class="vh">前へ</span></a><a class="pgv next" href="../01-agentic/20-hooknorm.html" title="次へ（→ キー）"><span class="vh">次へ</span></a></nav>
 <!-- ▼ 本文 ─ ここだけを編集する。この前後は node tools/reindex.mjs が書き出す -->
-<section class="sec" id="split">
+<section class="sec" id="hookex">
 <header class="sec-head">
-  <h2>1-10　1体か、分けるか</h2>
+  <h2>1-19　実物を見る ─ テストが通るまで commit させない</h2>
 </header>
-<p class="goal"><b>ゴール</b>分けたときに増える失敗を挙げられる。</p>
-<p class="lead">複数に分けると強くなるとは限りません。分けるほど、渡し忘れと統合の失敗が増えます。</p>
-<p class="task" data-t="1.2"><span class="tn">BLUEPRINT 1.2</span><b>Orchestrate multi-agent systems with coordinator-subagent patterns</b></p>
+<p class="goal"><b>ゴール</b>フックに何が届き、何を返すと止まるかを言える。</p>
+<p class="lead">ここまでは<b>登録の仕方</b>でした。走らせるプログラムの中身も見ておきます。「コミットの前にテストを通して」と<b>頼む</b>代わりに、<b>通らなければ commit そのものを実行させない</b>形にします。</p>
+<p class="task" data-t="1.5"><span class="tn">BLUEPRINT 1.5</span><b>Apply Agent SDK hooks for tool call interception and data normalization</b></p>
 
-<table class="tbl">
-  <thead><tr><th></th><th>1体のまま</th><th>分ける（親＋子）</th></tr></thead>
-  <tbody>
-    <tr><th>選ぶ条件</th>
-      <td data-l="1体のまま">下の3つが<b>どれも当てはまらない</b>とき</td>
-      <td data-l="分ける">① 別々に<b>大量の資料を読む</b>　② 互いに<b>待つ必要がない</b>　③ <b>責務が違う</b><br><span class="ok">1つでも当てはまれば分ける</span>（3つ全部そろう必要はない）</td></tr>
-    <tr><th>例</th>
-      <td data-l="1体のまま">3つのファイルに、決まった順で同じ修正を入れる<br><span class="n">順番も内容も決まっていて、読む量も少ない</span></td>
-      <td data-l="分ける">10個のリポジトリを、それぞれ独立に調査する<br><span class="n">互いに待つ必要がなく、それぞれ大量に読む</span></td></tr>
-    <tr><th>増える失敗</th>
-      <td data-l="1体のまま">─</td>
-      <td data-l="分ける"><span class="ng">前提の渡し忘れ</span>／<span class="ng">結果の統合ミス</span><br>分ける前には存在しなかった不具合が増える</td></tr>
-  </tbody>
-</table>
+<div class="figbox" style="padding:16px 18px">
+  <p class="codelabel">settings.json ─ どのツールに効かせるか</p>
+  <pre class="code">{
+  <span class="k">"hooks"</span>: {
+    <span class="k">"PreToolUse"</span>: [
+      {
+        <span class="hl"><span class="k">"matcher"</span>: <span class="s">"Bash"</span></span>,<span class="n">1</span>
+        <span class="k">"hooks"</span>: [
+          { <span class="k">"type"</span>: <span class="s">"command"</span>,
+            <span class="k">"command"</span>: <span class="s">"${CLAUDE_PROJECT_DIR}/.claude/hooks/pretest.sh"</span> }
+        ]
+      }
+    ]
+  }
+}</pre>
 
-<p class="point"><b>ポイント</b>「複数エージェントにすべきか」を問う設問では、単純な1体で足りる選択肢が正解のことが多い。分けるのは理由があるときだけ。</p>
+  <p class="codelabel">.claude/hooks/pretest.sh ─ 走らせるプログラム</p>
+  <pre class="code"><span class="c">#!/bin/bash</span>
+cmd=$(jq -r <span class="s">'.tool_input.command'</span>)<span class="n">2</span>
+
+<span class="hl">case</span> <span class="s">"$cmd"</span> <span class="hl">in</span>
+  *<span class="s">"git commit"</span>*) ;;<span class="n">3</span>
+  *) <span class="hl">exit 0</span> ;;
+<span class="hl">esac</span>
+
+<span class="hl">if</span> npm test --silent; <span class="hl">then</span>
+  <span class="hl">exit 0</span><span class="n">4</span>
+<span class="hl">fi</span>
+echo <span class="s">"テストが落ちています。直してから commit してください。"</span> &gt;&amp;2
+<span class="hl">exit 2</span><span class="n">5</span></pre>
+
+  <ol class="ann">
+    <li><span class="n">1</span><span><code>matcher</code> が見るのは<b>ツール名</b>です。<code>git commit</code> も <code>npm test</code> も、Claude Code では <b><code>Bash</code> ツール越しに走ります</b>。だからここは <code>Bash</code>。</span></li>
+    <li><span class="n">2</span><span>フックには、<b>そのとき実行されようとしている引数が標準入力に JSON で届きます</b>。<code>Bash</code> なら <code>tool_input.command</code> に文字列が入っています（<code>tool_name</code> や <code>cwd</code> も一緒に来ます）。</span></li>
+    <li><span class="n">3</span><span>上の指定は<b>すべての <code>Bash</code> に掛かる</b>ので、絞るのはここ。<code>ls</code> のたびにテストが走っては使えません。</span></li>
+    <li><span class="n">4</span><span><b><code>exit 0</code> は「許可」ではなく「意見なし」。</b>ここから先は、いつもどおりの権限の流れに戻ります。</span></li>
+    <li><span class="n">5</span><span><b>止めるのは <code>exit 2</code>。</b>標準エラーに書いた文が<b>そのままモデルに届きます</b>。「どうすれば通るか」まで書けば、Claude はテストを直してから commit をやり直せます。</span></li>
+  </ol>
+</div>
+
+<p class="point"><b>ポイント</b>頼むのをやめて、<b>通れない道にする</b>。フックが見るのは <code>tool_input</code>、返すのは<b>終了コード</b> ── 覚えるのはこの2つ。</p>
 
 <div class="detail">
-  <p>とくに条件①は重要です。<b>別々に大量の資料を読む作業は、分けないと窓が共倒れになります</b>（Domain 5）。「分けたほうが速そう」は理由に入りません。</p>
   <div class="myth">
-    <span class="t">誤解</span><span>「複数エージェント構成＝高度で優れた設計」</span>
-    <span class="t o">実際は</span><span>分ける理由がないのに分ければ、<b>ただの劣化</b>です。渡し忘れと統合ミスだけが増えます。</span>
+    <span class="t">誤解</span><span>「<code>matcher</code> に <code>"git commit"</code> と書けばよい」</span>
+    <span class="t o">実際は</span><span><code>matcher</code> が見るのは<b>ツール名だけ</b>です。コマンドの中身で絞るのは、上のようにフックの中で行います。</span>
   </div>
 </div>
+<p class="note">※ <code>if</code> を書いて、フックを呼ぶ前に絞ることもできます（<code>"if": "Bash(git commit*)"</code>）。ここで中で見ているのは、<b>フックに何が届くか</b>を先に掴んでおくためです。</p>
 </section>
 <!-- ▲ 本文 -->
-<nav class="secpager btm"><a class="pgv prev" href="../01-agentic/09-q2.html" title="前へ（← キー）"><span class="vh">前へ</span></a><a class="pgv next" href="../01-agentic/11-parent.html" title="次へ（→ キー）"><span class="vh">次へ</span></a></nav>
+<nav class="secpager btm"><a class="pgv prev" href="../01-agentic/18-hookreg.html" title="前へ（← キー）"><span class="vh">前へ</span></a><a class="pgv next" href="../01-agentic/20-hooknorm.html" title="次へ（→ キー）"><span class="vh">次へ</span></a></nav>
 </main>
 </div>
 <div class="modal" id="searchModal" hidden>
