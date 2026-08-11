@@ -60,6 +60,7 @@
 <a class="itm toc-link" href="../01-agentic/12-chain.html"><span class="itm-n">1-12</span><span class="itm-t">固定チェーンか、動的分解か</span></a>
 <a class="itm toc-link itm-quiz" href="../01-agentic/13-q3.html"><span class="itm-n">1-13</span><span class="itm-t">理解度チェック ─ 複数エージェント</span></a>
 <a class="itm toc-link on" href="../01-agentic/14-spawn.html"><span class="itm-n">1-14</span><span class="itm-t">子はどう起こすのか</span></a>
+<a class="toc-link toc-sub" href="#spawn-2">実物を見る ─ 子の定義ファイル</a>
 <a class="toc-link toc-sub" href="#spawn-2">3体まとめて起こす ─ 並列ツール使用</a>
 <a class="itm toc-link" href="../01-agentic/15-gate.html"><span class="itm-n">1-15</span><span class="itm-t">前提は関門で、引き継ぎは欄で</span></a>
 <a class="itm toc-link itm-quiz" href="../01-agentic/16-q4.html"><span class="itm-n">1-16</span><span class="itm-t">理解度チェック ─ 子の起こし方と関門</span></a>
@@ -117,6 +118,34 @@
 
 <p class="point"><b>ポイント</b>起動は簡単。難しいのは「子の最初の状態に何を載せるか」を親が決めきること。</p>
 
+<h3 class="sub" id="spawn-2">実物を見る ─ 子の定義ファイル</h3>
+<p class="goal"><b>ゴール</b>定義ファイルの3つの欄が、それぞれ何を決めるか言える。</p>
+<p class="lead">「どの型の子か」は<b>ファイルで決めます</b>。SDK でいう <code>AgentDefinition</code> にあたるもので、置くだけで使えます。</p>
+
+<div class="figbox" style="padding:16px 18px">
+  <p class="codelabel">.claude/agents/log-reader.md ─ YAML frontmatter ＋ 本文</p>
+  <pre class="code"><span class="c">---</span>
+<span class="k">name</span>: <span class="s">log-reader</span><span class="n">1</span>
+<span class="hl"><span class="k">description</span>: <span class="s">ログから該当箇所だけを抜き出す。原因の切り分けを頼まれたときに使う</span></span><span class="n">2</span>
+<span class="k">tools</span>: <span class="s">Read, Grep, Glob</span><span class="n">3</span>
+<span class="c">---</span>
+
+渡された条件に合う行だけを探し、次の形で返すこと。<span class="n">4</span>
+・見つかった行（ファイル名と行番号つき）
+・見つからなかった条件
+<b>本文は貼らず、件数と場所だけを返す。</b></pre>
+  <ol class="ann">
+    <li><span class="n">1</span><span>呼び名。<b>ファイル名ではなくこの値で識別されます</b>（小文字とハイフン）。</span></li>
+    <li><span class="n">2</span><span>親が<b>どの子に任せるかを決める材料</b>。「いつ呼ぶか」を書きます ── 用途が書かれていないと呼ばれないのは、ツールの <code>description</code> と同じ理屈です。</span></li>
+    <li><span class="n">3</span><span>使わせる道具。<b>書かなければ全部を引き継ぎます</b>。ここが配る範囲そのもの（Domain 2 の〈<a href="../02-tools/09-distribute.html">誰にどのツールを配るか</a>〉）。</span></li>
+    <li><span class="n">4</span><span><code>---</code> の下の本文が、<b>そのまま子のシステム指示</b>になります。子はこれと作業ディレクトリくらいしか持たずに立ち上がるので、<b>返してほしい形はここに書ききります</b>。</span></li>
+  </ol>
+</div>
+
+<p class="point"><b>ポイント</b>定義ファイルは <b><code>description</code>（いつ呼ぶか）・<code>tools</code>（何を使わせるか）・本文（何をどう返すか）</b>の3つ。SDK の <code>AgentDefinition</code> と同じ中身で、Claude Code では<b>置くだけで使える</b>。</p>
+
+<p class="note">※ <code>~/.claude/agents/</code> に置くと、どのプロジェクトでも使えます。同じ <code>name</code> があるときはプロジェクト側が優先されます（コマンドやスキルと同じ考え方）。</p>
+
 <h3 class="sub" id="spawn-2">3体まとめて起こす ─ 並列ツール使用</h3>
 <p class="goal"><b>ゴール</b>並列に起こしたとき、往復が何回になるか答えられる。</p>
 <p class="lead">同時に走らせるための特別な仕組みはありません。<b>1つの応答に <code>tool_use</code> を複数入れる</b>だけです。</p>
@@ -147,7 +176,6 @@
   </div>
 </div>
 <p class="note">※ 子を起こすツールの名前は、公式ドキュメントでは <code>Agent</code>。出題ガイドや古い資料では <code>Task</code> と表記される場合があります（<code>TaskCreate</code> などの <code>Task…</code> 系はタスク一覧の操作で、別物）。<b>親にそのツールを渡していないと子を起こせません</b> ── 出題ガイドは <code>allowedTools</code> に <code>Task</code> を含めること、という書き方をしています。<br>
-※ 子の型は SDK では <code>AgentDefinition</code> として定義します ── 説明文・システム指示・使わせるツールの3つを持ちます。Claude Code では <code>.claude/agents/</code> に置く定義ファイルがこれに当たります。<br>
 ※ 同じ地点から複数の枝を試したいときは、子を起こすのではなく<b>セッションを分岐</b>させます（<code>fork_session</code>／CLI は <code>--fork-session</code>。〈セッションをまたぐ〉）。</p>
 </section>
 <!-- ▲ 本文 -->
@@ -162,6 +190,6 @@
   </div>
 </div>
 <script src="../assets/quiz-data.js?v=a940b378"></script>
-<script src="../assets/search-index.js?v=47914271"></script>
+<script src="../assets/search-index.js?v=8436c3b8"></script>
 <script src="../assets/app.js?v=f6bc691d"></script>
 </body></html>
