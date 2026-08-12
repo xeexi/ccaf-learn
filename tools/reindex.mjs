@@ -19,7 +19,7 @@
 import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
-import { GUIDE, EXAM, DOMAINS as BP_DOM, SCENARIOS, PREPARE, EXERCISES, TRAPS, SAMPLES, TECH, QUALIFIERS, GLOSSARY, TASKS, domainItems, scenarioCount } from './blueprint.mjs';
+import { GUIDE, EXAM, DOMAINS as BP_DOM, SCENARIOS, PREPARE, EXERCISES, TRAPS, SAMPLES, TECH, QUALIFIERS, GLOSSARY, TERMS, TASKS, domainItems, scenarioCount } from './blueprint.mjs';
 
 /* 成果物（HTML と assets）は docs/ の下 ─ GitHub Pages がそのまま公開できる名前。tools/ と CLAUDE.md はリポジトリ直下 */
 const ROOT = path.join(path.resolve(new URL('..', import.meta.url).pathname), 'docs');
@@ -386,8 +386,18 @@ const fillTasks = (html) => html.replace(
     return `<p class="task" data-t="${ids}">${label}</p>`;
   });
 
+/** `<span data-en="動的分解"></span>` を「動的分解（dynamic decomposition）」に展開する。
+ *  教材が日本語で作った名前に、公式の英語の札を1回だけ付けるための目印
+ *  ── 読み手の頭の取っ手はその日本語なので、そこに英語を結ぶ。**HTML に手で書かない。** */
+const fillTerms = (html) => html.replace(
+  /<span data-en="([^"]+)">[\s\S]*?<\/span>/g,
+  (_, ja) => {
+    if (!TERMS[ja]) throw new Error('未知の用語: ' + ja + '（blueprint.mjs の TERMS にない）');
+    return `<span data-en="${ja}">${ja}（${TERMS[ja]}）</span>`;
+  });
+
 /* 共通の塊と出題タスクを本文へ差し込む（部品の定義がそろったここで1回まとめて） */
-pages.forEach(p => { p.body = fillTasks(fillBlocks(p.body)); });
+pages.forEach(p => { p.body = fillTerms(fillTasks(fillBlocks(p.body))); });
 
 /** 各ドメインの入口（最初の節） */
 const entry = {};

@@ -313,6 +313,32 @@ export const GLOSSARY = [
   { d: "context", en: "error propagation",             ja: "失敗の伝わり方" },
 ];
 
+/** §6 Detailed Objectives の箇条書きのうち、TERMS の出どころになったもの（原文のまま）。
+ *  §6 の箇条書きは concepts が「日本語の見出し＋日本語の正規表現」で持っているため、
+ *  **英語の原文がリポジトリのどこにも無い**。TERMS の照合先として、必要な行だけ写す。 */
+export const BULLETS6 = [
+  // 1.6 Skills in（1つめ）
+  "Selecting task decomposition patterns appropriate to the workflow: prompt chaining for predictable multi-aspect reviews, dynamic decomposition for open-ended investigation tasks",
+];
+
+/** 教材が日本語で作った「名前」と、公式の英語。
+ *  本文には `<span data-en="動的分解"></span>` の目印だけを置き、
+ *  reindex が「動的分解（dynamic decomposition）」に展開する。**HTML に手で書かない。**
+ *
+ *  対象は「教材が短い名前を作って繰り返し使い、その英語が設問に名詞として出る」語だけ。
+ *  `coverage gap reporting` のような**説明の句**は覚える対象ではないので入れない ── 6-15 の対訳表で足りる。
+ *  英語は原文からしか取らない（check.mjs 5x が実在と、札が1語1回だけであることを見る）。 */
+export const TERMS = {
+  "窓":         "context window",
+  "親":         "coordinator",
+  "子":         "subagent",
+  "固定チェーン": "prompt chaining",
+  "動的分解":    "dynamic decomposition",
+  "事実ブロック": "structured fact extraction",
+  "確信度":      "confidence calibration",
+  "出典":       "information provenance",
+};
+
 /** 6. Detailed Objectives by Domain ─ 30タスク。
  *  name      … Task Statement の原文（訳さない。設問は英語で書かれる）
  *  sections  … この教材で対応する節の id

@@ -5,7 +5,7 @@
    ========================================================= */
 import fs from 'fs';
 import path from 'path';
-import { GUIDE, EXAM, DOMAINS as BP_DOM, SCENARIOS, TECH, GLOSSARY, TRAPS, SAMPLES, SCOPE, TASKS as BP, domainItems, scenarioCount } from './blueprint.mjs';
+import { GUIDE, EXAM, DOMAINS as BP_DOM, SCENARIOS, TECH, GLOSSARY, TERMS as EN_TERMS, BULLETS6, TRAPS, SAMPLES, SCOPE, TASKS as BP, domainItems, scenarioCount } from './blueprint.mjs';
 
 /* 成果物（HTML と assets）は docs/ の下 ─ GitHub Pages がそのまま公開できる名前。tools/ と CLAUDE.md はリポジトリ直下 */
 const ROOT = path.join(path.resolve(new URL('..', import.meta.url).pathname), 'docs');
@@ -489,6 +489,47 @@ Object.entries(QUIZ).forEach(([k, v]) => v.forEach((x, i) => {
 }));
 if (!olNg) console.log(`  ✓ ${ordN}問すべて、正解は他の最長の1.5倍以内（最長だったのは ${olTop}問 = ${Math.round(olTop / ordN * 100)}%）`);
 
+/* --- 5x. 原語の札（data-en）------------------------------------------
+   教材が日本語で作った名前は、それだけを覚えても本番の英語と結びつかない。
+   定義している節に1回だけ、公式の英語を併記する。
+   ① 英語は原文からしか取らない（5u と同じ考え方。§6 の行は BULLETS6 に写してある）
+   ② 札は1語につき1回だけ ── 2回目からは日本語だけで読ませる（増やすと文字が増えるだけ）
+   ③ EN_TERMS にあるのに札が無い語を残さない（登録しただけで使われない状態を防ぐ） */
+console.log(String.fromCharCode(10) + '■ 原語の札（data-en）');
+let enNg = 0;
+{
+  const corpus = [
+    ...Object.values(BP).map(x => x.name),
+    ...TECH.map(x => x.en + ' ' + x.detail),
+    ...SCOPE.in.map(x => typeof x === 'string' ? x : x.en),
+    ...SCOPE.out.map(x => typeof x === 'string' ? x : x.en),
+    ...SCENARIOS.map(x => x.en),
+    ...BULLETS6,
+  ].join(' ').toLowerCase();
+  Object.entries(EN_TERMS).forEach(([ja, en]) => {
+    if (!corpus.includes(en.toLowerCase())) {
+      bad(`原語の札「${ja}」の英語 "${en}" が公式の原文にない（原文から取る）`);
+      enNg++;
+    }
+  });
+  const used = {};
+  FILES.forEach(f => {
+    const h = fs.readFileSync(path.join(ROOT, f), 'utf8');
+    const body = (h.match(/▼ 本文[^\n]*-->([\s\S]*?)<!-- ▲ 本文/) || [])[1] || '';
+    [...body.matchAll(/<span data-en="([^"]+)"/g)].forEach(m => {
+      if (!EN_TERMS[m[1]]) { bad(`${f}: 未知の用語 data-en="${m[1]}"（blueprint.mjs の EN_TERMS にない）`); enNg++; }
+      used[m[1]] = (used[m[1]] || 0) + 1;
+    });
+  });
+  Object.entries(used).forEach(([ja, n]) => {
+    if (n > 1) { bad(`原語の札「${ja}」が ${n} 回ある（定義している節に1回だけ）`); enNg++; }
+  });
+  Object.keys(EN_TERMS).forEach(ja => {
+    if (!used[ja]) { bad(`原語の札「${ja}」が本文のどこにも無い（TERMS にあるなら1か所で使う）`); enNg++; }
+  });
+  if (!enNg) console.log(`  ✓ ${Object.keys(EN_TERMS).length}語すべて、英語は原文由来で、札は1語につき1回`);
+}
+
 /* --- 5h. 本文のタグが釣り合っているか --------------------------------
    `</div>` が1つ多いと、ブラウザは**その節を早じまいして**
    後ろの内容を .shell の外に出す。見た目には「なんとなく余白が変」
@@ -825,7 +866,7 @@ let mdNg = 0, mdN = 0;
   }, { fig: 0, tbl: 0, code: 0, ann: 0 });
   const qTotal = Object.values(QUIZ).reduce((a, b) => a + b.length, 0);
   const checks = (fs.readFileSync(new URL(import.meta.url).pathname, 'utf8')
-    .match(/^console\.log\((?:'\\n■|String\.fromCharCode\(10\) \+ "■)/gm) || []).length;
+    .match(/^console\.log\((?:['"]\\n■|String\.fromCharCode\(10\) \+ ['"]■)/gm) || []).length;
   const want = [
     ['項数',            /全(\d+)項（本文/,                      order.length],
     ['本文の項数',      /本文(\d+)・理解度チェックだけの項/,     body],
