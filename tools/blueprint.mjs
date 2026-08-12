@@ -271,6 +271,8 @@ export const GLOSSARY = [
   { d: "agentic", en: "crash recovery using manifests",ja: "落ちたあとの復帰" },
   { d: "agentic", en: "tool call interception",        ja: "ツール呼び出しへの割り込み" },
   { d: "agentic", en: "anti-patterns",                 ja: "やってはいけない型" },
+  { d: "agentic", en: "programmatic enforcement",       ja: "仕組みによる強制" },
+  { d: "agentic", en: "attention dilution",             ja: "注意の分散" },
 
   { d: "tools", en: "tool descriptions",               ja: "ツールの説明文" },
   { d: "tools", en: "splitting vs consolidating tools",ja: "分割と統合" },
@@ -329,6 +331,10 @@ export const QUOTES = [
   "Hub-and-spoke architecture where a coordinator agent manages all inter-subagent communication, error handling, and information routing",
   // §6 1.3 Skills in
   "Avoiding anti-patterns such as parsing natural language signals to determine loop termination, setting arbitrary iteration caps as the primary stopping mechanism, or checking for assistant text content as a completion indicator",
+  // §6 1.5 Knowledge of
+  "The difference between programmatic enforcement (hooks, prerequisite gates) and prompt-based guidance for workflow ordering",
+  // §6 1.6 Skills in（2つめ）
+  "Splitting large code reviews into per-file local analysis passes plus a separate cross-file integration pass to avoid attention dilution",
   // §6 1.6 Skills in
   "Selecting task decomposition patterns appropriate to the workflow: prompt chaining for predictable multi-aspect reviews, dynamic decomposition for open-ended investigation tasks",
   // §6 2.1 Knowledge of
