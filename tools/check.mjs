@@ -548,7 +548,7 @@ let cwNg = 0, cwN = 0, cwNone = 0;
     if (!body) return;
     const specs = [...body.matchAll(/<p class="cast" data-cast="([^"]+)"/g)].map(m => m[1]);
     if (specs.length > 1) { bad(`${f}: 登場人物の枠が ${specs.length} 個（節に1つ）`); cwNg++; }
-    specs.filter(s => s !== 'mixed').forEach(s => s.split('>').forEach(k => {
+    specs.filter(s => s !== 'mixed').forEach(s => s.split(',').forEach(k => {
       if (!CAST[k]) { bad(`${f}: 未知の登場人物 "${k}"（blueprint.mjs の CAST にない）`); cwNg++; }
     }));
     if (specs.length) { cwN++; return; }
@@ -590,6 +590,19 @@ FILES.forEach(f => {
     }
   });
 });
+/* 属性値に '>' を書かない ── 素朴なタグ除去（/<[^>]+>/）がそこで早じまいし、
+   属性の残りが本文として漏れる。実際 data-cast="claude>app>claude" が
+   検索インデックスに `claude>app">` として入っていた（§7 #95）。 */
+let gtNg = 0, attrN = 0;
+FILES.forEach(f => {
+  const h = fs.readFileSync(path.join(ROOT, f), 'utf8');
+  const body = (h.match(/▼ 本文[^\n]*-->([\s\S]*?)<!-- ▲ 本文/) || [])[1] || '';
+  [...body.matchAll(/\s[\w-]+="([^"]*)"/g)].forEach(m => {
+    attrN++;
+    if (m[1].includes('>')) { bad(`${f}: 属性値に > がある（${m[0].trim().slice(0, 40)}）── タグ除去が壊れる`); gtNg++; }
+  });
+});
+if (!gtNg) console.log(`  ✓ 本文の属性 ${attrN} 個すべて、値に > を含まない`);
 if (!balNg) console.log(`  ✓ 本文 ${FILES.length} ファイルで div / section / figure / table / ul / ol が釣り合い`);
 
 /* --- 5g. 必須語彙の網羅 ---------------------------------------------

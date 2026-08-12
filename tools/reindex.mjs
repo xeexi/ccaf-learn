@@ -396,7 +396,7 @@ const fillTerms = (html) => html.replace(
     return `<span data-en="${ja}">${ja}（${TERMS[ja]}）</span>`;
   });
 
-/** `<p class="cast" data-cast="app>claude"></p>` を「アプリ → Claude」に展開する。
+/** `<p class="cast" data-cast="app,claude"></p>` を「アプリ → Claude」に展開する。
  *  日本語は枠が決まっていれば主語を落とせるが、この教材は節ごとに組が入れ替わる
  *  （アプリ⇄Claude ／ ツール⇄Claude ／ 親⇄子 ／ 開発者⇄Claude Code）。
  *  その枠を1行で立てるための目印 ── **名前を HTML に手で書かない。** */
@@ -405,7 +405,7 @@ const fillCast = (html) => html.replace(
   (_, spec) => {
     // mixed ＝ 節の中で組が変わるので絞れない、という判断そのもの（何も出さない）
     if (spec.trim() === 'mixed') return '<p class="cast" data-cast="mixed"></p>';
-    const who = spec.trim().split('>').map(k => {
+    const who = spec.trim().split(',').map(k => {
       if (!CAST[k]) throw new Error('未知の登場人物: ' + k + '（blueprint.mjs の CAST にない）');
       return `<span class="c-${CAST[k].side}">${esc(CAST[k].ja)}</span>`;
     }).join('<span class="c-ar">→</span>');

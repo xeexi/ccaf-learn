@@ -368,7 +368,7 @@ export const TERMS = {
   "出典":       "information provenance",
 };
 
-/** 節の「登場人物」。本文に `<p class="cast" data-cast="app>claude"></p>` と置くと
+/** 節の「登場人物」。本文に `<p class="cast" data-cast="app,claude"></p>` と置くと
  *  reindex が「アプリ → Claude」に展開する。**HTML に名前を手で書かない。**
  *
  *  日本語は枠が決まっていれば主語を落とせる。教材は節ごとに組が入れ替わる
