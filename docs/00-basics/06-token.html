@@ -92,7 +92,7 @@
   <p class="point"><b>ポイント</b>この選択の繰り返しが生成の実体。だから同じ質問でも答えは毎回わずかに揺れるし、もっともらしい嘘も起こりうる。確実性が要るところは、モデルの外側（コードによる検証など）で担保する。</p>
 <p class="note">※ 選ぶときの<b>散らばり具合</b>は <code>temperature</code>（温度）という値で調整できます。0 に近づけるほど、いつも最も確率の高い候補を選ぶようになり、答えは揺れにくくなります。<br>
 ただし<b>0 にしても「正しくなる」わけではありません。</b>選び方が偏るだけで、確率のもとになっている中身は変わらないので、もっともらしい誤りは同じように出ます ── <b>毎回同じ誤りが返るようになるだけ</b>です。<br>
-そのため設問では「<code>temperature</code> を下げる」「<code>temperature</code> を 0 にする」は<b>ほぼ誤答</b>です。精度や形を保証したいなら、モデルの外側（検算・スキーマ・関門）で担保します。</p>
+公式ガイドの例題でも、確実さが要るところを<b>モデル側で何とかしようとする選択肢は誤答</b>になっています ── 「<code>system</code> に『必ず』と書く」「例を足す」は、どちらも<b>確率的な従い方に頼っている</b>からです（正解は仕組みで塞ぐほう）。<code>temperature</code> を下げるのも同じ型です。精度や形を保証したいなら、モデルの外側（検算・スキーマ・関門）で担保します。</p>
 </section>
 <!-- ▲ 本文 -->
 <nav class="secpager btm"><a class="pgv prev" href="../00-basics/05-cache.html" title="前へ（← キー）"><span class="vh">前へ</span></a><a class="pgv next" href="../00-basics/07-q.html" title="次へ（→ キー）"><span class="vh">次へ</span></a></nav>
@@ -106,6 +106,6 @@
   </div>
 </div>
 <script src="../assets/quiz-data.js?v=13d63a0b"></script>
-<script src="../assets/search-index.js?v=bd140185"></script>
+<script src="../assets/search-index.js?v=e57483a0"></script>
 <script src="../assets/app.js?v=f6bc691d"></script>
 </body></html>
