@@ -51,13 +51,22 @@ const sections = fs.readdirSync(DOCS)
   .sort()
   .flatMap(d => fs.readdirSync(path.join(DOCS, d)).filter(f => f.endsWith('.html')).sort()
     .map(f => `${d}/${f}`));
+/* 代表ページは**導出する**。ファイル名を直書きしていたら、節を挿して番号が
+   ずれたときに古くなり（§7 #72）、既定の measure が「ファイルがない」で
+   落ちるようになっていた ── --all でしか回していなかったので気づけなかった。
+   いまは「トップ＋各ドメインでいちばん本文が長い節＋いちばん長い設問の項」。 */
+const bodyLen = p => {
+  const h = fs.readFileSync(path.join(DOCS, p), 'utf8');
+  return ((h.match(/▼ 本文[^\n]*-->([\s\S]*?)<!-- ▲ 本文/) || [])[1] || '').length;
+};
+const heaviest = list => list.slice().sort((a, b) => bodyLen(b) - bodyLen(a))[0];
+const isQuiz = p => /data-quiz/.test(fs.readFileSync(path.join(DOCS, p), 'utf8'));
 const PAGES = ALL
   ? ['index.html', ...sections]
-  // 代表：トップ＋各ドメインの図が重い節＋理解度チェック
-  : ['index.html', '00-basics/01-flow.html', '00-basics/03-window.html',
-     '01-agentic/05-seq.html', '01-agentic/07-broken.html', '02-tools/03-grain.html',
-     '03-claude-code/05-cmdskill.html', '04-prompt/05-thinkapi.html',
-     '05-context/02-compact.html', '06-summary/02-weight.html', '00-basics/06-q.html'];
+  : ['index.html',
+     ...[...new Set(sections.map(p => p.split('/')[0]))]
+       .map(d => heaviest(sections.filter(p => p.startsWith(d + '/') && !isQuiz(p)))).filter(Boolean),
+     heaviest(sections.filter(isQuiz))].filter(Boolean);
 
 const url = p => 'file://' + path.join(DOCS, p);
 

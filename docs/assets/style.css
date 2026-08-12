@@ -689,6 +689,20 @@ html[data-theme="light"] .ann .n{ color:#fff }
 }
 .goal ul{ margin:0; padding-left:1.3em }
 .goal li{ margin:2px 0 }
+
+/* 登場人物 ─ 「誰から誰へ」の枠を1行で立てる。ゴールの直後、導入の直前。
+   面も罫も持たない（面を持つのは図とポイントだけ・§4）。
+   色は既存の規約どおり アプリ側＝青／モデル側＝琥珀。中立は人だけ。 */
+.cast{
+  margin:-14px 0 18px; font-size:var(--fs-xs); line-height:1.6;
+  display:flex; flex-wrap:wrap; align-items:center; gap:8px;
+}
+.cast span{ font-weight:700; letter-spacing:.02em }
+.cast .c-blue{ color:var(--fig-blue) }
+.cast .c-amber{ color:var(--fig-amber) }
+.cast .c-neutral{ color:var(--ink-2) }
+.cast .c-ar{ color:var(--fig-muted); font-weight:400 }
+.cast:empty{ display:none }   /* data-cast="mixed" ─ 絞れないという判断。何も出さない */
 /* 補足。いちばん弱い。箱にしない */
 .note{
   margin:18px 0 0; font-size:var(--fs-sm); line-height:1.85; color:var(--muted);

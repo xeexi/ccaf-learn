@@ -19,7 +19,7 @@
 import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
-import { GUIDE, EXAM, DOMAINS as BP_DOM, SCENARIOS, PREPARE, EXERCISES, TRAPS, SAMPLES, TECH, QUALIFIERS, GLOSSARY, TERMS, TASKS, domainItems, scenarioCount } from './blueprint.mjs';
+import { GUIDE, EXAM, DOMAINS as BP_DOM, SCENARIOS, PREPARE, EXERCISES, TRAPS, SAMPLES, TECH, QUALIFIERS, GLOSSARY, TERMS, CAST, TASKS, domainItems, scenarioCount } from './blueprint.mjs';
 
 /* 成果物（HTML と assets）は docs/ の下 ─ GitHub Pages がそのまま公開できる名前。tools/ と CLAUDE.md はリポジトリ直下 */
 const ROOT = path.join(path.resolve(new URL('..', import.meta.url).pathname), 'docs');
@@ -120,7 +120,7 @@ const itemLink = (p, { href, cls = '', on = false }) =>
   `<a class="itm ${cls}${on ? ' on' : ''}${p.quiz ? ' itm-quiz' : ''}" href="${href}">`
   + `<span class="itm-n">${esc(p.num || '─')}</span><span class="itm-t">${esc(p.title)}</span></a>`;
 
-/** 配点の図。トップと「6-2 どこに時間を使うか」の2か所に同じものが要るので、ここで1回だけ作る。
+/** 配点の図。トップだけで使う（同じ数字を2か所に置かない）。中身は blueprint.mjs から計算する。
  *  帯の全長＝60問。以前は帯の枠と Domain 1 のバーが同じ長さで、27% が満杯に見えていた。 */
 const weightFig = () => {
   const ds = scored();
@@ -396,8 +396,24 @@ const fillTerms = (html) => html.replace(
     return `<span data-en="${ja}">${ja}（${TERMS[ja]}）</span>`;
   });
 
+/** `<p class="cast" data-cast="app>claude"></p>` を「アプリ → Claude」に展開する。
+ *  日本語は枠が決まっていれば主語を落とせるが、この教材は節ごとに組が入れ替わる
+ *  （アプリ⇄Claude ／ ツール⇄Claude ／ 親⇄子 ／ 開発者⇄Claude Code）。
+ *  その枠を1行で立てるための目印 ── **名前を HTML に手で書かない。** */
+const fillCast = (html) => html.replace(
+  /<p class="cast" data-cast="([^"]+)">[\s\S]*?<\/p>/g,
+  (_, spec) => {
+    // mixed ＝ 節の中で組が変わるので絞れない、という判断そのもの（何も出さない）
+    if (spec.trim() === 'mixed') return '<p class="cast" data-cast="mixed"></p>';
+    const who = spec.trim().split('>').map(k => {
+      if (!CAST[k]) throw new Error('未知の登場人物: ' + k + '（blueprint.mjs の CAST にない）');
+      return `<span class="c-${CAST[k].side}">${esc(CAST[k].ja)}</span>`;
+    }).join('<span class="c-ar">→</span>');
+    return `<p class="cast" data-cast="${spec}">${who}</p>`;
+  });
+
 /* 共通の塊と出題タスクを本文へ差し込む（部品の定義がそろったここで1回まとめて） */
-pages.forEach(p => { p.body = fillTerms(fillTasks(fillBlocks(p.body))); });
+pages.forEach(p => { p.body = fillCast(fillTerms(fillTasks(fillBlocks(p.body)))); });
 
 /** 各ドメインの入口（最初の節） */
 const entry = {};

@@ -368,6 +368,28 @@ export const TERMS = {
   "出典":       "information provenance",
 };
 
+/** 節の「登場人物」。本文に `<p class="cast" data-cast="app>claude"></p>` と置くと
+ *  reindex が「アプリ → Claude」に展開する。**HTML に名前を手で書かない。**
+ *
+ *  日本語は枠が決まっていれば主語を落とせる。教材は節ごとに組が入れ替わる
+ *  （アプリ⇄Claude ／ ツール⇄Claude ／ 親⇄子 ／ 開発者⇄Claude Code ／ …）のに、
+ *  **組が変わったことを知らせる場所が無かった** ── だから主語を省いた文が読めなくなる。
+ *
+ *  side は既存の色の規約に合わせる（§5）── **アプリ側＝青／モデル側＝琥珀**。
+ *  「区別したいだけ」で色を増やさない（§7 #22）ので、外にいる人だけ中立にする。 */
+export const CAST = {
+  app:    { ja: "アプリ",       side: "blue" },
+  dev:    { ja: "開発者",       side: "blue" },
+  cc:     { ja: "Claude Code", side: "blue" },
+  tool:   { ja: "ツール",       side: "blue" },
+  mcp:    { ja: "MCP サーバ",   side: "blue" },
+  hook:   { ja: "フック",       side: "blue" },
+  claude: { ja: "Claude",      side: "amber" },
+  parent: { ja: "親",          side: "amber" },
+  child:  { ja: "子",          side: "amber" },
+  human:  { ja: "人",          side: "neutral" },
+};
+
 /** 6. Detailed Objectives by Domain ─ 30タスク。
  *  name      … Task Statement の原文（訳さない。設問は英語で書かれる）
  *  sections  … この教材で対応する節の id

@@ -5,7 +5,7 @@
    ========================================================= */
 import fs from 'fs';
 import path from 'path';
-import { GUIDE, EXAM, DOMAINS as BP_DOM, SCENARIOS, TECH, GLOSSARY, TERMS as EN_TERMS, QUOTES, TRAPS, SAMPLES, SCOPE, TASKS as BP, domainItems, scenarioCount } from './blueprint.mjs';
+import { GUIDE, EXAM, DOMAINS as BP_DOM, SCENARIOS, TECH, GLOSSARY, TERMS as EN_TERMS, CAST, QUOTES, TRAPS, SAMPLES, SCOPE, TASKS as BP, domainItems, scenarioCount } from './blueprint.mjs';
 
 /* 成果物（HTML と assets）は docs/ の下 ─ GitHub Pages がそのまま公開できる名前。tools/ と CLAUDE.md はリポジトリ直下 */
 const ROOT = path.join(path.resolve(new URL('..', import.meta.url).pathname), 'docs');
@@ -528,6 +528,44 @@ let enNg = 0;
     if (!used[ja]) { bad(`原語の札「${ja}」が本文のどこにも無い（TERMS にあるなら1か所で使う）`); enNg++; }
   });
   if (!enNg) console.log(`  ✓ ${Object.keys(EN_TERMS).length}語すべて、英語は原文由来で、札は1語につき1回`);
+}
+
+/* --- 5y. 登場人物の枠（data-cast）------------------------------------
+   日本語は枠が決まっていれば主語を落とせる。この教材は節ごとに組が入れ替わる
+   （アプリ⇄Claude ／ ツール⇄Claude ／ 親⇄子 ／ 開発者⇄Claude Code）のに、
+   **組が変わったことを知らせる場所が無かった** ── 測ったら、やり取りの動詞を含む
+   散文の 50%（148/298文）に動作主が無く、登場人物がレーン見出しで出るのは66節中4節だけだった。
+   ① 未知の名前を使っていないか（reindex も throw するが、ここでも見る）
+   ② 節に2つ以上置いていないか（枠は節に1つ）
+   ③ やり取りを扱う節に枠があるか ── 動詞が5文以上あるのに宣言が無ければ落とす */
+console.log(String.fromCharCode(10) + '■ 登場人物の枠（data-cast）');
+let cwNg = 0, cwN = 0, cwNone = 0;
+{
+  const VERB = /(送(る|り|っ|信)|返(す|し|っ|る)|渡(す|し|さ)|受け取|呼(ぶ|び|ん|ば)|投げ|届(く|け))/;
+  FILES.forEach(f => {
+    const h = fs.readFileSync(path.join(ROOT, f), 'utf8');
+    const body = (h.match(/▼ 本文[^\n]*-->([\s\S]*?)<!-- ▲ 本文/) || [])[1] || '';
+    if (!body) return;
+    const specs = [...body.matchAll(/<p class="cast" data-cast="([^"]+)"/g)].map(m => m[1]);
+    if (specs.length > 1) { bad(`${f}: 登場人物の枠が ${specs.length} 個（節に1つ）`); cwNg++; }
+    specs.filter(s => s !== 'mixed').forEach(s => s.split('>').forEach(k => {
+      if (!CAST[k]) { bad(`${f}: 未知の登場人物 "${k}"（blueprint.mjs の CAST にない）`); cwNg++; }
+    }));
+    if (specs.length) { cwN++; return; }
+    // 枠が無い節 ── やり取りを繰り返し述べているなら落とす
+    const quizOnly = /data-quiz/.test(body) && !/class="point"/.test(body);
+    if (quizOnly) return;
+    cwNone++;
+    // 表は列見出しが文脈を持つので散文として数えない（図・コードと同じ）
+    const prose = body.replace(/<pre[\s\S]*?<\/pre>/g, ' ').replace(/<figure[\s\S]*?<\/figure>/g, ' ')
+      .replace(/<table[\s\S]*?<\/table>/g, ' ')
+      .replace(/<[^>]+>/g, '').split(/(?<=[。？])/).filter(s => s.length > 8 && VERB.test(s));
+    if (prose.length >= 5) {
+      bad(`${f}: やり取りを述べる文が ${prose.length} あるのに登場人物の枠が無い（誰から誰へか分からない）`);
+      cwNg++;
+    }
+  });
+  if (!cwNg) console.log(`  ✓ 枠あり ${cwN} 節すべて名前は CAST 由来で1節1つ、枠なし ${cwNone} 節もやり取りを繰り返し述べていない`);
 }
 
 /* --- 5h. 本文のタグが釣り合っているか --------------------------------
