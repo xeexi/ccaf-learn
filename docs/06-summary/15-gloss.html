@@ -99,6 +99,7 @@
     <tr><th><code>structured state persistence</code></th><td>状態の構造化された保存</td></tr>
     <tr><th><code>crash recovery using manifests</code></th><td>落ちたあとの復帰</td></tr>
     <tr><th><code>tool call interception</code></th><td>ツール呼び出しへの割り込み</td></tr>
+    <tr><th><code>anti-patterns</code></th><td>やってはいけない型</td></tr>
   </tbody>
 </table>
 
@@ -114,6 +115,7 @@
     <tr><th><code>transient vs business vs permission errors</code></th><td>一時的／業務／権限の別</td></tr>
     <tr><th><code>local recovery before escalation</code></th><td>渡す前の自力復帰</td></tr>
     <tr><th><code>environment variable expansion</code></th><td>環境変数の展開</td></tr>
+    <tr><th><code>keyword-sensitive instructions</code></th><td>語に反応してしまう指示</td></tr>
   </tbody>
 </table>
 
@@ -129,6 +131,7 @@
     <tr><th><code>input/output examples</code></th><td>入出力の例</td></tr>
     <tr><th><code>test-driven iteration</code></th><td>テストを先に書く回し方</td></tr>
     <tr><th><code>interview pattern</code></th><td>聞き取り方式</td></tr>
+    <tr><th><code>machine-parseable structured findings</code></th><td>機械で読める形の指摘</td></tr>
   </tbody>
 </table>
 
@@ -143,6 +146,8 @@
     <tr><th><code>validation-retry loops</code></th><td>検証と差し戻しの輪</td></tr>
     <tr><th><code>latency tolerance assessment</code></th><td>待てる時間の見積もり</td></tr>
     <tr><th><code>custom_id for request/response correlation</code></th><td>取り違えない対応づけ</td></tr>
+    <tr><th><code>synchronous API</code></th><td>同期の API（待って受け取るほう）</td></tr>
+    <tr><th><code>model self-correction</code></th><td>自分で直させる差し戻し</td></tr>
   </tbody>
 </table>
 
@@ -160,10 +165,12 @@
     <tr><th><code>conflict annotation</code></th><td>食い違いへの注記</td></tr>
     <tr><th><code>coverage gap reporting</code></th><td>欠けの報告</td></tr>
     <tr><th><code>error propagation</code></th><td>失敗の伝わり方</td></tr>
+    <tr><th><code>human-in-the-loop</code></th><td>人が途中に入る形</td></tr>
+    <tr><th><code>confidence-based routing</code></th><td>確信度による振り分け</td></tr>
   </tbody>
 </table>
 
-<p class="note">※ 英語は Exam Guide の「6. Detailed Objectives」のタスク名・「17. Appendix」の技術一覧・In-Scope / Out-of-Scope から写した 54 組です。<b>こちらで作った訳語はありません。</b></p><!--/#glossfig-->
+<p class="note">※ 英語は Exam Guide の「6. Detailed Objectives」のタスク名・「17. Appendix」の技術一覧・In-Scope / Out-of-Scope から写した 61 組です。<b>こちらで作った訳語はありません。</b></p><!--/#glossfig-->
 </section>
 <!-- ▲ 本文 -->
 <nav class="secpager btm"><a class="pgv prev" href="../06-summary/14-vocab.html" title="前へ（← キー）"><span class="vh">前へ</span></a><span class="pgv next end"><span class="vh">ここで終わり</span></span></nav>
@@ -177,6 +184,6 @@
   </div>
 </div>
 <script src="../assets/quiz-data.js?v=13d63a0b"></script>
-<script src="../assets/search-index.js?v=6ae2b1a3"></script>
+<script src="../assets/search-index.js?v=f7873645"></script>
 <script src="../assets/app.js?v=f6bc691d"></script>
 </body></html>

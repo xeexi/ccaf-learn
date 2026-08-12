@@ -5,7 +5,7 @@
    ========================================================= */
 import fs from 'fs';
 import path from 'path';
-import { GUIDE, EXAM, DOMAINS as BP_DOM, SCENARIOS, TECH, GLOSSARY, TERMS as EN_TERMS, BULLETS6, TRAPS, SAMPLES, SCOPE, TASKS as BP, domainItems, scenarioCount } from './blueprint.mjs';
+import { GUIDE, EXAM, DOMAINS as BP_DOM, SCENARIOS, TECH, GLOSSARY, TERMS as EN_TERMS, QUOTES, TRAPS, SAMPLES, SCOPE, TASKS as BP, domainItems, scenarioCount } from './blueprint.mjs';
 
 /* 成果物（HTML と assets）は docs/ の下 ─ GitHub Pages がそのまま公開できる名前。tools/ と CLAUDE.md はリポジトリ直下 */
 const ROOT = path.join(path.resolve(new URL('..', import.meta.url).pathname), 'docs');
@@ -492,7 +492,7 @@ if (!olNg) console.log(`  ✓ ${ordN}問すべて、正解は他の最長の1.5�
 /* --- 5x. 原語の札（data-en）------------------------------------------
    教材が日本語で作った名前は、それだけを覚えても本番の英語と結びつかない。
    定義している節に1回だけ、公式の英語を併記する。
-   ① 英語は原文からしか取らない（5u と同じ考え方。§6 の行は BULLETS6 に写してある）
+   ① 英語は原文からしか取らない（5u と同じ考え方。§6 の行は QUOTES に写してある）
    ② 札は1語につき1回だけ ── 2回目からは日本語だけで読ませる（増やすと文字が増えるだけ）
    ③ EN_TERMS にあるのに札が無い語を残さない（登録しただけで使われない状態を防ぐ） */
 console.log(String.fromCharCode(10) + '■ 原語の札（data-en）');
@@ -504,7 +504,7 @@ let enNg = 0;
     ...SCOPE.in.map(x => typeof x === 'string' ? x : x.en),
     ...SCOPE.out.map(x => typeof x === 'string' ? x : x.en),
     ...SCENARIOS.map(x => x.en),
-    ...BULLETS6,
+    ...QUOTES,
   ].join(' ').toLowerCase();
   Object.entries(EN_TERMS).forEach(([ja, en]) => {
     if (!corpus.includes(en.toLowerCase())) {
@@ -676,6 +676,7 @@ let gloNg = 0;
     ...SCOPE.in.map(x => typeof x === 'string' ? x : x.en),
     ...SCOPE.out.map(x => typeof x === 'string' ? x : x.en),
     ...SCENARIOS.map(x => x.en),
+    ...QUOTES,
   ].join(' ').toLowerCase();
   GLOSSARY.forEach(g => {
     if (!corpus.includes(g.en.toLowerCase())) {

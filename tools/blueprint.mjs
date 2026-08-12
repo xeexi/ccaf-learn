@@ -270,6 +270,7 @@ export const GLOSSARY = [
   { d: "agentic", en: "structured state persistence",  ja: "状態の構造化された保存" },
   { d: "agentic", en: "crash recovery using manifests",ja: "落ちたあとの復帰" },
   { d: "agentic", en: "tool call interception",        ja: "ツール呼び出しへの割り込み" },
+  { d: "agentic", en: "anti-patterns",                 ja: "やってはいけない型" },
 
   { d: "tools", en: "tool descriptions",               ja: "ツールの説明文" },
   { d: "tools", en: "splitting vs consolidating tools",ja: "分割と統合" },
@@ -280,6 +281,7 @@ export const GLOSSARY = [
   { d: "tools", en: "transient vs business vs permission errors", ja: "一時的／業務／権限の別" },
   { d: "tools", en: "local recovery before escalation",ja: "渡す前の自力復帰" },
   { d: "tools", en: "environment variable expansion",  ja: "環境変数の展開" },
+  { d: "tools", en: "keyword-sensitive instructions",  ja: "語に反応してしまう指示" },
 
   { d: "code", en: "configuration hierarchy",          ja: "設定の階層" },
   { d: "code", en: "path-scoping",                     ja: "パスによる範囲の絞り込み" },
@@ -290,6 +292,7 @@ export const GLOSSARY = [
   { d: "code", en: "input/output examples",            ja: "入出力の例" },
   { d: "code", en: "test-driven iteration",            ja: "テストを先に書く回し方" },
   { d: "code", en: "interview pattern",                ja: "聞き取り方式" },
+  { d: "code", en: "machine-parseable structured findings", ja: "機械で読める形の指摘" },
 
   { d: "prompt", en: "structured output via tool_use", ja: "型での受け取り" },
   { d: "prompt", en: "nullable fields to prevent hallucination", ja: "無いものを作らせない欄" },
@@ -299,6 +302,8 @@ export const GLOSSARY = [
   { d: "prompt", en: "validation-retry loops",         ja: "検証と差し戻しの輪" },
   { d: "prompt", en: "latency tolerance assessment",   ja: "待てる時間の見積もり" },
   { d: "prompt", en: "custom_id for request/response correlation", ja: "取り違えない対応づけ" },
+  { d: "prompt", en: "synchronous API",                ja: "同期の API（待って受け取るほう）" },
+  { d: "prompt", en: "model self-correction",           ja: "自分で直させる差し戻し" },
 
   { d: "context", en: "trimming verbose tool outputs", ja: "長い返り値の切り詰め" },
   { d: "context", en: "structured fact extraction",    ja: "事実だけの抜き出し" },
@@ -311,14 +316,31 @@ export const GLOSSARY = [
   { d: "context", en: "conflict annotation",           ja: "食い違いへの注記" },
   { d: "context", en: "coverage gap reporting",        ja: "欠けの報告" },
   { d: "context", en: "error propagation",             ja: "失敗の伝わり方" },
+  { d: "context", en: "human-in-the-loop",             ja: "人が途中に入る形" },
+  { d: "context", en: "confidence-based routing",       ja: "確信度による振り分け" },
 ];
 
-/** §6 Detailed Objectives の箇条書きのうち、TERMS の出どころになったもの（原文のまま）。
+/** 原文の行のうち、TERMS の札と GLOSSARY の対訳の出どころになったもの（**原文のまま**）。
  *  §6 の箇条書きは concepts が「日本語の見出し＋日本語の正規表現」で持っているため、
- *  **英語の原文がリポジトリのどこにも無い**。TERMS の照合先として、必要な行だけ写す。 */
-export const BULLETS6 = [
-  // 1.6 Skills in（1つめ）
+ *  **英語の原文がリポジトリのどこにも無い**。照合先として、必要な行だけ写す。
+ *  §6 が中心だが、§2・§7 が唯一の出所という語もある（human-in-the-loop など）ので §6 に限らない。 */
+export const QUOTES = [
+  // §6 1.2 Knowledge of
+  "Hub-and-spoke architecture where a coordinator agent manages all inter-subagent communication, error handling, and information routing",
+  // §6 1.3 Skills in
+  "Avoiding anti-patterns such as parsing natural language signals to determine loop termination, setting arbitrary iteration caps as the primary stopping mechanism, or checking for assistant text content as a completion indicator",
+  // §6 1.6 Skills in
   "Selecting task decomposition patterns appropriate to the workflow: prompt chaining for predictable multi-aspect reviews, dynamic decomposition for open-ended investigation tasks",
+  // §6 2.1 Knowledge of
+  "The impact of system prompt wording on tool selection: keyword-sensitive instructions can create unintended tool associations",
+  // §6 3.6 Skills in
+  "Using --output-format json with --json-schema to produce machine-parseable structured findings for automated posting as inline PR comments",
+  // §6 4.2 Skills in
+  "Implementing follow-up requests that include the original document, the failed extraction, and specific validation errors for model self-correction",
+  // §6 4.5 Knowledge of
+  "Matching API approach to workflow latency requirements: synchronous API for blocking pre-merge checks, batch API for overnight/weekly analysis",
+  // §7 How to Prepare（human-in-the-loop と confidence-based routing は §6 に無く、ここが唯一の出所）
+  "Review escalation and human-in-the-loop patterns: understand when to escalate (policy gaps, customer requests, inability to progress) versus resolve autonomously. Practice designing human review workflows with confidence-based routing.",
 ];
 
 /** 教材が日本語で作った「名前」と、公式の英語。
@@ -332,6 +354,7 @@ export const TERMS = {
   "窓":         "context window",
   "親":         "coordinator",
   "子":         "subagent",
+  "親子の形":    "hub-and-spoke",
   "固定チェーン": "prompt chaining",
   "動的分解":    "dynamic decomposition",
   "事実ブロック": "structured fact extraction",
