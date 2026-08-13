@@ -11,11 +11,26 @@
      3. ./tools/x check が落ちたところだけ、本文を追う
    ========================================================= */
 
-/** 版そのもの。改訂に気づくための記録 */
+/** 版そのもの。**改訂に気づくための記録。**
+ *
+ *  version と effective は PDF の中に印刷してある文字列なので、
+ *  **同じ「Version 1.0」のまま差し替えられたら気づけない。**
+ *  そのために sha256 と pages を持つ。取り直したら、まずこの2つを照合する：
+ *
+ *    curl -sS -o guide.pdf "<url>" && sha256sum guide.pdf
+ *    docker run --rm -v "$PWD":/s alpine sh -c \
+ *      'apk add --no-cache poppler-utils >/dev/null && pdfinfo /s/guide.pdf | grep Pages'
+ *
+ *  url のパスにある 1783542750 は upload 時刻の epoch（2026-07-08 ＝ PDF の
+ *  作成日時と一致）。**差し替われば URL ごと変わる**ので、認定ページ
+ *  （§8 のリンク）が同じ URL を指しているかも合わせて見る。 */
 export const GUIDE = {
   version:   "1.0",
   effective: "July 2026",
   code:      "CCAR-F",
+  pages:     39,
+  sha256:    "9bac07c3e6671e55f6cd0232205340a370e8a13a97e8247237dcb71312bccfc2",
+  checked:   "2026-08-13",   // 上の2つを最後に実物と突き合わせた日
   url:       "https://everpath-course-content.s3-accelerate.amazonaws.com/instructor/6nizmqk8tpzpfjvt6qmmav7rh/public/1783542750/Claude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf",
 };
 

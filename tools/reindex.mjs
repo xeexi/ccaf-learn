@@ -149,6 +149,18 @@ ${legend}
 /** 出題形式 ─ 60問・120分・720点。**3か所に手書きされていた**（§7 #60） */
 const examFmt = () => `本試験は <b>${EXAM.items}問・${EXAM.minutes}分</b>、合格は ${EXAM.scaleMax.toLocaleString('en-US')}点満点中 <b>${EXAM.pass}点</b>`;
 
+/** 札の呼び名。**原文が `Task Statement 1.1: …` と呼んでいるもの**に合わせる。
+ *  `blueprint` は §4 の配点表そのものの名前で、番号付きの単位には原文で
+ *  一度も使われていない ── 出所に無い名前で指すと辿れない（§7 #96）。 */
+const TN = 'TASK STATEMENT';
+
+/** 参考資料の Exam Guide の行 ─ index.html。
+ *  **URL も版も出題形式も、すべて GUIDE / EXAM から出す。**
+ *  ここは手書きだったので、blueprint.mjs を直しても
+ *  「Version 1.0」だけが残る形になっていた（§7 #60 と同じ穴・§7 #96）。 */
+const guideSrc = () => `<tr><th><a href="${GUIDE.url}">Exam Guide</a><br><span class="n">PDF・英語・${GUIDE.pages}ページ</span></th>
+        <td><b>${scored().length}ドメイン${Object.keys(TASKS).length}タスクの原文</b>と、その Knowledge / Skills。${SCENARIOS.length}つのシナリオ。出題形式（${EXAM.items}問・${EXAM.minutes}分・${EXAM.scaleMax.toLocaleString('en-US')}点満点中${EXAM.pass}点）。各項の <code>${TN} 1.1</code> の英文は、ここから写したものです。<br><span class="n">Version ${GUIDE.version} ／ Effective ${GUIDE.effective} ／ ${GUIDE.code}</span></td></tr>`;
+
 /** シナリオの表と帯 ─ 6-2。
  *  **本数も帯の幅も、どこを強調するかも計算で出す。**
  *  手で書くと、比が狂ったり（§7 #52）、比率を変えたときに古い数字が残る（§7 #60）。 */
@@ -371,7 +383,7 @@ ${rows.map(g => `    <tr><th><code>${esc(g.en)}</code></th><td>${esc(g.ja)}</td>
 <p class="note">※ 英語は Exam Guide の「6. Detailed Objectives」のタスク名・「17. Appendix」の技術一覧・In-Scope / Out-of-Scope から写した ${GLOSSARY.length} 組です。<b>こちらで作った訳語はありません。</b></p>`;
 };
 
-const BLOCKS = { weightfig: weightFig, examfmt: examFmt, scenariofig: scenarioFig,
+const BLOCKS = { weightfig: weightFig, examfmt: examFmt, scenariofig: scenarioFig, guidesrc: guideSrc,
   examadmin: examAdmin, preparefig: prepareFig, samplefig: sampleFig, vocabfig: vocabFig, glossfig: glossFig, nsec: () => String(pages.length) };
 
 /** `<p class="task" data-t="1.1"></p>` に、公式の原文を差し込む。
@@ -381,7 +393,7 @@ const fillTasks = (html) => html.replace(
   (_, ids) => {
     const label = ids.trim().split(/\s+/).map(id => {
       if (!TASKS[id]) throw new Error('未知のタスク番号: ' + id + '（blueprint.mjs の TASKS にない）');
-      return `<span class="tn">BLUEPRINT ${id}</span><b>${esc(TASKS[id].name)}</b>`;
+      return `<span class="tn">${TN} ${id}</span><b>${esc(TASKS[id].name)}</b>`;
     }).join('　／　');
     return `<p class="task" data-t="${ids}">${label}</p>`;
   });

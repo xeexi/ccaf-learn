@@ -201,7 +201,7 @@ if (!orphan.length && !missing.length) console.log(`  ✓ ${usedKeys.size} キ�
 
 /* --- 5c. ゴール（.goal）が、あるか・見出しの直下にあるか ---------------
    「この節を終えたら何が言えるか」がないと、読み手は止めどころが分からない。
-   **置き場所は見出しのすぐ下**（§4）── 導入や BLUEPRINT ラベルの後ろに回ると、
+   **置き場所は見出しのすぐ下**（§4）── 導入や TASK STATEMENT ラベルの後ろに回ると、
    読み手は「何が身につくか」を知る前に本文へ入ることになる。 */
 console.log('\n■ ゴール');
 let goalNg = 0, goalN = 0, subN = 0;
@@ -243,26 +243,42 @@ order.forEach(s => {
 if (!goalNg) console.log(`  ✓ 本文 ${order.filter(s => !s.quiz).length} 節すべてにあり、ゴール ${goalN} 件（うち小見出し ${subN} 件）すべて見出しの直下`);
 
 /* --- 5e. 出題タスクの表示（.task）が正しく出ているか ------------------
-   対応するタスクがある節には BLUEPRINT ラベルを出す。
+   対応するタスクがある節には TASK STATEMENT ラベルを出す。**原文での呼び名**
+   （`Task Statement 1.1: …`）── `blueprint` は §4 の配点表の名前であって、
+   番号付きの単位には原文で一度も使われていない（§7 #96）。
    対応がない節（土台・導入・まとめ・模擬）には**何も出さない** ──
    「ブループリント対応なし」と書くのは、読み手にとって情報がないため。
-   ここでは「ラベルがあるなら BLUEPRINT を名乗っていること」だけを見る。
+   ここでは「ラベルがあるなら TASK STATEMENT を名乗っていること」だけを見る。
    対応があるのに表示が抜けている件は、下の 5f（網羅）が id 単位で拾う。 */
 console.log('\n■ 出題タスクの表示');
-let tlNg = 0;
+let tlNg = 0, tlN = 0, tlTags = 0;
 order.forEach(s => {
-  const m = s.body.match(/<p class="task">([\s\S]*?)<\/p>/);
-  if (!m) return;
-  if (!/<span class="tn">BLUEPRINT \d\.\d<\/span>/.test(m[1])) {
-    bad(`${s.f} #${(s.body.match(/id="([^"]+)"/) || [])[1]}: .task が BLUEPRINT ラベルの形になっていない`);
-    tlNg++;
+  const id = (s.body.match(/id="([^"]+)"/) || [])[1];
+  // **属性まで含めて拾う。** `<p class="task">` だけを見ていた時期があり、
+  // `data-t` を付けてから**対象0件のまま ✓ が出ていた** ── しかも印字していた
+  // 「43節」は別の式で数えた値だったので、数まで嘘をついていた（§7 #37 / #96）。
+  for (const m of s.body.matchAll(/<p class="task"([^>]*)>([\s\S]*?)<\/p>/g)) {
+    tlN++;
+    const want = ((m[1].match(/data-t="([^"]+)"/) || [])[1] || '').trim().split(/\s+/).filter(Boolean);
+    const tags = [...m[2].matchAll(/<span class="tn">([^<]*)<\/span>/g)].map(x => x[1]);
+    tlTags += tags.length;
+    const bads = tags.filter(t => !/^TASK STATEMENT \d\.\d$/.test(t));
+    if (!tags.length || bads.length) {
+      bad(`${s.f} #${id}: .task の札が TASK STATEMENT の形になっていない（${bads.join(' / ') || '札がない'}）`);
+      tlNg++;
+    }
+    // 札の番号が data-t とズレていないか（手で書き換えると起きる）
+    if (want.length && tags.map(t => t.replace('TASK STATEMENT ', '')).join() !== want.join()) {
+      bad(`${s.f} #${id}: 札の番号（${tags.join(' / ')}）が data-t="${want.join(' ')}" と合わない`);
+      tlNg++;
+    }
   }
 });
 [...FILES, 'index.html'].forEach(f => {
   const h = fs.readFileSync(path.join(ROOT, f), 'utf8');
   if (h.includes('ブループリント対応なし')) { bad(`${f}: 「ブループリント対応なし」が残っている`); tlNg++; }
 });
-if (!tlNg) console.log(`  ✓ ラベルのある ${order.filter(s => /class="task"/.test(s.body)).length} 節はすべて BLUEPRINT 表記`);
+if (!tlNg) console.log(`  ✓ .task ${tlN} 件・札 ${tlTags} 枚すべて TASK STATEMENT 表記（原文の呼び名）で、番号も data-t と一致`);
 
 /* --- 5d. 出題ブループリントのタスクに、対応する節があるか -------------
    「網羅しているか」を主観で答えないための機械判定（§7 #9）。
@@ -278,12 +294,12 @@ let covNg = 0;
 Object.entries(TASKS).forEach(([t, ids]) => {
   if (!ids.some(i => allIds.has(i))) { bad(`タスク「${t}」に対応する節がない（想定 id: ${ids.join(" / ")}）`); covNg++; }
 });
-// 対応タスクのある節から BLUEPRINT ラベルが落ちていないか（5e の裏返し）
+// 対応タスクのある節から TASK STATEMENT ラベルが落ちていないか（5e の裏返し）
 const taskIds = new Set(Object.values(TASKS).flat());
 order.forEach(s => {
   const id = (s.body.match(/id="([^"]+)"/) || [])[1];
   if (s.quiz || !taskIds.has(id)) return;
-  if (!/class="task"/.test(s.body)) { bad(`${s.f} #${id}: 対応タスクがあるのに BLUEPRINT ラベルがない`); covNg++; }
+  if (!/class="task"/.test(s.body)) { bad(`${s.f} #${id}: 対応タスクがあるのに TASK STATEMENT ラベルがない`); covNg++; }
 });
 if (!covNg) console.log(`  ✓ ${Object.keys(TASKS).length} タスクすべてに対応する節あり（ラベルも欠落なし）`);
 
@@ -904,6 +920,33 @@ let mdNg = 0, mdN = 0;
         + (desc.length ? `（${desc.join(',')} が前より小さい）` : ''));
       mdNg++;
     } else mdN++;
+  }
+  // 差し込みブロック ─ §2 が名前を列挙しているので、**増やすと必ず古くなる**（§7 #66）。
+  // 実際、guidesrc を足すまで「10個・すべて1か所ずつ」と書いてあったが、
+  // nsec だけは初めから2か所だった（§7 #96）。
+  {
+    const at = {};
+    [...FILES, 'index.html'].forEach(f => {
+      for (const m of fs.readFileSync(path.join(ROOT, f), 'utf8').matchAll(/<!--#([a-z]+)-->/g))
+        at[m[1]] = (at[m[1]] || 0) + 1;
+    });
+    const m = md.match(/いまある(\d+)個（([^）]+)）/);
+    if (!m) { bad('CLAUDE.md §2 に差し込みブロックの一覧が見つからない（書き方を変えたなら 5p も直す）'); mdNg++; }
+    else {
+      mdN++;
+      const listed = [...m[2].matchAll(/`([a-z]+)`/g)].map(x => x[1]);
+      const real = Object.keys(at);
+      const miss = real.filter(k => !listed.includes(k));
+      const extra = listed.filter(k => !real.includes(k));
+      if (+m[1] !== real.length) { bad(`CLAUDE.md §2 の差し込みブロックが ${m[1]}個、実際は ${real.length}個`); mdNg++; }
+      if (miss.length) { bad(`CLAUDE.md §2 に載っていない差し込みブロック: ${miss.join(' / ')}`); mdNg++; }
+      if (extra.length) { bad(`CLAUDE.md §2 にあるが本文で使われていない差し込みブロック: ${extra.join(' / ')}`); mdNg++; }
+      const many = Object.entries(at).filter(([, n]) => n > 1).map(([k, n]) => `${k}（${n}）`);
+      const said = [...(md.match(/2か所に出るのは ([^。]+)。/) || [])][1] || '';
+      if (many.length && !many.every(x => said.includes(x.replace(/（.*/, '')))) {
+        bad(`CLAUDE.md §2 の「2か所に出るのは…」と実物が合わない ── 実際は ${many.join(' / ')}`); mdNg++;
+      }
+    }
   }
   const body = order.filter(s => !s.quizOnly).length;
   const figs = FILES.reduce((a, f) => {
