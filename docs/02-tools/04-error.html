@@ -172,6 +172,7 @@
   </div>
   <p class="point"><b>ポイント</b><code>is_error</code> は処理を止めるためのものではない。Claudeは <code>content</code> の文章を読んで次を決めるので、直し方をそこに書く。止めるのは外側の反復上限。</p>
   <p class="note">※ 同じ user メッセージに文章も添えたい場合は、<b><code>tool_result</code> を先に</b>置きます。文章を先に書くと 400 エラーになります。<code>content</code> は文字列でも、ブロックの配列でもかまいません。</p>
+  <p class="note">※ 同じ印を、MCP のツールは <code>isError</code> という綴りで返します（綴りが違うだけで役割は同じ）。MCP では失敗の返し方が<b>2つに分かれる</b>ところだけ押さえます ── <b>呼べたが中で失敗</b>したもの（外部 API の失敗・入力の不正・業務上の拒否）は結果に <code>isError: true</code> を立てて返し、<b>そもそも呼べなかった</b>もの（無い道具名・引数の形が違う）はプロトコルの <code>error</code> になります。<b>Claudeが読めるのは前者だけ</b>です。</p>
 </section>
 <!-- ▲ 本文 -->
 <nav class="secpager btm"><a class="pgv prev" href="../02-tools/03-grain.html" title="前へ（← キー）"><span class="vh">前へ</span></a><a class="pgv next" href="../02-tools/05-q1.html" title="次へ（→ キー）"><span class="vh">次へ</span></a></nav>
@@ -185,6 +186,6 @@
   </div>
 </div>
 <script src="../assets/quiz-data.js?v=13d63a0b"></script>
-<script src="../assets/search-index.js?v=3acb8b3e"></script>
+<script src="../assets/search-index.js?v=8274cf4a"></script>
 <script src="../assets/app.js?v=f6bc691d"></script>
 </body></html>

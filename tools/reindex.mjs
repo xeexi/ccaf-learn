@@ -208,11 +208,15 @@ ${barHtml}
 };
 
 /** 受験の実務 ─ §3 / §11〜§15。**行動が変わる数字だけ**を出す（支払い方法や苦情の窓口は公式へ） */
+/* 並びは時間順（予約前 → 受け方 → 当日 → 落ちたとき → 受かったあと）。
+   「計画に効くものだけ」なので、**取り返しがつかない期限**を先に置く ──
+   氏名の不一致と配慮の申請は、予約したあとでは直せない（§12）。 */
 const examAdmin = () => `<div class="ex"><span class="exl">受験の実務 ─ 計画に効くものだけ</span>
-  <b>受け方</b>　オンライン監督つき、またはテストセンター（Pearson VUE）。受験料 <b>${EXAM.fee} USD</b>。予約の変更・取消は<b>${EXAM.cancelHours}時間前まで</b>（過ぎると受験料は戻りません）。<br>
+  <b>予約する前に</b>　身分証の氏名と<b>登録名が完全に一致</b>している必要があります。訂正は <code>${EXAM.nameFixContact}</code> へ ── <b>予約したあとでは直せません</b>。配慮（accommodations）が要るときも、Pearson VUE の承認を得てから予約します。<br>
+  <b>受け方</b>　オンライン監督つき、またはテストセンター（Pearson VUE）。受験料 <b>${EXAM.fee} USD</b>。予約の変更・取消は<b>${EXAM.cancelHours}時間前まで</b>。それを過ぎたとき、および無断欠席・遅刻は、受験料が戻らず登録し直しになります。<br>
+  <b>当日</b>　写真つきの本人確認書類が要ります。机の上に資料・端末は置けません（${EXAM.banned.join('・')}も持ち込めません）。試験内容は<b>口外しない</b>という同意（NDA）に応じてから始まります。<br>
   <b>落ちたとき</b>　待機は<b>${EXAM.retakeWaitDays.join('日 → ')}日</b>と伸びます。12か月で受けられるのは<b>${EXAM.attemptsPerYear}回</b>まで。<b>1回目で通す前提で組むほうが安上がり</b>です。<br>
-  <b>受かったあと</b>　有効期間は<b>${EXAM.validityMonths}か月</b>。期限内なら<b>無料の更新試験</b>で更新でき、切らすと本試験を受け直しになります。<br>
-  <b>当日</b>　写真つきの本人確認書類が要ります。机の上に資料・端末は置けません。試験内容は<b>口外しない</b>という同意（NDA）に応じてから始まります。</div>`;
+  <b>受かったあと</b>　有効期間は<b>${EXAM.validityMonths}か月</b>。期限内なら<b>無料の更新試験</b>で更新でき、切らすと本試験を受け直しになります。</div>`;
 
 /** §7 How to Prepare ＋ §8 Preparation Exercises ─ 手を動かす準備 */
 const prepareFig = () => {
@@ -565,11 +569,16 @@ const index = pages.map(p => ({
   d: p.dom.num,
   id: p.id,
   t: p.h2,
+  // **本文を切らない。** 以前は 1800字で切っていて、14節（15%）の末尾 ──
+  // 全体の 9%（8,376字）── が検索に出なかった。しかも「見つからない」と
+  // 「載っていない」が区別できないので、**黙って落ちる**（§7 #97）。
+  // 外しても 214 → 233KB（+19KB）。`app.js` は当たった位置の前後190字を
+  // 切り出すだけなので、長さに依存する処理はない。
   x: p.body
     .replace(/<svg[\s\S]*?<\/svg>/g, ' ')     // 図の中の文字は検索対象外
     .replace(/<[^>]*>/g, ' ')
     .replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&')
-    .replace(/\s+/g, ' ').trim().slice(0, 1800),
+    .replace(/\s+/g, ' ').trim(),
 }));
 const out = path.join(ROOT, 'assets/search-index.js');
 fs.writeFileSync(out, 'window.SEARCH_INDEX = ' + JSON.stringify(index) + ';\n');

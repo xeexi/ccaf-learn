@@ -49,7 +49,11 @@ export const EXAM = {
   attemptsPerYear: 4,            // 12か月で同じ試験を受けられる回数
   cancelHours:     24,           // これを切ると受験料は戻らない
   sampleQuestions: 12,           // §9 に解説つきで載っている
-  multiResponse:   true,   // 1つ選ぶ設問と、複数選ぶ設問が混じる
+  multiResponse:   true,         // 1つ選ぶ設問と、複数選ぶ設問が混じる
+  // §12 Identification ─ 登録名の訂正はここへ。**予約する前**にしか直せない
+  nameFixContact:  "certifications-support@anthropic.com",
+  // §13 ─ 持ち込めないもの。原文の列挙をそのまま持つ
+  banned:          ["携帯", "スマートウォッチ", "ヘッドホン", "参考書", "録音機器"],
 };
 
 /** 4. Exam Content Outline ─ 比率だけを持つ。問数は EXAM.items から導出する */
@@ -164,18 +168,32 @@ export const SCOPE = {
     "Human review workflows: confidence calibration, stratified sampling, accuracy segmentation by document type and field",
     "Information provenance: claim-source mappings, temporal data handling, conflict annotation, coverage gap reporting",
   ],
+  // **原文（§17 Out-of-Scope）の並びのまま、16件すべて持つ。**
+  // 以前は11件しか無く、5件（言語/フレームワーク・内部構造・OAuth・
+  // 特定クラウド・ベンチマーク）は 5o の視野の外にあった ── 穴の側と同じで、
+  // **分母が原文から出ていないと「照合した」と言えない**（§7 #61 / #97）。
   out: [
-    { en: "Streaming API implementation or server-sent events", re: "stream: true|server-sent|message_delta|thinking_delta", allow: 2 },
-    { en: "Prompt caching implementation details (beyond knowing it exists)", re: "cache_control|cache_read_input_tokens|cache_creation", allow: 1 },
-    { en: "Token counting algorithms or tokenization specifics", re: "トークナイザ", allow: 1 },
-    { en: "Computer use (browser automation, desktop interaction)", re: "computer use|ブラウザ操作|デスクトップ操作", allow: 0 },
-    { en: "Vision/image analysis capabilities", re: "画像の解析|vision", allow: 0 },
     { en: "Fine-tuning Claude models or training custom models", re: "ファインチューニング|fine-tun|再学習", allow: 0 },
     { en: "Claude API authentication, billing, or account management", re: "APIキーの発行|課金プラン|請求先", allow: 0 },
-    { en: "Rate limiting, quotas, or API pricing calculations", re: "レート制限|クォータ|単価を計算", allow: 0 },
-    { en: "Embedding models or vector database implementation details", re: "埋め込みモデル|ベクトル(検索|DB|データベース)", allow: 0 },
+    // 「(beyond what's needed for tool and schema configuration)」── 設定を語るのに要る
+    // 範囲は除いてある。`.claude/rules/` の例に React と書くのは設定の話なので当てない。
+    { en: "Detailed implementation of specific programming languages or frameworks (beyond what's needed for tool and schema configuration)",
+      re: "useState|useEffect|componentDidMount|Django|Rails|Spring Boot|Express\\.js|FastAPI", allow: 0 },
+    { en: "Deploying or hosting MCP servers (infrastructure, networking, container orchestration)", re: "MCP サーバを(立て|デプロイ|ホスティング)", allow: 0 },
+    { en: "Claude's internal architecture, training process, or model weights", re: "モデルの重み|内部アーキテクチャ|事前学習|学習データ|パラメータ数", allow: 0 },
     { en: "Constitutional AI, RLHF, or safety training methodologies", re: "RLHF|Constitutional", allow: 0 },
-    { en: "Deploying or hosting MCP servers", re: "MCP サーバを(立て|デプロイ|ホスティング)", allow: 0 },
+    { en: "Embedding models or vector database implementation details", re: "埋め込みモデル|ベクトル(検索|DB|データベース)", allow: 0 },
+    { en: "Computer use (browser automation, desktop interaction)", re: "computer use|ブラウザ操作|デスクトップ操作", allow: 0 },
+    { en: "Vision/image analysis capabilities", re: "画像の解析|vision", allow: 0 },
+    { en: "Streaming API implementation or server-sent events", re: "stream: true|server-sent|message_delta|thinking_delta", allow: 2 },
+    { en: "Rate limiting, quotas, or API pricing calculations", re: "レート制限|クォータ|単価を計算", allow: 0 },
+    // `CLAUDE_CODE_OAUTH_TOKEN`（3-11 の CI の秘密情報）は設定の話なので当てない。
+    // ここが見るのは OAuth の流れそのものや、鍵の運用の話。
+    { en: "OAuth, API key rotation, or authentication protocol details", re: "OAuth の|キーのローテーション|鍵の(失効|更新)|認証プロトコル|トークン交換", allow: 0 },
+    { en: "Specific cloud provider configurations (AWS, GCP, Azure)", re: "AWS|GCP|Azure", allow: 0 },
+    { en: "Performance benchmarking or model comparison metrics", re: "ベンチマーク|MMLU|モデルの比較|性能を比較", allow: 0 },
+    { en: "Prompt caching implementation details (beyond knowing it exists)", re: "cache_control|cache_read_input_tokens|cache_creation", allow: 1 },
+    { en: "Token counting algorithms or tokenization specifics", re: "トークナイザ", allow: 1 },
   ],
 };
 

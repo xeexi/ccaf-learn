@@ -973,6 +973,12 @@ let mdNg = 0, mdN = 0;
     ['.ann',            /\| \*\*(\d+)\*\*（すべて `pre\.code`/,  figs.ann],
     ['本文の節数',      /本文(\d+)節のうち/,                     body],
     ['検査の項目数',    /全(\d+)項目が「対象が何件あったか」/,   checks],
+    // §17 の3つの一覧 ── **原文の箇条書きと1対1**であることが要件なので、
+    // CLAUDE.md に書いた数と実物がズレたら落とす。以前 Out-of-Scope が
+    // 原文16件に対し11件しか無く、5件が 5o の視野の外にあった（§7 #97）
+    ['§17 In-Scope',     /In-Scope\s*(\d+)\s*項目/,      SCOPE.in.length],
+    ['§17 Out-of-Scope', /Out-of-Scope\s*(\d+)\s*項目/,  SCOPE.out.length],
+    ['§17 技術一覧',     /技術一覧(\d+)項目/,             TECH.length],
   ];
   want.forEach(([label, re, real]) => {
     const m = md.match(re);
