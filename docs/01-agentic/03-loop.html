@@ -133,6 +133,17 @@
     <span class="t o">実際は</span><span>回しているのは<b>アプリ側の while 文</b>。だから「5周までで打ち切る」も自由に書けます。</span>
   </div>
 </div>
+
+<h3 class="sub">回して良くなるのは、確かめられる仕事だけ</h3>
+<p class="goal"><b>ゴール</b>任せると伸びる仕事を見分け、そのために何を渡すか言える。</p>
+<div class="detail">
+  <p>手順4で足される <code>tool_result</code> が、<b>Claudeが自分の結果を知る唯一の道</b>です。そこに「まだ違う」と分かるものが入らなければ、次の周も同じ確からしさで書き直すだけになります。</p>
+  <div class="ex"><span class="exl">任せると伸びる／伸びない</span>
+  38個のパッケージの依存更新は、<b>テストが通るかで正否が決まります</b>。自分で確かめて直せるので、周を重ねるほど良くなります。<br>
+  「3つの構成案のどれを採るか」には、正否を判定する手段がありません。<b>何周回しても良くならない</b>ので、人が決めます ── 任せる仕事を選ぶ基準は、難しさでも危険度でもなく<b>自動で確かめられるか</b>です。</div>
+  <div class="ex"><span class="exl">だから、足すのは言葉より道具</span>
+  落ちたテストを直させるとき、テスト実行器や型チェッカを<b>ツールとして渡していなければ</b>、Claudeは「直しました」と書いて止まります。渡せば、通るまで自分で回します。「よく確認して」と書き足すより効きます。</div>
+</div>
 </section>
 <!-- ▲ 本文 -->
 <nav class="secpager btm"><a class="pgv prev" href="../01-agentic/02-tools.html" title="前へ（← キー）"><span class="vh">前へ</span></a><a class="pgv next" href="../01-agentic/04-stop.html" title="次へ（→ キー）"><span class="vh">次へ</span></a></nav>
@@ -146,6 +157,6 @@
   </div>
 </div>
 <script src="../assets/quiz-data.js?v=13d63a0b"></script>
-<script src="../assets/search-index.js?v=8274cf4a"></script>
+<script src="../assets/search-index.js?v=a553f99b"></script>
 <script src="../assets/app.js?v=f6bc691d"></script>
 </body></html>

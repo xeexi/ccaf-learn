@@ -99,6 +99,9 @@
 <p class="point"><b>ポイント</b>減らす場所は「履歴に入る前」。<b>返す量はツールの設計で決める。</b>絞る条件はツールの引数として持たせる ── 「短く返して」と頼む形にすると、守られるかどうかが確率になる。</p>
 
 <div class="detail">
+  <div class="ex"><span class="exl">絞ったことを、隠さない</span>
+  3,400件のうち上位20件だけを返すなら、<b>総数と、続きの取り方（次の位置）を添えます</b>。20件だけ返して総数を黙ると、モデルはそれで全部だと読んで先へ進みます ── 「0件だった」と「アクセスできなかった」を同じ空の結果で返すのと同じ誤りです（〈<a href="../02-tools/04-error.html">失敗は読める形で返す</a>〉）。<br>
+  そもそも窓に収まらないほど広い問い合わせには、<b>絞り込みの引数を必須にします</b> ── 「短く聞いて」と頼むのではなく、絞らないと呼べない形にするのが、返す量をツール側で決めるということです。</div>
       <div class="myth">
       <span class="t">誤解</span><span>「窓が大きいモデルを使えば、返す量は気にしなくてよい」</span>
       <span class="t o">実際は</span><span>窓は入力と出力で食い合う共有資源です。埋まるほど<b>1周あたりの費用と待ち時間も増えます</b>。大きい窓は余裕であって、無料ではありません。</span>
@@ -117,6 +120,6 @@
   </div>
 </div>
 <script src="../assets/quiz-data.js?v=13d63a0b"></script>
-<script src="../assets/search-index.js?v=8274cf4a"></script>
+<script src="../assets/search-index.js?v=a553f99b"></script>
 <script src="../assets/app.js?v=f6bc691d"></script>
 </body></html>

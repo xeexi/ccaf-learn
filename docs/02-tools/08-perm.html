@@ -88,6 +88,12 @@
 
 <p class="point"><b>ポイント</b>境目は「間違えたとき、やり直せるか」の一点。やり直せるなら自動、やり直せないなら関門。</p>
 
+<div class="detail">
+  <div class="ex"><span class="exl">副作用のある道具は、二重に効かない形にしておく</span>
+  デプロイの道具が30秒で時間切れになり、サーバ側では処理が続いていた ── 呼んだ側には<b>届いたのかどうかが分かりません</b>。一時的な失敗をその場で再試行するのは正しい手なので（〈<a href="04-error.html">失敗は読める形で返す</a>〉）、<b>再試行しても二重にならない形を道具の側で用意します</b>。<br>
+  呼ぶ側に<b>要求ごとの鍵を持たせ、同じ鍵の2回目には最初の結果をそのまま返します</b>（冪等な形）。これで、あいまいな時間切れが<b>ただの再送</b>になります。用意しないまま「再試行するな」と指示で禁じると、今度は本当に落ちた要求まで放置されます。</div>
+</div>
+
 <h3 class="sub" id="perm-2">同じ禁止でも、強さが違う</h3>
 <p class="goal"><b>ゴール</b>弱い対策と強い対策を、書き方から見分けられる。</p>
 <p class="lead">「返金は10万円まで」を守らせる方法は2通りあります。<b>設問はこの2つの差を突いてきます。</b></p>
@@ -127,6 +133,6 @@
   </div>
 </div>
 <script src="../assets/quiz-data.js?v=13d63a0b"></script>
-<script src="../assets/search-index.js?v=8274cf4a"></script>
+<script src="../assets/search-index.js?v=a553f99b"></script>
 <script src="../assets/app.js?v=f6bc691d"></script>
 </body></html>
