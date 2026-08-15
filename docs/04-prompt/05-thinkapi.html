@@ -51,7 +51,8 @@
 <a class="itm toc-link" href="../04-prompt/03-order.html"><span class="itm-n">4-3</span><span class="itm-t">並べる順番</span></a>
 <a class="itm toc-link" href="../04-prompt/04-think.html"><span class="itm-n">4-4</span><span class="itm-t">考えさせる ─ thinking</span></a>
 <a class="itm toc-link on" href="../04-prompt/05-thinkapi.html"><span class="itm-n">4-5</span><span class="itm-t">実物を見る ─ thinking の JSON</span></a>
-<a class="toc-link toc-sub" href="#thinkapi-1">何を送り、何が届くか</a>
+<a class="toc-link toc-sub" href="#thinkapi-1">① 応答の形 ─ 答えの前に、思考のブロックが入る</a>
+<a class="toc-link toc-sub" href="#thinkapi-2">② トークンの使われ方 ─ 思考と答えが同じ枠を分け合う</a>
 <a class="itm toc-link itm-quiz" href="../04-prompt/06-q0.html"><span class="itm-n">4-6</span><span class="itm-t">理解度チェック ─ 基本</span></a>
 <a class="itm toc-link" href="../04-prompt/07-criteria.html"><span class="itm-n">4-7</span><span class="itm-t">基準を明示する / ゼロ件を許す</span></a>
 <a class="itm toc-link" href="../04-prompt/08-fewshot.html"><span class="itm-n">4-8</span><span class="itm-t">few-shot ─ 例を見せる</span></a>
@@ -71,32 +72,53 @@
 <header class="sec-head">
   <h2>4-5　実物を見る ─ thinking の JSON</h2>
 </header>
-<p class="goal"><b>ゴール</b><code>thinking</code> でリクエストと応答がどう変わるか言える。</p>
+<p class="goal"><b>ゴール</b><code>thinking</code> を有効にすると何がどう変わるか、実物で指せる。</p>
 <p class="cast" data-cast="app,claude,app"><span class="c-blue">アプリ</span><span class="c-ar">→</span><span class="c-amber">Claude</span><span class="c-ar">→</span><span class="c-blue">アプリ</span></p>
-<p class="lead"><b>考える過程をモデルに出させる指定を、実際の JSON で見ます。</b>何を1つ足すと有効になり、応答と途中経過がどう変わるかを確かめます。</p>
+<p class="lead"><b>考える過程をモデルに出させる指定を、実際の JSON で見ます。</b>送る側に足すのは1行だけですが、変わるものは2つあります ── <b>応答の形</b>と、<b>トークンの使われ方</b>です。</p>
 
-<h3 class="sub" id="thinkapi-1">何を送り、何が届くか</h3>
-<p class="goal"><b>ゴール</b>考える分と答える分が同じ枠を分け合うことを言える。</p>
-<p class="lead">〈<a href="04-think.html">考えさせる ─ thinking</a>〉の②（API の <code>thinking</code>）を、実際の JSON で確認します。</p>
+<h3 class="sub" id="thinkapi-1">① 応答の形 ─ 答えの前に、思考のブロックが入る</h3>
+<p class="goal"><b>ゴール</b>有効にする前と後で、応答のどこが違うか指せる。</p>
+<p class="lead">〈<a href="04-think.html">考えさせる ─ thinking</a>〉の②（API の <code>thinking</code>）を、送る側と返る側の両方で確認します。</p>
   <div class="figbox" style="padding:16px 18px">
     <p class="codelabel">リクエスト</p>
     <pre class="code">{
   <span class="hl"><span class="k">"thinking"</span>: { <span class="k">"type"</span>: <span class="s">"enabled"</span>, <span class="k">"budget_tokens"</span>: <span class="v">10000</span> },</span><span class="n">1</span>
-  <span class="k">"max_tokens"</span>: <span class="v">16000</span>,<span class="n">2</span>
+  <span class="k">"max_tokens"</span>: <span class="v">16000</span>,
   <span class="k">"messages"</span>: [ … ]
 }</pre>
-    <p class="codelabel">応答</p>
+    <p class="codelabel">応答 ─ thinking なし</p>
     <pre class="code"><span class="k">"content"</span>: [
-  <span class="hl">{ <span class="k">"type"</span>: <span class="s">"thinking"</span>, <span class="k">"thinking"</span>: <span class="s">"…条件を並べて順に確かめる…"</span> },</span><span class="n">3</span>
+  { <span class="k">"type"</span>: <span class="s">"text"</span>, <span class="k">"text"</span>: <span class="s">"結論は…"</span> }
+]</pre>
+    <p class="codelabel">応答 ─ thinking あり</p>
+    <pre class="code"><span class="k">"content"</span>: [
+  <span class="hl">{ <span class="k">"type"</span>: <span class="s">"thinking"</span>, <span class="k">"thinking"</span>: <span class="s">"…条件を並べて順に確かめる…"</span> },</span><span class="n">2</span>
   { <span class="k">"type"</span>: <span class="s">"text"</span>, <span class="k">"text"</span>: <span class="s">"結論は…"</span> }
 ]</pre>
     <ol class="ann">
-      <li><span class="n">1</span><span>付けるのはこれだけ。<b>「どう考えるか」を書く必要はありません</b>。予算の最小は1024トークン。</span></li>
-      <li><span class="n">2</span><span>思考は<b>出力の一部</b>なので、<code>budget_tokens</code> は <code>max_tokens</code> より小さくします。</span></li>
-      <li><span class="n">3</span><span><code>content</code> に <code>thinking</code> ブロックが増えます。中身は<b>要約された思考</b>で、内部の全文が出るわけではありません。この分も<b>出力トークンとして課金されます</b>。</span></li>
+      <li><span class="n">1</span><span>足すのはこの1行だけ。<b>「どう考えるか」は書きません</b>。<code>budget_tokens</code> は最小1024。</span></li>
+      <li><span class="n">2</span><span>返る側は<b>必ずこのブロックから始まります</b>。答えの <code>text</code> はその後ろなので、<code>content</code> の先頭を答えとして読んでいたアプリは<b>有効にした日に壊れます</b>。中身は<b>要約された思考</b>で、内部の全文ではありません。</span></li>
     </ol>
   </div>
-  <p class="point"><b>ポイント</b>付けるのは <code>thinking</code> フィールドだけ。応答に <code>thinking</code> ブロックが増え、そのぶん出力トークンを食う。</p>
+  <p class="point"><b>ポイント</b>送る側に足すのは <code>thinking</code> フィールド1つ。返る側は <code>thinking</code> ブロックで始まり、答えの <code>text</code> はその後ろに来る。</p>
+
+<h3 class="sub" id="thinkapi-2">② トークンの使われ方 ─ 思考と答えが同じ枠を分け合う</h3>
+<p class="goal"><b>ゴール</b>考える分が増えると答えに残る分が減ることを、数で言える。</p>
+<p class="lead">思考は「おまけ」ではなく<b>出力そのもの</b>です。だから <code>max_tokens</code> の枠を、答えと分け合います。</p>
+<div class="figbox"><figure class="fig run">
+  <p class="fig-t"><code>max_tokens</code> は<b>思考と答えを合わせた</b>上限 ─ 同じ16,000が、有効にすると2つに割れる</p>
+  <p class="fig-lbl s1" style="margin-bottom:-8px">thinking なし</p>
+  <div class="fig-seg s1">
+    <span class="seg" style="width:100%;background:var(--fig-amber)">答え ─ 最大16,000</span>
+  </div>
+  <p class="fig-lbl s2" style="margin-top:6px;margin-bottom:-8px">thinking あり ─ budget_tokens 10,000</p>
+  <div class="fig-seg s2">
+    <span class="seg" style="width:62.5%;background:var(--fig-fill-amber);color:var(--ink)">思考 ─ 目標10,000</span>
+    <span class="seg" style="width:37.5%;background:var(--fig-amber)">答え ─ 残り6,000</span>
+  </div>
+  <p class="fig-f"><code>budget_tokens</code> は<b>目標であって割り当てではない</b> ── 簡単な問いなら早く切り上げ、そのぶん答えに使える枠が増える。硬い上限は <code>max_tokens</code> のほうだけなので、<b>予算は必ずそれより小さくする</b></p>
+</figure></div>
+  <p class="point"><b>ポイント</b>思考も<b>出力トークンとして課金される</b>。<code>max_tokens</code> は思考と答えの合計の上限なので、考えさせるほど答えに残る枠は減る。</p>
 
 <p class="note">※ <b>ストリーミング（<code>stream: true</code>）は試験の範囲外です</b> ── 公式 Exam Guide が「Streaming API implementation or server-sent events」を出題対象外と明記しています。
 生成しながら少しずつ届く形にできますが、<b>届き方が変わるだけ</b>で、往復の回数もトークン数も変わりません。<br>
@@ -114,6 +136,6 @@
   </div>
 </div>
 <script src="../assets/quiz-data.js?v=13d63a0b"></script>
-<script src="../assets/search-index.js?v=a553f99b"></script>
+<script src="../assets/search-index.js?v=5c3fbd35"></script>
 <script src="../assets/app.js?v=f6bc691d"></script>
 </body></html>
