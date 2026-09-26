@@ -91,7 +91,7 @@
   <div class="figbox" style="padding:16px 18px">
     <p class="codelabel">1回目のリクエスト</p>
     <pre class="code">{
-  <span class="rng"><span class="k">"model"</span>: <span class="s">"claude-opus-5"</span>,</span><span class="n">1</span>
+  <span class="rng"><span class="k">"model"</span>: <span class="s">"（モデル名）"</span>,</span><span class="n">1</span>
   <span class="rng"><span class="k">"max_tokens"</span>: <span class="v">1024</span>,</span><span class="n">2</span>
   <span class="rng"><span class="k">"system"</span>: <span class="s">"あなたはこのリポジトリの案内役です。"</span>,</span><span class="n">3</span>
   <span class="rng"><span class="k">"tools"</span>: [</span><span class="n">4</span>
@@ -107,7 +107,7 @@
   ]
 }</pre>
     <ol class="ann">
-      <li><span class="n">1</span><span>どのモデルに聞くか。</span></li>
+      <li><span class="n">1</span><span>どのモデルに聞くか。名前は世代ごとに変わるので、ここでは伏せています。</span></li>
       <li><span class="n">2</span><span>返事の長さの上限。達すると <code>stop_reason</code> が <code>max_tokens</code> になります。</span></li>
       <li><span class="n">3</span><span><b>システム指示</b>。会話の間ずっと効きます。</span></li>
       <li><span class="n">4</span><span><b>ツールの定義</b>。使わなくても窓を食うのがこれ。道具の数だけ毎回送られます。</span></li>
@@ -195,7 +195,7 @@
     <div class="modal-foot"><kbd>Esc</kbd> で閉じる</div>
   </div>
 </div>
-<script src="../assets/quiz-data.js?v=6345767a"></script>
-<script src="../assets/search-index.js?v=42c06ba7"></script>
+<script src="../assets/quiz-data.js?v=b2edd5c3"></script>
+<script src="../assets/search-index.js?v=28587e40"></script>
 <script src="../assets/app.js?v=f6bc691d"></script>
 </body></html>

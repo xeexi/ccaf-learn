@@ -92,7 +92,7 @@
   <ol class="ann">
     <li><span class="n">1</span><span><code>description</code> ─ 何をするコマンドか。</span></li>
     <li><span class="n">2</span><span><code>argument-hint</code> ─ 補完に出る引数の形。</span></li>
-    <li><span class="n">3</span><span><code>allowed-tools</code> ─ <b>そのコマンド実行中だけツールを絞る</b>。権限設計としても使えます。<b>キー名のハイフンは YAML の書き方</b>で、JSON ではありません。</span></li>
+    <li><span class="n">3</span><span><code>allowed-tools</code> ─ 出題ガイドの言い方では<b>そのコマンド実行中に使えるツールを絞る</b>もの。現行の Claude Code では「確認なしで使える」事前許可で、絞るのは <code>disallowed-tools</code> です。<b>キー名のハイフンは YAML の書き方</b>で、JSON ではありません。</span></li>
     <li><span class="n">4</span><span>本文に <code>$ARGUMENTS</code>（全部）や <code>$0 $1</code>（位置ごと。<b>0 から数える</b>ので <code>$0</code> が1つ目）と書くと、呼び出し時の引数が入ります。<b>ファイル名がそのままコマンド名</b>です。</span></li>
   </ol>
 </div>
@@ -194,7 +194,7 @@
     <div class="modal-foot"><kbd>Esc</kbd> で閉じる</div>
   </div>
 </div>
-<script src="../assets/quiz-data.js?v=6345767a"></script>
-<script src="../assets/search-index.js?v=42c06ba7"></script>
+<script src="../assets/quiz-data.js?v=b2edd5c3"></script>
+<script src="../assets/search-index.js?v=28587e40"></script>
 <script src="../assets/app.js?v=f6bc691d"></script>
 </body></html>

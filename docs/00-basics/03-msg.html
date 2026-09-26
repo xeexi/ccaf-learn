@@ -88,7 +88,7 @@
 }</pre>
   <ol class="ann">
     <li><span class="n">1</span><span>履歴は<b>配列</b>です。〈<a href="02-resend.html">会話は毎回、まるごと送り直している</a>〉の「厚くなる紙の束」は、この配列が伸びること。</span></li>
-    <li><span class="n">2</span><span>1件に入るのは <code>role</code> と <code>content</code> の2つだけ。<code>role</code> は <code>user</code> か <code>assistant</code> のどちらかです。</span></li>
+    <li><span class="n">2</span><span>1件に入るのは <code>role</code> と <code>content</code> の2つだけ。<code>role</code> はふつう <code>user</code> か <code>assistant</code> のどちらかです（会話の途中に <code>system</code> を置ける場合は Domain 4）。</span></li>
     <li><span class="n">3</span><span>返ってきた1件は、<b>そのまま次回の末尾に足せます</b>。送る形と返る形が同じなので、積むだけで会話になります。</span></li>
     <li><span class="n">4</span><span><code>content</code> の<b>外側</b>にも値が付きます。外側のものは<b>次回に送り返しません</b>（値の意味は Domain 1）。</span></li>
   </ol>
@@ -132,7 +132,7 @@
     <div class="modal-foot"><kbd>Esc</kbd> で閉じる</div>
   </div>
 </div>
-<script src="../assets/quiz-data.js?v=6345767a"></script>
-<script src="../assets/search-index.js?v=42c06ba7"></script>
+<script src="../assets/quiz-data.js?v=b2edd5c3"></script>
+<script src="../assets/search-index.js?v=28587e40"></script>
 <script src="../assets/app.js?v=f6bc691d"></script>
 </body></html>

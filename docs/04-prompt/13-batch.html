@@ -152,9 +152,10 @@
       <div class="ex"><span class="exl">できること／できないこと</span>
     <b>使える</b>：ツール定義・複数ターンの会話・拡張思考・画像。「バッチだから単発の質問しか投げられない」わけではありません<br>
     <b>使えない①</b>：<code>stream: true</code>（結果はまとめて返るため）<br>
-    <b>使えない②</b>：<b>1リクエストの中でツールを実行して結果を返すこと。</b><code>tool_use</code> が返っても、
-    その場で実行して続きを進める往復がありません ── つまり<b>バッチの中でエージェントループは回せません</b>。
+    <b>使えない②</b>：<b>アプリ側で実行するツールの結果を、1リクエストの中で返すこと。</b><code>tool_use</code> が返っても、
+    その場で実行して続きを進める往復がありません ── つまり<b>自前のツールでは、バッチの中でエージェントループは回せません</b>。
     ツールを使う仕事をバッチに乗せるなら、<b>1往復で終わる形に切ります</b>。<br>
+    ※ Anthropic 側で実行されるサーバツール（<code>web_search</code> など）は例外で、バッチの中でも回ります（〈<a href="../02-tools/10-builtin.html">組み込みのツールを選ぶ</a>〉）。<br>
     ※ 処理に時間がかかるため、共通の長いプロンプトを使うなら<b>キャッシュは長め（1時間）の設定</b>と相性が良くなります。</div>
   </div>
 </section>
@@ -169,7 +170,7 @@
     <div class="modal-foot"><kbd>Esc</kbd> で閉じる</div>
   </div>
 </div>
-<script src="../assets/quiz-data.js?v=6345767a"></script>
-<script src="../assets/search-index.js?v=42c06ba7"></script>
+<script src="../assets/quiz-data.js?v=b2edd5c3"></script>
+<script src="../assets/search-index.js?v=28587e40"></script>
 <script src="../assets/app.js?v=f6bc691d"></script>
 </body></html>

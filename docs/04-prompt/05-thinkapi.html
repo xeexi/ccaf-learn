@@ -97,7 +97,7 @@
 ]</pre>
     <ol class="ann">
       <li><span class="n">1</span><span>足すのはこの1行だけ。<b>「どう考えるか」は書きません</b>。<code>budget_tokens</code> は最小1024。</span></li>
-      <li><span class="n">2</span><span>返る側は<b>必ずこのブロックから始まります</b>。答えの <code>text</code> はその後ろなので、<code>content</code> の先頭を答えとして読んでいたアプリは<b>有効にした日に壊れます</b>。中身は<b>要約された思考</b>で、内部の全文ではありません。</span></li>
+      <li><span class="n">2</span><span>返る側は<b>このブロックが答えより先に来ます</b>。答えの <code>text</code> はその後ろなので、<code>content</code> の先頭を答えとして読んでいたアプリは<b>有効にした日に壊れます</b>。中身は<b>要約された思考</b>で、内部の全文ではありません。</span></li>
     </ol>
   </div>
   <p class="point"><b>ポイント</b>送る側に足すのは <code>thinking</code> フィールド1つ。返る側は <code>thinking</code> ブロックで始まり、答えの <code>text</code> はその後ろに来る。</p>
@@ -120,6 +120,8 @@
 </figure></div>
   <p class="point"><b>ポイント</b>思考も<b>出力トークンとして課金される</b>。<code>max_tokens</code> は思考と答えの合計の上限なので、考えさせるほど答えに残る枠は減る。</p>
 
+<p class="note">※ 上の書き方（<code>"type": "enabled"</code> ＋ <code>budget_tokens</code>）は、出題ガイドが extended thinking と呼ぶ形です。現行の API では新しいモデルがこの形を受け付けず、考える量をモデル自身が決める <code>"type": "adaptive"</code> が標準です。最初から有効なモデルもあり、その場合は思考の中身が既定で表示されません（中身が空の <code>thinking</code> ブロックが返る）。<b>答えの <code>text</code> が後ろに来ること、思考も出力トークンに数えられることは変わりません。</b></p>
+
 <p class="note">※ <b>ストリーミング（<code>stream: true</code>）は試験の範囲外です</b> ── 公式 Exam Guide が「Streaming API implementation or server-sent events」を出題対象外と明記しています。
 生成しながら少しずつ届く形にできますが、<b>届き方が変わるだけ</b>で、往復の回数もトークン数も変わりません。<br>
 押さえるのは1点だけ ── <b>途中で届くものを見て「もう答えが出た」と判断することはできません。</b>アプリが分岐できるのは <code>stop_reason</code> が来てからです（Domain 1〈<code>stop_reason</code> で分岐する〉）。</p>
@@ -135,7 +137,7 @@
     <div class="modal-foot"><kbd>Esc</kbd> で閉じる</div>
   </div>
 </div>
-<script src="../assets/quiz-data.js?v=6345767a"></script>
-<script src="../assets/search-index.js?v=42c06ba7"></script>
+<script src="../assets/quiz-data.js?v=b2edd5c3"></script>
+<script src="../assets/search-index.js?v=28587e40"></script>
 <script src="../assets/app.js?v=f6bc691d"></script>
 </body></html>

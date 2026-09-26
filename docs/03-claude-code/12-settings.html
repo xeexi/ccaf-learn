@@ -101,6 +101,7 @@
     <span class="t o">実際は</span><span><code>settings.local.json</code>（自分だけ）は <code>settings.json</code>（チーム共有）より<b>強い</b>です。弱いのは<b>ホームディレクトリのほう</b> ── 「個人／チーム」ではなく<b>「その場に近いか」</b>で並んでいます。</span>
   </div>
 </div>
+<p class="note">※ 勝ち負けになるのは、値を1つしか持てない項目（<code>model</code> など）です。<code>permissions</code> の <code>allow</code> や <code>deny</code> のような一覧は、<b>どこに書いた分も合わさります</b>。しかも <code>deny</code> は <code>allow</code> より先に照合されるので、個人の設定で組織やチームの <code>deny</code> を外すことはできません。</p>
 
 <h3 class="sub" id="settings-2">allow / deny で通れる道を決める</h3>
 <p class="goal"><b>ゴール</b>許可と禁止に何を並べるか言える。</p>
@@ -145,7 +146,7 @@
     <div class="modal-foot"><kbd>Esc</kbd> で閉じる</div>
   </div>
 </div>
-<script src="../assets/quiz-data.js?v=6345767a"></script>
-<script src="../assets/search-index.js?v=42c06ba7"></script>
+<script src="../assets/quiz-data.js?v=b2edd5c3"></script>
+<script src="../assets/search-index.js?v=28587e40"></script>
 <script src="../assets/app.js?v=f6bc691d"></script>
 </body></html>

@@ -87,7 +87,7 @@
       <span class="fig-note"><code>messages</code> の<b>外側</b>にある、リクエストのトップレベルの欄</span>
     </div>
   </div>
-  <p class="fig-lbl s2"><code>messages</code> の中に並ぶのは、この2つだけ</p>
+  <p class="fig-lbl s2"><code>messages</code> の中に並ぶのは、ふつうはこの2つ</p>
   <div class="fig-row s2" style="--cols:2">
     <div class="fig-card">
       <b class="fig-h"><code>user</code>　─　その回だけ</b>
@@ -95,7 +95,7 @@
     </div>
     <div class="fig-card">
       <b class="fig-h"><code>assistant</code>　─　その回だけ</b>
-      <span class="fig-note">Claude の応答。履歴として残る。<b>先頭を書いておくと形式を誘導できる</b></span>
+      <span class="fig-note">Claude の応答。履歴として残る</span>
     </div>
   </div>
   <p class="fig-f">ふるまいを直したいとき、まず触るのは <code>system</code>。<b><code>user</code> 側に毎回同じ注意書きを足すのは重複</b>で、毎回トークンも食う</p>
@@ -135,6 +135,7 @@
     <span class="t o">実際は</span><span>強く効きますが、あくまで<b>確率的</b>です。絶対に守らせたいことは、権限設定やコードで塞ぎます（Domain 2・Domain 5）。</span>
   </div>
 </div>
+<p class="note">※ 現行の API では、新しい一部のモデルに限り、会話の途中（<code>user</code> の発言の後）に <code>"role": "system"</code> のメッセージを挟んで指示を足せます。トップレベルの <code>system</code> を書き換えるのと違って、<b>それより前のキャッシュは崩れません</b>。</p>
 </section>
 <!-- ▲ 本文 -->
 <nav class="secpager btm"><a class="pgv prev" href="../04-prompt/01-d4about.html" title="前へ（← キー）"><span class="vh">前へ</span></a><a class="pgv next" href="../04-prompt/03-order.html" title="次へ（→ キー）"><span class="vh">次へ</span></a></nav>
@@ -147,7 +148,7 @@
     <div class="modal-foot"><kbd>Esc</kbd> で閉じる</div>
   </div>
 </div>
-<script src="../assets/quiz-data.js?v=6345767a"></script>
-<script src="../assets/search-index.js?v=42c06ba7"></script>
+<script src="../assets/quiz-data.js?v=b2edd5c3"></script>
+<script src="../assets/search-index.js?v=28587e40"></script>
 <script src="../assets/app.js?v=f6bc691d"></script>
 </body></html>

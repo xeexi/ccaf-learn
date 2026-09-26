@@ -93,13 +93,14 @@
   <pre class="code">{
   <span class="k">"hookSpecificOutput"</span>: {<span class="n">1</span>
     <span class="k">"hookEventName"</span>: <span class="s">"PreToolUse"</span>,
-    <span class="hl"><span class="k">"updatedInput"</span>: { <span class="k">"file_path"</span>: <span class="s">"/sandbox/notes.md"</span> },</span><span class="n">2</span>
+    <span class="hl"><span class="k">"updatedInput"</span>: { <span class="k">"file_path"</span>: <span class="s">"/sandbox/notes.md"</span>,
+                      <span class="k">"content"</span>: <span class="s">"…元のまま…"</span> },</span><span class="n">2</span>
     <span class="k">"permissionDecision"</span>: <span class="s">"allow"</span><span class="n">3</span>
   }
 }</pre>
   <ol class="ann">
     <li><span class="n">1</span><span><code>updatedInput</code> は必ず <code>hookSpecificOutput</code> の<b>中</b>に置きます。外側に書くと効きません ── 公式ドキュメントが躓きどころとして挙げている点です。</span></li>
-    <li><span class="n">2</span><span>元の引数を書き換えるのではなく<b>新しい値を返します</b>。ここではモデルが出したパスを、サンドボックス配下に差し替えています。</span></li>
+    <li><span class="n">2</span><span>元の引数を書き換えるのではなく<b>新しい値を返します</b>。ここではモデルが出したパスを、サンドボックス配下に差し替えています。入力は<b>丸ごと置き換わる</b>ので、変えない項目（ここでは <code>content</code>）も一緒に返します。</span></li>
     <li><span class="n">3</span><span>書き換えた入力をそのまま通すなら <code>allow</code>、人に見せるなら <code>ask</code>。指定を省いても書き換えは効き、通常の権限判定に流れます。</span></li>
   </ol>
 </div>
@@ -162,7 +163,7 @@
     <div class="modal-foot"><kbd>Esc</kbd> で閉じる</div>
   </div>
 </div>
-<script src="../assets/quiz-data.js?v=6345767a"></script>
-<script src="../assets/search-index.js?v=42c06ba7"></script>
+<script src="../assets/quiz-data.js?v=b2edd5c3"></script>
+<script src="../assets/search-index.js?v=28587e40"></script>
 <script src="../assets/app.js?v=f6bc691d"></script>
 </body></html>

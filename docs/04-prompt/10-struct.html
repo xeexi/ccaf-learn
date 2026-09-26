@@ -151,6 +151,7 @@
     「道具は渡しておくが、今回は使わせたくない」→ <b><code>none</code></b>。ツール定義を外す必要はありません。</div>
   </div>
   <p class="note">※ どの型にも <code>"disable_parallel_tool_use": true</code> を添えられます。付けると<b>1回の応答で呼ばれる道具が1つに制限されます</b>（Domain 1〈子はどう起こすのか〉の並列ツール使用を切る指定）。抽出のように「1件につき1つ」と決まっている場面で使います。</p>
+  <p class="note">※ 設問は出題ガイドの前提（<code>any</code> や <code>tool</code> で強制できる）で答えます。現行の API では、新しい一部のモデルが <code>any</code> と <code>tool</code> を受け付けずエラーを返し、代わりに <code>auto</code> ＋ ツール定義の <code>strict: true</code> で形を保証するよう案内しています。</p>
 
 <h3 class="sub" id="struct-3">受け皿の形で、揺れを潰す</h3>
 <p class="goal"><b>ゴール</b>値がないときに作らせない書き方を言える。</p>
@@ -197,7 +198,7 @@
     <div class="modal-foot"><kbd>Esc</kbd> で閉じる</div>
   </div>
 </div>
-<script src="../assets/quiz-data.js?v=6345767a"></script>
-<script src="../assets/search-index.js?v=42c06ba7"></script>
+<script src="../assets/quiz-data.js?v=b2edd5c3"></script>
+<script src="../assets/search-index.js?v=28587e40"></script>
 <script src="../assets/app.js?v=f6bc691d"></script>
 </body></html>

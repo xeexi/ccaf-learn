@@ -30,7 +30,7 @@ export const GUIDE = {
   code:      "CCAR-F",
   pages:     39,
   sha256:    "9bac07c3e6671e55f6cd0232205340a370e8a13a97e8247237dcb71312bccfc2",
-  checked:   "2026-08-13",   // 上の2つを最後に実物と突き合わせた日
+  checked:   "2026-09-26",   // 上の2つを最後に実物と突き合わせた日
   url:       "https://everpath-course-content.s3-accelerate.amazonaws.com/instructor/6nizmqk8tpzpfjvt6qmmav7rh/public/1783542750/Claude+Certified+Architect+%E2%80%93+Foundations+Exam+Guide.pdf",
 };
 
