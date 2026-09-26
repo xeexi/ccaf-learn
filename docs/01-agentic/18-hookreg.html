@@ -157,7 +157,7 @@
 <div class="detail">
   <div class="ex"><span class="exl">止めるかどうかは、フックの「終了コード」で決まる</span>
   <b><code>0</code></b>　… 正常。標準出力の JSON（上の <code>hookSpecificOutput</code>）が読まれる<br>
-  <b><code>exit 2</code></b>　… <b>ブロック。</b>標準出力の JSON は無視され、<b>標準エラーの文字がモデルに返る</b><br>
+  <b><code>exit 2</code></b>　… <b>ブロック。</b>JSON で <code>allow</code> を返しても覆らず、<b>標準エラーの文字がモデルに返る</b><br>
   <b>それ以外</b>　… 非ブロックの失敗。処理はそのまま進み、記録に残るだけ</div>
   <div class="myth">
     <span class="t">誤解</span><span>「異常終了させれば止まる。<code>exit 1</code> でよい」</span>
@@ -177,7 +177,7 @@
     <div class="modal-foot"><kbd>Esc</kbd> で閉じる</div>
   </div>
 </div>
-<script src="../assets/quiz-data.js?v=13d63a0b"></script>
-<script src="../assets/search-index.js?v=5d90f0c6"></script>
+<script src="../assets/quiz-data.js?v=6345767a"></script>
+<script src="../assets/search-index.js?v=42c06ba7"></script>
 <script src="../assets/app.js?v=f6bc691d"></script>
 </body></html>

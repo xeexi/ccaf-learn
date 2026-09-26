@@ -88,12 +88,12 @@
 <span class="c">---</span>
 
 <span class="hl">$ARGUMENTS</span> 環境のリリース前チェックを行う。<span class="n">4</span>
-まず <span class="hl">$1</span> のテストを実行し、失敗があれば中止すること。</pre>
+まず <span class="hl">$0</span> のテストを実行し、失敗があれば中止すること。</pre>
   <ol class="ann">
     <li><span class="n">1</span><span><code>description</code> ─ 何をするコマンドか。</span></li>
     <li><span class="n">2</span><span><code>argument-hint</code> ─ 補完に出る引数の形。</span></li>
     <li><span class="n">3</span><span><code>allowed-tools</code> ─ <b>そのコマンド実行中だけツールを絞る</b>。権限設計としても使えます。<b>キー名のハイフンは YAML の書き方</b>で、JSON ではありません。</span></li>
-    <li><span class="n">4</span><span>本文に <code>$ARGUMENTS</code>（全部）や <code>$1 $2</code>（位置ごと）と書くと、呼び出し時の引数が入ります。<b>ファイル名がそのままコマンド名</b>です。</span></li>
+    <li><span class="n">4</span><span>本文に <code>$ARGUMENTS</code>（全部）や <code>$0 $1</code>（位置ごと。<b>0 から数える</b>ので <code>$0</code> が1つ目）と書くと、呼び出し時の引数が入ります。<b>ファイル名がそのままコマンド名</b>です。</span></li>
   </ol>
 </div>
 
@@ -128,7 +128,7 @@
     <div class="fig-card key s2">
       <b class="fig-h"><code>context: fork</code></b>
       <span class="fig-note"><b>別のコンテキストで実行される</b></span>
-      <span class="fig-note">親の会話履歴は見えない。<code>CLAUDE.md</code> も引き継がれない</span>
+      <span class="fig-note">親の会話履歴は見えない。<code>CLAUDE.md</code> は読まれる</span>
     </div>
   </div>
   <p class="fig-f">目的は速さではなく<b>コンテキストの隔離</b>。大量に読む作業を、親の窓を汚さずに任せられる</p>
@@ -194,7 +194,7 @@
     <div class="modal-foot"><kbd>Esc</kbd> で閉じる</div>
   </div>
 </div>
-<script src="../assets/quiz-data.js?v=13d63a0b"></script>
-<script src="../assets/search-index.js?v=5d90f0c6"></script>
+<script src="../assets/quiz-data.js?v=6345767a"></script>
+<script src="../assets/search-index.js?v=42c06ba7"></script>
 <script src="../assets/app.js?v=f6bc691d"></script>
 </body></html>
